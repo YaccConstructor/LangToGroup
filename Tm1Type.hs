@@ -20,7 +20,7 @@ newtype AccessStates = AccessStates [State]
 -- right, left, none shift after end of command
 data Shift = R | L | None
 -- command of TM1
-newtype Command = Command ((Letter, State, Letter) -> (Letter, State, Letter, Shift))
+newtype Command = Command ((Letter, State, Letter), (Letter, State, Letter, Shift))
 -- commands
 newtype Commands = Commands (Set Command)
 -- leftmost square on every tape
