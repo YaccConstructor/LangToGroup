@@ -5,16 +5,16 @@ type Letter = Char
 -- input, tape alphabets
 type InputAlphabet = Set Letter
 type TapeAlphabet = Set Letter
--- state of tm1
+-- state of TM1
 type State = Char
--- tm set states
+-- TM1 set states
 type States = Set State
 -- k - vector of tapes states
-type MultiTapeStates = Set States
+type MultiTapeStates = [States]
 -- k - vector of start states
-type StartStates = Set State
+type StartStates = [State]
 -- k - vector of end states
-type AccessStates = Set State
+type AccessStates = [State]
 -- right, left, none shift after end of command
 data Shift = R | L | None
 -- command of TM1
@@ -22,10 +22,10 @@ type Command = (Letter, State, Letter) -> (Letter, State, Letter, Shift)
 -- commands
 type Commands = Set Command
 -- leftmost square on every tape
-type LeftBoundingLetter = Letter
+leftBoundingLetter = 'α'
 -- rightmost square on every tape
-type RightBoundingLetter = Letter
+rightBoundingLetter = 'ω'
 -- configuration of tape
-type Configuration = (LeftBoundingLetter, [Letter], State, [Letter], RightBoundingLetter)
+type Configuration = ([Letter], State, [Letter])
 -- TM1
 type TM1 = (InputAlphabet, TapeAlphabet, MultiTapeStates, Commands, StartStates, AccessStates)
