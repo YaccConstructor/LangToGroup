@@ -24,9 +24,9 @@ newtype Command = Command ((Letter, State, Letter) -> (Letter, State, Letter, Sh
 -- commands
 newtype Commands = Commands (Set Command)
 -- leftmost square on every tape
-leftBoundingLetter = 'α'
+leftBoundingLetter = Letter('α')
 -- rightmost square on every tape
-rightBoundingLetter = 'ω'
+rightBoundingLetter = Letter('ω')
 -- configuration of tape
 newtype Configuration = Configuration ([Letter], State, [Letter])
 -- TM1
