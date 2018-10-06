@@ -4,10 +4,9 @@ import Data.String
 import Data.Set (Set)
 import qualified Data.Set as Set
 
-type A = Set Char
---type Relation = (A, A)
-type Relation = ((A, A), (A, A))
+newtype A = A (Set Char) deriving Show
+newtype Relation = Relation ((A, A), (A, A)) deriving Show
 
-data Relations = Set Relation
+newtype Relations = Relations (Set Relation) deriving Show
 
-type GR = (A, Relations)
+newtype GR =  GR (A, Relations) deriving Show
