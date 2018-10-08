@@ -4,7 +4,9 @@ import Data.Set (Set)
 import qualified Data.Set as Set
 
 newtype Terminal = Terminal Char
+    deriving (Eq, Ord)
 newtype Nonterminal = Nonterminal Char
+    deriving (Eq, Ord)
 -- union of terminal and nonterminal
 data Symbol = T Terminal | N Nonterminal
 -- start symbol must be a nonterminal synonym
