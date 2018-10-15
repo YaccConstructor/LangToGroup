@@ -2,6 +2,7 @@ module CfgToTm1Mapper where
 
 import qualified PdaType
 import qualified GrammarType
+import qualified Tm1Type
 import Data.Set (Set)
 import qualified Data.Set as Set
 
@@ -21,17 +22,19 @@ mapCfgToPda
     let startState = PdaType.State 's'
     let finalState = PdaType.State 'f'
     let states = PdaType.States (Set.fromList [startState, finalState])
-    let mappedRelations = do
-        let mapSymbolToLetter (GrammarType.T (GrammarType.Terminal x)) = PdaType.Letter x 
-        let mapSymbolToLetter (GrammarType.N (GrammarType.Nonterminal x)) = PdaType.Letter x
-        let mapListOfSymbolsToListOfLetters = map mapSymbolToLetter
-        Set.map (\(GrammarType.Relation (GrammarType.Nonterminal nonterminalSymbol, symbols)) -> 
-            PdaType.TransitionRelation (
-                (finalState, PdaType.emptySymbol, PdaType.Letter nonterminalSymbol), 
-                (finalState, mapListOfSymbolsToListOfLetters symbols)
-                )) 
+    let mapSymbolToLetter x =
+            case x of 
+            GrammarType.T (GrammarType.Terminal c) -> PdaType.Letter c
+            GrammarType.N (GrammarType.Nonterminal c) -> PdaType.Letter c
+    let mapListOfSymbolsToListOfLetters = map mapSymbolToLetter
+    let mappedRelations =
+            Set.map (\(GrammarType.Relation (GrammarType.Nonterminal nonterminalSymbol, symbols)) -> 
+                PdaType.TransitionRelation (
+                    (finalState, PdaType.emptySymbol, PdaType.Letter nonterminalSymbol), 
+                    (finalState, mapListOfSymbolsToListOfLetters symbols)
+                    ))
                 setOfRelations
-    let transinstFromTerminals = Set.map 
+    let transitionsFromTerminals = Set.map 
             (\letter -> 
                 PdaType.TransitionRelation (
                     (finalState, letter, letter), 
@@ -43,7 +46,7 @@ mapCfgToPda
                 (startState, PdaType.emptySymbol, PdaType.emptySymbol), 
                 (finalState, [PdaType.Letter startSymbol])
                 )) 
-            (Set.union mappedRelations transinstFromTerminals)
+            (Set.union mappedRelations transitionsFromTerminals)
     PdaType.Pda (
         states, 
         pdaInputAlphabet, 
@@ -53,3 +56,15 @@ mapCfgToPda
         PdaType.InitialStackSymbols [], 
         PdaType.AcceptingStates (PdaType.States (Set.fromList [finalState]))
         )
+
+-- mapPdaToTm1 :: PdaType.Pda -> Tm1Type.TM1
+-- mapPdaToTm1 
+--     (PdaType.Pda 
+--         (PdaType.States setOfStates, 
+--         PdaType.InputAlphabet setOfInputLetters, 
+--         PdaType.StackAlphabet setOfStackLetters, 
+--         PdaType.TransitionRelations setOfTransitions, 
+--         startState, 
+--         PdaType.InitialStackSymbols listOfInitialStackLetters, 
+--         PdaType.AcceptingStates)
+--         ) = do
