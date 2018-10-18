@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: e5bd5a115e6c958840612b41dc6ceef41bd84bb315db8601a999ae2433b24be4
+-- hash: 336daf5cba390e97e8cdaf16d4df25efdfbe446a954316675bba9a2bb55fc698
 
 name:           LangToGroup
 version:        0.1.0.0
@@ -28,8 +28,10 @@ library
   exposed-modules:
       CfgToTm1Mapper
       GrammarType
+      GRType
       Lib
       PdaType
+      SMType
       Tm1Type
   other-modules:
       Paths_LangToGroup
@@ -38,6 +40,7 @@ library
   build-depends:
       base >=4.7 && <5
     , containers
+    , vector
   default-language: Haskell2010
 
 executable LangToGroup-exe
@@ -51,6 +54,7 @@ executable LangToGroup-exe
       LangToGroup
     , base >=4.7 && <5
     , containers
+    , vector
   default-language: Haskell2010
 
 test-suite LangToGroup-test
@@ -68,4 +72,5 @@ test-suite LangToGroup-test
     , containers
     , test-framework
     , test-framework-hunit
+    , vector
   default-language: Haskell2010
