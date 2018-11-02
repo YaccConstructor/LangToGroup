@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 336daf5cba390e97e8cdaf16d4df25efdfbe446a954316675bba9a2bb55fc698
+-- hash: 31d8f2455bca0ecc5e7968e76b4f086c0cd097ae878a8fbd429fa81b47bc6c13
 
 name:           LangToGroup
 version:        0.1.0.0
@@ -30,7 +30,6 @@ library
       GrammarType
       GRType
       Lib
-      PdaType
       SMType
       Tm1Type
   other-modules:

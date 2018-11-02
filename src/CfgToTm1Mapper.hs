@@ -19,29 +19,17 @@ mapSymbolToLetter x =
 
 mapRelationSymbolToCommand workState prevLetter acc l =
         case l of
-        [] -> acc
-        [c] -> 
-            [Command [
-                NoCommand,
+        [] -> Command [
+                NoCommand, 
                 SingleTapeCommand (
                     (emptySymbol, 
-                    workState, 
-                    prevLetter), 
-                    (c, 
-                    workState,
-                    prevLetter)
-                    )], 
-            Command [
-                NoCommand,
-                SingleTapeCommand (
-                    (c, 
-                    workState, 
-                    emptySymbol), 
-                    (emptySymbol, 
-                    finalStateSecondTape,
-                    c)
-                    )]
-            ] ++ acc
+                            workState, 
+                            prevLetter), 
+                            (emptySymbol, 
+                            finalStateSecondTape, 
+                            prevLetter)
+                    )
+                ]  : acc
         (c : t) -> 
             mapRelationSymbolToCommand workState c 
                 ([Command [
@@ -61,7 +49,7 @@ mapRelationSymbolToCommand workState prevLetter acc l =
                         workState, 
                         emptySymbol), 
                         (emptySymbol, 
-                        finalStateSecondTape,
+                        workState,
                         c)
                         )]
                 ] ++ acc) t
@@ -144,7 +132,7 @@ mapCfgToTm1
     -- convert relations
     let listOfRelations = Set.elems setOfRelations
     let listOfStatesForTransition = [State ("q" ++ show i) | i <- [1..(length listOfRelations)]]
-    let mappedRelationsSublists = zipWith (mapRelationToTransition) listOfRelations listOfStatesForTransition
+    let mappedRelationsSublists = zipWith mapRelationToTransition listOfRelations listOfStatesForTransition
     let mappedRelations = foldl (++) [] mappedRelationsSublists
     -- map terminals to transitions
     let mappedTerminals = Set.map (\(Terminal x) -> 
