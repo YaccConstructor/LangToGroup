@@ -1,70 +1,174 @@
 module CfgToTm1Mapper where
 
-import qualified PdaType
-import qualified GrammarType
-import qualified Tm1Type
+import GrammarType
+import Tm1Type
 import Data.Set (Set)
 import qualified Data.Set as Set
 
--- at first we need convert a cfg to a pda
-mapCfgToPda :: GrammarType.Grammar -> PdaType.Pda
-mapCfgToPda 
-    (GrammarType.Grammar
-        (GrammarType.Nonterminals setOfNonterminals, 
-        GrammarType.Terminals setOfTerminals, 
-        GrammarType.Relations setOfRelations, 
-        GrammarType.Nonterminal startSymbol)
-        ) = do
-    let setOfTerminalLetters = Set.map (\(GrammarType.Terminal x) -> PdaType.Letter x) setOfTerminals
-    let setOfNonterminalLetters = Set.map (\(GrammarType.Nonterminal x) -> PdaType.Letter x) setOfNonterminals 
-    let pdaInputAlphabet = PdaType.InputAlphabet setOfTerminalLetters
-    let pdaStackAlphabet = PdaType.StackAlphabet (Set.union setOfTerminalLetters setOfNonterminalLetters)
-    let startState = PdaType.State 's'
-    let finalState = PdaType.State 'f'
-    let states = PdaType.States (Set.fromList [startState, finalState])
-    let mapSymbolToLetter x =
-            case x of 
-            GrammarType.T (GrammarType.Terminal c) -> PdaType.Letter c
-            GrammarType.N (GrammarType.Nonterminal c) -> PdaType.Letter c
-    let mapListOfSymbolsToListOfLetters = map mapSymbolToLetter
-    let mappedRelations =
-            Set.map (\(GrammarType.Relation (GrammarType.Nonterminal nonterminalSymbol, symbols)) -> 
-                PdaType.TransitionRelation (
-                    (finalState, PdaType.emptySymbol, PdaType.Letter nonterminalSymbol), 
-                    (finalState, mapListOfSymbolsToListOfLetters symbols)
-                    ))
-                setOfRelations
-    let transitionsFromTerminals = Set.map 
-            (\letter -> 
-                PdaType.TransitionRelation (
-                    (finalState, letter, letter), 
-                    (finalState, [PdaType.emptySymbol])
-                    )) 
-                    setOfTerminalLetters
-    let transitions = Set.insert 
-            (PdaType.TransitionRelation (
-                (startState, PdaType.emptySymbol, PdaType.emptySymbol), 
-                (finalState, [PdaType.Letter startSymbol])
-                )) 
-            (Set.union mappedRelations transitionsFromTerminals)
-    PdaType.Pda (
-        states, 
-        pdaInputAlphabet, 
-        pdaStackAlphabet, 
-        PdaType.TransitionRelations transitions, 
-        startState, 
-        PdaType.InitialStackSymbols [], 
-        PdaType.AcceptingStates (PdaType.States (Set.fromList [finalState]))
-        )
+-- define start states
+startStateFirstTape = State "q_0^1"
+startStateSecondTape = State "q_0^2"
+-- define final states
+finalStateFirstTape = State "q_1^1"
+finalStateSecondTape = State "q_1^2"
 
--- mapPdaToTm1 :: PdaType.Pda -> Tm1Type.TM1
--- mapPdaToTm1 
---     (PdaType.Pda 
---         (PdaType.States setOfStates, 
---         PdaType.InputAlphabet setOfInputLetters, 
---         PdaType.StackAlphabet setOfStackLetters, 
---         PdaType.TransitionRelations setOfTransitions, 
---         startState, 
---         PdaType.InitialStackSymbols listOfInitialStackLetters, 
---         PdaType.AcceptingStates)
---         ) = do
+mapSymbolToLetter x =
+    case x of 
+    T (Terminal c) -> Letter c
+    N (Nonterminal c) -> Letter c
+
+mapRelationSymbolToCommand workState prevLetter acc l =
+        case l of
+        [] -> acc
+        [c] -> 
+            [Command [
+                NoCommand,
+                SingleTapeCommand (
+                    (emptySymbol, 
+                    workState, 
+                    prevLetter), 
+                    (c, 
+                    workState,
+                    prevLetter)
+                    )], 
+            Command [
+                NoCommand,
+                SingleTapeCommand (
+                    (c, 
+                    workState, 
+                    emptySymbol), 
+                    (emptySymbol, 
+                    finalStateSecondTape,
+                    c)
+                    )]
+            ] ++ acc
+        (c : t) -> 
+            mapRelationSymbolToCommand workState c 
+                ([Command [
+                    NoCommand,
+                    SingleTapeCommand (
+                        (emptySymbol, 
+                        workState, 
+                        prevLetter), 
+                        (c, 
+                        workState,
+                        prevLetter)
+                        )], 
+                Command [
+                    NoCommand,
+                    SingleTapeCommand (
+                        (c, 
+                        workState, 
+                        emptySymbol), 
+                        (emptySymbol, 
+                        finalStateSecondTape,
+                        c)
+                        )]
+                ] ++ acc) t
+
+mapRelationToTransition (Relation (Nonterminal nonterminalSymbol, symbols)) newState
+        = [ 
+            Command [
+                NoCommand,
+                SingleTapeCommand (
+                    (emptySymbol, 
+                    finalStateSecondTape, 
+                    Letter nonterminalSymbol), 
+                    (emptySymbol, 
+                    newState, 
+                    Letter nonterminalSymbol)
+                    )
+                ],
+            Command [
+                NoCommand,
+                SingleTapeCommand (
+                    (emptySymbol, 
+                    newState, 
+                    Letter nonterminalSymbol), 
+                    (emptySymbol, 
+                    newState, 
+                    mapSymbolToLetter (head symbols))
+                    )
+                ]
+        ] ++ mapRelationSymbolToCommand newState (mapSymbolToLetter (head symbols)) [] (map mapSymbolToLetter (tail symbols))
+    
+    
+
+mapCfgToTm1 :: Grammar -> TM1
+mapCfgToTm1 
+    (Grammar
+        (Nonterminals setOfNonterminals, 
+        Terminals setOfTerminals, 
+        Relations setOfRelations, 
+        Nonterminal startSymbol)
+        ) = do
+    let setOfTerminalLetters = Set.map (\(Terminal x) -> Letter x) setOfTerminals
+    let setOfNonterminalLetters = Set.map (\(Nonterminal x) -> Letter x) setOfNonterminals 
+    let tm1InputAlphabet = InputAlphabet setOfTerminalLetters
+    let tm1TapeAlphabet = TapeAlphabet (Set.union setOfTerminalLetters setOfNonterminalLetters)
+    let startStates = StartStates [startStateFirstTape, startStateSecondTape]
+    let accessStates = AccessStates [finalStateFirstTape, finalStateSecondTape]
+    -- define first transition
+    let firstCommands = 
+            [ Command [ 
+                SingleTapeCommand (
+                    (emptySymbol, 
+                    startStateFirstTape, 
+                    rightBoundingLetter), 
+                    (emptySymbol, 
+                    finalStateFirstTape, 
+                    rightBoundingLetter)
+                    ),
+                SingleTapeCommand (
+                    (emptySymbol, 
+                    startStateSecondTape, 
+                    rightBoundingLetter), 
+                    (Letter startSymbol, 
+                    startStateSecondTape, 
+                    rightBoundingLetter)
+                    )
+                ],
+            Command [ 
+                NoCommand,
+                SingleTapeCommand (
+                    (Letter startSymbol, 
+                    startStateSecondTape, 
+                    emptySymbol), 
+                    (emptySymbol, 
+                    finalStateSecondTape,
+                    Letter startSymbol)
+                    )
+                ]
+            ]
+
+    -- convert relations
+    let listOfRelations = Set.elems setOfRelations
+    let listOfStatesForTransition = [State ("q" ++ show i) | i <- [1..(length listOfRelations)]]
+    let mappedRelationsSublists = zipWith (mapRelationToTransition) listOfRelations listOfStatesForTransition
+    let mappedRelations = foldl (++) [] mappedRelationsSublists
+    -- map terminals to transitions
+    let mappedTerminals = Set.map (\(Terminal x) -> 
+            Command [
+                SingleTapeCommand (
+                    (Letter x, 
+                    finalStateFirstTape, 
+                    emptySymbol), 
+                    (emptySymbol, 
+                    finalStateFirstTape, 
+                    Letter x)
+                    ),
+                SingleTapeCommand (
+                    (emptySymbol,
+                    finalStateSecondTape,
+                    Letter x),
+                    (Letter x,
+                    finalStateSecondTape,
+                    emptySymbol)
+                )
+            ]) setOfTerminals
+    let transitions = Set.union (Set.fromList firstCommands) (Set.union mappedTerminals (Set.fromList mappedRelations))
+    let multiTapeStates = MultiTapeStates [
+            States (Set.fromList [startStateFirstTape, finalStateFirstTape]),
+            States (Set.fromList (finalStateSecondTape : (startStateSecondTape : listOfStatesForTransition)))
+            ]
+    TM1 (tm1InputAlphabet, tm1TapeAlphabet, multiTapeStates, Commands transitions, startStates, accessStates)
