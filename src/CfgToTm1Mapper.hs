@@ -55,7 +55,7 @@ mapRelationSymbolToCommand workState prevLetter acc l =
                 ] ++ acc) t
 
 mapRelationToTransition (Relation (Nonterminal nonterminalSymbol, symbols)) newState
-        = [ 
+        = mapRelationSymbolToCommand newState (mapSymbolToLetter (head symbols)) [ 
             Command [
                 NoCommand,
                 SingleTapeCommand (
@@ -78,7 +78,7 @@ mapRelationToTransition (Relation (Nonterminal nonterminalSymbol, symbols)) newS
                     mapSymbolToLetter (head symbols))
                     )
                 ]
-        ] ++ mapRelationSymbolToCommand newState (mapSymbolToLetter (head symbols)) [] (map mapSymbolToLetter (tail symbols))
+        ] (map mapSymbolToLetter (tail symbols))
     
     
 
