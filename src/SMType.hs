@@ -6,6 +6,7 @@ import qualified Data.Set as Set
 import Data.Vector
 import qualified Data.Vector as Vector
 import Data.Either
+import Prelude hiding (Word)
 
 newtype N = N Int deriving Show
 
