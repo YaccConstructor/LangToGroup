@@ -51,5 +51,5 @@ smToGR (SMType.SM (SMType.N n,
 	      ny = (div n 5 - 3) 
  	      y' = takeNElemFromYList y [] ny
 	      a = A ((getFromNewtypeA a) ++ k ++ q' ++ y')
-              relations = [GRType.Relation (a, a)]
+              relations = [GRType.Relation ([a], [a])]
  
