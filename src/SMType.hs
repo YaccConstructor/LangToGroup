@@ -21,9 +21,9 @@ newtype Qn = Qn ([[Q]]) deriving Show
 newtype Word = Word ([Smb]) deriving Show 
 
 newtype SRule = SRule ([(Word, Word)]) deriving Show
-newtype SRules = SRules ([SRule]) deriving Show
+--newtype SRules = SRules ([SRule]) deriving Show
 
-newtype SM =  SM (N, Yn, Qn, SRules) deriving Show
+data SM =  SM {n :: N, yn :: Yn, qn :: Qn, srs :: [SRule]} deriving Show
 
 --applySRule :: SRule -> Word -> Word
 --applySRule (SRule (a:word1, b:word2)) (w:word) = 
