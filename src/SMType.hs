@@ -10,10 +10,10 @@ import Prelude hiding (Word)
 
 newtype N = N Int deriving Show
 
-newtype Y = Y ([Char]) deriving Show
-newtype Q = Q ([Char]) deriving Show
+newtype Y = Y ([String]) deriving Show
+newtype Q = Q ([String]) deriving Show
 
-newtype Y' = Y' ([Char]) deriving Show
+newtype Y' = Y' ([String]) deriving Show
 
 newtype F = F (Either Y Y') deriving Show 
 
