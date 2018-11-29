@@ -56,7 +56,7 @@ sm1 =
 
 sm2 :: SM 
 sm2 =
-     let     
+    let     
        rl1 = 
           SRule [ 
             (Word [SmbQ q2], Word [SmbY delta, SmbQ q2, SmbY' delta]),
@@ -75,11 +75,13 @@ sm2 =
 
 
 sm3 :: SM
-sm3 = 
-    SM (N 4) (yn sm1) (qn sm1) ((srs sm1) ++ (srs sm2))
+sm3 = SM (N 4) (yn sm1) (qn sm1) ((srs sm1) ++ (srs sm2))
 
 sm4 :: SM
-sm4 = SM (N 4) (Yn []) (Qn []) []
+sm4 =
+    let sm3' = SM (N 4) (yn sm1) (Qn []) []
+    in  
+    SM (N 4) (yn sm1) (Qn []) []
 
 sm5 :: SM
 sm5 = SM (N 4) (Yn []) (Qn []) []
