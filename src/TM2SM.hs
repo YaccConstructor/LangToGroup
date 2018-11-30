@@ -23,7 +23,23 @@ s3 = Q "s3"
 
 t1 = Q "t1"
 t2 = Q "t2"
-t3 = Q "t3"       
+t3 = Q "t3"
+
+--fmapishQ :: (String -> String) -> Q -> Q 
+--fmapishQ f (Q s) = Q (f s) 
+
+--fmapishQ' f = Q . f . getQ
+
+
+copySM :: SM -> (Q -> Bool) -> String -> SM
+copySM sm qFilter c =
+   let q = map (map (\q -> case q of Q s | qFilter q -> Q (s ++ c); _ -> q)) (qn sm)
+       filterWord (Word w) = Word(map (\s -> case s of SmbQ q@(Q s) | qFilter q -> SmbQ (Q (s ++ c)); _ -> s ) w)
+       prog = map (\ (SRule l) -> SRule(map (\(w1, w2) -> (filterWord w1, filterWord w2)) l)) (srs sm)
+   in
+   SM (n sm) (yn sm) q prog
+--Q -> String -> Q
+--copy (Q s) c = Q (s ++ c)
 
 sm1 :: SM
 sm1 =
@@ -52,7 +68,7 @@ sm1 =
           ]
  
     in
-    SM (N 4) (Yn [[delta],[delta],[delta],[delta]]) (Qn [[p1,p2,p3],[q1,q2,q3],[r1,r2,r3],[s1,s2,s3],[t1,t2,t3]]) [rl1,rl2,rl3]
+    SM (N 4) [[delta],[delta],[delta],[delta]] [[p1,p2,p3],[q1,q2,q3],[r1,r2,r3],[s1,s2,s3],[t1,t2,t3]] [rl1,rl2,rl3]
 
 sm2 :: SM 
 sm2 =
@@ -71,7 +87,7 @@ sm2 =
           ]
 
     in
-    SM (N 4) (Yn [[delta],[delta],[delta],[delta]]) (Qn [[p1,p2],[q1,q2],[r1,r2],[s1,s2],[t1,t2]]) [rl1,rl2]
+    SM (N 4) [[delta],[delta],[delta],[delta]] [[p1,p2],[q1,q2],[r1,r2],[s1,s2],[t1,t2]] [rl1,rl2]
 
 
 sm3 :: SM
@@ -79,27 +95,31 @@ sm3 = SM (N 4) (yn sm1) (qn sm1) ((srs sm1) ++ (srs sm2))
 
 sm4 :: SM
 sm4 =
-    let sm3' = SM (N 4) (yn sm1) (Qn []) []
+    let sm3' = copySM sm3 (\(Q s) -> notElem s ["p3","q3","r3","s3","t3"]) "'"
     in  
-    SM (N 4) (yn sm1) (Qn []) []
+    SM (N 4) (yn sm1) (qn sm3 ++ qn sm3') (srs sm3 ++ srs sm3')
+
+
+sm4d :: SM
+sm4d = copySM sm4 (\ _ -> True) "-"
 
 sm5 :: SM
-sm5 = SM (N 4) (Yn []) (Qn []) []
+sm5 = SM (N 4) [] [] []
 
 sm6 :: SM
-sm6 = SM (N 4) (Yn []) (Qn []) []
+sm6 = SM (N 4) (yn sm5) (qn sm5) []
 
 sm7 :: SM
-sm7 = SM (N 4) (Yn []) (Qn []) []
+sm7 = SM (N 4) (yn sm5) (qn sm5) []
 
 sm8 :: SM
-sm8 = SM (N 4) (Yn []) (Qn []) []
+sm8 = SM (N 4) (yn sm5) (qn sm5) ((srs sm4) ++ (srs sm5) ++ (srs sm4d) ++ (srs sm6) ++ (srs sm7))
 
 sm9 :: SM
-sm9 = SM (N 4) (Yn []) (Qn []) []
+sm9 = SM (N 4) [] [] []
 
 smAlpha :: SM
-smAlpha = SM (N 4) (Yn []) (Qn []) []
+smAlpha = SM (N 4) [] [] []
 
 smOmega :: SM
-smOmega = SM (N 4) (Yn []) (Qn []) []
+smOmega = SM (N 4) [] [] []
