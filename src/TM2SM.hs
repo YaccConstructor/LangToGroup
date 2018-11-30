@@ -123,7 +123,7 @@ sm5 y =
                                 --(),
                               ]) y
     in 
-    SM (N 4) ys qs []
+    SM (N 4) ys qs prg
 
 sm6 :: [Y] -> SM
 sm6 y =
@@ -143,17 +143,21 @@ sm8 y =
     in  
     SM (N 4) (yn sm5') (qn sm5') ((srs sm4) ++ (srs sm5') ++ (srs sm4d) ++ (srs (sm6 y)) ++ (srs (sm7 y)))
 
-sm9 :: SM
-sm9 = SM (N 4) [] [] []
+sm9 :: [Y] -> SM
+sm9 y = 
+    let sm8' = sm8 y 
+        sm8c = copySM sm8' (\(Q s) -> (notElem s ["E","E'","F","F'"]) || (notElem '4' s)) "^"
+    in  
+    SM (N 4) (yn sm1) (qn sm8' ++ qn sm8c) (srs sm8' ++ srs sm8c)
 
 smAlpha :: SM
-smAlpha = SM (N 4) [[alpha],[omega]] [[e],[x,x1,x2],[f]] [SRule [(Word [SmbQ x], Word [SmbY' alpha, SmbQ x, SmbY alpha]),
+smAlpha = SM (N 4) [[alpha],[alpha]] [[e],[x,x1,x2],[f]] [SRule [(Word [SmbQ x], Word [SmbY' alpha, SmbQ x, SmbY alpha]),
                                                                  (Word [SmbQ e, SmbQ x], Word [SmbQ e, SmbQ x1]),
                                                                  (Word [SmbQ x1], Word [SmbY alpha, SmbQ x1, SmbY' alpha]),
                                                                  (Word [SmbQ x1, SmbQ f], Word [SmbQ x2, SmbQ f])]]
 
 smOmega :: SM
-smOmega = SM (N 4) [[alpha],[omega]] [[e'],[x',x1',x2'],[f']] [SRule [(Word [SmbQ x'], Word [SmbY omega, SmbQ x', SmbY' omega]),
+smOmega = SM (N 4) [[omega],[omega]] [[e'],[x',x1',x2'],[f']] [SRule [(Word [SmbQ x'], Word [SmbY omega, SmbQ x', SmbY' omega]),
                                                                       (Word [SmbQ x', SmbQ f'], Word [SmbQ x1', SmbQ f']),
                                                                       (Word [SmbQ x1'], Word [SmbY' omega, SmbQ x1', SmbY omega]),
                                                                       (Word [SmbQ e', SmbQ x1'], Word [SmbQ e', SmbQ x2'])]]
