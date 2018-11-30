@@ -4,6 +4,8 @@ import SMType
 
 
 delta = Y "delta" 
+alpha = Y "alpha" 
+omega = Y "omega" 
        
 p1 = Q "p1"
 p2 = Q "p2"
@@ -25,10 +27,20 @@ t1 = Q "t1"
 t2 = Q "t2"
 t3 = Q "t3"
 
---fmapishQ :: (String -> String) -> Q -> Q 
---fmapishQ f (Q s) = Q (f s) 
+e = Q "E"
+e' = Q "E'"
+f = Q "F"
+f' = Q "F'"
+x = Q "x"
+x1 = Q "x1"
+x2 = Q "x2"
+x3 = Q "x3"
+x4 = Q "x4'"
 
---fmapishQ' f = Q . f . getQ
+x' = Q "x'"
+x1' = Q "x1'"
+x2' = Q "x2'"
+
 
 
 copySM :: SM -> (Q -> Bool) -> String -> SM
@@ -38,8 +50,6 @@ copySM sm qFilter c =
        prog = map (\ (SRule l) -> SRule(map (\(w1, w2) -> (filterWord w1, filterWord w2)) l)) (srs sm)
    in
    SM (n sm) (yn sm) q prog
---Q -> String -> Q
---copy (Q s) c = Q (s ++ c)
 
 sm1 :: SM
 sm1 =
@@ -103,23 +113,48 @@ sm4 =
 sm4d :: SM
 sm4d = copySM sm4 (\ _ -> True) "-"
 
-sm5 :: SM
-sm5 = SM (N 4) [] [] []
+sm5 :: [Y] -> SM
+sm5 y =
+    let genQs q = map (\q -> Q q) [q ++ "0", q ++ "1", q ++ "2", q ++ "3", q ++ "4", q ++ "0'", q ++ "1'", q ++ "2'"]
+        qs = [[e], [x,x4], [f], [e'], genQs "p", genQs "r", genQs "s", genQs "t", genQs "u", genQs "p-", genQs "r-", genQs "s-", genQs "t-", genQs "u-", [f']]
+        ys = [y,y,[],[],[delta],[delta],[delta],[delta],[delta],[],[delta],[delta],[delta],[delta],[delta],[]]
+        prg = map (\a -> SRule[ (Word [SmbQ x], Word [SmbY' a, SmbQ x, SmbY a]),
+                                (Word [SmbQ (Q "p1'")], Word [SmbQ (Q "p0'")])
+                                --(),
+                              ]) y
+    in 
+    SM (N 4) ys qs []
 
-sm6 :: SM
-sm6 = SM (N 4) (yn sm5) (qn sm5) []
+sm6 :: [Y] -> SM
+sm6 y =
+    let sm5' = sm5 y 
+    in
+    SM (N 4) (yn sm5') (qn sm5') []
 
-sm7 :: SM
-sm7 = SM (N 4) (yn sm5) (qn sm5) []
+sm7 :: [Y] -> SM
+sm7 y =
+    let sm5' = sm5 y 
+    in 
+    SM (N 4) (yn sm5') (qn sm5') []
 
-sm8 :: SM
-sm8 = SM (N 4) (yn sm5) (qn sm5) ((srs sm4) ++ (srs sm5) ++ (srs sm4d) ++ (srs sm6) ++ (srs sm7))
+sm8 :: [Y] -> SM
+sm8 y =
+    let sm5' = sm5 y 
+    in  
+    SM (N 4) (yn sm5') (qn sm5') ((srs sm4) ++ (srs sm5') ++ (srs sm4d) ++ (srs (sm6 y)) ++ (srs (sm7 y)))
 
 sm9 :: SM
 sm9 = SM (N 4) [] [] []
 
 smAlpha :: SM
-smAlpha = SM (N 4) [] [] []
+smAlpha = SM (N 4) [[alpha],[omega]] [[e],[x,x1,x2],[f]] [SRule [(Word [SmbQ x], Word [SmbY' alpha, SmbQ x, SmbY alpha]),
+                                                                 (Word [SmbQ e, SmbQ x], Word [SmbQ e, SmbQ x1]),
+                                                                 (Word [SmbQ x1], Word [SmbY alpha, SmbQ x1, SmbY' alpha]),
+                                                                 (Word [SmbQ x1, SmbQ f], Word [SmbQ x2, SmbQ f])]]
 
 smOmega :: SM
-smOmega = SM (N 4) [] [] []
+smOmega = SM (N 4) [[alpha],[omega]] [[e'],[x',x1',x2'],[f']] [SRule [(Word [SmbQ x'], Word [SmbY omega, SmbQ x', SmbY' omega]),
+                                                                      (Word [SmbQ x', SmbQ f'], Word [SmbQ x1', SmbQ f']),
+                                                                      (Word [SmbQ x1'], Word [SmbY' omega, SmbQ x1', SmbY omega]),
+                                                                      (Word [SmbQ e', SmbQ x1'], Word [SmbQ e', SmbQ x2'])]]
+
