@@ -6,50 +6,77 @@ import Data.String
 import Data.Char
 
 
-putInNewtypeA :: [String] -> A
-putInNewtypeA s = A s
-
 getFromNewtypeA :: A -> [String]
 getFromNewtypeA (A s) = s
 
-getFromNewtypeQ :: Q -> [String]
+getFromNewtypeQ :: Q -> String
 getFromNewtypeQ (Q s) = s
 
-getFromNewtypeY :: Y -> [String]
+getFromNewtypeY :: Y -> String
 getFromNewtypeY (Y s) = s
-
-getFromNewtypeQn :: Qn -> [Q]
-getFromNewtypeQn (Qn s) = s
 
 fillK :: [String] -> Int  -> [String]
 fillK s 0 = s
 fillK s n = fillK (s ++ ["VectorK" ++ [intToDigit (n)]])  (n-1)
 
-merge [] ys = ys
-merge (x:xs) ys = x:merge ys xs
+mergeQ :: [Q] -> [String] -> [String]
+mergeQ [] ys = ys
+mergeQ ((Q x):xs) [] = x : (mergeQ xs [])
+mergeQ ((Q x):xs) (y : ys) = x : y : (mergeQ xs ys)
 
---Qn[Q[String]]
+mergeY :: [Y] -> [String] -> [String]
+mergeY [] ys = ys
+mergeY ((Y x):xs) [] = x : (mergeY xs [])
+mergeY ((Y x):xs) (y : ys) = x : y : (mergeY xs ys)
+
+--[[Q String]]
+--takeNElemFromQList :: [[Q]] -> [String] -> Int -> [String]
 takeNElemFromQList l1 l 0 = l  
 takeNElemFromQList (a:l1) l n = takeNElemFromQList l1 lst (n-1)
-	where a' = getFromNewtypeQ a 
-	      lst = merge l a'
+	where lst = mergeQ a l
 
 takeNElemFromYList l1 l 0 = l  
 takeNElemFromYList (a:l1) l n = takeNElemFromYList l1 lst (n-1)
-	where a' = getFromNewtypeY a 
-	      lst = merge l a'
+	where lst = mergeY a l
 
-smToGR :: SMType.SM -> Int -> GRType.GR
-smToGR (SMType.SM (SMType.N n, 
-                   SMType.Yn y, 
-                   SMType.Qn q, 
-                   SMType.SRules sRules)) nk
-        = GRType.GR (a, GRType.Relations relations)
- 	where a' = A (["alpha", "omega", "delta"])
+smbToString :: Smb -> String
+smbToString (SmbY (Y x)) = x
+smbToString (SmbY' (Y x)) = x
+smbToString (SmbQ (Q x)) = x 
+
+smbListToStringList :: [Smb] -> [String]
+smbListToStringList [] = [] 
+smbListToStringList (x : xs) = (smbToString x) : smbListToStringList xs
+
+pairWordListToStringList :: [(Word, Word)] -> [String]
+pairWordListToStringList [] = []
+pairWordListToStringList ((Word x, Word y) : xs) 
+			= (smbListToStringList x) 
+			++ (smbListToStringList y) 
+			++ pairWordListToStringList xs 
+
+sRuleListToStringList :: [SRule] -> [String] 
+sRuleListToStringList [] = []
+sRuleListToStringList ((SRule x) : xs) = l ++ (sRuleListToStringList xs)
+		where l = pairWordListToStringList x
+
+auxiliaryRelations :: [String] -> [String] -> [Relation]
+auxiliaryRelations xs ts 
+	= [(Relation ([A [t], A [x]], [A [x], A [t]])) | x <- xs, t <- ts]
+
+smToGR :: SMType.SM  -> Int -> GRType.GR
+smToGR (SMType.SM (N n, 
+		  yn, 
+		  qn, 
+		  sRules)) nk
+        = GRType.GR (a, relations)
+ 	where a' = (["alpha", "omega", "delta"])
               k = reverse (fillK [] (2*nk))
-              q' = takeNElemFromQList q [] (n+1)
+              q = takeNElemFromQList qn [] (n+1)
 	      ny = (div n 5 - 3) 
- 	      y' = takeNElemFromYList y [] ny
-	      a = A ((getFromNewtypeA a) ++ k ++ q' ++ y')
+ 	      y = takeNElemFromYList yn [] ny
+	      src = sRuleListToStringList sRules
+	      a = A (a' ++ k ++ q ++ y ++ src)
+	      auxiliary = auxiliaryRelations a' src
               relations = [GRType.Relation ([a], [a])]
  

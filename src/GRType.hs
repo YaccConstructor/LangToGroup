@@ -7,6 +7,4 @@ import qualified Data.Set as Set
 newtype A = A ([String]) deriving Show
 newtype Relation = Relation ([A], [A]) deriving Show
 
-newtype Relations = Relations ([Relation]) deriving Show
-
-newtype GR =  GR (A, Relations) deriving Show
+newtype GR =  GR (A, [Relation]) deriving Show
