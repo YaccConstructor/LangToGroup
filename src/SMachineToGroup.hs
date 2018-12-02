@@ -60,19 +60,23 @@ sRuleListToStringList [] = []
 sRuleListToStringList ((SRule x) : xs) = l ++ (sRuleListToStringList xs)
 		where l = pairWordListToStringList x
 
+auxiliaryRelations :: [String] -> [String] -> [Relation]
+auxiliaryRelations xs ts 
+	= [(Relation ([A [t], A [x]], [A [x], A [t]])) | x <- xs, t <- ts]
 
 smToGR :: SMType.SM  -> Int -> GRType.GR
 smToGR (SMType.SM (N n, 
 		  yn, 
 		  qn, 
 		  sRules)) nk
-        = GRType.GR (a, GRType.Relations relations)
- 	where a' = A (["alpha", "omega", "delta"])
+        = GRType.GR (a, relations)
+ 	where a' = (["alpha", "omega", "delta"])
               k = reverse (fillK [] (2*nk))
               q = takeNElemFromQList qn [] (n+1)
 	      ny = (div n 5 - 3) 
  	      y = takeNElemFromYList yn [] ny
 	      src = sRuleListToStringList sRules
-	      a = A ((getFromNewtypeA a) ++ k ++ q ++ y ++ src)
+	      a = A (a' ++ k ++ q ++ y ++ src)
+	      auxiliary = auxiliaryRelations a' src
               relations = [GRType.Relation ([a], [a])]
  
