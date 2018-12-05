@@ -4,6 +4,7 @@ import Data.String
 import Data.Set (Set)
 import qualified Data.Set as Set
 import SMType
+import Prelude hiding (Word)
 
 --newtype A = A ([String]) deriving Show
 data A = A_Y Y| A_K String | A_S String 
