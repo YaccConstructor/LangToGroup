@@ -119,8 +119,11 @@ sm5 y =
         qs = [[e], [x,x4], [f], [e'], genQs "p", genQs "r", genQs "s", genQs "t", genQs "u", genQs "p-", genQs "r-", genQs "s-", genQs "t-", genQs "u-", [f']]
         ys = [y,y,[],[],[delta],[delta],[delta],[delta],[delta],[],[delta],[delta],[delta],[delta],[delta],[]]
         prg = map (\a -> SRule[ (Word [SmbQ x], Word [SmbY' a, SmbQ x, SmbY a]),
-                                (Word [SmbQ (Q "p1'")], Word [SmbQ (Q "p0'")])
-                                --(),
+                                (Word [SmbQ (Q "p1'")], Word [SmbQ (Q "p0'")]),
+                                (Word [SmbQ (Q "q1'"), SmbQ (Q "r1'"), SmbQ (Q "s1'"), SmbQ (Q "l1'"), SmbQ (Q "p0-")],
+                                 Word [SmbY' delta, SmbQ (Q "q0'"), SmbQ (Q "r0'"), SmbQ (Q "s0'"), SmbQ (Q "t0'"), SmbQ (Q "p1-"), SmbY delta]),
+                                (Word [SmbQ (Q "q0-"), SmbQ (Q "r0-"), SmbQ (Q "s0-"), SmbQ (Q "t0-")],
+                                 Word [SmbQ (Q "q1-"), SmbQ (Q "r1-"), SmbQ (Q "s1-"), SmbQ (Q "t1-")])
                               ]) y
     in 
     SM (N 4) ys qs prg
@@ -128,14 +131,25 @@ sm5 y =
 sm6 :: [Y] -> SM
 sm6 y =
     let sm5' = sm5 y 
+        prg = [SRule[ (Word [SmbQ (Q "p0'")], Word [SmbQ (Q "p1")]),
+                      (Word [SmbQ (Q "q0'"), SmbQ (Q "r0'"), SmbQ (Q "s0'"), SmbQ (Q "t0'") ,SmbQ (Q "p1'-")],
+                       Word [SmbQ (Q "q1"), SmbQ (Q "r1"), SmbQ (Q "s1"), SmbQ (Q "t1") ,SmbQ (Q "p0-")]),
+                      (Word [SmbQ (Q "q1'-"), SmbQ (Q "r1'-"), SmbQ (Q "s1'-"), SmbQ (Q "t1'-")],
+                       Word [SmbQ (Q "q0-"), SmbQ (Q "r0-"), SmbQ (Q "s0-"), SmbQ (Q "t0-")]) ]]
     in
-    SM (N 4) (yn sm5') (qn sm5') []
-
+    SM (N 4) (yn sm5') (qn sm5') prg
+  
 sm7 :: [Y] -> SM
 sm7 y =
     let sm5' = sm5 y 
+        prg = [SRule[ (Word [SmbQ e, SmbQ x], Word [SmbQ e, SmbQ x4]),
+                      (Word [SmbQ (Q "p1"), SmbQ (Q "q1"), SmbQ (Q "r1"), SmbQ (Q "s1"), SmbQ (Q "t1"), SmbQ (Q "p0-")],
+                       Word [SmbQ (Q "p4"), SmbQ (Q "q4"), SmbQ (Q "r4"), SmbQ (Q "s4") ,SmbQ (Q "t4"), SmbQ (Q "p4-")]),
+                      (Word [SmbQ (Q "q0-"), SmbQ (Q "r0-"), SmbQ (Q "s0-"), SmbQ (Q "t0-")],
+                       Word [SmbQ (Q "q4-"), SmbQ (Q "r4-"), SmbQ (Q "s4-"), SmbQ (Q "t4-")]) ]]
+
     in 
-    SM (N 4) (yn sm5') (qn sm5') []
+    SM (N 4) (yn sm5') (qn sm5') prg
 
 sm8 :: [Y] -> SM
 sm8 y =
