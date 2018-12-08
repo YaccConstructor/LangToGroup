@@ -27,8 +27,8 @@ simpleCfgToTM1MapTest = do
     let expectedTM1 = TM1 (
             InputAlphabet (Set.fromList [letter_a]),
             TapeAlphabet (Set.fromList [letter_a, letter_S]),
-            MultiTapeStates [States (Set.fromList [startStateFirstTape, finalStateFirstTape]), 
-                            States (Set.fromList [startStateSecondTape, finalStateSecondTape, workState])],
+            MultiTapeStates [States (Set.fromList [startStateFirstTape, intermediateStateFirstTape, finalStateFirstTape]), 
+                            States (Set.fromList [startStateSecondTape, intermediateStateSecondTape, finalStateSecondTape, workState])],
             Commands (Set.fromList [
                 Command [
                     SingleTapeCommand (
@@ -36,7 +36,7 @@ simpleCfgToTM1MapTest = do
                         startStateFirstTape, 
                         rightBoundingLetter), 
                         (emptySymbol, 
-                        finalStateFirstTape, 
+                        intermediateStateFirstTape, 
                         rightBoundingLetter)
                         ),
                     SingleTapeCommand (
@@ -55,7 +55,7 @@ simpleCfgToTM1MapTest = do
                         startStateSecondTape, 
                         emptySymbol), 
                         (emptySymbol, 
-                        finalStateSecondTape,
+                        intermediateStateSecondTape,
                         letter_S)
                         )
                     ],
@@ -63,7 +63,7 @@ simpleCfgToTM1MapTest = do
                     NoCommand,
                     SingleTapeCommand (
                         (emptySymbol, 
-                        finalStateSecondTape, 
+                        intermediateStateSecondTape, 
                         letter_S), 
                         (emptySymbol, 
                         workState, 
@@ -88,24 +88,42 @@ simpleCfgToTM1MapTest = do
                         workState, 
                         letter_a), 
                         (emptySymbol, 
-                        finalStateSecondTape, 
+                        intermediateStateSecondTape, 
                         letter_a)
                         )
                     ],
                 Command [
                     SingleTapeCommand (
                         (letter_a, 
-                        finalStateFirstTape, 
+                        intermediateStateFirstTape, 
                         emptySymbol), 
                         (emptySymbol, 
-                        finalStateFirstTape, 
+                        intermediateStateFirstTape, 
                         letter_a)
                         ), 
                     SingleTapeCommand (
                         (emptySymbol, 
-                        finalStateSecondTape, 
+                        intermediateStateSecondTape, 
                         letter_a), 
                         (letter_a, 
+                        intermediateStateSecondTape, 
+                        emptySymbol)
+                        )
+                    ],
+                Command [ 
+                    SingleTapeCommand (
+                        (leftBoundingLetter, 
+                        intermediateStateFirstTape, 
+                        emptySymbol), 
+                        (leftBoundingLetter, 
+                        finalStateFirstTape, 
+                        emptySymbol)
+                        ),
+                    SingleTapeCommand (
+                        (emptySymbol, 
+                        intermediateStateSecondTape, 
+                        emptySymbol), 
+                        (emptySymbol, 
                         finalStateSecondTape, 
                         emptySymbol)
                         )

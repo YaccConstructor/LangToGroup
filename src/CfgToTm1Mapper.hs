@@ -5,12 +5,15 @@ import Tm1Type
 import Data.Set (Set)
 import qualified Data.Set as Set
 
--- define start states
+-- define a start states
 startStateFirstTape = State "q_0^1"
 startStateSecondTape = State "q_0^2"
--- define final states
-finalStateFirstTape = State "q_1^1"
-finalStateSecondTape = State "q_1^2"
+-- define a intermediate states
+intermediateStateFirstTape = State "q_1^1"
+intermediateStateSecondTape = State "q_1^2"
+-- define a final states
+finalStateFirstTape = State "q_2^1"
+finalStateSecondTape = State "q_2^2"
 
 mapSymbolToLetter x =
     case x of 
@@ -26,7 +29,7 @@ mapRelationSymbolToCommand workState prevLetter acc l =
                             workState, 
                             prevLetter), 
                             (emptySymbol, 
-                            finalStateSecondTape, 
+                            intermediateStateSecondTape, 
                             prevLetter)
                     )
                 ]  : acc
@@ -60,7 +63,7 @@ mapRelationToTransition (Relation (Nonterminal nonterminalSymbol, symbols)) newS
                 NoCommand,
                 SingleTapeCommand (
                     (emptySymbol, 
-                    finalStateSecondTape, 
+                    intermediateStateSecondTape, 
                     Letter nonterminalSymbol), 
                     (emptySymbol, 
                     newState, 
@@ -104,7 +107,7 @@ mapCfgToTm1
                     startStateFirstTape, 
                     rightBoundingLetter), 
                     (emptySymbol, 
-                    finalStateFirstTape, 
+                    intermediateStateFirstTape, 
                     rightBoundingLetter)
                     ),
                 SingleTapeCommand (
@@ -123,7 +126,7 @@ mapCfgToTm1
                     startStateSecondTape, 
                     emptySymbol), 
                     (emptySymbol, 
-                    finalStateSecondTape,
+                    intermediateStateSecondTape,
                     Letter startSymbol)
                     )
                 ]
@@ -139,24 +142,42 @@ mapCfgToTm1
             Command [
                 SingleTapeCommand (
                     (Letter x, 
-                    finalStateFirstTape, 
+                    intermediateStateFirstTape, 
                     emptySymbol), 
                     (emptySymbol, 
-                    finalStateFirstTape, 
+                    intermediateStateFirstTape, 
                     Letter x)
                     ),
                 SingleTapeCommand (
                     (emptySymbol,
-                    finalStateSecondTape,
+                    intermediateStateSecondTape,
                     Letter x),
                     (Letter x,
-                    finalStateSecondTape,
+                    intermediateStateSecondTape,
                     emptySymbol)
                 )
             ]) setOfTerminals
-    let transitions = Set.union (Set.fromList firstCommands) (Set.union mappedTerminals (Set.fromList mappedRelations))
+    let acceptCommand = Command [ 
+                SingleTapeCommand (
+                    (leftBoundingLetter, 
+                    intermediateStateFirstTape, 
+                    emptySymbol), 
+                    (leftBoundingLetter, 
+                    finalStateFirstTape, 
+                    emptySymbol)
+                    ),
+                SingleTapeCommand (
+                    (emptySymbol, 
+                    intermediateStateSecondTape, 
+                    emptySymbol), 
+                    (emptySymbol, 
+                    finalStateSecondTape, 
+                    emptySymbol)
+                    )
+                ]
+    let transitions = Set.union (Set.fromList (acceptCommand : firstCommands)) (Set.union mappedTerminals (Set.fromList mappedRelations))
     let multiTapeStates = MultiTapeStates [
-            States (Set.fromList [startStateFirstTape, finalStateFirstTape]),
-            States (Set.fromList (finalStateSecondTape : (startStateSecondTape : listOfStatesForTransition)))
+            States (Set.fromList [startStateFirstTape, intermediateStateFirstTape, finalStateFirstTape]),
+            States (Set.fromList (finalStateSecondTape : intermediateStateSecondTape : startStateSecondTape : listOfStatesForTransition))
             ]
     TM1 (tm1InputAlphabet, tm1TapeAlphabet, multiTapeStates, Commands transitions, startStates, accessStates)
