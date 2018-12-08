@@ -15,22 +15,22 @@ simpleCfgToTM1MapTest = do
     let nonterminal = Nonterminal 'S'
     let grammar =
             Grammar(
-                Nonterminals (Set.fromList [nonterminal]), 
-                Terminals (Set.fromList [terminal]), 
-                Relations (Set.fromList [Relation (nonterminal, [T terminal])]),
+                (Set.fromList [nonterminal]), 
+                (Set.fromList [terminal]), 
+                (Set.fromList [Relation (nonterminal, [T terminal])]),
                 nonterminal
             )
-    let letter_a = Letter 'a'
-    let letter_S = Letter 'S'
+    let letter_a = 'a'
+    let letter_S = 'S'
     let workState = Tm1Type.State "q1"
     
     let expectedTM1 = TM1 (
             InputAlphabet (Set.fromList [letter_a]),
             TapeAlphabet (Set.fromList [letter_a, letter_S]),
-            MultiTapeStates [States (Set.fromList [startStateFirstTape, intermediateStateFirstTape, finalStateFirstTape]), 
-                            States (Set.fromList [startStateSecondTape, intermediateStateSecondTape, finalStateSecondTape, workState])],
+            MultiTapeStates [(Set.fromList [startStateFirstTape, intermediateStateFirstTape, finalStateFirstTape]), 
+                            (Set.fromList [startStateSecondTape, intermediateStateSecondTape, finalStateSecondTape, workState])],
             Commands (Set.fromList [
-                Command [
+                [
                     SingleTapeCommand (
                         (emptySymbol, 
                         startStateFirstTape, 
@@ -48,7 +48,7 @@ simpleCfgToTM1MapTest = do
                         rightBoundingLetter)
                         )
                     ],
-                Command [ 
+                [ 
                     NoCommand,
                     SingleTapeCommand (
                         (letter_S, 
@@ -59,7 +59,7 @@ simpleCfgToTM1MapTest = do
                         letter_S)
                         )
                     ],
-                Command [
+                [
                     NoCommand,
                     SingleTapeCommand (
                         (emptySymbol, 
@@ -70,7 +70,7 @@ simpleCfgToTM1MapTest = do
                         letter_S)
                         )
                     ],
-                Command [
+                [
                     NoCommand,
                     SingleTapeCommand (
                         (emptySymbol, 
@@ -81,7 +81,7 @@ simpleCfgToTM1MapTest = do
                         letter_a)
                         )
                     ],
-                Command [
+                [
                     NoCommand, 
                     SingleTapeCommand (
                         (emptySymbol, 
@@ -92,7 +92,7 @@ simpleCfgToTM1MapTest = do
                         letter_a)
                         )
                     ],
-                Command [
+                [
                     SingleTapeCommand (
                         (letter_a, 
                         intermediateStateFirstTape, 
@@ -110,7 +110,7 @@ simpleCfgToTM1MapTest = do
                         emptySymbol)
                         )
                     ],
-                Command [ 
+                [ 
                     SingleTapeCommand (
                         (leftBoundingLetter, 
                         intermediateStateFirstTape, 
