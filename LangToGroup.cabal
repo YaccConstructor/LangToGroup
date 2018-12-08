@@ -34,6 +34,7 @@ library
       SMType
       Tm1Type
       Tm2Type
+      TM2SM
   other-modules:
       Paths_LangToGroup
   hs-source-dirs:
