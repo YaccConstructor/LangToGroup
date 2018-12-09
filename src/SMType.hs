@@ -15,8 +15,6 @@ data State v = State {s_name :: StateName, s_id :: Int, s_tags :: (Set Tag), s_v
 instance Show (State v) where
    show s = "dddd"
 
-newtype N = N Int deriving Show
-
 newtype Y = Y String 
 
 instance Show Y where
@@ -49,7 +47,7 @@ instance Show SRule where
    show (SRule s) = "[" ++ (foldr (\(w1,w2) acc -> show w1 ++ "->" ++ show w2 ++ ";") "" s) ++ "]\n" 
 --newtype SRules = SRules ([SRule]) deriving Show
 
-data SM =  SM {n :: N, yn :: [[Y]], qn :: [[State String]], srs :: [SRule]} deriving Show
+data SM =  SM {yn :: [[Y]], qn :: [[State String]], srs :: [SRule]} deriving Show
 
 --applySRule :: SRule -> Word -> Word
 --applySRule (SRule (a:word1, b:word2)) (w:word) = 

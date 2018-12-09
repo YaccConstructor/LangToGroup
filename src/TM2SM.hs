@@ -64,7 +64,7 @@ copySM sm qFilter newTag =
        filterWord (Word w) = Word(map (\s -> case s of SmbQ q | qFilter q -> SmbQ (addTag newTag q); _ -> s ) w)
        prog = map (\ (SRule l) -> SRule(map (\(w1, w2) -> (filterWord w1, filterWord w2)) l)) (srs sm)
    in
-   SM (n sm) (yn sm) q prog
+   SM (yn sm) q prog
 
 sm1 :: SM
 sm1 =
@@ -95,7 +95,7 @@ sm1 =
           ]
  
     in
-    SM (N 4) [[delta],[delta],[delta],[delta]] [[p1,p2,p3],[q1,q2,q3],[r1,r2,r3],[s1,s2,s3],[t1,t2,t3],[u1,u2,u3]] [rl1,rl2,rl3]
+    SM [[delta],[delta],[delta],[delta]] [[p1,p2,p3],[q1,q2,q3],[r1,r2,r3],[s1,s2,s3],[t1,t2,t3],[u1,u2,u3]] [rl1,rl2,rl3]
 
 sm2 :: SM 
 sm2 =
@@ -115,17 +115,17 @@ sm2 =
           ]
 
     in
-    SM (N 4) [[delta],[delta],[delta],[delta]] [[p1,p2],[q1,q2],[r1,r2],[s1,s2],[t1,t2],[u1,u2]] [rl1,rl2]
+    SM [[delta],[delta],[delta],[delta]] [[p1,p2],[q1,q2],[r1,r2],[s1,s2],[t1,t2],[u1,u2]] [rl1,rl2]
 
 
 sm3 :: SM
-sm3 = SM (N 4) (yn sm1) (qn sm1) ((srs sm1) ++ (srs sm2))
+sm3 = SM (yn sm1) (qn sm1) ((srs sm1) ++ (srs sm2))
 
 sm4 :: SM
 sm4 =
     let sm3' = copySM sm3 (\q -> s_id q == 3) Quote
     in  
-    SM (N 4) (yn sm1) (qn sm3 ++ qn sm3') (srs sm3 ++ srs sm3')
+    SM (yn sm1) (qn sm3 ++ qn sm3') (srs sm3 ++ srs sm3')
 
 
 sm4d :: SM
@@ -156,7 +156,7 @@ sm5 y =
                                  Word [SmbQ q1d, SmbQ r1d, SmbQ s1d, SmbQ t1d, SmbQ u1d])
                               ]) y
     in 
-    SM (N 4) ys st prg
+    SM ys st prg
 
 sm6 :: [Y] -> SM
 sm6 y =
@@ -167,7 +167,7 @@ sm6 y =
                       (Word [SmbQ q1'd, SmbQ r1'd, SmbQ s1'd, SmbQ t1'd, SmbQ u1'd],
                        Word [SmbQ q0d, SmbQ r0d, SmbQ s0d, SmbQ t0d, SmbQ u0d]) ]]
     in
-    SM (N 4) (yn sm5') (qn sm5') prg
+    SM (yn sm5') (qn sm5') prg
   
 sm7 :: [Y] -> SM
 sm7 y =
@@ -179,30 +179,31 @@ sm7 y =
                        Word [SmbQ q4d, SmbQ r4d, SmbQ s4d, SmbQ t4d, SmbQ u4d]) ]]
 
     in 
-    SM (N 4) (yn sm5') (qn sm5') prg
+    SM (yn sm5') (qn sm5') prg
 
 sm8 :: [Y] -> SM
 sm8 y =
     let sm5' = sm5 y 
     in  
-    SM (N 4) (yn sm5') (qn sm5') ((srs sm4) ++ (srs sm5') ++ (srs sm4d) ++ (srs (sm6 y)) ++ (srs (sm7 y)))
+    SM (yn sm5') (qn sm5') ((srs sm4) ++ (srs sm5') ++ (srs sm4d) ++ (srs (sm6 y)) ++ (srs (sm7 y)))
 
 sm9 :: [Y] -> SM
 sm9 y = 
     let sm8' = sm8 y 
         sm8c = copySM sm8' (\q -> (notElem (s_name q) [E, F]) || (4 /= (s_id q))) Hat
     in  
-    SM (N 4) (yn sm1) (qn sm8' ++ qn sm8c) (srs sm8' ++ srs sm8c)
+    SM (yn sm1) (qn sm8' ++ qn sm8c) (srs sm8' ++ srs sm8c)
 
 smAlpha :: SM
-smAlpha = SM (N 4) [[alpha],[alpha]] [[e],[x0,x1,x2],[f]] [SRule [(Word [SmbQ x0], Word [SmbY' alpha, SmbQ x0, SmbY alpha]),
+smAlpha = SM [[alpha],[alpha]] [[e],[x0,x1,x2],[f]] [SRule [(Word [SmbQ x0], Word [SmbY' alpha, SmbQ x0, SmbY alpha]),
                                                                  (Word [SmbQ e, SmbQ x0], Word [SmbQ e, SmbQ x1]),
                                                                  (Word [SmbQ x1], Word [SmbY alpha, SmbQ x1, SmbY' alpha]),
                                                                  (Word [SmbQ x1, SmbQ f], Word [SmbQ x2, SmbQ f])]]
 
 smOmega :: SM
-smOmega = SM (N 4) [[omega],[omega]] [[e'],[x0',x1',x2'],[f']] [SRule [(Word [SmbQ x0'], Word [SmbY omega, SmbQ x0', SmbY' omega]),
+smOmega = SM [[omega],[omega]] [[e'],[x0',x1',x2'],[f']] [SRule [(Word [SmbQ x0'], Word [SmbY omega, SmbQ x0', SmbY' omega]),
                                                                       (Word [SmbQ x0', SmbQ f'], Word [SmbQ x1', SmbQ f']),
                                                                       (Word [SmbQ x1'], Word [SmbY' omega, SmbQ x1', SmbY omega]),
                                                                       (Word [SmbQ e', SmbQ x1'], Word [SmbQ e', SmbQ x2'])]]
 
+--smFinal tm = 
