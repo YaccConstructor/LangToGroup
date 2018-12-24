@@ -166,6 +166,8 @@ genTransitionQ n sRule = [GRType.Relation([W [(A_R' sRule)],
                  [W [A_Q (SMType.State P n (Set.fromList [Quote]) "")] ])] 
                  ++ genTransitionQ (n-1) sRule
 
+merge l1 l2 = foldl (\x (a,b) -> x ++ [a,b]) [] (zip l1 l2) 
+
 sMachineToGroupTest :: Assertion
 sMachineToGroupTest = do
     let y = genY 20 []
@@ -186,20 +188,9 @@ sMachineToGroupTest = do
     let nk = 6
     let a = [W [(A_S "alpha")], 
              W [(A_S "omega")], 
-             W [(A_S "delta")], 
-             W [(A_K "k1")], 
-             W [(A_K "k2")], 
-             W [(A_K "k3")], 
-             W [(A_K "k4")],
-             W [(A_K "k5")], 
-             W [(A_K "k6")], 
-             W [(A_K "k7")], 
-             W [(A_K "k8")],
-             W [(A_K "k9")], 
-             W [(A_K "k10")], 
-             W [(A_K "k11")], 
-             W [(A_K "k12")],
-             W [A_Y (Y "y1")]] 
+             W [(A_S "delta")]]
+             ++ [ W[A_K ("k" ++ intToString (i))]|i <- [1..12]]
+             ++ [W [A_Y (Y "y1")]] 
              ++ (sort (genQA 21 [])) ++ [W [(A_R sRule)]]
     let auxiliary = [GRType.Relation([W [(A_R sRule)], 
                      W [(A_S "alpha")]], 
@@ -216,55 +207,11 @@ sMachineToGroupTest = do
                      GRType.Relation([W [(A_R sRule)], 
                      W [(A_Y (Y "y1"))]], 
                      [W [(A_Y (Y "y1"))], 
-                     W [(A_R sRule)]]),
-                     GRType.Relation([W [(A_R sRule)], 
-                     W [(A_K "k1")]], 
-                     [W [(A_K "k1")], 
-                     W [(A_R sRule)]]),
-                     GRType.Relation([W [(A_R sRule)], 
-                     W [(A_K "k2")]], 
-                     [W [(A_K "k2")], 
-                     W [(A_R sRule)]]),
-                     GRType.Relation([W [(A_R sRule)], 
-                     W [(A_K "k3")]], 
-                     [W [(A_K "k3")], 
-                     W [(A_R sRule)]]),
-                     GRType.Relation([W [(A_R sRule)], 
-                     W [(A_K "k4")]], 
-                     [W [(A_K "k4")], 
-                     W [(A_R sRule)]]),
-                     GRType.Relation([W [(A_R sRule)], 
-                     W [(A_K "k5")]], 
-                     [W [(A_K "k5")], 
-                     W [(A_R sRule)]]),
-                     GRType.Relation([W [(A_R sRule)], 
-                     W [(A_K "k6")]], 
-                     [W [(A_K "k6")], 
-                     W [(A_R sRule)]]),
-                     GRType.Relation([W [(A_R sRule)], 
-                     W [(A_K "k7")]], 
-                     [W [(A_K "k7")], 
-                     W [(A_R sRule)]]),
-                     GRType.Relation([W [(A_R sRule)], 
-                     W [(A_K "k8")]], 
-                     [W [(A_K "k8")], 
-                     W [(A_R sRule)]]),
-                     GRType.Relation([W [(A_R sRule)], 
-                     W [(A_K "k9")]], 
-                     [W [(A_K "k9")], 
-                     W [(A_R sRule)]]),
-                     GRType.Relation([W [(A_R sRule)], 
-                     W [(A_K "k10")]], 
-                     [W [(A_K "k10")], 
-                     W [(A_R sRule)]]),
-                     GRType.Relation([W [(A_R sRule)], 
-                     W [(A_K "k11")]], 
-                     [W [(A_K "k11")], 
-                     W [(A_R sRule)]]),
-                     GRType.Relation([W [(A_R sRule)], 
-                     W [(A_K "k12")]], 
-                     [W [(A_K "k12")], 
                      W [(A_R sRule)]])]
+                     ++ [GRType.Relation([W [A_R sRule], 
+                         W [A_K ("k" ++ intToString (i))]],
+                         [W [A_K ("k" ++ intToString (i))],  
+                         W [A_R sRule]]) |i <- [1..12]]
     let transition = [GRType.Relation([W [(A_R' sRule)], 
                   W [(A_W (Word [SmbQ (SMType.State Q 1 (Set.fromList [Quote]) "")]))],
                   W [(A_R sRule)] ],[
@@ -283,14 +230,11 @@ sMachineToGroupTest = do
                   SmbY (Y "y3")] )]])] 
                   ++ sort (genTransitionQ 21 sRule)
 
-    let hub = GRType.Relation ([W[A_W' w, A_K "k1", A_W w, A_K "k2", A_W' w, A_K "k3",
-              A_W w, A_K "k4", A_W' w, A_K "k5", A_W w, A_K "k6",
-              A_W' w, A_K "k7", A_W w, A_K "k8", A_W' w, A_K "k9",
-              A_W w, A_K "k10", A_W' w, A_K "k11", A_W w, A_K "k12"], 
-              W' [A_K "k12", A_W' w, A_K "k11", A_W w, A_K "k10",
-              A_W' w, A_K "k9", A_W w, A_K "k8", A_W' w, A_K "k7",
-              A_W w, A_K "k6", A_W' w, A_K "k5", A_W w, A_K "k4",
-              A_W' w, A_K "k3", A_W w, A_K "k2", A_W' w, A_K "k1", A_W w]],
+    let lst_k = [A_K ("k" ++ intToString (i))|i <- [1..12]]
+    let lst_aw' = [A_W' w | i <- [1..6]]
+    let lst_aw = [A_W w | i <- [1..6]]
+    let lst_w = merge lst_aw' lst_aw
+    let hub = GRType.Relation ( [W (merge lst_w lst_k), W' (merge (reverse lst_k) lst_w)],
               [W [(A_S "1")]]) 
     let rel = auxiliary  ++ transition ++ [hub] 
     let expectedGR = GR(a, rel)
