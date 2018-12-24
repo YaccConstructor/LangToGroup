@@ -32,6 +32,7 @@ takeNElemFromQList :: [[State String]] -> [A] -> Int -> [A]
 takeNElemFromQList l1 l 0 = l  
 takeNElemFromQList (a:l1) l n = takeNElemFromQList l1 lst (n-1)
         where lst = mergeQ a l
+takeNElemFromQList l1 l _ = l
 
 takeNElemFromYList :: [[Y]] -> [A] -> Int -> [A]
 takeNElemFromYList l1 l 0 = l  
@@ -115,13 +116,13 @@ hubRelation word n k = Relation(w, [W [(A_S "1")]])
 
 
 smToGR :: SMType.SM -> Int -> Word -> GRType.GR
-smToGR (SMType.SM (N n) 
-                  yn 
+smToGR (SMType.SM yn 
                   qn
                   sRules) nk w
         = GRType.GR (a, relations)
         where s = ([W [(A_S "alpha")], W [(A_S "omega")], W [(A_S "delta")]])
               k = fillK [] (2 * nk)
+              n = length qn
               q = sort (takeNElemFromQList qn [] (n+1))
               ny = (div n 5 - 3) 
               y = sort (takeNElemFromYList yn [] ny)

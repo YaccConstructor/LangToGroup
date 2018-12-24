@@ -6,8 +6,6 @@ import qualified Data.Set as Set
 import Data.Either
 import Prelude hiding (Word)
 
-newtype N = N Int deriving Show
-
 newtype Y = Y String deriving (Eq,Ord)
 
 instance Show Y where
@@ -50,4 +48,4 @@ instance Show SRule where
    show (SRule s) = "[" ++ (foldr (\(w1,w2) acc -> show w1 ++ "->" ++ show w2 ++ ";") "" s) ++ "]\n" 
 --newtype SRules = SRules ([SRule]) deriving Show
 
-data SM =  SM {n :: N, yn :: [[Y]], qn :: [[State String]], srs :: [SRule]} deriving Show
+data SM =  SM {yn :: [[Y]], qn :: [[State String]], srs :: [SRule]} deriving Show
