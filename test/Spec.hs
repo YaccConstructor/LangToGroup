@@ -3,9 +3,9 @@ import Test.Framework
 import Test.Framework.Providers.HUnit
 import Data.Monoid
 import Control.Monad
-import CfgToTm1Mapper
+import CfgToTMMapper
 import GrammarType
-import Tm1Type
+import TMType
 import Data.Set (Set)
 import qualified Data.Set as Set
 import SMType
@@ -13,10 +13,10 @@ import GRType
 import SMachineToGroup
 import Data.List
 
-simpleCfgToTM1MapTest :: Assertion
-simpleCfgToTM1MapTest = do
-    let terminal = Terminal 'a'
-    let nonterminal = Nonterminal 'S'
+simpleCfgToTMMapTest :: Assertion
+simpleCfgToTMMapTest = do
+    let terminal = Terminal "a"
+    let nonterminal = Nonterminal "S"
     let grammar =
             Grammar(
                 (Set.fromList [nonterminal]), 
@@ -25,13 +25,13 @@ simpleCfgToTM1MapTest = do
                 [GrammarType.T terminal])]),
                 nonterminal
             )
-    let letter_a = 'a'
-    let letter_S = 'S'
-    let workState = Tm1Type.State "q1"
+    let letter_a = "a"
+    let letter_S = "S"
+    let workState = TMType.State "q1"
     
-    let expectedTM1 = TM1 (
+    let expectedTM = TM (
             InputAlphabet (Set.fromList [letter_a]),
-            TapeAlphabet (Set.fromList [letter_a, letter_S]),
+            [TapeAlphabet (Set.fromList [letter_a]), TapeAlphabet (Set.fromList [getDisjoinLetter letter_a, letter_S])],
             MultiTapeStates [(Set.fromList [startStateFirstTape, intermediateStateFirstTape, finalStateFirstTape]), 
                             (Set.fromList [startStateSecondTape, intermediateStateSecondTape, finalStateSecondTape, workState])],
             Commands (Set.fromList [
@@ -83,7 +83,7 @@ simpleCfgToTM1MapTest = do
                         letter_S), 
                         (emptySymbol, 
                         workState, 
-                        letter_a)
+                        getDisjoinLetter letter_a)
                         )
                     ],
                 [
@@ -91,10 +91,10 @@ simpleCfgToTM1MapTest = do
                     SingleTapeCommand (
                         (emptySymbol, 
                         workState, 
-                        letter_a), 
+                        getDisjoinLetter letter_a), 
                         (emptySymbol, 
                         intermediateStateSecondTape, 
-                        letter_a)
+                        getDisjoinLetter letter_a)
                         )
                     ],
                 [
@@ -109,8 +109,8 @@ simpleCfgToTM1MapTest = do
                     SingleTapeCommand (
                         (emptySymbol, 
                         intermediateStateSecondTape, 
-                        letter_a), 
-                        (letter_a, 
+                        getDisjoinLetter letter_a), 
+                        (getDisjoinLetter letter_a, 
                         intermediateStateSecondTape, 
                         emptySymbol)
                         )
@@ -137,7 +137,7 @@ simpleCfgToTM1MapTest = do
             StartStates [startStateFirstTape, startStateSecondTape],
             AccessStates [finalStateFirstTape, finalStateSecondTape]
                 )
-    assertEqual "simple cfg to tm1s convertion" (mapCfgToTm1 grammar) expectedTM1
+    assertEqual "simple cfg to TMs convertion" (mapCfgToTM grammar) expectedTM
 
 genY :: Int -> [[Y]] -> [[Y]]
 genY 0 x = x
@@ -242,6 +242,6 @@ sMachineToGroupTest = do
 
 main :: IO ()
 main = defaultMainWithOpts
-       [testCase "simple cfg to tm1 map" simpleCfgToTM1MapTest, 
+       [testCase "simple cfg to TM map" simpleCfgToTMMapTest, 
         testCase "sm to gr map" sMachineToGroupTest]
        mempty

@@ -3,9 +3,9 @@ module GrammarType where
 import Data.Set (Set)
 import qualified Data.Set as Set
 
-newtype Terminal = Terminal Char
+newtype Terminal = Terminal String
     deriving (Eq, Ord)
-newtype Nonterminal = Nonterminal Char
+newtype Nonterminal = Nonterminal String
     deriving (Eq, Ord)
 -- union of terminal and nonterminal
 data Symbol = T Terminal | N Nonterminal

@@ -1,7 +1,7 @@
-module CfgToTm1Mapper where
+module CfgToTMMapper where
 
 import GrammarType
-import Tm1Type
+import TMType
 import Data.Set (Set)
 import qualified Data.Set as Set
 
@@ -15,6 +15,8 @@ intermediateStateSecondTape = State "q_1^2"
 finalStateFirstTape = State "q_2^1"
 finalStateSecondTape = State "q_2^2"
 
+getDisjoinLetter letter = letter ++ "'"
+
 mapSymbolToLetter x =
     case x of 
     T (Terminal c) -> c
@@ -27,10 +29,10 @@ mapRelationSymbolToCommand workState prevLetter acc l =
                 SingleTapeCommand (
                     (emptySymbol, 
                             workState, 
-                            prevLetter), 
+                            getDisjoinLetter prevLetter), 
                             (emptySymbol, 
                             intermediateStateSecondTape, 
-                            prevLetter)
+                            getDisjoinLetter prevLetter)
                     )
                 ]  : acc
         (c : t) -> 
@@ -40,20 +42,20 @@ mapRelationSymbolToCommand workState prevLetter acc l =
                     SingleTapeCommand (
                         (emptySymbol, 
                         workState, 
-                        prevLetter), 
+                        getDisjoinLetter prevLetter), 
                         (c, 
                         workState,
-                        prevLetter)
+                        getDisjoinLetter prevLetter)
                         )], 
                 [
                     NoCommand,
                     SingleTapeCommand (
-                        (c, 
+                        (getDisjoinLetter c, 
                         workState, 
                         emptySymbol), 
                         (emptySymbol, 
                         workState,
-                        c)
+                        getDisjoinLetter c)
                         )]
                 ] ++ acc) t
 
@@ -78,15 +80,15 @@ mapRelationToTransition (Relation (Nonterminal nonterminalSymbol, symbols)) newS
                     nonterminalSymbol), 
                     (emptySymbol, 
                     newState, 
-                    mapSymbolToLetter (head symbols))
+                    getDisjoinLetter $ mapSymbolToLetter (head symbols))
                     )
                 ]
         ] (map mapSymbolToLetter (tail symbols))
     
     
 
-mapCfgToTm1 :: Grammar -> TM1
-mapCfgToTm1 
+mapCfgToTM :: Grammar -> TM
+mapCfgToTM 
     (Grammar
         (setOfNonterminals, 
         setOfTerminals, 
@@ -95,8 +97,12 @@ mapCfgToTm1
         ) = do
     let setOfTerminalLetters = Set.map (\(Terminal x) -> x) setOfTerminals
     let setOfNonterminalLetters = Set.map (\(Nonterminal x) -> x) setOfNonterminals 
-    let tm1InputAlphabet = InputAlphabet setOfTerminalLetters
-    let tm1TapeAlphabet = TapeAlphabet (Set.union setOfTerminalLetters setOfNonterminalLetters)
+    let tmInputAlphabet = InputAlphabet setOfTerminalLetters
+    let tmTapeAlphabets = 
+            [
+                TapeAlphabet setOfTerminalLetters,
+                TapeAlphabet (Set.union setOfNonterminalLetters (Set.map getDisjoinLetter setOfTerminalLetters))
+            ]
     let startStates = StartStates [startStateFirstTape, startStateSecondTape]
     let accessStates = AccessStates [finalStateFirstTape, finalStateSecondTape]
     -- define first transition
@@ -151,8 +157,8 @@ mapCfgToTm1
                 SingleTapeCommand (
                     (emptySymbol,
                     intermediateStateSecondTape,
-                    x),
-                    (x,
+                    getDisjoinLetter x),
+                    (getDisjoinLetter x,
                     intermediateStateSecondTape,
                     emptySymbol)
                 )
@@ -180,4 +186,4 @@ mapCfgToTm1
             (Set.fromList [startStateFirstTape, intermediateStateFirstTape, finalStateFirstTape]),
             (Set.fromList (finalStateSecondTape : intermediateStateSecondTape : startStateSecondTape : listOfStatesForTransition))
             ]
-    TM1 (tm1InputAlphabet, tm1TapeAlphabet, multiTapeStates, Commands transitions, startStates, accessStates)
+    TM (tmInputAlphabet, tmTapeAlphabets, multiTapeStates, Commands transitions, startStates, accessStates)

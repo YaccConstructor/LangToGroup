@@ -27,13 +27,12 @@ source-repository head
 
 library
   exposed-modules:
-      CfgToTm1Mapper
+      CfgToTMMapper
       GrammarType
       GRType
       Lib
       SMType
-      Tm1Type
-      Tm2Type
+      TMType
       TM2SM
       SMachineToGroup
   other-modules:
