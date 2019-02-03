@@ -132,7 +132,62 @@ simpleCfgToTMMapTest = do
                         finalStateSecondTape, 
                         emptySymbol)
                         )
-                    ]
+                    ],
+                [
+                    SingleTapeCommand (
+                        (leftBoundingLetter, 
+                        finalStateFirstTape, 
+                        letter_a), 
+                        (leftBoundingLetter, 
+                        finalStateFirstTape, 
+                        emptySymbol)
+                        ),
+                    NoCommand
+                    ],
+                [
+                    NoCommand,
+                    SingleTapeCommand (
+                        (emptySymbol, 
+                        finalStateSecondTape, 
+                        getDisjoinLetter letter_a), 
+                        (emptySymbol, 
+                        finalStateSecondTape, 
+                        emptySymbol)
+                        )
+                    ],
+                [
+                    NoCommand,
+                    SingleTapeCommand (
+                        (getDisjoinLetter letter_a, 
+                        finalStateSecondTape, 
+                        emptySymbol), 
+                        (emptySymbol, 
+                        finalStateSecondTape, 
+                        emptySymbol)
+                        )
+                    ],
+                    [
+                        NoCommand,
+                        SingleTapeCommand (
+                            (emptySymbol, 
+                            finalStateSecondTape, 
+                            letter_S), 
+                            (emptySymbol, 
+                            finalStateSecondTape, 
+                            emptySymbol)
+                            )
+                        ],
+                    [
+                        NoCommand,
+                        SingleTapeCommand (
+                            (letter_S, 
+                            finalStateSecondTape, 
+                            emptySymbol), 
+                            (emptySymbol, 
+                            finalStateSecondTape, 
+                            emptySymbol)
+                            )
+                        ]
                 ]),
             StartStates [startStateFirstTape, startStateSecondTape],
             AccessStates [finalStateFirstTape, finalStateSecondTape]

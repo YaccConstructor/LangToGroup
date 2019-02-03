@@ -34,6 +34,7 @@ library
       SMType
       TMType
       TM2SM
+      --TM2TM'
       SMachineToGroup
   other-modules:
       Paths_LangToGroup

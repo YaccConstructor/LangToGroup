@@ -186,4 +186,39 @@ mapCfgToTM
             (Set.fromList [startStateFirstTape, intermediateStateFirstTape, finalStateFirstTape]),
             (Set.fromList (finalStateSecondTape : intermediateStateSecondTape : startStateSecondTape : listOfStatesForTransition))
             ]
-    TM (tmInputAlphabet, tmTapeAlphabets, multiTapeStates, Commands transitions, startStates, accessStates)
+    let generateEmptyAccessCommandsForSecondTape alphabet acc = case alphabet of
+                                                                    (h : t) -> generateEmptyAccessCommandsForSecondTape t ([
+                                                                        NoCommand, 
+                                                                        SingleTapeCommand (
+                                                                            (h, 
+                                                                            finalStateSecondTape, 
+                                                                            emptySymbol), 
+                                                                            (emptySymbol, 
+                                                                            finalStateSecondTape, 
+                                                                            emptySymbol)
+                                                                        )] : ([
+                                                                        NoCommand,
+                                                                        SingleTapeCommand (
+                                                                            (emptySymbol, 
+                                                                            finalStateSecondTape, 
+                                                                            h), 
+                                                                            (emptySymbol, 
+                                                                            finalStateSecondTape, 
+                                                                            emptySymbol)
+                                                                        )
+                                                                        ] : acc))
+                                                                    [] -> acc
+    let transitionsWithEmptyAccessCommands = generateEmptyAccessCommandsForSecondTape (map (\(Nonterminal x) -> x) (Set.toList setOfNonterminals))
+            (generateEmptyAccessCommandsForSecondTape (map (\(Terminal x) -> getDisjoinLetter x) (Set.toList setOfTerminals)) 
+            ((Set.toList transitions) ++ (map (\(Terminal x) -> [
+                                                                    SingleTapeCommand (
+                                                                        (leftBoundingLetter, 
+                                                                        finalStateFirstTape, 
+                                                                        x), 
+                                                                        (leftBoundingLetter, 
+                                                                        finalStateFirstTape, 
+                                                                        emptySymbol)
+                                                                        ),
+                                                                    NoCommand
+                                                                ]) (Set.toList setOfTerminals) )))
+    TM (tmInputAlphabet, tmTapeAlphabets, multiTapeStates, Commands (Set.fromList transitionsWithEmptyAccessCommands), startStates, accessStates)
