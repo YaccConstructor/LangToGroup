@@ -8,7 +8,7 @@ import Prelude hiding (Word)
 
 --newtype A = A ([String]) deriving Show
 data A = A_Y Y| A_K String | A_S String 
-       | A_R SRule | A_R' SRule | A_Q (State String) | A_W Word
+       | A_R SRule | A_R' SRule | A_Q State | A_W Word
 
 instance Show A where
    show (A_Y y) = show y
