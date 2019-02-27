@@ -35,6 +35,11 @@ mapTM2TM'
                     (Set.toList commands)
                     kplus1tapeAlphabetList)
         
+        let reverseCommands commands acc =
+            case commands of
+                SingleTapeCommand ((a, s, b), (a1, s1, b1)) : t -> reverseCommands t (SingleTapeCommand ((a1, s1, b1), (a, s, b)) : acc)
+                [] -> acc
+        let symTm'CommandsList = reverseCommands tm'CommandsList tm'CommandsList
         
 
         --TM(inputAlphabet, ...)        
