@@ -6,7 +6,6 @@ import Text.LaTeX.Base.Render
 import Text.LaTeX.Base
 import Text.LaTeX.Base.Class
 import Text.LaTeX.Packages.Inputenc
-import Text.LaTeX.Base.Math
 import qualified Data.Set as Set
 
 import GrammarPrinter
@@ -35,8 +34,8 @@ preambula :: LaTeXM ()
 preambula = 
     documentclass [] article
     <> usepackage [utf8] inputenc
-    <> title "Examples with trees"
-    <> author "Daniel Díaz"
+    <> title "Grammar example"
+    <> author "GrammarPrinter.hs"
 
 
 example :: LaTeX

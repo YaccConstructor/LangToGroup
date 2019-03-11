@@ -5,12 +5,7 @@ module GrammarPrinter where
 
 import Text.LaTeX.Base
 import Text.LaTeX.Base.Math
-import Text.LaTeX.Base.Class
-import Text.LaTeX.Base.Render
 import Text.LaTeX.Base.Commands
-import Text.LaTeX.Packages.Inputenc
-import Data.Set (Set)
-import qualified Data.Set as Set
 
 import GrammarType
 import Lib
