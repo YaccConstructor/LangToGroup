@@ -1,11 +1,10 @@
-cabal-version: 1.12
-
--- This file has been generated from package.yaml by hpack version 0.31.0.
+-- This file has been generated from package.yaml by hpack version 0.27.0.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: c4986b73e222bd09fa6695c3af596fee4e3e31b4896c4ae098775942357a9735
+-- hash: 013764c32b651c2e24fcec7f5c12bb3fd9f7e95bd971a01a9035110d1ec45bfb
 
+cabal-version:  >= 1.10
 name:           LangToGroup
 version:        0.1.0.0
 description:    Please see the README on GitHub at <https://github.com/githubuser/LangToGroup#readme>
@@ -17,9 +16,10 @@ copyright:      2018 Author name here
 license:        BSD3
 license-file:   LICENSE
 build-type:     Simple
+
 extra-source-files:
-    README.md
     ChangeLog.md
+    README.md
 
 source-repository head
   type: git
@@ -31,11 +31,11 @@ library
       GrammarType
       GRType
       Lib
+      SMachineToGroup
       SMType
       Tm1Type
-      Tm2Type
       TM2SM
-      SMachineToGroup
+      Tm2Type
   other-modules:
       Paths_LangToGroup
   hs-source-dirs:
@@ -55,6 +55,22 @@ executable LangToGroup-exe
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       LangToGroup
+    , base >=4.7 && <5
+    , containers
+    , vector
+  default-language: Haskell2010
+
+executable LangToGroup-printer
+  main-is: Main.hs
+  other-modules:
+      GrammarPrinter
+      Paths_LangToGroup
+  hs-source-dirs:
+      printers
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      HaTeX
+    , LangToGroup
     , base >=4.7 && <5
     , containers
     , vector
