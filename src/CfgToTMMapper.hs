@@ -4,6 +4,7 @@ import GrammarType
 import TMType
 import Data.Set (Set)
 import qualified Data.Set as Set
+import Helpers
 
 -- define a start states
 startStateFirstTape = State "q_0^1"
@@ -14,8 +15,6 @@ intermediateStateSecondTape = State "q_1^2"
 -- define a final states
 finalStateFirstTape = State "q_2^1"
 finalStateSecondTape = State "q_2^2"
-
-getDisjoinLetter letter = letter ++ "'"
 
 mapSymbolToLetter x =
     case x of 
@@ -126,7 +125,14 @@ mapCfgToTM
                     )
                 ],
             [ 
-                NoCommand,
+                SingleTapeCommand (
+                    (emptySymbol, 
+                    intermediateStateFirstTape, 
+                    rightBoundingLetter), 
+                    (emptySymbol, 
+                    intermediateStateFirstTape,
+                    rightBoundingLetter)
+                    ),
                 SingleTapeCommand (
                     (startSymbol, 
                     startStateSecondTape, 

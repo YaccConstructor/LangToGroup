@@ -4,6 +4,7 @@ import Test.Framework.Providers.HUnit
 import Data.Monoid
 import Control.Monad
 import CfgToTMMapper
+import Helpers
 import GrammarType
 import TMType
 import Data.Set (Set)
@@ -54,7 +55,14 @@ simpleCfgToTMMapTest = do
                         )
                     ],
                 [ 
-                    NoCommand,
+                    SingleTapeCommand (
+                        (emptySymbol, 
+                        intermediateStateFirstTape, 
+                        rightBoundingLetter), 
+                        (emptySymbol, 
+                        intermediateStateFirstTape, 
+                        rightBoundingLetter)
+                        ),
                     SingleTapeCommand (
                         (letter_S, 
                         startStateSecondTape, 
