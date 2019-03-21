@@ -16,6 +16,48 @@ disjoinAcceptCommandWithOthers commands accessStates = do
 
     disjoinAcceptCommandWithOthers commands []
 
+-- надо *2к команды, дисджойня стейты и обновляя их алфавиты
+generateSingleMoveCommands commandA commandA1 i oldstates newstates acc =
+    case (i, oldstates, newstates) of
+        (-1, oldstate : t1, newstate : t2) -> 
+            generateSingleMoveCommands commandA commandA1 i t1 t2 (SingleTapeCommand ((emptySymbol, oldstate, rightBoundingLetter), (emptySymbol, newstate, rightBoundingLetter)) : acc)
+        (-1, [], []) -> reverse acc
+        (0, oldstate : t1, newstate : t2) -> 
+            generateSingleMoveCommands commandA commandA1 (i - 1) t1 t2 (SingleTapeCommand ((commandA, oldstate, rightBoundingLetter), (commandA1, newstate, rightBoundingLetter)) : acc)
+        (_, oldstate : t1, newstate : t2) -> 
+            generateSingleMoveCommands commandA commandA1 (i - 1) t1 t2 (SingleTapeCommand ((emptySymbol, oldstate, rightBoundingLetter), (emptySymbol, newstate, rightBoundingLetter)) : acc)
+
+getCurrentStates command acc = 
+    case command of
+        SingleTapeCommand ((_, s, _), (_, s1, _)) : t -> getCurrentStates t ((s, s1) : acc)
+        [] -> reverse acc
+
+disjoinStates states = do
+    let disjoinStatesInternal states acc =
+        case states of
+            State h : t ->  disjoinStatesInternal t ((State (getDisjoinLetter h)) : acc)
+            [] -> reverse acc
+    disjoinStatesInternal states []
+
+commandOnetify command = do
+    let (startStates, endStates) = getCurrentStates command []
+-- как-то так, теперь надо алфавит стейтов засейвить
+    let commandOnetifyInternal oldStates newStates command i acc = 
+        case command of
+            [SingleTapeCommand ((a, _, _), (a1, _, _))] -> 
+                (generateSingleMoveCommands a a1 i oldStates endStates []) : acc
+            SingleTapeCommand ((a, _, _), (a1, _, _)) : t -> 
+                commandOnetifyInternal newStates (disjoinStates newStates) t (i + 1) ((generateSingleMoveCommands a a1 i oldStates newStates []) : acc)
+            
+    
+    commandOnetifyInternal startStates (disjoinStates startStates) command -1 []
+
+commandsOnetify commands acc =
+    case commands of
+        h : t -> 
+            commandsOnetify t ((commandOnetify h) ++ acc)
+        [] -> acc
+
 mapTM2TM' :: TMType -> TMType
 mapTM2TM' 
     (TM
@@ -51,7 +93,7 @@ mapTM2TM'
         
         -- пора раздвоить команды
 
-        -- надо бы избавиться от NoCommand, для этого (RuleLetter, State, *) -> (RuleLetter, State, *)
+        -- надо бы избавиться от NoCommand, для этого (RuleLetter, State, *) -> (RuleLetter, State, *) тут вопросец
 
         let divideCommands commands acc =
             case commands of 
@@ -74,6 +116,7 @@ mapTM2TM'
 
         let reversedSymmCommandsList = doubleTheCommands symCommandsList []
 
-        -- самое время обновить алфавиты
+        -- самое время обновить алфавиты. а может это сделать в конце?
 
+        
         --TM(inputAlphabet, ...)        
