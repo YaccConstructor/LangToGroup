@@ -44,7 +44,6 @@ instance ShowLaTeX AccessStates where
     doLaTeX (AccessStates states) = math $ showStates states
 
 
--- TODO: too many math
 instance ShowLaTeX SingleTapeCommand where
     doLaTeX (SingleTapeCommand ((u, q, v), (u', q', v'))) = do
         let showTriple :: Char -> State -> Char -> LaTeX
