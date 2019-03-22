@@ -9,6 +9,8 @@ import Text.LaTeX.Base.Writer
 section_ :: LaTeXC l => l -> l
 section_ = comm1 "section*"
 
+subsection_ :: LaTeXC l => l -> l
+subsection_ = comm1 "subsection*"
 
 class ShowLaTeX a where
     -- For monoid style

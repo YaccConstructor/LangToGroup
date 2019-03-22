@@ -32,12 +32,12 @@ instance ShowLaTeX Relation where
 
 instance ShowLaTeX Grammar where
     doLaTeX (Grammar (nonterminals, terminals, relations, start)) = do
-           section_ "Nonterminals"
-           math $ mapM_ doLaTeX nonterminals ; lnbk
-           section_ "Terminals"
-           math $ mapM_ doLaTeX terminals    ; lnbk
-           section_ "Rules"
-           mapM_ doLaTeX relations           ; lnbk
+        subsection_ "Nonterminals"
+        math $ mapM_ doLaTeX nonterminals ; lnbk
+        subsection_ "Terminals"
+        math $ mapM_ doLaTeX terminals    ; lnbk
+        subsection_ "Rules"
+        mapM_ doLaTeX relations           ; lnbk
 
 
 
