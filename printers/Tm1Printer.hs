@@ -4,8 +4,8 @@ module Tm1Printer where
 
 import Text.LaTeX.Base
 import Text.LaTeX.Base.Class
-import Text.LaTeX.Base.Math
 import Text.LaTeX.Base.Commands
+import Text.LaTeX.Packages.AMSMath
 import Text.LaTeX.Packages.Inputenc
 import qualified Data.Set as Set
 

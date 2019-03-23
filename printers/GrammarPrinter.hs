@@ -4,8 +4,8 @@ module GrammarPrinter where
 
 
 import Text.LaTeX.Base
-import Text.LaTeX.Base.Math
 import Text.LaTeX.Base.Commands
+import Text.LaTeX.Packages.AMSMath
 
 import GrammarType
 import Lib
