@@ -37,7 +37,7 @@ packages:
 - .
 
 extra-deps:
-- HaTeX-3.19.0.0
+- HaTeX-3.20.0.0
 # Dependency packages to be pulled from upstream that are not in the resolver
 # using the same syntax as the packages field.
 # (e.g., acme-missiles-0.3)
