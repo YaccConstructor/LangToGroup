@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 013764c32b651c2e24fcec7f5c12bb3fd9f7e95bd971a01a9035110d1ec45bfb
+-- hash: a200b9c2590300394319f395e06dd40e248e576a850455552971f3ea6f33c2fe
 
 cabal-version:  >= 1.10
 name:           LangToGroup
@@ -41,7 +41,8 @@ library
   hs-source-dirs:
       src
   build-depends:
-      base >=4.7 && <5
+      HaTeX >=3.20.0.0
+    , base >=4.7 && <5
     , containers
     , vector
   default-language: Haskell2010
@@ -54,7 +55,8 @@ executable LangToGroup-exe
       app
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      LangToGroup
+      HaTeX >=3.20.0.0
+    , LangToGroup
     , base >=4.7 && <5
     , containers
     , vector
@@ -64,6 +66,8 @@ executable LangToGroup-printer
   main-is: Main.hs
   other-modules:
       GrammarPrinter
+      Lib
+      Tm1Printer
       Paths_LangToGroup
   hs-source-dirs:
       printers
@@ -86,6 +90,7 @@ test-suite LangToGroup-test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       HUnit
+    , HaTeX >=3.20.0.0
     , LangToGroup
     , base >=4.7 && <5
     , containers
