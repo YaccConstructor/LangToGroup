@@ -23,11 +23,23 @@ dependencies:
 - base >= 4.7 && < 5
 - containers
 - vector
+- HaTeX >= 3.20.0.0
 
 library:
   source-dirs: src
 
 executables:
+  LangToGroup-printer:
+    main:                Main.hs
+    source-dirs:         printers
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - LangToGroup
+    - HaTeX
+ 
   LangToGroup-exe:
     main:                Main.hs
     source-dirs:         app
