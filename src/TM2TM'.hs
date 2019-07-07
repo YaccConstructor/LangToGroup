@@ -47,9 +47,7 @@ commandOnetify command = do
             [SingleTapeCommand ((a, _, _), (a1, _, _))] -> 
                 (generateSingleMoveCommands a a1 i oldStates endStates []) : acc
             SingleTapeCommand ((a, _, _), (a1, _, _)) : t -> 
-                commandOnetifyInternal newStates (disjoinStates newStates) t (i + 1) ((generateSingleMoveCommands a a1 i oldStates newStates []) : acc)
-            
-    
+                commandOnetifyInternal newStates (disjoinStates newStates) t (i + 1) ((generateSingleMoveCommands a a1 i oldStates newStates []) : acc)            
     commandOnetifyInternal startStates (disjoinStates startStates) command -1 []
 
 commandsOnetify commands acc =
