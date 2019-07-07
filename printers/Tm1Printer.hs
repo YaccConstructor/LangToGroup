@@ -101,7 +101,7 @@ instance ShowLaTeX TM where
            subsection_ "Input alphabet"
            doLaTeX inputAlphabet
            subsection_ "Tape alphabets"
-           enumerate $ mapM_ (\alphabet -> do { item Nothing; math $ doLaTeX $ alphabet}) tapeAlphabets
+           enumerate $ mapM_ (\alphabet -> do { item Nothing; doLaTeX $ alphabet}) tapeAlphabets
            subsection_ "States"
            doLaTeX multiTapeStates
            subsection_ "Start states"
