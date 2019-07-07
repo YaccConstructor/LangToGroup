@@ -12,11 +12,11 @@ import Lib
 
 
 instance ShowLaTeX Nonterminal where
-    doLaTeX (Nonterminal symbol) = fromString [symbol] 
+    doLaTeX (Nonterminal symbol) = fromString symbol 
 
 
 instance ShowLaTeX Terminal where
-    doLaTeX (Terminal symbol)    = fromString [symbol] 
+    doLaTeX (Terminal symbol)    = fromString symbol
 
 
 instance ShowLaTeX Symbol where

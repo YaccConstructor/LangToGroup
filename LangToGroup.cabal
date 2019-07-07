@@ -34,16 +34,9 @@ library
       Lib
       SMachineToGroup
       SMType
-<<<<<<< HEAD
       TMType
       TM2SM
       --TM2TM'
-      SMachineToGroup
-=======
-      Tm1Type
-      TM2SM
-      Tm2Type
->>>>>>> upstream/master
   other-modules:
       Paths_LangToGroup
   hs-source-dirs:

@@ -12,8 +12,8 @@ import GrammarPrinter
 import Tm1Printer
 import Lib
 import GrammarType
-import CfgToTm1Mapper 
-import Tm1Type
+import CfgToTMMapper 
+import TMType
 
 
 preambula :: LaTeXM ()
@@ -30,13 +30,13 @@ example = execLaTeXM $
         preambula 
         document $ do
             doLaTeX testGrammar
-            doLaTeX $ mapCfgToTm1 testGrammar
+            doLaTeX $ mapCfgToTM testGrammar
             newpage
             doLaTeX seq1Grammar
-            doLaTeX $ mapCfgToTm1 seq1Grammar
+            doLaTeX $ mapCfgToTM seq1Grammar
             newpage
             doLaTeX rpsGrammar
-            doLaTeX $ mapCfgToTm1 rpsGrammar
+            doLaTeX $ mapCfgToTM rpsGrammar
 
 
 main :: IO()
@@ -66,14 +66,14 @@ rpsGrammar =
         nS
     ) 
     where
-        open = t '('
-        close = t ')'
+        open = t "("
+        close = t ")"
 
-        nW = nt 'W'
-        nO = nt 'O'
-        nC = nt 'C'
-        nQ = nt 'Q'
-        nS = nt 'S'
+        nW = nt "W"
+        nO = nt "O"
+        nC = nt "C"
+        nQ = nt "Q"
+        nS = nt "S"
 
         relations = [
             rel nO [T open],
@@ -96,10 +96,10 @@ seq1Grammar =
         nS
     ) 
     where
-        one = t '1'
+        one = t "1"
 
-        nO = nt 'O'
-        nS = nt 'S'
+        nO = nt "O"
+        nS = nt "S"
 
         relations = [
             rel nS [N nO, N nS],
@@ -108,8 +108,8 @@ seq1Grammar =
 
 -- Example from test
 testGrammar = grammar where
-    terminal = Terminal 'a'
-    nonterminal = Nonterminal 'S'
+    terminal = Terminal "a"
+    nonterminal = Nonterminal "S"
     grammar =
         Grammar(
             (Set.fromList [nonterminal]),
