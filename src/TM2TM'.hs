@@ -56,7 +56,7 @@ commandsOnetify commands acc =
             commandsOnetify t ((commandOnetify h) ++ acc)
         [] -> acc
 
-mapTM2TM' :: TMType -> TMType
+mapTM2TM' :: TM -> TM
 mapTM2TM' 
     (TM
         (inputAlphabet, -- нужно ли оно вообще?

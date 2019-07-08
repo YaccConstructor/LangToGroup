@@ -20,7 +20,7 @@ newtype StartStates = StartStates [State]
 newtype AccessStates = AccessStates [State]
     deriving (Eq, Ord, Show)
 -- command of TM for single tape
-data SingleTapeCommand = SingleTapeCommand ((String, State, String), (String, State, String)) | NoCommand
+data SingleTapeCommand = SingleTapeCommand ((String, State, String), (String, State, String))
     deriving (Eq, Ord, Show)
 -- commands
 newtype Commands = Commands (Set [SingleTapeCommand])

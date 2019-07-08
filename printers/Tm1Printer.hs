@@ -53,8 +53,6 @@ instance ShowLaTeX SingleTapeCommand where
         let showTriple :: String -> State -> String -> LaTeX
             showTriple a s b = (fromString a) <> "," <> (toLaTeX s) <> "," <> (fromString b) 
         math $ textell $ ((showTriple u q v) <> rightarrow <> (showTriple u' q' v'))
-    
-    doLaTeX NoCommand = "nope"
 
 
 instance ShowLaTeX Commands where
@@ -71,10 +69,8 @@ instance ShowLaTeX Commands where
         let showTriple (u, q, v) = (math $ fromString u) & (math $ doLaTeX q) & (math $ fromString v)
         
         let showFrom (SingleTapeCommand (q, _)) = showTriple q
-            showFrom NoCommand = mempty & mempty & mempty
 
         let showTo (SingleTapeCommand (_, q)) = showTriple q
-            showTo NoCommand = mempty & mempty & mempty
 
         let showLine (lineNumber, singleTapeCommands) = do
                 foldl1 (&) ((map showFrom singleTapeCommands) ++ [fromString $ show lineNumber] ++ (map showTo singleTapeCommands))
