@@ -37,6 +37,7 @@ library
       TMType
       TM2SM
       --TM2TM'
+      TMInterpreter
   other-modules:
       Paths_LangToGroup
   hs-source-dirs:
