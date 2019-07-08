@@ -33,18 +33,17 @@ mapRelationSymbolToCommand workState prevLetter acc l inputTapeLetters =
                     rightBoundingLetter)
                     ),
                 SingleTapeCommand (
-                    (leftBoundingLetter, 
+                    (getDisjoinLetter prevLetter, 
                             workState, 
-                            getDisjoinLetter prevLetter), 
-                            (leftBoundingLetter, 
+                            rightBoundingLetter), 
+                            (getDisjoinLetter prevLetter, 
                             intermediateStateSecondTape, 
-                            getDisjoinLetter prevLetter)
+                            rightBoundingLetter)
                     )
                 ]) inputTapeLetters) ++ acc
         (c : t) -> 
             mapRelationSymbolToCommand workState c 
-                ((concat $ map (\x -> [
-                    [
+                ((map (\x -> [
                     SingleTapeCommand (
                     (x, 
                     intermediateStateFirstTape, 
@@ -56,32 +55,15 @@ mapRelationSymbolToCommand workState prevLetter acc l inputTapeLetters =
                     SingleTapeCommand (
                         (emptySymbol, 
                         workState, 
-                        getDisjoinLetter prevLetter), 
+                        rightBoundingLetter), 
                         (getDisjoinLetter c, 
                         workState,
-                        getDisjoinLetter prevLetter)
-                        )], 
-                [
-                    SingleTapeCommand (
-                    (x, 
-                    intermediateStateFirstTape, 
-                    rightBoundingLetter),
-                    (x, 
-                    intermediateStateFirstTape, 
-                    rightBoundingLetter)
-                    ),
-                    SingleTapeCommand (
-                        (getDisjoinLetter c, 
-                        workState, 
-                        emptySymbol), 
-                        (emptySymbol, 
-                        workState,
-                        getDisjoinLetter c)
-                        )]
+                        rightBoundingLetter)
+                        )
                 ]) inputTapeLetters) ++ acc) t inputTapeLetters
 
 mapRelationToTransition inputTapeLetters (Relation (Nonterminal nonterminalSymbol, symbols)) newState
-        = mapRelationSymbolToCommand newState (mapSymbolToLetter (head symbols)) (concat $ map (\x -> [ 
+        = mapRelationSymbolToCommand newState (mapSymbolToLetter (head $ reverse symbols)) (map (\x ->
             [
                 SingleTapeCommand (
                     (x, 
@@ -92,33 +74,14 @@ mapRelationToTransition inputTapeLetters (Relation (Nonterminal nonterminalSymbo
                     rightBoundingLetter)
                 ),
                 SingleTapeCommand (
-                    (leftBoundingLetter, 
+                    (nonterminalSymbol, 
                     intermediateStateSecondTape, 
-                    nonterminalSymbol), 
-                    (leftBoundingLetter, 
+                    rightBoundingLetter), 
+                    (getDisjoinLetter $ mapSymbolToLetter $ head $ reverse symbols, 
                     newState, 
-                    nonterminalSymbol)
-                    )
-                ],
-            [
-                SingleTapeCommand (
-                    (x, 
-                    intermediateStateFirstTape, 
-                    rightBoundingLetter),
-                    (x, 
-                    intermediateStateFirstTape, 
                     rightBoundingLetter)
-                ),
-                SingleTapeCommand (
-                    (leftBoundingLetter, 
-                    newState, 
-                    nonterminalSymbol), 
-                    (leftBoundingLetter, 
-                    newState, 
-                    getDisjoinLetter $ mapSymbolToLetter (head symbols))
                     )
-                ]
-        ]) inputTapeLetters) (map mapSymbolToLetter (tail symbols)) inputTapeLetters
+                ]) inputTapeLetters) (map mapSymbolToLetter (tail $ reverse symbols)) inputTapeLetters
     
     
 
@@ -142,7 +105,7 @@ mapCfgToTM
     let startStates = StartStates [startStateFirstTape, startStateSecondTape]
     let accessStates = AccessStates [finalStateFirstTape, finalStateSecondTape]
     -- define first transition
-    let firstCommands = concat $ map (\x -> [[ 
+    let firstCommands = map (\x -> [
                 SingleTapeCommand (
                     (x, 
                     startStateFirstTape, 
@@ -156,29 +119,10 @@ mapCfgToTM
                     startStateSecondTape, 
                     rightBoundingLetter), 
                     (startSymbol, 
-                    startStateSecondTape, 
+                    intermediateStateSecondTape, 
                     rightBoundingLetter)
                     )
-                ],
-            [ 
-                SingleTapeCommand (
-                    (x, 
-                    intermediateStateFirstTape, 
-                    rightBoundingLetter), 
-                    (x, 
-                    intermediateStateFirstTape,
-                    rightBoundingLetter)
-                    ),
-                SingleTapeCommand (
-                    (startSymbol, 
-                    startStateSecondTape, 
-                    emptySymbol), 
-                    (emptySymbol, 
-                    intermediateStateSecondTape,
-                    startSymbol)
-                    )
-                ]
-            ]) $ Set.toList setOfTerminalLetters
+                ]) $ Set.toList setOfTerminalLetters
 
     -- convert relations
     let listOfRelations = Set.elems setOfRelations
@@ -197,12 +141,12 @@ mapCfgToTM
                     rightBoundingLetter)
                     ),
                 SingleTapeCommand (
-                    (leftBoundingLetter,
+                    (getDisjoinLetter x,
                     intermediateStateSecondTape,
-                    getDisjoinLetter x),
-                    (leftBoundingLetter,
+                    rightBoundingLetter),
+                    (emptySymbol,
                     intermediateStateSecondTape,
-                    emptySymbol)
+                    rightBoundingLetter)
                 )
             ]) setOfTerminals
     let acceptCommand = [SingleTapeCommand (
@@ -231,12 +175,12 @@ mapCfgToTM
                     rightBoundingLetter)
                     ),
                 SingleTapeCommand (
-                    (leftBoundingLetter, 
+                    (x, 
                     intermediateStateSecondTape, 
-                    x), 
-                    (leftBoundingLetter, 
+                    rightBoundingLetter), 
+                    (x, 
                     finalStateSecondTape, 
-                    x)
+                    rightBoundingLetter)
                     )
                 ]) $ Set.toList setOfSecondTapeAlphabet)
     let transitions = Set.union (Set.fromList (acceptCommand ++ firstCommands)) (Set.union mappedTerminals (Set.fromList mappedRelations))
@@ -255,12 +199,12 @@ mapCfgToTM
                                                                             rightBoundingLetter)
                                                                         ),
                                                                         SingleTapeCommand (
-                                                                            (leftBoundingLetter, 
+                                                                            (h, 
                                                                             finalStateSecondTape, 
-                                                                            h), 
-                                                                            (leftBoundingLetter, 
+                                                                            rightBoundingLetter), 
+                                                                            (emptySymbol, 
                                                                             finalStateSecondTape, 
-                                                                            emptySymbol)
+                                                                            rightBoundingLetter)
                                                                         )
                                                                         ] : acc)
                                                                     [] -> acc

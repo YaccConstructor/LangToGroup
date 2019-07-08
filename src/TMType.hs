@@ -29,7 +29,7 @@ newtype Commands = Commands (Set [SingleTapeCommand])
 leftBoundingLetter = "α"
 -- rightmost square on every tape
 rightBoundingLetter = "ω"
-emptySymbol = "ε"
+emptySymbol = ""
 -- TM
 newtype TM = TM (InputAlphabet, [TapeAlphabet], MultiTapeStates, Commands, StartStates, AccessStates)
     deriving (Eq, Ord, Show)
