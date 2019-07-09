@@ -18,3 +18,5 @@ newtype Relation = Relation (Nonterminal, [Symbol])
 -- grammar type
 newtype Grammar = Grammar (Set Nonterminal, Set Terminal, Set Relation, StartSymbol)
     deriving (Eq, Ord)
+
+eps = Terminal ""
