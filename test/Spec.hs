@@ -31,10 +31,10 @@ configsTest = do
     let q1 = TMType.State "q1"
     let expectedConfigs = Configs ([
             [([leftBoundingLetter, "a"], startStateFirstTape, [rightBoundingLetter]), ([leftBoundingLetter], startStateSecondTape, [rightBoundingLetter])],
-            [([leftBoundingLetter, "a"], intermediateStateFirstTape, [rightBoundingLetter]), ([leftBoundingLetter, "S"], intermediateStateSecondTape, [rightBoundingLetter])],
-            [([leftBoundingLetter, "a"], intermediateStateFirstTape, [rightBoundingLetter]), ([leftBoundingLetter, "a'"], q1, [rightBoundingLetter])],
-            [([leftBoundingLetter, "a"], intermediateStateFirstTape, [rightBoundingLetter]), ([leftBoundingLetter, "a'"], intermediateStateSecondTape, [rightBoundingLetter])],
-            [([leftBoundingLetter], intermediateStateFirstTape, [rightBoundingLetter]), ([leftBoundingLetter], intermediateStateSecondTape, [rightBoundingLetter])],
+            [([leftBoundingLetter, "a"], startStateFirstTape, [rightBoundingLetter]), ([leftBoundingLetter, "S"], intermediateStateSecondTape, [rightBoundingLetter])],
+            [([leftBoundingLetter, "a"], startStateFirstTape, [rightBoundingLetter]), ([leftBoundingLetter, "a'"], q1, [rightBoundingLetter])],
+            [([leftBoundingLetter, "a"], startStateFirstTape, [rightBoundingLetter]), ([leftBoundingLetter, "a'"], intermediateStateSecondTape, [rightBoundingLetter])],
+            [([leftBoundingLetter], startStateFirstTape, [rightBoundingLetter]), ([leftBoundingLetter], intermediateStateSecondTape, [rightBoundingLetter])],
             [([leftBoundingLetter], finalStateFirstTape, [rightBoundingLetter]), ([leftBoundingLetter], finalStateSecondTape, [rightBoundingLetter])]
             ])
     
@@ -59,7 +59,7 @@ configsTest = do
 --     let expectedTM = TM (
 --             InputAlphabet (Set.fromList [letter_a]),
 --             [TapeAlphabet (Set.fromList [letter_a]), TapeAlphabet (Set.fromList [getDisjoinLetter letter_a, letter_S])],
---             MultiTapeStates [(Set.fromList [startStateFirstTape, intermediateStateFirstTape, finalStateFirstTape]), 
+--             MultiTapeStates [(Set.fromList [startStateFirstTape, startStateFirstTape, finalStateFirstTape]), 
 --                             (Set.fromList [startStateSecondTape, intermediateStateSecondTape, finalStateSecondTape, workState])],
 --             Commands (Set.fromList [
 --                 [
@@ -68,7 +68,7 @@ configsTest = do
 --                         startStateFirstTape, 
 --                         rightBoundingLetter), 
 --                         (emptySymbol, 
---                         intermediateStateFirstTape, 
+--                         startStateFirstTape, 
 --                         rightBoundingLetter)
 --                         ),
 --                     SingleTapeCommand (
@@ -83,10 +83,10 @@ configsTest = do
 --                 [ 
 --                     SingleTapeCommand (
 --                         (emptySymbol, 
---                         intermediateStateFirstTape, 
+--                         startStateFirstTape, 
 --                         rightBoundingLetter), 
 --                         (emptySymbol, 
---                         intermediateStateFirstTape, 
+--                         startStateFirstTape, 
 --                         rightBoundingLetter)
 --                         ),
 --                     SingleTapeCommand (
@@ -134,10 +134,10 @@ configsTest = do
 --                 [
 --                     SingleTapeCommand (
 --                         (letter_a, 
---                         intermediateStateFirstTape, 
+--                         startStateFirstTape, 
 --                         emptySymbol), 
 --                         (emptySymbol, 
---                         intermediateStateFirstTape, 
+--                         startStateFirstTape, 
 --                         letter_a)
 --                         ), 
 --                     SingleTapeCommand (
@@ -152,7 +152,7 @@ configsTest = do
 --                 [ 
 --                     SingleTapeCommand (
 --                         (leftBoundingLetter, 
---                         intermediateStateFirstTape, 
+--                         startStateFirstTape, 
 --                         emptySymbol), 
 --                         (leftBoundingLetter, 
 --                         finalStateFirstTape, 

@@ -9,12 +9,11 @@ import Helpers
 -- define a start states
 startStateFirstTape = State "q_0^1"
 startStateSecondTape = State "q_0^2"
--- define a intermediate states
-intermediateStateFirstTape = State "q_1^1"
-intermediateStateSecondTape = State "q_1^2"
 -- define a final states
 finalStateFirstTape = State "q_2^1"
 finalStateSecondTape = State "q_2^2"
+
+intermediateStateSecondTape = State "q_1^2"
 
 mapSymbolToLetter x =
     case x of 
@@ -26,10 +25,10 @@ mapRelationSymbolToCommand workState prevLetter acc l inputTapeLetters =
         [] -> (map (\x -> [
                 SingleTapeCommand (
                     (x, 
-                    intermediateStateFirstTape, 
+                    startStateFirstTape, 
                     rightBoundingLetter),
                     (x, 
-                    intermediateStateFirstTape, 
+                    startStateFirstTape, 
                     rightBoundingLetter)
                     ),
                 SingleTapeCommand (
@@ -46,10 +45,10 @@ mapRelationSymbolToCommand workState prevLetter acc l inputTapeLetters =
                 ((map (\x -> [
                     SingleTapeCommand (
                     (x, 
-                    intermediateStateFirstTape, 
+                    startStateFirstTape, 
                     rightBoundingLetter),
                     (x, 
-                    intermediateStateFirstTape, 
+                    startStateFirstTape, 
                     rightBoundingLetter)
                     ),
                     SingleTapeCommand (
@@ -67,10 +66,10 @@ mapRelationToTransition inputTapeLetters (Relation (Nonterminal nonterminalSymbo
             [
                 SingleTapeCommand (
                     (x, 
-                    intermediateStateFirstTape, 
+                    startStateFirstTape, 
                     rightBoundingLetter),
                     (x, 
-                    intermediateStateFirstTape, 
+                    startStateFirstTape, 
                     rightBoundingLetter)
                 ),
                 SingleTapeCommand (
@@ -111,7 +110,7 @@ mapCfgToTM
                     startStateFirstTape, 
                     rightBoundingLetter), 
                     (x, 
-                    intermediateStateFirstTape, 
+                    startStateFirstTape, 
                     rightBoundingLetter)
                     ),
                 SingleTapeCommand (
@@ -134,10 +133,10 @@ mapCfgToTM
             [
                 SingleTapeCommand (
                     (x, 
-                    intermediateStateFirstTape, 
+                    startStateFirstTape, 
                     rightBoundingLetter), 
                     (emptySymbol, 
-                    intermediateStateFirstTape, 
+                    startStateFirstTape, 
                     rightBoundingLetter)
                     ),
                 SingleTapeCommand (
@@ -149,9 +148,27 @@ mapCfgToTM
                     rightBoundingLetter)
                 )
             ]) setOfTerminals
+    let deleteStackCommands = map (\x -> [ 
+                                            SingleTapeCommand (
+                                                (leftBoundingLetter, 
+                                                startStateFirstTape, 
+                                                rightBoundingLetter), 
+                                                (leftBoundingLetter, 
+                                                startStateFirstTape, 
+                                                rightBoundingLetter)
+                                                ),
+                                            SingleTapeCommand (
+                                                (x, 
+                                                intermediateStateSecondTape, 
+                                                rightBoundingLetter), 
+                                                (emptySymbol, 
+                                                intermediateStateSecondTape, 
+                                                rightBoundingLetter)
+                                                )
+                                            ]) $ Set.toList setOfSecondTapeAlphabet
     let acceptCommand = [SingleTapeCommand (
                 (leftBoundingLetter, 
-                intermediateStateFirstTape, 
+                startStateFirstTape, 
                 rightBoundingLetter), 
                 (leftBoundingLetter, 
                 finalStateFirstTape, 
@@ -165,48 +182,10 @@ mapCfgToTM
                 finalStateSecondTape, 
                 rightBoundingLetter)
                 )
-            ] : (map (\x -> [ 
-                SingleTapeCommand (
-                    (leftBoundingLetter, 
-                    intermediateStateFirstTape, 
-                    rightBoundingLetter), 
-                    (leftBoundingLetter, 
-                    finalStateFirstTape, 
-                    rightBoundingLetter)
-                    ),
-                SingleTapeCommand (
-                    (x, 
-                    intermediateStateSecondTape, 
-                    rightBoundingLetter), 
-                    (x, 
-                    finalStateSecondTape, 
-                    rightBoundingLetter)
-                    )
-                ]) $ Set.toList setOfSecondTapeAlphabet)
-    let transitions = Set.union (Set.fromList (acceptCommand ++ firstCommands)) (Set.union mappedTerminals (Set.fromList mappedRelations))
-    let multiTapeStates = MultiTapeStates [
-            (Set.fromList [startStateFirstTape, intermediateStateFirstTape, finalStateFirstTape]),
-            (Set.fromList (finalStateSecondTape : intermediateStateSecondTape : startStateSecondTape : listOfStatesForTransition))
             ]
-    let generateEmptyAccessCommandsForSecondTape alphabet acc = case alphabet of
-                                                                    (h : t) -> generateEmptyAccessCommandsForSecondTape t ([
-                                                                        SingleTapeCommand (
-                                                                            (leftBoundingLetter, 
-                                                                            finalStateFirstTape, 
-                                                                            rightBoundingLetter), 
-                                                                            (leftBoundingLetter, 
-                                                                            finalStateFirstTape, 
-                                                                            rightBoundingLetter)
-                                                                        ),
-                                                                        SingleTapeCommand (
-                                                                            (h, 
-                                                                            finalStateSecondTape, 
-                                                                            rightBoundingLetter), 
-                                                                            (emptySymbol, 
-                                                                            finalStateSecondTape, 
-                                                                            rightBoundingLetter)
-                                                                        )
-                                                                        ] : acc)
-                                                                    [] -> acc
-    let transitionsWithEmptyAccessCommands = generateEmptyAccessCommandsForSecondTape (Set.toList setOfSecondTapeAlphabet) (Set.toList transitions)
-    TM (tmInputAlphabet, tmTapeAlphabets, multiTapeStates, Commands (Set.fromList transitionsWithEmptyAccessCommands), startStates, accessStates)
+    let transitions = Set.union (Set.fromList (acceptCommand : firstCommands ++ deleteStackCommands)) (Set.union mappedTerminals (Set.fromList mappedRelations))
+    let multiTapeStates = MultiTapeStates [
+            (Set.fromList [startStateFirstTape, finalStateFirstTape]),
+            (Set.fromList (finalStateSecondTape : startStateSecondTape : intermediateStateSecondTape : listOfStatesForTransition))
+            ]
+    TM (tmInputAlphabet, tmTapeAlphabets, multiTapeStates, Commands transitions, startStates, accessStates)
