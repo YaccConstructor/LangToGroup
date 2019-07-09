@@ -38,6 +38,7 @@ library
       TM2SM
       --TM2TM'
       TMInterpreter
+      ConfigType
   other-modules:
       Paths_LangToGroup
   hs-source-dirs:
@@ -71,6 +72,7 @@ executable LangToGroup-printer
       Lib
       Tm1Printer
       Paths_LangToGroup
+      ConfigPrinter
   hs-source-dirs:
       printers
   ghc-options: -threaded -rtsopts -with-rtsopts=-N

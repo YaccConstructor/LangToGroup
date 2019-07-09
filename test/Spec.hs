@@ -13,9 +13,11 @@ import SMType
 import GRType
 import SMachineToGroup
 import Data.List
+import TMInterpreter
+import ConfigType
 
-simpleCfgToTMMapTest :: Assertion
-simpleCfgToTMMapTest = do
+configsTest :: Assertion
+configsTest = do
     let terminal = Terminal "a"
     let nonterminal = Nonterminal "S"
     let grammar =
@@ -26,181 +28,205 @@ simpleCfgToTMMapTest = do
                 [GrammarType.T terminal])]),
                 nonterminal
             )
-    let letter_a = "a"
-    let letter_S = "S"
-    let workState = TMType.State "q1"
+    let q1 = TMType.State "q1"
+    let expectedConfigs = Configs ([
+            [([leftBoundingLetter, "a"], startStateFirstTape, [rightBoundingLetter]), ([leftBoundingLetter], startStateSecondTape, [rightBoundingLetter])],
+            [([leftBoundingLetter, "a"], intermediateStateFirstTape, [rightBoundingLetter]), ([leftBoundingLetter, "S"], intermediateStateSecondTape, [rightBoundingLetter])],
+            [([leftBoundingLetter, "a"], intermediateStateFirstTape, [rightBoundingLetter]), ([leftBoundingLetter, "a'"], q1, [rightBoundingLetter])],
+            [([leftBoundingLetter, "a"], intermediateStateFirstTape, [rightBoundingLetter]), ([leftBoundingLetter, "a'"], intermediateStateSecondTape, [rightBoundingLetter])],
+            [([leftBoundingLetter], intermediateStateFirstTape, [rightBoundingLetter]), ([leftBoundingLetter], intermediateStateSecondTape, [rightBoundingLetter])],
+            [([leftBoundingLetter], finalStateFirstTape, [rightBoundingLetter]), ([leftBoundingLetter], finalStateSecondTape, [rightBoundingLetter])]
+            ])
     
-    let expectedTM = TM (
-            InputAlphabet (Set.fromList [letter_a]),
-            [TapeAlphabet (Set.fromList [letter_a]), TapeAlphabet (Set.fromList [getDisjoinLetter letter_a, letter_S])],
-            MultiTapeStates [(Set.fromList [startStateFirstTape, intermediateStateFirstTape, finalStateFirstTape]), 
-                            (Set.fromList [startStateSecondTape, intermediateStateSecondTape, finalStateSecondTape, workState])],
-            Commands (Set.fromList [
-                [
-                    SingleTapeCommand (
-                        (emptySymbol, 
-                        startStateFirstTape, 
-                        rightBoundingLetter), 
-                        (emptySymbol, 
-                        intermediateStateFirstTape, 
-                        rightBoundingLetter)
-                        ),
-                    SingleTapeCommand (
-                        (emptySymbol, 
-                        startStateSecondTape, 
-                        rightBoundingLetter), 
-                        (letter_S, 
-                        startStateSecondTape, 
-                        rightBoundingLetter)
-                        )
-                    ],
-                [ 
-                    SingleTapeCommand (
-                        (emptySymbol, 
-                        intermediateStateFirstTape, 
-                        rightBoundingLetter), 
-                        (emptySymbol, 
-                        intermediateStateFirstTape, 
-                        rightBoundingLetter)
-                        ),
-                    SingleTapeCommand (
-                        (letter_S, 
-                        startStateSecondTape, 
-                        emptySymbol), 
-                        (emptySymbol, 
-                        intermediateStateSecondTape,
-                        letter_S)
-                        )
-                    ],
-                [
-                    NoCommand,
-                    SingleTapeCommand (
-                        (emptySymbol, 
-                        intermediateStateSecondTape, 
-                        letter_S), 
-                        (emptySymbol, 
-                        workState, 
-                        letter_S)
-                        )
-                    ],
-                [
-                    NoCommand,
-                    SingleTapeCommand (
-                        (emptySymbol, 
-                        workState, 
-                        letter_S), 
-                        (emptySymbol, 
-                        workState, 
-                        getDisjoinLetter letter_a)
-                        )
-                    ],
-                [
-                    NoCommand, 
-                    SingleTapeCommand (
-                        (emptySymbol, 
-                        workState, 
-                        getDisjoinLetter letter_a), 
-                        (emptySymbol, 
-                        intermediateStateSecondTape, 
-                        getDisjoinLetter letter_a)
-                        )
-                    ],
-                [
-                    SingleTapeCommand (
-                        (letter_a, 
-                        intermediateStateFirstTape, 
-                        emptySymbol), 
-                        (emptySymbol, 
-                        intermediateStateFirstTape, 
-                        letter_a)
-                        ), 
-                    SingleTapeCommand (
-                        (emptySymbol, 
-                        intermediateStateSecondTape, 
-                        getDisjoinLetter letter_a), 
-                        (getDisjoinLetter letter_a, 
-                        intermediateStateSecondTape, 
-                        emptySymbol)
-                        )
-                    ],
-                [ 
-                    SingleTapeCommand (
-                        (leftBoundingLetter, 
-                        intermediateStateFirstTape, 
-                        emptySymbol), 
-                        (leftBoundingLetter, 
-                        finalStateFirstTape, 
-                        emptySymbol)
-                        ),
-                    SingleTapeCommand (
-                        (emptySymbol, 
-                        intermediateStateSecondTape, 
-                        emptySymbol), 
-                        (emptySymbol, 
-                        finalStateSecondTape, 
-                        emptySymbol)
-                        )
-                    ],
-                [
-                    SingleTapeCommand (
-                        (leftBoundingLetter, 
-                        finalStateFirstTape, 
-                        letter_a), 
-                        (leftBoundingLetter, 
-                        finalStateFirstTape, 
-                        emptySymbol)
-                        ),
-                    NoCommand
-                    ],
-                [
-                    NoCommand,
-                    SingleTapeCommand (
-                        (emptySymbol, 
-                        finalStateSecondTape, 
-                        getDisjoinLetter letter_a), 
-                        (emptySymbol, 
-                        finalStateSecondTape, 
-                        emptySymbol)
-                        )
-                    ],
-                [
-                    NoCommand,
-                    SingleTapeCommand (
-                        (getDisjoinLetter letter_a, 
-                        finalStateSecondTape, 
-                        emptySymbol), 
-                        (emptySymbol, 
-                        finalStateSecondTape, 
-                        emptySymbol)
-                        )
-                    ],
-                    [
-                        NoCommand,
-                        SingleTapeCommand (
-                            (emptySymbol, 
-                            finalStateSecondTape, 
-                            letter_S), 
-                            (emptySymbol, 
-                            finalStateSecondTape, 
-                            emptySymbol)
-                            )
-                        ],
-                    [
-                        NoCommand,
-                        SingleTapeCommand (
-                            (letter_S, 
-                            finalStateSecondTape, 
-                            emptySymbol), 
-                            (emptySymbol, 
-                            finalStateSecondTape, 
-                            emptySymbol)
-                            )
-                        ]
-                ]),
-            StartStates [startStateFirstTape, startStateSecondTape],
-            AccessStates [finalStateFirstTape, finalStateSecondTape]
-                )
-    assertEqual "simple cfg to TMs convertion" (mapCfgToTM grammar) expectedTM
+    assertEqual "config test" expectedConfigs (interpretTM ["a"] $ mapCfgToTM grammar)
+
+-- simpleCfgToTMMapTest :: Assertion
+-- simpleCfgToTMMapTest = do
+--     let terminal = Terminal "a"
+--     let nonterminal = Nonterminal "S"
+--     let grammar =
+--             Grammar(
+--                 (Set.fromList [nonterminal]), 
+--                 (Set.fromList [terminal]), 
+--                 (Set.fromList [GrammarType.Relation (nonterminal, 
+--                 [GrammarType.T terminal])]),
+--                 nonterminal
+--             )
+--     let letter_a = "a"
+--     let letter_S = "S"
+--     let workState = TMType.State "q1"
+    
+--     let expectedTM = TM (
+--             InputAlphabet (Set.fromList [letter_a]),
+--             [TapeAlphabet (Set.fromList [letter_a]), TapeAlphabet (Set.fromList [getDisjoinLetter letter_a, letter_S])],
+--             MultiTapeStates [(Set.fromList [startStateFirstTape, intermediateStateFirstTape, finalStateFirstTape]), 
+--                             (Set.fromList [startStateSecondTape, intermediateStateSecondTape, finalStateSecondTape, workState])],
+--             Commands (Set.fromList [
+--                 [
+--                     SingleTapeCommand (
+--                         (emptySymbol, 
+--                         startStateFirstTape, 
+--                         rightBoundingLetter), 
+--                         (emptySymbol, 
+--                         intermediateStateFirstTape, 
+--                         rightBoundingLetter)
+--                         ),
+--                     SingleTapeCommand (
+--                         (emptySymbol, 
+--                         startStateSecondTape, 
+--                         rightBoundingLetter), 
+--                         (letter_S, 
+--                         startStateSecondTape, 
+--                         rightBoundingLetter)
+--                         )
+--                     ],
+--                 [ 
+--                     SingleTapeCommand (
+--                         (emptySymbol, 
+--                         intermediateStateFirstTape, 
+--                         rightBoundingLetter), 
+--                         (emptySymbol, 
+--                         intermediateStateFirstTape, 
+--                         rightBoundingLetter)
+--                         ),
+--                     SingleTapeCommand (
+--                         (letter_S, 
+--                         startStateSecondTape, 
+--                         emptySymbol), 
+--                         (emptySymbol, 
+--                         intermediateStateSecondTape,
+--                         letter_S)
+--                         )
+--                     ],
+--                 [
+--                     NoCommand,
+--                     SingleTapeCommand (
+--                         (emptySymbol, 
+--                         intermediateStateSecondTape, 
+--                         letter_S), 
+--                         (emptySymbol, 
+--                         workState, 
+--                         letter_S)
+--                         )
+--                     ],
+--                 [
+--                     NoCommand,
+--                     SingleTapeCommand (
+--                         (emptySymbol, 
+--                         workState, 
+--                         letter_S), 
+--                         (emptySymbol, 
+--                         workState, 
+--                         getDisjoinLetter letter_a)
+--                         )
+--                     ],
+--                 [
+--                     NoCommand, 
+--                     SingleTapeCommand (
+--                         (emptySymbol, 
+--                         workState, 
+--                         getDisjoinLetter letter_a), 
+--                         (emptySymbol, 
+--                         intermediateStateSecondTape, 
+--                         getDisjoinLetter letter_a)
+--                         )
+--                     ],
+--                 [
+--                     SingleTapeCommand (
+--                         (letter_a, 
+--                         intermediateStateFirstTape, 
+--                         emptySymbol), 
+--                         (emptySymbol, 
+--                         intermediateStateFirstTape, 
+--                         letter_a)
+--                         ), 
+--                     SingleTapeCommand (
+--                         (emptySymbol, 
+--                         intermediateStateSecondTape, 
+--                         getDisjoinLetter letter_a), 
+--                         (getDisjoinLetter letter_a, 
+--                         intermediateStateSecondTape, 
+--                         emptySymbol)
+--                         )
+--                     ],
+--                 [ 
+--                     SingleTapeCommand (
+--                         (leftBoundingLetter, 
+--                         intermediateStateFirstTape, 
+--                         emptySymbol), 
+--                         (leftBoundingLetter, 
+--                         finalStateFirstTape, 
+--                         emptySymbol)
+--                         ),
+--                     SingleTapeCommand (
+--                         (emptySymbol, 
+--                         intermediateStateSecondTape, 
+--                         emptySymbol), 
+--                         (emptySymbol, 
+--                         finalStateSecondTape, 
+--                         emptySymbol)
+--                         )
+--                     ],
+--                 [
+--                     SingleTapeCommand (
+--                         (leftBoundingLetter, 
+--                         finalStateFirstTape, 
+--                         letter_a), 
+--                         (leftBoundingLetter, 
+--                         finalStateFirstTape, 
+--                         emptySymbol)
+--                         ),
+--                     NoCommand
+--                     ],
+--                 [
+--                     NoCommand,
+--                     SingleTapeCommand (
+--                         (emptySymbol, 
+--                         finalStateSecondTape, 
+--                         getDisjoinLetter letter_a), 
+--                         (emptySymbol, 
+--                         finalStateSecondTape, 
+--                         emptySymbol)
+--                         )
+--                     ],
+--                 [
+--                     NoCommand,
+--                     SingleTapeCommand (
+--                         (getDisjoinLetter letter_a, 
+--                         finalStateSecondTape, 
+--                         emptySymbol), 
+--                         (emptySymbol, 
+--                         finalStateSecondTape, 
+--                         emptySymbol)
+--                         )
+--                     ],
+--                     [
+--                         NoCommand,
+--                         SingleTapeCommand (
+--                             (emptySymbol, 
+--                             finalStateSecondTape, 
+--                             letter_S), 
+--                             (emptySymbol, 
+--                             finalStateSecondTape, 
+--                             emptySymbol)
+--                             )
+--                         ],
+--                     [
+--                         NoCommand,
+--                         SingleTapeCommand (
+--                             (letter_S, 
+--                             finalStateSecondTape, 
+--                             emptySymbol), 
+--                             (emptySymbol, 
+--                             finalStateSecondTape, 
+--                             emptySymbol)
+--                             )
+--                         ]
+--                 ]),
+--             StartStates [startStateFirstTape, startStateSecondTape],
+--             AccessStates [finalStateFirstTape, finalStateSecondTape]
+--                 )
+--     assertEqual "simple cfg to TMs convertion" (mapCfgToTM grammar) expectedTM
 
 genY :: Int -> [[Y]] -> [[Y]]
 genY 0 x = x
@@ -305,6 +331,7 @@ sMachineToGroupTest = do
 
 main :: IO ()
 main = defaultMainWithOpts
-       [testCase "simple cfg to TM map" simpleCfgToTMMapTest, 
-        testCase "sm to gr map" sMachineToGroupTest]
+       [--testCase "simple cfg to TM map" simpleCfgToTMMapTest, 
+        testCase "sm to gr map" sMachineToGroupTest,
+        testCase "cft to TM to config test" configsTest]
        mempty

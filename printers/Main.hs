@@ -14,7 +14,8 @@ import Lib
 import GrammarType
 import CfgToTMMapper 
 import TMType
-
+import TMInterpreter
+import ConfigPrinter
 
 preambula :: LaTeXM ()
 preambula = 
@@ -31,6 +32,8 @@ example = execLaTeXM $
         document $ do
             doLaTeX testGrammar
             doLaTeX $ mapCfgToTM testGrammar
+            newpage
+            doLaTeX $ interpretTM ["a"] $ mapCfgToTM testGrammar
             newpage
             doLaTeX seq1Grammar
             doLaTeX $ mapCfgToTM seq1Grammar
