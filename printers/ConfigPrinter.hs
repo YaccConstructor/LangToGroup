@@ -17,15 +17,14 @@ import Tm1Printer
 instance ShowLaTeX Configs where
     doLaTeX (Configs configs) = do
         let tapesCount   = length $ head configs
-        let tapeSpec     = [CenterColumn, VerticalLine]
+        let tapeSpec     = [DVerticalLine, CenterColumn, VerticalLine, CenterColumn, VerticalLine, CenterColumn]
         let halfSpec     = concat $ replicate tapesCount tapeSpec
-        let columnsSpec  = [DVerticalLine, CenterColumn, DVerticalLine] ++ halfSpec
+        let columnsSpec  = [CenterColumn] ++ halfSpec
         let tapesNames   = map (\num -> "Tape " ++ show num) [1..tapesCount]
-        let halfHeader   = foldl1 (&) $ map (\cur -> fromString cur) tapesNames
+        let halfHeader   = foldl1 (&) $ map (\cur -> (multicolumn 3 [CenterColumn] $ fromString cur)) tapesNames
         
-        --let showTriple (u, q, v) = (math $ fromString $ concat u) ++ (math $ doLaTeX q) ++ (math $ fromString $ concat v)
-
-        let showTriple (u, q, v) = (math $ doLaTeX q)
+        --let showTriple (u, State q, v) = math $ fromString $ concat u ++ q ++ (concat v)
+        let showTriple (u, q, v) = (math $ fromString $ concat u) & (math $ doLaTeX q) & (math $ fromString $ concat v)
 
         let showLine (lineNumber, config) = do
                 foldl1 (&) ([fromString $ show lineNumber] ++ (map showTriple config))
