@@ -28,7 +28,7 @@ configsTest = do
                 [GrammarType.T terminal])]),
                 nonterminal
             )
-    let q1 = TMType.State "q1"
+    let q1 = TMType.State "q_3^2"
     let expectedConfigs = Configs ([
             [([leftBoundingLetter, "a"], startStateFirstTape, [rightBoundingLetter]), ([leftBoundingLetter], startStateSecondTape, [rightBoundingLetter])],
             [([leftBoundingLetter, "a"], startStateFirstTape, [rightBoundingLetter]), ([leftBoundingLetter, "S"], intermediateStateSecondTape, [rightBoundingLetter])],

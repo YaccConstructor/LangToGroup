@@ -10,7 +10,7 @@ import Helpers
 startStateFirstTape = State "q_0^1"
 startStateSecondTape = State "q_0^2"
 -- define a final states
-finalStateFirstTape = State "q_2^1"
+finalStateFirstTape = State "q_1^1"
 finalStateSecondTape = State "q_2^2"
 
 intermediateStateSecondTape = State "q_1^2"
@@ -125,7 +125,7 @@ mapCfgToTM
 
     -- convert relations
     let listOfRelations = Set.elems setOfRelations
-    let listOfStatesForTransition = [State ("q" ++ show i) | i <- [1..(length listOfRelations)]]
+    let listOfStatesForTransition = [State ("q_" ++ show i ++ "^2") | i <- [3..(length listOfRelations + 2)]]
     let mappedRelationsSublists = zipWith (mapRelationToTransition $ Set.toList setOfTerminalLetters) listOfRelations listOfStatesForTransition
     let mappedRelations = foldl (++) [] mappedRelationsSublists
     -- map terminals to transitions
