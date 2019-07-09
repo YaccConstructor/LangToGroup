@@ -37,4 +37,5 @@ instance ShowLaTeX Configs where
                 hline
                 mapM_ showLine $ zip [1..] configs
 
+        subsection_ "Configurations"
         tabular Nothing columnsSpec tableBody
