@@ -32,8 +32,11 @@ example = execLaTeXM $
         document $ do
             doLaTeX testGrammar
             doLaTeX $ mapCfgToTM testGrammar
-            newpage
             doLaTeX $ interpretTM ["a"] $ mapCfgToTM testGrammar
+            newpage
+            doLaTeX epsTestGrammar
+            doLaTeX $ mapCfgToTM epsTestGrammar
+            --doLaTeX $ interpretTM ["a"] $ mapCfgToTM epsTestGrammar
             newpage
             doLaTeX seq1Grammar
             doLaTeX $ mapCfgToTM seq1Grammar
@@ -66,9 +69,11 @@ rpsGrammar =
         (Set.fromList [nS, nO, nC, nQ, nW]), 
         (Set.fromList [open, close]), 
         (Set.fromList relations),
-        nS
+        nS,
+        eps
     ) 
     where
+        eps = Epsilon "ε"
         open = t "("
         close = t ")"
 
@@ -96,9 +101,11 @@ seq1Grammar =
         (Set.fromList [nS, nO]), 
         (Set.fromList [one]), 
         (Set.fromList relations),
-        nS
+        nS,
+        eps
     ) 
     where
+        eps = Epsilon "ε"
         one = t "1"
 
         nO = nt "O"
@@ -113,12 +120,31 @@ seq1Grammar =
 testGrammar = grammar where
     terminal = Terminal "a"
     nonterminal = Nonterminal "S"
+    eps = Epsilon "ε"
     grammar =
         Grammar(
             (Set.fromList [nonterminal]),
             (Set.fromList [terminal]),
             (Set.fromList [GrammarType.Relation (nonterminal,
             [GrammarType.T terminal])]),
-            nonterminal
+            nonterminal,
+            eps
         )
 
+epsTestGrammar = grammar where
+    terminal = Terminal "a"
+    start = Nonterminal "S"
+    nonterminal = Nonterminal "A"
+    eps = Epsilon "ε"
+    grammar =
+        Grammar(
+            (Set.fromList [nonterminal, start]),
+            (Set.fromList [terminal]),
+            (Set.fromList [
+                GrammarType.Relation (start, [GrammarType.N nonterminal, GrammarType.N start]),
+                GrammarType.Relation (start, [GrammarType.E eps]),
+                GrammarType.Relation (nonterminal, [GrammarType.T terminal])
+                ]),
+            start,
+            eps
+        )

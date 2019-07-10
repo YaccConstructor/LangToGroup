@@ -25,14 +25,16 @@ showTerminals = helper where
 instance ShowLaTeX Nonterminal where
     doLaTeX (Nonterminal symbol) = fromString symbol 
 
-
 instance ShowLaTeX Terminal where
     doLaTeX (Terminal symbol)    = fromString symbol
 
+instance ShowLaTeX Epsilon where
+    doLaTeX (Epsilon symbol)    = fromString symbol
 
 instance ShowLaTeX Symbol where
     doLaTeX (T symbol) = doLaTeX symbol 
     doLaTeX (N symbol) = doLaTeX symbol 
+    doLaTeX (E symbol) = doLaTeX symbol
 
 
 instance ShowLaTeX Relation where
@@ -42,7 +44,7 @@ instance ShowLaTeX Relation where
 
 
 instance ShowLaTeX Grammar where
-    doLaTeX (Grammar (nonterminals, terminals, relations, start)) = do
+    doLaTeX (Grammar (nonterminals, terminals, relations, start, eps)) = do
         subsection_ "Nonterminals"
        -- math $ mapM_ doLaTeX nonterminals ; lnbk
         math $ showNonterminals $ Set.toList nonterminals ; lnbk
