@@ -38,6 +38,22 @@ example = execLaTeXM $
             doLaTeX $ mapCfgToTM epsTestGrammar
             doLaTeX $ interpretTM ["a"] $ mapCfgToTM epsTestGrammar
             newpage
+            doLaTeX epsTestLeftGrammar
+            doLaTeX $ mapCfgToTM epsTestLeftGrammar
+            doLaTeX $ interpretTM ["a"] $ mapCfgToTM epsTestLeftGrammar
+            newpage
+            doLaTeX abTestGrammar
+            doLaTeX $ mapCfgToTM abTestGrammar
+            doLaTeX $ interpretTM ["b", "b", "a", "a"] $ mapCfgToTM abTestGrammar
+            newpage
+            doLaTeX ab2TestGrammar
+            doLaTeX $ mapCfgToTM ab2TestGrammar
+            doLaTeX $ interpretTM ["b", "a", "b", "a"] $ mapCfgToTM ab2TestGrammar
+            newpage
+            doLaTeX ab3TestGrammar
+            doLaTeX $ mapCfgToTM ab3TestGrammar
+            --doLaTeX $ interpretTM ["b", "a", "b", "a"] $ mapCfgToTM ab3TestGrammar
+            newpage
             doLaTeX seq1Grammar
             doLaTeX $ mapCfgToTM seq1Grammar
             newpage
@@ -146,5 +162,95 @@ epsTestGrammar = grammar where
                 GrammarType.Relation (nonterminal, [GrammarType.T terminal])
                 ]),
             start,
+            eps
+        )
+
+epsTestLeftGrammar = grammar where
+    terminal = Terminal "a"
+    start = Nonterminal "S"
+    nonterminal = Nonterminal "A"
+    eps = Epsilon "ε"
+    grammar =
+        Grammar(
+            (Set.fromList [nonterminal, start]),
+            (Set.fromList [terminal]),
+            (Set.fromList [
+                GrammarType.Relation (start, [GrammarType.N start, GrammarType.N nonterminal]),
+                GrammarType.Relation (start, [GrammarType.E eps]),
+                GrammarType.Relation (nonterminal, [GrammarType.T terminal])
+                ]),
+            start,
+            eps
+        )
+
+abTestGrammar = grammar where
+    a = Terminal "a"
+    b = Terminal "b"
+    s = Nonterminal "S"
+    s1 = Nonterminal "C"
+    aN = Nonterminal "A"
+    bN = Nonterminal "B"
+    eps = Epsilon "ε"
+    grammar =
+        Grammar(
+            (Set.fromList [s, s1, aN, bN]),
+            (Set.fromList [a, b]),
+            (Set.fromList [
+                GrammarType.Relation (s, [GrammarType.N aN, GrammarType.N s1]),
+                GrammarType.Relation (s, [GrammarType.E eps]),
+                GrammarType.Relation (s1, [GrammarType.N s, GrammarType.N bN]),
+                GrammarType.Relation (aN, [GrammarType.T a]),
+                GrammarType.Relation (bN, [GrammarType.T b])
+                ]),
+            s,
+            eps
+        )
+
+ab2TestGrammar = grammar where
+    a = Terminal "a"
+    b = Terminal "b"
+    s = Nonterminal "S"
+    s1 = Nonterminal "C"
+    aN = Nonterminal "A"
+    bN = Nonterminal "B"
+    b1 = Nonterminal "D"
+    eps = Epsilon "ε"
+    grammar =
+        Grammar(
+            (Set.fromList [s, s1, aN, bN]),
+            (Set.fromList [a, b]),
+            (Set.fromList [
+                GrammarType.Relation (s, [GrammarType.N aN, GrammarType.N s1]),
+                GrammarType.Relation (s, [GrammarType.E eps]),
+                GrammarType.Relation (s1, [GrammarType.N s, GrammarType.N b1]),
+                GrammarType.Relation (aN, [GrammarType.T a]),
+                GrammarType.Relation (bN, [GrammarType.T b]),
+                GrammarType.Relation (b1, [GrammarType.N bN, GrammarType.N s])
+                ]),
+            s,
+            eps
+        )
+
+ab3TestGrammar = grammar where
+    a = Terminal "a"
+    b = Terminal "b"
+    s = Nonterminal "S"
+    s1 = Nonterminal "C"
+    aN = Nonterminal "A"
+    bN = Nonterminal "B"
+    eps = Epsilon "ε"
+    grammar =
+        Grammar(
+            (Set.fromList [s, s1, aN, bN]),
+            (Set.fromList [a, b]),
+            (Set.fromList [
+                GrammarType.Relation (s, [GrammarType.N s, GrammarType.N s]),
+                GrammarType.Relation (s, [GrammarType.N aN, GrammarType.N s1]),
+                GrammarType.Relation (s, [GrammarType.E eps]),
+                GrammarType.Relation (s1, [GrammarType.N s, GrammarType.N bN]),
+                GrammarType.Relation (aN, [GrammarType.T a]),
+                GrammarType.Relation (bN, [GrammarType.T b])
+                ]),
+            s,
             eps
         )

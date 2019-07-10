@@ -4,8 +4,10 @@ module GrammarPrinter where
 
 
 import Text.LaTeX.Base
+import Text.LaTeX.Base.Class
 import Text.LaTeX.Base.Commands
 import Text.LaTeX.Packages.AMSMath
+import Text.LaTeX.Packages.Inputenc
 
 import qualified Data.Set as Set
 import GrammarType
@@ -23,7 +25,7 @@ showTerminals = helper where
 
 
 instance ShowLaTeX Nonterminal where
-    doLaTeX (Nonterminal symbol) = fromString symbol 
+    doLaTeX (Nonterminal symbol) = fromString symbol
 
 instance ShowLaTeX Terminal where
     doLaTeX (Terminal symbol)    = fromString symbol
