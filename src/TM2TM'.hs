@@ -57,6 +57,7 @@ commandsOnetify commands acc =
 
 
 kplus1tapeState = State "q"
+firstPhaseFinalStatesTransmition (State s) = State (s ++ "'")
 
 generateFirstPhaseCommand command states acc =
     case states of
@@ -64,17 +65,19 @@ generateFirstPhaseCommand command states acc =
         s : ss  | acc == [] -> generateFirstPhaseCommand command ss $ (SingleTapeCommand ((emptySymbol, s, rightBoundingLetter), (emptySymbol, s, rightBoundingLetter))) : acc 
                 | otherwise -> generateFirstPhaseCommand command ss $ (SingleTapeCommand ((leftBoundingLetter, s, rightBoundingLetter), (leftBoundingLetter, s, rightBoundingLetter))) : acc 
 
-firstPhaseFinalCommand f startStates acc =
+firstPhaseFinalCommand startStates acc =
     case startStates of
-        [] -> reverse $ (SingleTapeCommand ((emptySymbol, kplus1tapeState, rightBoundingLetter), (emptySymbol, f kplus1tapeState, rightBoundingLetter))) : acc
-        s : ss  | acc == [] -> generateFirstPhaseCommand command ss $ (SingleTapeCommand ((emptySymbol, s, rightBoundingLetter), (emptySymbol, f s, rightBoundingLetter))) : acc 
-                | otherwise -> generateFirstPhaseCommand command ss $ (SingleTapeCommand ((leftBoundingLetter, s, rightBoundingLetter), (leftBoundingLetter, f s, rightBoundingLetter))) : acc 
+        [] -> reverse $ (SingleTapeCommand ((emptySymbol, kplus1tapeState, rightBoundingLetter), (emptySymbol, firstPhaseFinalStatesTransmition kplus1tapeState, rightBoundingLetter))) : acc
+        s : ss  | acc == [] -> firstPhaseFinalCommand ss $ (SingleTapeCommand ((emptySymbol, s, rightBoundingLetter), (emptySymbol, firstPhaseFinalStatesTransmition s, rightBoundingLetter))) : acc 
+                | otherwise -> firstPhaseFinalCommand ss $ (SingleTapeCommand ((leftBoundingLetter, s, rightBoundingLetter), (leftBoundingLetter, firstPhaseFinalStatesTransmition s, rightBoundingLetter))) : acc 
                 
 
 firstPhase commands startStates acc =
     case commands of
-        [] -> (firstPhaseFinalCommand (\x -> x ++ "'") startStates []) : acc
+        [] -> (firstPhaseFinalCommand startStates []) : acc
         h : t -> firstPhase t startStates $ ((generateFirstPhaseCommand h startStates [])) : acc
+
+secondPhase commands startStates 
 
 
 mapTM2TM' :: TM -> TM
@@ -90,11 +93,7 @@ mapTM2TM'
         
         --let (acceptCommand, othersCommand) = disjoinAcceptCommandWithOthers commands accessStates
         let commandsFirstPhase = firstPhase (Set.toList commands) startStates []
-        -- let tm'CommandsList = 
-        --         (zipWith 
-        --             (\cmd letter -> cmd ++ [SingleTapeCommand ((letter, kplus1tapeState, emptySymbol), (emptySymbol, kplus1tapeState, letter))])
-        --             (Set.toList commands)
-        --             kplus1tapeAlphabetList)-- нам не нужна к + 1 лента
+        
         
         
 
@@ -110,8 +109,6 @@ mapTM2TM'
         let symCommandsList = reverseAllCommands commands commands
         
         -- пора раздвоить команды
-
-        -- надо бы избавиться от NoCommand, для этого (RuleLetter, State, *) -> (RuleLetter, State, *) тут вопросец
 
         let divideCommands commands acc =
                 case commands of 
