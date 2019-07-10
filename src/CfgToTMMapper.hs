@@ -86,7 +86,43 @@ mapRelationToTransition inputTapeLetters (Relation (Nonterminal nonterminalSymbo
 mapRelations f terminals relations i acc states =
     case relations of
         [] -> (acc, states)
-        (Relation (Nonterminal nonterminalSymbol, [E (Epsilon eps)])) : t -> mapRelations f terminals t i ((map (\x -> [
+        (Relation (Nonterminal start, [E (Epsilon eps)])) : t -> mapRelations f terminals t i ([
+                                                                        [
+                                                                        SingleTapeCommand (
+                                                                            (leftBoundingLetter, 
+                                                                            startStateFirstTape, 
+                                                                            rightBoundingLetter),
+                                                                            (leftBoundingLetter, 
+                                                                            startStateFirstTape, 
+                                                                            rightBoundingLetter)
+                                                                        ),
+                                                                        SingleTapeCommand (
+                                                                            (start, 
+                                                                            intermediateStateSecondTape, 
+                                                                            rightBoundingLetter), 
+                                                                            (emptySymbol, 
+                                                                            intermediateStateSecondTape, 
+                                                                            rightBoundingLetter)
+                                                                            )
+                                                                        ], 
+                                                                        [
+                                                                        SingleTapeCommand (
+                                                                            (leftBoundingLetter, 
+                                                                            startStateFirstTape, 
+                                                                            rightBoundingLetter),
+                                                                            (leftBoundingLetter, 
+                                                                            startStateFirstTape, 
+                                                                            rightBoundingLetter)
+                                                                        ),
+                                                                        SingleTapeCommand (
+                                                                            (emptySymbol, 
+                                                                            startStateSecondTape, 
+                                                                            rightBoundingLetter), 
+                                                                            (start, 
+                                                                            intermediateStateSecondTape, 
+                                                                            rightBoundingLetter)
+                                                                            )
+                                                                        ]] ++ (map (\x -> [
                                                                         SingleTapeCommand (
                                                                             (x, 
                                                                             startStateFirstTape, 
@@ -96,7 +132,7 @@ mapRelations f terminals relations i acc states =
                                                                             rightBoundingLetter)
                                                                         ),
                                                                         SingleTapeCommand (
-                                                                            (nonterminalSymbol, 
+                                                                            (start, 
                                                                             intermediateStateSecondTape, 
                                                                             rightBoundingLetter), 
                                                                             (emptySymbol, 

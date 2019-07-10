@@ -4,7 +4,9 @@ module TMInterpreter where
     import Data.Set (Set)
     import qualified Data.Set as Set
     import Debug.Trace
+    import Data.Maybe
 
+    checkCommandTapeToTape :: [([String], State, [String])] -> [SingleTapeCommand] -> Bool
     checkCommandTapeToTape config command =
         case (command, config) of
             ([], []) -> True
@@ -15,34 +17,65 @@ module TMInterpreter where
                                 (last r) == r1 && (head l) == l1) -> checkCommandTapeToTape t2 t1
                             | otherwise -> False
 
-    getApplicableCommand config commands =
+    getApplicableCommands :: [([String], State, [String])] -> [[SingleTapeCommand]] -> [[SingleTapeCommand]] -> [[SingleTapeCommand]] 
+    getApplicableCommands config commands acc =
         case commands of
-            [] -> error ("No commands is applicable " ++ show config)
-            c : t -> if checkCommandTapeToTape config c then c else getApplicableCommand config t
+            [] -> acc
+            c : t   | checkCommandTapeToTape config c -> getApplicableCommands config t $ c : acc
+                    | otherwise -> getApplicableCommands config t acc
 
-    applyCommand config command acc = 
+    getApplicableCommandss :: [[[([String], State, [String])]]] -> [[SingleTapeCommand]] -> [[[SingleTapeCommand]]] -> [[[SingleTapeCommand]]]
+    getApplicableCommandss configss commands acc =
+        case configss of
+            [] -> reverse acc
+            h : t -> getApplicableCommandss t commands $ (getApplicableCommands (last h) commands []) : acc
+
+    applyCommand :: [([String], State, [String])] -> [SingleTapeCommand] -> [[([String], State, [String])]] -> [([String], State, [String])] -> [[([String], State, [String])]]
+    applyCommand config command configs acc = 
         case (command, config) of
-            ([], []) -> reverse acc
+            ([], []) -> configs ++ [reverse acc]
             (SingleTapeCommand ((r1, s1, l1), (r2, s2, l2)) : t1, (r, s, l) : t2) 
                     --insert
-                    | r1 == emptySymbol && l1 == rightBoundingLetter && l2 == rightBoundingLetter -> applyCommand t2 t1 $ (r ++ [r2], s2, l) : acc
+                    | r1 == emptySymbol && l1 == rightBoundingLetter && l2 == rightBoundingLetter -> applyCommand t2 t1 configs $ (r ++ [r2], s2, l) : acc
                     --remove
-                    | l1 == rightBoundingLetter && r2 == emptySymbol && l2 == rightBoundingLetter -> applyCommand t2 t1 $ (init r, s2, l) : acc
+                    | l1 == rightBoundingLetter && r2 == emptySymbol && l2 == rightBoundingLetter -> applyCommand t2 t1 configs $ (init r, s2, l) : acc
                     --replace
-                    | r1 == (last r) && l1 == (head l) -> applyCommand t2 t1 $ (init r ++ [r2], s2, l2 : (tail l)) : acc
+                    | r1 == (last r) && l1 == (head l) -> applyCommand t2 t1 configs $ (init r ++ [r2], s2, l2 : (tail l)) : acc
                     | otherwise -> error ("Wrong command " ++ show command)
+            ([], _) -> configs
+
+    applyCommands :: [[([String], State, [String])]] -> [[SingleTapeCommand]] -> [[[([String], State, [String])]]] -> [[[([String], State, [String])]]]
+    applyCommands configs commands acc =
+        case commands of
+            [] -> acc
+            h : t -> applyCommands configs t $ (applyCommand (last configs) h configs []) : acc
     
+    applyCommandss :: [[[([String], State, [String])]]] -> [[[SingleTapeCommand]]] -> [[[([String], State, [String])]]] -> [[[([String], State, [String])]]]
+    applyCommandss configss commandss acc =
+        case (configss, commandss) of
+            ([], []) -> acc
+            (configs : t1, commands : t2) -> applyCommandss t1 t2 $ (applyCommands configs commands []) ++ acc
+            _ -> error "Commandss and configss don't match"
+    
+    checkFinalEmptyStates :: [State] -> [([String], State, [String])] -> Bool
     checkFinalEmptyStates accessStates config =
         case (accessStates, config) of
             ([], []) -> True
             (s1 : t1, ([l2], s2, [r2]) : t2) | l2 ==  leftBoundingLetter && r2 == rightBoundingLetter && s1 == s2 -> checkFinalEmptyStates t1 t2
             _ -> False
 
+    isHereEmptyConfigss :: [State] -> [[[([String], State, [String])]]] -> Maybe [[([String], State, [String])]]
+    isHereEmptyConfigss accessStates configss =
+        case configss of
+            [] -> Nothing
+            h : t   | checkFinalEmptyStates accessStates (last h) -> Just h
+                    | otherwise -> isHereEmptyConfigss accessStates t
+            
 
-    startInterpreting accessStates config commands acc =
-        case checkFinalEmptyStates accessStates config of
-            True -> reverse $ config : acc
-            False -> startInterpreting accessStates (applyCommand config (getApplicableCommand config commands) []) commands (config : acc)
+    startInterpreting accessStates configss commands =
+        case isHereEmptyConfigss accessStates configss of
+            Just configs -> configs
+            Nothing -> startInterpreting accessStates (applyCommandss configss (getApplicableCommandss configss commands []) []) commands
 
     interpretTM :: [String] -> TM -> Configs
     interpretTM input (TM
@@ -54,7 +87,8 @@ module TMInterpreter where
         AccessStates accessStates)) = do
             -- check input
             let isInputCorrect = Set.isSubsetOf (Set.fromList input) inputAlphabet
+            let startConfigss = [[([leftBoundingLetter] ++ input, (head startStates), [rightBoundingLetter]) : (map (\s -> ([leftBoundingLetter], s, [rightBoundingLetter])) (tail startStates))]]
             case isInputCorrect of
                 False -> error "Incorrect input"
-                True -> Configs (startInterpreting accessStates (([leftBoundingLetter] ++ input, (head startStates), [rightBoundingLetter]) : (map (\s -> ([leftBoundingLetter], s, [rightBoundingLetter])) (tail startStates))) (Set.toList commands) [])
+                True -> Configs (startInterpreting accessStates startConfigss (Set.toList commands))
             

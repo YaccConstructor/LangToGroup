@@ -44,6 +44,20 @@ configsTest = do
     
     assertEqual "config test" expectedConfigs (interpretTM ["a"] $ mapCfgToTM test1Grammar)
 
+-- configsEpsTest :: Assertion
+-- configsEpsTest = do
+--     let q1 = TMType.State "q_3^2"
+--     let expectedConfigs = Configs ([
+--             [([leftBoundingLetter, "a"], startStateFirstTape, [rightBoundingLetter]), ([leftBoundingLetter], startStateSecondTape, [rightBoundingLetter])],
+--             [([leftBoundingLetter, "a"], startStateFirstTape, [rightBoundingLetter]), ([leftBoundingLetter, "S"], intermediateStateSecondTape, [rightBoundingLetter])],
+--             [([leftBoundingLetter, "a"], startStateFirstTape, [rightBoundingLetter]), ([leftBoundingLetter, "a'"], q1, [rightBoundingLetter])],
+--             [([leftBoundingLetter, "a"], startStateFirstTape, [rightBoundingLetter]), ([leftBoundingLetter, "a'"], intermediateStateSecondTape, [rightBoundingLetter])],
+--             [([leftBoundingLetter], startStateFirstTape, [rightBoundingLetter]), ([leftBoundingLetter], intermediateStateSecondTape, [rightBoundingLetter])],
+--             [([leftBoundingLetter], finalStateFirstTape, [rightBoundingLetter]), ([leftBoundingLetter], finalStateSecondTape, [rightBoundingLetter])]
+--             ])
+    
+--     assertEqual "config test" expectedConfigs (interpretTM ["a"] $ mapCfgToTM test1Grammar)
+
 simpleCfgToTMMapTest :: Assertion
 simpleCfgToTMMapTest = do
     let letter_a = "a"

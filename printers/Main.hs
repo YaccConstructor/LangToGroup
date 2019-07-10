@@ -36,7 +36,7 @@ example = execLaTeXM $
             newpage
             doLaTeX epsTestGrammar
             doLaTeX $ mapCfgToTM epsTestGrammar
-            --doLaTeX $ interpretTM ["a"] $ mapCfgToTM epsTestGrammar
+            doLaTeX $ interpretTM ["a"] $ mapCfgToTM epsTestGrammar
             newpage
             doLaTeX seq1Grammar
             doLaTeX $ mapCfgToTM seq1Grammar
