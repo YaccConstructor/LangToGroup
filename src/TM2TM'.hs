@@ -9,7 +9,6 @@ disjoinAcceptCommandWithOthers commands accessStates = do
     let isAcceptCommand command access = case (command, access) of 
             (((SingleTapeCommand ((_, _, _), (_, sh, _))), ah) : (st, at)) -> if sh == ah then isAcceptCommand st at else false
             [] : [] -> true
-            _ -> false
     let disjoinAcceptCommandWithOthersInternal allCommands acc = case allCommands of
             (h : t) -> if isAcceptCommand h accessStates then (h, acc ++ t) else disjoinAcceptCommandWithOthersInternal t (h : acc)
             [] -> error "No accept command"
@@ -34,20 +33,20 @@ getCurrentStates command acc =
 
 disjoinStates states = do
     let disjoinStatesInternal states acc =
-        case states of
-            State h : t ->  disjoinStatesInternal t ((State (getDisjoinLetter h)) : acc)
-            [] -> reverse acc
+            case states of
+                State h : t ->  disjoinStatesInternal t ((State (getDisjoinLetter h)) : acc)
+                [] -> reverse acc
     disjoinStatesInternal states []
 
 commandOnetify command = do
     let (startStates, endStates) = getCurrentStates command []
 -- как-то так, теперь надо алфавит стейтов засейвить
     let commandOnetifyInternal oldStates newStates command i acc = 
-        case command of
-            [SingleTapeCommand ((a, _, _), (a1, _, _))] -> 
-                (generateSingleMoveCommands a a1 i oldStates endStates []) : acc
-            SingleTapeCommand ((a, _, _), (a1, _, _)) : t -> 
-                commandOnetifyInternal newStates (disjoinStates newStates) t (i + 1) ((generateSingleMoveCommands a a1 i oldStates newStates []) : acc)            
+            case command of
+                [SingleTapeCommand ((a, _, _), (a1, _, _))] -> 
+                    (generateSingleMoveCommands a a1 i oldStates endStates []) : acc
+                SingleTapeCommand ((a, _, _), (a1, _, _)) : t -> 
+                    commandOnetifyInternal newStates (disjoinStates newStates) t (i + 1) ((generateSingleMoveCommands a a1 i oldStates newStates []) : acc)            
     commandOnetifyInternal startStates (disjoinStates startStates) command -1 []
 
 commandsOnetify commands acc =
@@ -56,20 +55,41 @@ commandsOnetify commands acc =
             commandsOnetify t ((commandOnetify h) ++ acc)
         [] -> acc
 
+
+kplus1tapeState = State "q"
+
+generateFirstPhaseCommand command states acc =
+    case states of
+        [] -> reverse $ (SingleTapeCommand ((emptySymbol, kplus1tapeState, rightBoundingLetter), (Command command, kplus1tapeState, rightBoundingLetter))) : acc
+        s : ss  | acc == [] -> generateFirstPhaseCommand command ss $ (SingleTapeCommand ((emptySymbol, s, rightBoundingLetter), (emptySymbol, s, rightBoundingLetter))) : acc 
+                | otherwise -> generateFirstPhaseCommand command ss $ (SingleTapeCommand ((leftBoundingLetter, s, rightBoundingLetter), (leftBoundingLetter, s, rightBoundingLetter))) : acc 
+
+firstPhaseFinalCommand f startStates acc =
+    case startStates of
+        [] -> reverse $ (SingleTapeCommand ((emptySymbol, kplus1tapeState, rightBoundingLetter), (emptySymbol, f kplus1tapeState, rightBoundingLetter))) : acc
+        s : ss  | acc == [] -> generateFirstPhaseCommand command ss $ (SingleTapeCommand ((emptySymbol, s, rightBoundingLetter), (emptySymbol, f s, rightBoundingLetter))) : acc 
+                | otherwise -> generateFirstPhaseCommand command ss $ (SingleTapeCommand ((leftBoundingLetter, s, rightBoundingLetter), (leftBoundingLetter, f s, rightBoundingLetter))) : acc 
+                
+
+firstPhase commands startStates acc =
+    case commands of
+        [] -> (firstPhaseFinalCommand (\x -> x ++ "'") startStates []) : acc
+        h : t -> firstPhase t startStates $ ((generateFirstPhaseCommand h startStates [])) : acc
+
+
 mapTM2TM' :: TM -> TM
 mapTM2TM' 
     (TM
-        (inputAlphabet, -- нужно ли оно вообще?
+        (inputAlphabet,
         tapeAlphabets, 
         MultiTapeStates multiTapeStates, 
         Commands commands, 
-        startStates, 
+        StartStates startStates, 
         AccessStates accessStates)
     ) = do
         
-        -- let (acceptCommand, othersCommand) = disjoinAcceptCommandWithOthers commands accessStates
-        -- let kplus1tapeState = State "kplus1state"
-        -- let kplus1tapeAlphabetList = map (\i -> "t" ++ show i) [1 .. (Set.size commands)]
+        --let (acceptCommand, othersCommand) = disjoinAcceptCommandWithOthers commands accessStates
+        let commandsFirstPhase = firstPhase (Set.toList commands) startStates []
         -- let tm'CommandsList = 
         --         (zipWith 
         --             (\cmd letter -> cmd ++ [SingleTapeCommand ((letter, kplus1tapeState, emptySymbol), (emptySymbol, kplus1tapeState, letter))])
@@ -79,14 +99,14 @@ mapTM2TM'
         
 
         let reverseCommands commands acc = -- fix []
-            case commands of
-                SingleTapeCommand ((a, s, b), (a1, s1, b1)) : t -> reverseCommands t (SingleTapeCommand ((a1, s1, b1), (a, s, b)) : acc)
-                [] -> reverse acc
+                case commands of
+                    SingleTapeCommand ((a, s, b), (a1, s1, b1)) : t -> reverseCommands t (SingleTapeCommand ((a1, s1, b1), (a, s, b)) : acc)
+                    [] -> reverse acc
 
         let reverseAllCommands commands acc =
-            case commands of
-                h : t -> reverseAllCommands t ((reverseCommands h []) : acc)
-                [] -> acc
+                case commands of
+                    h : t -> reverseAllCommands t ((reverseCommands h []) : acc)
+                    [] -> acc
         let symCommandsList = reverseAllCommands commands commands
         
         -- пора раздвоить команды
@@ -94,23 +114,23 @@ mapTM2TM'
         -- надо бы избавиться от NoCommand, для этого (RuleLetter, State, *) -> (RuleLetter, State, *) тут вопросец
 
         let divideCommands commands acc =
-            case commands of 
-                SingleTapeCommand ((a, s, b), (a1, s1, b1)) : t -> if b = rightBoundingLetter then 
-                                                                        divideCommands t (acc ++ [
-                                                                                                    SingleTapeCommand ((a, s, rightBoundingLetter), (a1, s1, rightBoundingLetter)),
-                                                                                                    SingleTapeCommand ((leftBoundingLetter, getDisjoinLetter s, rightBoundingLetter), (leftBoundingLetter, getDisjoinLetter s1, rightBoundingLetter))                                                                                                          
-                                                                                                    ]) 
-                                                                    else 
-                                                                        divideCommands t (acc ++ [
-                                                                                                    SingleTapeCommand ((a, s, rightBoundingLetter), (a1, s1, rightBoundingLetter)),
-                                                                                                    SingleTapeCommand ((b, getDisjoinLetter s, rightBoundingLetter), (b1, getDisjoinLetter s1, rightBoundingLetter))
-                                                                                                    ]) 
-                [] -> acc
+                case commands of 
+                    SingleTapeCommand ((a, s, b), (a1, s1, b1)) : t -> if b == rightBoundingLetter then 
+                                                                            divideCommands t (acc ++ [
+                                                                                                        SingleTapeCommand ((a, s, rightBoundingLetter), (a1, s1, rightBoundingLetter)),
+                                                                                                        SingleTapeCommand ((leftBoundingLetter, getDisjoinLetter s, rightBoundingLetter), (leftBoundingLetter, getDisjoinLetter s1, rightBoundingLetter))                                                                                                          
+                                                                                                        ]) 
+                                                                        else 
+                                                                            divideCommands t (acc ++ [
+                                                                                                        SingleTapeCommand ((a, s, rightBoundingLetter), (a1, s1, rightBoundingLetter)),
+                                                                                                        SingleTapeCommand ((b, getDisjoinLetter s, rightBoundingLetter), (b1, getDisjoinLetter s1, rightBoundingLetter))
+                                                                                                        ]) 
+                    [] -> acc
 
         let doubleTheCommands commands acc =
-            case commands of 
-                h : t -> doubleTheCommands t ((divideCommands h []) : acc)
-                [] -> reverse acc
+                case commands of 
+                    h : t -> doubleTheCommands t ((divideCommands h []) : acc)
+                    [] -> reverse acc
 
         let reversedSymmCommandsList = doubleTheCommands symCommandsList []
 
