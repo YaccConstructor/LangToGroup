@@ -74,7 +74,7 @@ mapRelationToTransition inputTapeLetters (Relation (Nonterminal nonterminalSymbo
                     rightBoundingLetter)
                 ),
                 SingleTapeCommand (
-                    (nonterminalSymbol, 
+                    (Value nonterminalSymbol, 
                     intermediateStateSecondTape, 
                     rightBoundingLetter), 
                     (getDisjoinSymbol $ head $ reverse symbols, 
@@ -97,7 +97,7 @@ mapRelations f terminals relations i acc states =
                                                                             rightBoundingLetter)
                                                                         ),
                                                                         SingleTapeCommand (
-                                                                            (start, 
+                                                                            (Value start, 
                                                                             intermediateStateSecondTape, 
                                                                             rightBoundingLetter), 
                                                                             (emptySymbol, 
@@ -118,7 +118,7 @@ mapRelations f terminals relations i acc states =
                                                                             (emptySymbol, 
                                                                             startStateSecondTape, 
                                                                             rightBoundingLetter), 
-                                                                            (start, 
+                                                                            (Value start, 
                                                                             intermediateStateSecondTape, 
                                                                             rightBoundingLetter)
                                                                             )
@@ -132,7 +132,7 @@ mapRelations f terminals relations i acc states =
                                                                             rightBoundingLetter)
                                                                         ),
                                                                         SingleTapeCommand (
-                                                                            (start, 
+                                                                            (Value start, 
                                                                             intermediateStateSecondTape, 
                                                                             rightBoundingLetter), 
                                                                             (emptySymbol, 
@@ -152,13 +152,13 @@ mapCfgToTM
         Nonterminal startSymbol,
         Epsilon eps)
         ) = do
-    let setOfTerminalLetters = Set.map (\(Terminal x) -> x) setOfTerminals
-    let setOfNonterminalLetters = Set.map (\(Nonterminal x) -> x) setOfNonterminals
-    let setOfSecondTapeAlphabet = Set.union setOfNonterminalLetters $ Set.map getDisjoinLetter setOfTerminalLetters
-    let tmInputAlphabet = InputAlphabet setOfTerminalLetters
+    let setOfNonterminalSquares = Set.map mapValue $ Set.map (\(Nonterminal x) -> x) setOfNonterminals
+    let setOfTerminalSquares = Set.map mapValue $ Set.map (\(Terminal x) -> x) setOfTerminals 
+    let setOfSecondTapeAlphabet = Set.union setOfNonterminalSquares $ Set.map getDisjoinSquare setOfTerminalSquares
+    let tmInputAlphabet = InputAlphabet setOfTerminalSquares
     let tmTapeAlphabets = 
             [
-                TapeAlphabet setOfTerminalLetters,
+                TapeAlphabet setOfTerminalSquares,
                 TapeAlphabet setOfSecondTapeAlphabet
             ]
     let startStates = StartStates [startStateFirstTape, startStateSecondTape]
@@ -177,19 +177,19 @@ mapCfgToTM
                     (emptySymbol, 
                     startStateSecondTape, 
                     rightBoundingLetter), 
-                    (startSymbol, 
+                    (Value startSymbol, 
                     intermediateStateSecondTape, 
                     rightBoundingLetter)
                     )
-                ]) $ Set.toList setOfTerminalLetters
+                ]) $ Set.toList setOfTerminalSquares
 
     -- convert relations
     let listOfRelations = Set.elems setOfRelations
     --let listOfStatesForTransition = [State ("q_" ++ show i ++ "^2") | i <- [3..(length listOfRelations + 2)]]
     --let mappedRelationsSublists = zipWith (mapRelationToTransition $ Set.toList setOfTerminalLetters) listOfRelations listOfStatesForTransition
-    let (mappedRelations, listOfStatesForTransition) = mapRelations mapRelationToTransition (Set.toList setOfTerminalLetters) listOfRelations 3 [] []
+    let (mappedRelations, listOfStatesForTransition) = mapRelations mapRelationToTransition (Set.toList setOfTerminalSquares) listOfRelations 3 [] []
     -- map terminals to transitions
-    let mappedTerminals = Set.map (\(Terminal x) -> 
+    let mappedTerminals = Set.map (\x -> 
             [
                 SingleTapeCommand (
                     (x, 
@@ -200,14 +200,14 @@ mapCfgToTM
                     rightBoundingLetter)
                     ),
                 SingleTapeCommand (
-                    (getDisjoinLetter x,
+                    (getDisjoinSquare x,
                     intermediateStateSecondTape,
                     rightBoundingLetter),
                     (emptySymbol,
                     intermediateStateSecondTape,
                     rightBoundingLetter)
                 )
-            ]) setOfTerminals
+            ]) setOfTerminalSquares
     let acceptCommand = [SingleTapeCommand (
                 (leftBoundingLetter, 
                 startStateFirstTape, 

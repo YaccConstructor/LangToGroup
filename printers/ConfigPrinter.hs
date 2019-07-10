@@ -24,7 +24,7 @@ instance ShowLaTeX Configs where
         let halfHeader   = foldl1 (&) $ map (\cur -> (multicolumn 3 [CenterColumn] $ fromString cur)) tapesNames
         
         --let showTriple (u, State q, v) = math $ fromString $ concat u ++ q ++ (concat v)
-        let showTriple (u, q, v) = (math $ fromString $ concat u) & (math $ doLaTeX q) & (math $ fromString $ concat v)
+        let showTriple (u, q, v) = (math $ fromString $ concat $ map (\(Value x) -> x) u) & (math $ doLaTeX q) & (math $ fromString $ concat $ map (\(Value x) -> x) v)
 
         let showLine (lineNumber, config) = do
                 foldl1 (&) ([fromString $ show lineNumber] ++ (map showTriple config))

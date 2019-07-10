@@ -1,5 +1,5 @@
 module ConfigType where
     import TMType
 
-    newtype Configs = Configs [[([String], State, [String])]]
+    newtype Configs = Configs [[([Square], State, [Square])]]
         deriving (Eq, Ord, Show)

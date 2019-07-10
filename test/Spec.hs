@@ -15,6 +15,7 @@ import SMachineToGroup
 import Data.List
 import TMInterpreter
 import ConfigType
+import Helpers
 
 test1Grammar = grammar where
     terminal = Terminal "a"
@@ -33,11 +34,13 @@ test1Grammar = grammar where
 configsTest :: Assertion
 configsTest = do
     let q1 = TMType.State "q_3^2"
+    let a = Value "a"
+    let a' = Value "a'"
     let expectedConfigs = Configs ([
-            [([leftBoundingLetter, "a"], startStateFirstTape, [rightBoundingLetter]), ([leftBoundingLetter], startStateSecondTape, [rightBoundingLetter])],
-            [([leftBoundingLetter, "a"], startStateFirstTape, [rightBoundingLetter]), ([leftBoundingLetter, "S"], intermediateStateSecondTape, [rightBoundingLetter])],
-            [([leftBoundingLetter, "a"], startStateFirstTape, [rightBoundingLetter]), ([leftBoundingLetter, "a'"], q1, [rightBoundingLetter])],
-            [([leftBoundingLetter, "a"], startStateFirstTape, [rightBoundingLetter]), ([leftBoundingLetter, "a'"], intermediateStateSecondTape, [rightBoundingLetter])],
+            [([leftBoundingLetter, a], startStateFirstTape, [rightBoundingLetter]), ([leftBoundingLetter], startStateSecondTape, [rightBoundingLetter])],
+            [([leftBoundingLetter, a], startStateFirstTape, [rightBoundingLetter]), ([leftBoundingLetter, Value "S"], intermediateStateSecondTape, [rightBoundingLetter])],
+            [([leftBoundingLetter, a], startStateFirstTape, [rightBoundingLetter]), ([leftBoundingLetter, a'], q1, [rightBoundingLetter])],
+            [([leftBoundingLetter, a], startStateFirstTape, [rightBoundingLetter]), ([leftBoundingLetter, a'], intermediateStateSecondTape, [rightBoundingLetter])],
             [([leftBoundingLetter], startStateFirstTape, [rightBoundingLetter]), ([leftBoundingLetter], intermediateStateSecondTape, [rightBoundingLetter])],
             [([leftBoundingLetter], finalStateFirstTape, [rightBoundingLetter]), ([leftBoundingLetter], finalStateSecondTape, [rightBoundingLetter])]
             ])
@@ -60,13 +63,13 @@ configsTest = do
 
 simpleCfgToTMMapTest :: Assertion
 simpleCfgToTMMapTest = do
-    let letter_a = "a"
-    let letter_S = "S"
+    let letter_a = Value "a"
+    let letter_S = Value "S"
     let workState = TMType.State "q_3^2"
     
     let expectedTM = TM (
             InputAlphabet (Set.fromList [letter_a]),
-            [TapeAlphabet (Set.fromList [letter_a]), TapeAlphabet (Set.fromList [getDisjoinLetter letter_a, letter_S])],
+            [TapeAlphabet (Set.fromList [letter_a]), TapeAlphabet (Set.fromList [getDisjoinSquare letter_a, letter_S])],
             MultiTapeStates [(Set.fromList [startStateFirstTape, finalStateFirstTape]), 
                             (Set.fromList [startStateSecondTape, intermediateStateSecondTape, finalStateSecondTape, workState])],
             Commands (Set.fromList [
@@ -101,7 +104,7 @@ simpleCfgToTMMapTest = do
                         (letter_S, 
                         intermediateStateSecondTape, 
                         rightBoundingLetter), 
-                        (getDisjoinLetter letter_a, 
+                        (getDisjoinSquare letter_a, 
                         workState, 
                         rightBoundingLetter)
                         )
@@ -116,10 +119,10 @@ simpleCfgToTMMapTest = do
                         rightBoundingLetter)
                         ), 
                     SingleTapeCommand (
-                        (getDisjoinLetter letter_a, 
+                        (getDisjoinSquare letter_a, 
                         workState, 
                         rightBoundingLetter), 
-                        (getDisjoinLetter letter_a, 
+                        (getDisjoinSquare letter_a, 
                         intermediateStateSecondTape, 
                         rightBoundingLetter)
                         )
@@ -134,7 +137,7 @@ simpleCfgToTMMapTest = do
                         rightBoundingLetter)
                         ),
                     SingleTapeCommand (
-                        (getDisjoinLetter letter_a, 
+                        (getDisjoinSquare letter_a, 
                         intermediateStateSecondTape, 
                         rightBoundingLetter), 
                         (emptySymbol, 

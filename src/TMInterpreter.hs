@@ -5,8 +5,9 @@ module TMInterpreter where
     import qualified Data.Set as Set
     import Debug.Trace
     import Data.Maybe
+    import Helpers
 
-    checkCommandTapeToTape :: [([String], State, [String])] -> [SingleTapeCommand] -> Bool
+    checkCommandTapeToTape :: [([Square], State, [Square])] -> [SingleTapeCommand] -> Bool
     checkCommandTapeToTape config command =
         case (command, config) of
             ([], []) -> True
@@ -17,20 +18,20 @@ module TMInterpreter where
                                 (last r) == r1 && (head l) == l1) -> checkCommandTapeToTape t2 t1
                             | otherwise -> False
 
-    getApplicableCommands :: [([String], State, [String])] -> [[SingleTapeCommand]] -> [[SingleTapeCommand]] -> [[SingleTapeCommand]] 
+    getApplicableCommands :: [([Square], State, [Square])] -> [[SingleTapeCommand]] -> [[SingleTapeCommand]] -> [[SingleTapeCommand]] 
     getApplicableCommands config commands acc =
         case commands of
             [] -> acc
             c : t   | checkCommandTapeToTape config c -> getApplicableCommands config t $ c : acc
                     | otherwise -> getApplicableCommands config t acc
 
-    getApplicableCommandss :: [[[([String], State, [String])]]] -> [[SingleTapeCommand]] -> [[[SingleTapeCommand]]] -> [[[SingleTapeCommand]]]
+    getApplicableCommandss :: [[[([Square], State, [Square])]]] -> [[SingleTapeCommand]] -> [[[SingleTapeCommand]]] -> [[[SingleTapeCommand]]]
     getApplicableCommandss configss commands acc =
         case configss of
             [] -> reverse acc
             h : t -> getApplicableCommandss t commands $ (getApplicableCommands (last h) commands []) : acc
 
-    applyCommand :: [([String], State, [String])] -> [SingleTapeCommand] -> [[([String], State, [String])]] -> [([String], State, [String])] -> [[([String], State, [String])]]
+    applyCommand :: [([Square], State, [Square])] -> [SingleTapeCommand] -> [[([Square], State, [Square])]] -> [([Square], State, [Square])] -> [[([Square], State, [Square])]]
     applyCommand config command configs acc = 
         case (command, config) of
             ([], []) -> configs ++ [reverse acc]
@@ -44,27 +45,27 @@ module TMInterpreter where
                     | otherwise -> error ("Wrong command " ++ show command)
             ([], _) -> configs
 
-    applyCommands :: [[([String], State, [String])]] -> [[SingleTapeCommand]] -> [[[([String], State, [String])]]] -> [[[([String], State, [String])]]]
+    applyCommands :: [[([Square], State, [Square])]] -> [[SingleTapeCommand]] -> [[[([Square], State, [Square])]]] -> [[[([Square], State, [Square])]]]
     applyCommands configs commands acc =
         case commands of
             [] -> acc
             h : t -> applyCommands configs t $ (applyCommand (last configs) h configs []) : acc
     
-    applyCommandss :: [[[([String], State, [String])]]] -> [[[SingleTapeCommand]]] -> [[[([String], State, [String])]]] -> [[[([String], State, [String])]]]
+    applyCommandss :: [[[([Square], State, [Square])]]] -> [[[SingleTapeCommand]]] -> [[[([Square], State, [Square])]]] -> [[[([Square], State, [Square])]]]
     applyCommandss configss commandss acc =
         case (configss, commandss) of
             ([], []) -> acc
             (configs : t1, commands : t2) -> applyCommandss t1 t2 $ (applyCommands configs commands []) ++ acc
             _ -> error "Commandss and configss don't match"
     
-    checkFinalEmptyStates :: [State] -> [([String], State, [String])] -> Bool
+    checkFinalEmptyStates :: [State] -> [([Square], State, [Square])] -> Bool
     checkFinalEmptyStates accessStates config =
         case (accessStates, config) of
             ([], []) -> True
             (s1 : t1, ([l2], s2, [r2]) : t2) | l2 ==  leftBoundingLetter && r2 == rightBoundingLetter && s1 == s2 -> checkFinalEmptyStates t1 t2
             _ -> False
 
-    isHereEmptyConfigss :: [State] -> [[[([String], State, [String])]]] -> Maybe [[([String], State, [String])]]
+    isHereEmptyConfigss :: [State] -> [[[([Square], State, [Square])]]] -> Maybe [[([Square], State, [Square])]]
     isHereEmptyConfigss accessStates configss =
         case configss of
             [] -> Nothing
@@ -86,8 +87,9 @@ module TMInterpreter where
         StartStates startStates, 
         AccessStates accessStates)) = do
             -- check input
-            let isInputCorrect = Set.isSubsetOf (Set.fromList input) inputAlphabet
-            let startConfigss = [[([leftBoundingLetter] ++ input, (head startStates), [rightBoundingLetter]) : (map (\s -> ([leftBoundingLetter], s, [rightBoundingLetter])) (tail startStates))]]
+            let inputSquare = map mapValue input
+            let isInputCorrect = Set.isSubsetOf (Set.fromList inputSquare) inputAlphabet
+            let startConfigss = [[([leftBoundingLetter] ++ inputSquare, (head startStates), [rightBoundingLetter]) : (map (\s -> ([leftBoundingLetter], s, [rightBoundingLetter])) (tail startStates))]]
             case isInputCorrect of
                 False -> error "Incorrect input"
                 True -> Configs (startInterpreting accessStates startConfigss (Set.toList commands))

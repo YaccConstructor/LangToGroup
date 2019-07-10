@@ -9,9 +9,13 @@ import Text.LaTeX.Packages.AMSMath
 import Text.LaTeX.Packages.Inputenc
 import qualified Data.Set as Set
 
+
 import TMType
 import Lib
 
+
+instance ShowLaTeX Square where
+    doLaTeX (Value sq) = raw $ fromString sq
 
 instance ShowLaTeX State where
     doLaTeX (State st) = raw $ fromString st
@@ -22,10 +26,10 @@ showStates = helper where
     helper [state]    = doLaTeX state
     helper (state:ss) = do { doLaTeX state; ","; showStates ss }
 
-showAlphabet :: [String] -> LaTeXM ()
+showAlphabet :: [Square] -> LaTeXM ()
 showAlphabet = helper where
-    helper [string]    = raw $ fromString string
-    helper (string:ss) = do { raw $ fromString string; ","; showAlphabet ss }
+    helper [Value sq]    = raw $ fromString sq
+    helper (Value sq:ss) = do { raw $ fromString sq; ","; showAlphabet ss }
 
 
 instance ShowLaTeX InputAlphabet where
@@ -50,8 +54,8 @@ instance ShowLaTeX AccessStates where
 
 instance ShowLaTeX SingleTapeCommand where
     doLaTeX (SingleTapeCommand ((u, q, v), (u', q', v'))) = do
-        let showTriple :: String -> State -> String -> LaTeX
-            showTriple a s b = (fromString a) <> "," <> (toLaTeX s) <> "," <> (fromString b) 
+        let showTriple :: Square -> State -> Square -> LaTeX
+            showTriple a s b = (toLaTeX a) <> "," <> (toLaTeX s) <> "," <> (toLaTeX b) 
         math $ textell $ ((showTriple u q v) <> rightarrow <> (showTriple u' q' v'))
 
 
@@ -66,7 +70,7 @@ instance ShowLaTeX Commands where
         let tapesNames   = map (\num -> "Tape "++ show num) [1..tapesCount]
         let halfHeader   = foldl1 (&) $ map (\cur -> (multicolumn 3 [CenterColumn] $ fromString cur)) tapesNames
         
-        let showTriple (u, q, v) = (math $ fromString u) & (math $ doLaTeX q) & (math $ fromString v)
+        let showTriple (u, q, v) = (math $ doLaTeX u) & (math $ doLaTeX q) & (math $ doLaTeX v)
         
         let showFrom (SingleTapeCommand (q, _)) = showTriple q
 

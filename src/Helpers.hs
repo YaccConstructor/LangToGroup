@@ -1,12 +1,18 @@
 module Helpers where
     import GrammarType
+    import TMType
 
     getDisjoinLetter :: String -> String
     getDisjoinLetter letter = letter ++ "'"
 
-    getDisjoinSymbol :: Symbol -> String
+    getDisjoinSquare :: Square -> Square
+    getDisjoinSquare (Value s) = Value (s ++ "'")
+
+    getDisjoinSymbol :: Symbol -> Square
     getDisjoinSymbol letter = 
         case letter of
-            T (Terminal c) -> c ++ "'"
-            N (Nonterminal c) -> c
-            E (Epsilon c) -> c
+            T (Terminal c) -> Value $ c ++ "'"
+            N (Nonterminal c) -> Value c
+            E (Epsilon c) -> Value c
+
+    mapValue x = Value x

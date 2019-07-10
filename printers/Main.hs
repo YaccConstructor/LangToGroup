@@ -24,7 +24,6 @@ preambula =
     <> usepackage [] "unicode-math"
     <> title "Examples"
 
-
 example :: LaTeX
 example = execLaTeXM $ 
     do
