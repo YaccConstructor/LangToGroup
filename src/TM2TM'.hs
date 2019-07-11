@@ -88,7 +88,26 @@ firstPhase acceptCommand otherCommands startStates = do
 
     (firstPhaseStartCommand startStates []) : (firstPhaseFinalCommand startStates []) : (firstPhaseInternal otherCommands [])
 
-secondPhase commands startStates 
+secondPhase commands startStates = do
+    let transformCommand states command acc =
+        case (states, command) of
+            (h : t, (SingleTapeCommand ((l1, s1, r1), (l2, s2, r2))) : tcommands) 
+                | s1 == h && s2 == h -> transformCommand t tcommands $ (SingleTapeCommand ((l1, firstPhaseFinalStatesTransmition s1, r1), (l2, firstPhaseFinalStatesTransmition s2, r2))) : acc
+                | s1 == h -> transformCommand t tcommands $ (SingleTapeCommand ((l1, firstPhaseFinalStatesTransmition s1, r1), (l2, s2, r2))) : acc
+                | s2 == h -> transformCommand t tcommands $ (SingleTapeCommand ((l1, s1, r1), (l2, firstPhaseFinalStatesTransmition s2, r2))) : acc
+            ([], []) -> reverse acc
+
+    let transformStartStatesInCommands commands acc = 
+        case commands of
+            h : t -> transformStartStatesInCommands t $ (transformCommand startStates h []) : acc
+            [] -> acc
+
+    let addKPlusOneTapeCommands commands acc = 
+        case commands of
+            h : t -> addKPlusOneTapeCommands t $ (h ++ [SingleTapeCommand ((Command h, finalKPlusOneTapeState, emptySymbol), (emptySymbol, finalKPlusOneTapeState, Command h))]) : acc
+            [] -> acc
+    
+    addKPlusOneTapeCommands (transformStartStatesInCommands commands []) []
 
 
 mapTM2TM' :: TM -> TM
@@ -101,11 +120,10 @@ mapTM2TM'
         StartStates startStates, 
         AccessStates accessStates)
     ) = do
-        
-        let (acceptCommand, otherCommands) = disjoinAcceptCommandWithOthers (Set.toList commands) accessStates
+        let commandsList = Set.toList commands
+        let (acceptCommand, otherCommands) = disjoinAcceptCommandWithOthers commandsList accessStates
         let commandsFirstPhase = firstPhase acceptCommand otherCommands startStates
-        
-        
+        let commandsSecondPhase = secondPhase commandsList startStates
         
         
 
