@@ -56,26 +56,37 @@ commandsOnetify commands acc =
         [] -> acc
 
 
+startKPlusOneTapeState = State "q_0^{k+1}"
 kplus1tapeState = State "q"
 firstPhaseFinalStatesTransmition (State s) = State (s ++ "'")
+finalKPlusOneTapeState = firstPhaseFinalStatesTransmition kplus1tapeState           
 
-generateFirstPhaseCommand command states acc =
-    case states of
-        [] -> reverse $ (SingleTapeCommand ((emptySymbol, kplus1tapeState, rightBoundingLetter), (Command command, kplus1tapeState, rightBoundingLetter))) : acc
-        s : ss  | acc == [] -> generateFirstPhaseCommand command ss $ (SingleTapeCommand ((emptySymbol, s, rightBoundingLetter), (emptySymbol, s, rightBoundingLetter))) : acc 
-                | otherwise -> generateFirstPhaseCommand command ss $ (SingleTapeCommand ((leftBoundingLetter, s, rightBoundingLetter), (leftBoundingLetter, s, rightBoundingLetter))) : acc 
+firstPhase acceptCommand otherCommands startStates = do
 
-firstPhaseFinalCommand startStates acc =
-    case startStates of
-        [] -> reverse $ (SingleTapeCommand ((emptySymbol, kplus1tapeState, rightBoundingLetter), (emptySymbol, firstPhaseFinalStatesTransmition kplus1tapeState, rightBoundingLetter))) : acc
-        s : ss  | acc == [] -> firstPhaseFinalCommand ss $ (SingleTapeCommand ((emptySymbol, s, rightBoundingLetter), (emptySymbol, firstPhaseFinalStatesTransmition s, rightBoundingLetter))) : acc 
-                | otherwise -> firstPhaseFinalCommand ss $ (SingleTapeCommand ((leftBoundingLetter, s, rightBoundingLetter), (leftBoundingLetter, firstPhaseFinalStatesTransmition s, rightBoundingLetter))) : acc 
-                
+    let generateFirstPhaseCommand command states acc =
+        case states of
+            [] -> reverse $ (SingleTapeCommand ((emptySymbol, kplus1tapeState, rightBoundingLetter), (Command command, kplus1tapeState, rightBoundingLetter))) : acc
+            s : ss  | acc == [] -> generateFirstPhaseCommand command ss $ (SingleTapeCommand ((emptySymbol, s, rightBoundingLetter), (emptySymbol, s, rightBoundingLetter))) : acc 
+                    | otherwise -> generateFirstPhaseCommand command ss $ (SingleTapeCommand ((leftBoundingLetter, s, rightBoundingLetter), (leftBoundingLetter, s, rightBoundingLetter))) : acc 
+    
+    let firstPhaseFinalCommand startStates acc =
+        case startStates of
+            [] -> reverse $ (SingleTapeCommand ((emptySymbol, kplus1tapeState, rightBoundingLetter), (emptySymbol, finalKPlusOneTapeState, rightBoundingLetter))) : acc
+            s : ss  | acc == [] -> firstPhaseFinalCommand ss $ (SingleTapeCommand ((emptySymbol, s, rightBoundingLetter), (emptySymbol, firstPhaseFinalStatesTransmition s, rightBoundingLetter))) : acc 
+                    | otherwise -> firstPhaseFinalCommand ss $ (SingleTapeCommand ((leftBoundingLetter, s, rightBoundingLetter), (leftBoundingLetter, firstPhaseFinalStatesTransmition s, rightBoundingLetter))) : acc 
+    
+    let firstPhaseStartCommand startStates acc =
+        case startStates of
+            [] -> reverse $ (SingleTapeCommand ((emptySymbol, startKPlusOneTapeState, rightBoundingLetter), (Command acceptCommand, kplus1tapeState, rightBoundingLetter))) : acc
+            s : ss  | acc == [] -> firstPhaseStartCommand ss $ (SingleTapeCommand ((emptySymbol, s, rightBoundingLetter), (emptySymbol, s, rightBoundingLetter))) : acc 
+                    | otherwise -> firstPhaseStartCommand ss $ (SingleTapeCommand ((leftBoundingLetter, s, rightBoundingLetter), (leftBoundingLetter, s, rightBoundingLetter))) : acc     
 
-firstPhase commands startStates acc =
-    case commands of
-        [] -> (firstPhaseFinalCommand startStates []) : acc
-        h : t -> firstPhase t startStates $ ((generateFirstPhaseCommand h startStates [])) : acc
+    let firstPhaseInternal commands acc = 
+        case commands of
+            [] -> acc
+            h : t -> firstPhaseInternal t $ ((generateFirstPhaseCommand h startStates [])) : acc
+
+    (firstPhaseStartCommand startStates []) : (firstPhaseFinalCommand startStates []) : (firstPhaseInternal otherCommands [])
 
 secondPhase commands startStates 
 
@@ -91,8 +102,9 @@ mapTM2TM'
         AccessStates accessStates)
     ) = do
         
-        --let (acceptCommand, othersCommand) = disjoinAcceptCommandWithOthers commands accessStates
-        let commandsFirstPhase = firstPhase (Set.toList commands) startStates []
+        let (acceptCommand, otherCommands) = disjoinAcceptCommandWithOthers (Set.toList commands) accessStates
+        let commandsFirstPhase = firstPhase acceptCommand otherCommands startStates
+        
         
         
         
