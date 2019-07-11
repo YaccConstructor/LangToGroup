@@ -88,7 +88,7 @@ firstPhase acceptCommand otherCommands startStates = do
 
     (firstPhaseStartCommand startStates []) : (firstPhaseFinalCommand startStates []) : (firstPhaseInternal otherCommands [])
 
-secondPhase commands startStates = do
+secondPhase commands startStates accessStates = do
     let transformCommand states command acc =
         case (states, command) of
             (h : t, (SingleTapeCommand ((l1, s1, r1), (l2, s2, r2))) : tcommands) 
@@ -106,8 +106,22 @@ secondPhase commands startStates = do
         case commands of
             h : t -> addKPlusOneTapeCommands t $ (h ++ [SingleTapeCommand ((Command h, finalKPlusOneTapeState, emptySymbol), (emptySymbol, finalKPlusOneTapeState, Command h))]) : acc
             [] -> acc
-    
-    addKPlusOneTapeCommands (transformStartStatesInCommands commands []) []
+
+    let generateEmptyStayCommands states acc =
+        case states of
+            h : t -> generateEmptyStayCommands t $ (SingleTapeCommand ((leftBoundingLetter, h, rightBoundingLetter), (leftBoundingLetter, h, rightBoundingLetter)) : acc
+            [] -> reverse acc
+
+    let returnToRightEndmarkerCommands commands acc = 
+        case commads of
+            h : t -> returnToRightEndmarkerCommands t $ 
+                            ((generateEmptyStayCommands accessStates []) ++ 
+                            SingleTapeCommand ((emptySymbol, finalKPlusOneTapeState, Command h), (Command h, finalKPlusOneTapeState, emptySymbol))
+                            ) : acc
+            [] -> acc
+
+    let transformedCommands = transformStartStatesInCommands commands [] 
+    (addKPlusOneTapeCommands transformedCommands []) ++ (returnToRightEndmarkerCommands transformedCommands [])
 
 
 mapTM2TM' :: TM -> TM
