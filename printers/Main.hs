@@ -16,12 +16,16 @@ import CfgToTMMapper
 import TMType
 import TMInterpreter
 import ConfigPrinter
+import TM2TM'
 
 preambula :: LaTeXM ()
 preambula = 
     documentclass [] article
     <> usepackage [utf8] inputenc
     <> usepackage [] "unicode-math"
+    <> usepackage [] "amsmath"
+    <> usepackage [] "mathtools"
+    <> usepackage ["left=2cm","right=4cm", "top=2cm", "bottom=2cm", "bindingoffset=0cm"] "geometry"
     <> title "Examples"
 
 example :: LaTeX
@@ -29,36 +33,36 @@ example = execLaTeXM $
     do
         preambula 
         document $ do
-            doLaTeX testGrammar
-            doLaTeX $ mapCfgToTM testGrammar
-            doLaTeX $ interpretTM ["a"] $ mapCfgToTM testGrammar
-            newpage
-            doLaTeX epsTestGrammar
-            doLaTeX $ mapCfgToTM epsTestGrammar
-            doLaTeX $ interpretTM ["a"] $ mapCfgToTM epsTestGrammar
-            newpage
-            doLaTeX epsTestLeftGrammar
-            doLaTeX $ mapCfgToTM epsTestLeftGrammar
-            doLaTeX $ interpretTM ["a"] $ mapCfgToTM epsTestLeftGrammar
-            newpage
-            doLaTeX abTestGrammar
-            doLaTeX $ mapCfgToTM abTestGrammar
-            doLaTeX $ interpretTM ["b", "b", "a", "a"] $ mapCfgToTM abTestGrammar
-            newpage
-            doLaTeX ab2TestGrammar
-            doLaTeX $ mapCfgToTM ab2TestGrammar
-            doLaTeX $ interpretTM ["b", "a", "b", "a"] $ mapCfgToTM ab2TestGrammar
-            newpage
-            doLaTeX ab3TestGrammar
-            doLaTeX $ mapCfgToTM ab3TestGrammar
-            --doLaTeX $ interpretTM ["b", "a", "b", "a"] $ mapCfgToTM ab3TestGrammar
-            newpage
-            doLaTeX seq1Grammar
-            doLaTeX $ mapCfgToTM seq1Grammar
-            newpage
-            doLaTeX rpsGrammar
-            doLaTeX $ mapCfgToTM rpsGrammar
-
+            --doLaTeX testGrammar
+            --doLaTeX $ mapCfgToTM testGrammar
+            --doLaTeX $ interpretTM ["a"] $ mapCfgToTM testGrammar
+            doLaTeX $ mapTM2TMAfterThirdPhase $ mapCfgToTM testGrammar
+            --newpage
+            --doLaTeX epsTestGrammar
+            --doLaTeX $ mapCfgToTM epsTestGrammar
+            --doLaTeX $ interpretTM ["a"] $ mapCfgToTM epsTestGrammar
+            --newpage
+            --doLaTeX epsTestLeftGrammar
+            --doLaTeX $ mapCfgToTM epsTestLeftGrammar
+            --doLaTeX $ interpretTM ["a"] $ mapCfgToTM epsTestLeftGrammar
+            --newpage
+            --doLaTeX abTestGrammar
+            --doLaTeX $ mapCfgToTM abTestGrammar
+            --doLaTeX $ interpretTM ["b", "b", "a", "a"] $ mapCfgToTM abTestGrammar
+            --newpage
+            --doLaTeX ab2TestGrammar
+            --doLaTeX $ mapCfgToTM ab2TestGrammar
+            --doLaTeX $ interpretTM ["b", "a", "b", "a"] $ mapCfgToTM ab2TestGrammar
+            --newpage
+            --doLaTeX ab3TestGrammar
+            --doLaTeX $ mapCfgToTM ab3TestGrammar
+            ----doLaTeX $ interpretTM ["b", "a", "b", "a"] $ mapCfgToTM ab3TestGrammar
+            --newpage
+            --doLaTeX seq1Grammar
+            --doLaTeX $ mapCfgToTM seq1Grammar
+            --newpage
+            --doLaTeX rpsGrammar
+            --doLaTeX $ mapCfgToTM rpsGrammar
 
 main :: IO()
 main = do

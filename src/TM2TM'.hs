@@ -15,7 +15,7 @@ disjoinAcceptCommandWithOthers commands accessStates = do
                 (h : t) -> if isAcceptCommand h accessStates then (h, acc ++ t) else disjoinAcceptCommandWithOthersInternal t (h : acc)
                 [] -> error "No accept command"
 
-    disjoinAcceptCommandWithOthers commands []
+    disjoinAcceptCommandWithOthersInternal commands []
 
 -- -- надо *2к команды, дисджойня стейты и обновляя их алфавиты
 -- generateSingleMoveCommands commandA commandA1 i oldstates newstates acc =
@@ -60,7 +60,8 @@ disjoinAcceptCommandWithOthers commands accessStates = do
 
 startKPlusOneTapeState = State "q_0^{k+1}"
 kplus1tapeState = State "q"
-firstPhaseFinalStatesTransmition (State s) = State (s ++ "'")
+firstPhaseFinalStatesTransmition (State [s]) = State ([s] ++ "'")
+firstPhaseFinalStatesTransmition (State s) = State (init s ++ "{'" ++ [last s] ++ "}")
 finalKPlusOneTapeState = firstPhaseFinalStatesTransmition kplus1tapeState           
 
 firstPhase acceptCommand otherCommands startStates = do
@@ -97,6 +98,7 @@ transformStartStatesInCommands startStates commands = do
                     | s1 == h && s2 == h -> transformCommand t tcommands $ (SingleTapeCommand ((l1, firstPhaseFinalStatesTransmition s1, r1), (l2, firstPhaseFinalStatesTransmition s2, r2))) : acc
                     | s1 == h -> transformCommand t tcommands $ (SingleTapeCommand ((l1, firstPhaseFinalStatesTransmition s1, r1), (l2, s2, r2))) : acc
                     | s2 == h -> transformCommand t tcommands $ (SingleTapeCommand ((l1, s1, r1), (l2, firstPhaseFinalStatesTransmition s2, r2))) : acc
+                    | otherwise -> transformCommand t tcommands $ (SingleTapeCommand ((l1, s1, r1), (l2, s2, r2))) : acc
                 ([], []) -> reverse acc
 
     let transformStartStatesInCommandsInternal commands acc = 
