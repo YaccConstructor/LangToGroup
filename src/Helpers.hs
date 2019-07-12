@@ -5,6 +5,9 @@ module Helpers where
     getDisjoinLetter :: String -> String
     getDisjoinLetter letter = letter ++ "'"
 
+    getDisjoinState :: State -> State
+    getDisjoinState (State state) = State (state ++ "'") 
+
     getDisjoinSquare :: Square -> Square
     getDisjoinSquare (Value s) = Value (s ++ "'")
 
