@@ -177,7 +177,7 @@ doubleCommandsStateDisjoinFunction s = do
     let tapeNumber = (+) 0.5 $ getTapeNumber s
     State $ "q_{" ++ stateNumber ++ "}^{" ++ (show tapeNumber) ++ "}"    
 
-doubleCommands multiTapeStates commands = do
+doubleCommands startStates accessStates tapeAlphabets multiTapeStates commands = do
     let divideCommands commands acc =
             case commands of 
                 SingleTapeCommand ((a, s, b), (a1, s1, b1)) : t 
@@ -187,7 +187,7 @@ doubleCommands multiTapeStates commands = do
                                                                                 ]) 
                         | otherwise -> divideCommands t (acc ++ [
                             SingleTapeCommand ((a, s, rightBoundingLetter), (a1, s1, rightBoundingLetter)),
-                            SingleTapeCommand ((b, doubleCommandsStateDisjoinFunction s, rightBoundingLetter), (b1, doubleCommandsStateDisjoinFunction s1, rightBoundingLetter))
+                            SingleTapeCommand ((getDisjoinSquare b, doubleCommandsStateDisjoinFunction s, rightBoundingLetter), (getDisjoinSquare b1, doubleCommandsStateDisjoinFunction s1, rightBoundingLetter))
                                                                  ])
                 [] -> acc
 
@@ -197,8 +197,15 @@ doubleCommands multiTapeStates commands = do
                 [] -> acc
     
     let doubleMultitapeStates states = [states, Set.map doubleCommandsStateDisjoinFunction states]
+    let doubleStates state = [state, doubleCommandsStateDisjoinFunction state]
+    let doubleTapeAlphabets tapeAlphabet = [tapeAlphabet, TapeAlphabet $ Set.map getDisjoinSquare a]
+                where (TapeAlphabet a) = tapeAlphabet
 
-    (concat $ map doubleMultitapeStates multiTapeStates, doubleCommandsInternal commands [])
+    (concat $ map doubleStates startStates, 
+        concat $ map doubleStates accessStates, 
+        concat $ map doubleTapeAlphabets tapeAlphabets, 
+        concat $ map doubleMultitapeStates multiTapeStates, 
+        doubleCommandsInternal commands [])
 
 intermediateStateOne2TwoKTransform = firstPhaseFinalStatesTransmition
 
@@ -266,10 +273,16 @@ mapTM2TM' tm = do
             tapeAlphabets, 
             MultiTapeStates multiTapeStates, 
             Commands commandsSet, 
-            startStates,
-            accessStates)
+            StartStates startStates,
+            AccessStates accessStates)
             ) = mapTM2TMAfterThirdPhase tm
 
     let commands = Set.toList commandsSet
-    let (newTapeStates, newTMCommands) = transform2SingleInsertDeleteCommand $ one2TwoKCommands $ doubleCommands multiTapeStates commands
-    TM (inputAlphabet, tapeAlphabets, MultiTapeStates (newTapeStates), Commands (Set.fromList newTMCommands), startStates, accessStates)
+    let (newStartStates, newAccessStates, newTapeAlphabets, doubledTapeStates, doubledCommands) = doubleCommands startStates accessStates tapeAlphabets multiTapeStates commands
+    let (newTapeStates, newTMCommands) = transform2SingleInsertDeleteCommand $ one2TwoKCommands (doubledTapeStates, doubledCommands)
+    TM (inputAlphabet, 
+        newTapeAlphabets, 
+        MultiTapeStates (newTapeStates), 
+        Commands (Set.fromList newTMCommands), 
+        StartStates newStartStates, 
+        AccessStates newAccessStates)

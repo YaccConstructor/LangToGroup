@@ -10,6 +10,7 @@ module Helpers where
 
     getDisjoinSquare :: Square -> Square
     getDisjoinSquare (Value s) = Value (s ++ "'")
+    getDisjoinSquare c = c --TODO
 
     getDisjoinSymbol :: Symbol -> Square
     getDisjoinSymbol letter = 

@@ -34,9 +34,11 @@ example = execLaTeXM $
         preambula 
         document $ do
             --doLaTeX testGrammar
-            --doLaTeX $ mapCfgToTM testGrammar
+            doLaTeX $ mapCfgToTM testGrammar
             --doLaTeX $ interpretTM ["a"] $ mapCfgToTM testGrammar
-            --doLaTeX $ mapTM2TMAfterThirdPhase $ mapCfgToTM testGrammar
+            newpage
+            doLaTeX $ mapTM2TMAfterThirdPhase $ mapCfgToTM testGrammar
+            newpage
             doLaTeX $ mapTM2TM' $ mapCfgToTM testGrammar
             --newpage
             --doLaTeX epsTestGrammar
