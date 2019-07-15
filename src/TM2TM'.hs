@@ -4,6 +4,7 @@ import TMType
 import Data.Set (Set)
 import qualified Data.Set as Set
 import Helpers
+import Text.Regex.TDFA
 
 disjoinAcceptCommandWithOthers commands accessStates = do
     let isAcceptCommand command access = 
@@ -166,7 +167,15 @@ doubleCommands commands = do
 
     doubleCommandsInternal commands []
 
-intermediateStateOne2TwoKTransform (State s) k = State (s ++ (replicate k '\'')) 
+intermediateStateOne2TwoKTransform tape = do
+    let tapeList = Set.toList tape
+    let getNumber (State s) = read n :: Int
+            where (_, _, _, [n]) = s =~ "q_{?(\\d+)}?\\^{?\\d+}?" :: (String, String, String, [String])
+    let stateNumber = (+) 1 $ maximum $ map getNumber tapeList
+    let getTapeNumber (State s) = n
+            where (_, _, _, [n]) = s =~ "q_{?\\d+}?\\^{?(\\d+)}?" :: (String, String, String, [String])
+    let tapeNumber = getTapeNumber $ head tapeList
+    State $ "q_{" ++ (show stateNumber) ++ "}^{" ++ tapeNumber ++ "}"
 
 one2TwoKCommands tapeStates commands = do
     let getStartAndFinalStatesOfCommand command (starts, finals) = 
@@ -183,7 +192,7 @@ one2TwoKCommands tapeStates commands = do
                             oneActionCommand tt (st, ft) k t n (i + 1) (tape : newTapeStates, final : newStarts, (SingleTapeCommand ((l1, start, r1), (l2, final, r2))) : acc)
                         | otherwise -> 
                             oneActionCommand tt (st, ft) k t n (i + 1) (Set.insert intermediateState tape : newTapeStates, intermediateState : newStarts, (SingleTapeCommand ((emptySymbol, start, r1), (emptySymbol, intermediateState, r2))) : acc)
-                                where intermediateState = intermediateStateOne2TwoKTransform final k
+                                where intermediateState = intermediateStateOne2TwoKTransform tape
 
     let onew2TwoKCommand tapeStates (starts, finals) k i command immutCommand acc =
             case command of
@@ -201,7 +210,7 @@ one2TwoKCommands tapeStates commands = do
 
     one2TwoKCommandsInternal tapeStates commands 1 []
 
-intermediateStateSingleInsertDeleteTransform (State s) = State (s ++ "'")
+intermediateStateSingleInsertDeleteTransform = intermediateStateOne2TwoKTransform
 
 transform2SingleInsertDeleteCommand (tapeStates, commands) = do 
     let transformCommand tapeStates command acc1 acc2 accTape =
@@ -211,7 +220,7 @@ transform2SingleInsertDeleteCommand (tapeStates, commands) = do
                         transformCommand tt t (SingleTapeCommand ((l1, s1, r1), (emptySymbol, intermediateState, r2)) : acc1) (SingleTapeCommand ((emptySymbol, intermediateState, r1), (l2, s2, r2)) : acc2) (Set.insert intermediateState tape : accTape)
                     | otherwise -> 
                         transformCommand tt t (SingleTapeCommand ((l1, s1, r1), (l2, s2, r2)) : acc1) (SingleTapeCommand ((l1, s1, r1), (l2, s2, r2)) : acc2) (tape : accTape)
-                            where intermediateState = intermediateStateSingleInsertDeleteTransform s1
+                            where intermediateState = intermediateStateSingleInsertDeleteTransform tape
                 ([], [])    | acc1 == acc2 -> (reverse accTape, [reverse acc1]) 
                             | otherwise -> (reverse accTape, [reverse acc1, reverse acc2])
 
