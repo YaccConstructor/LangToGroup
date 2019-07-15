@@ -35,7 +35,7 @@ firstPhase startKPlusOneTapeState kplus1tapeState finalKPlusOneTapeState acceptC
     let generateFirstPhaseCommand command states acc =
             case states of
                 [] -> 
-                    reverse $ (SingleTapeCommand ((emptySymbol, kplus1tapeState, rightBoundingLetter), (Command command, kplus1tapeState, rightBoundingLetter))) : acc
+                    reverse $ (SingleTapeCommand ((emptySymbol, kplus1tapeState, rightBoundingLetter), (BCommand command, kplus1tapeState, rightBoundingLetter))) : acc
                 s : ss  | acc == [] -> 
                     generateFirstPhaseCommand command ss $ (SingleTapeCommand ((emptySymbol, s, rightBoundingLetter), (emptySymbol, s, rightBoundingLetter))) : acc 
                         | otherwise -> 
@@ -53,7 +53,7 @@ firstPhase startKPlusOneTapeState kplus1tapeState finalKPlusOneTapeState acceptC
     let firstPhaseStartCommand startStates acc =
             case startStates of
                 [] -> 
-                    reverse $ (SingleTapeCommand ((emptySymbol, startKPlusOneTapeState, rightBoundingLetter), (Command acceptCommand, kplus1tapeState, rightBoundingLetter))) : acc
+                    reverse $ (SingleTapeCommand ((emptySymbol, startKPlusOneTapeState, rightBoundingLetter), (BCommand acceptCommand, kplus1tapeState, rightBoundingLetter))) : acc
                 s : ss  | acc == [] -> 
                     firstPhaseStartCommand ss $ (SingleTapeCommand ((emptySymbol, s, rightBoundingLetter), (emptySymbol, s, rightBoundingLetter))) : acc 
                         | otherwise -> 
@@ -99,14 +99,14 @@ secondPhase finalKPlusOneTapeState commands startStates accessStates multiTapeSt
     let addKPlusOneTapeCommands c1 c2 acc = 
             case (c1, c2) of
                 (h1 : t1, h2 : t2) -> 
-                    addKPlusOneTapeCommands t1 t2 $ (h1 ++ [SingleTapeCommand ((Command h2, finalKPlusOneTapeState, emptySymbol), (emptySymbol, finalKPlusOneTapeState, Command h2))]) : acc
+                    addKPlusOneTapeCommands t1 t2 $ (h1 ++ [SingleTapeCommand ((BCommand h2, finalKPlusOneTapeState, emptySymbol), (emptySymbol, finalKPlusOneTapeState, BCommand h2))]) : acc
                 ([], []) -> acc
 
     let returnToRightEndmarkerCommands commands acc = 
             case commands of
                 h : t -> returnToRightEndmarkerCommands t $ 
                                 ((generateEmptyStayCommands accessStates []) ++ 
-                                [SingleTapeCommand ((emptySymbol, finalKPlusOneTapeState, Command h), (Command h, finalKPlusOneTapeState, emptySymbol))]
+                                [SingleTapeCommand ((emptySymbol, finalKPlusOneTapeState, BCommand h), (BCommand h, finalKPlusOneTapeState, emptySymbol))]
                                 ) : acc
                 [] -> acc
 
@@ -116,7 +116,7 @@ thirdPhase finalKPlusOneTapeState commands accessStates = do
     let thirdPhaseInternal commands acc =
             case commands of
                 h : t -> thirdPhaseInternal t $ ((generateEmptyStayCommands accessStates []) ++ 
-                                                [SingleTapeCommand ((Command h, finalKPlusOneTapeState,  rightBoundingLetter), (emptySymbol, finalKPlusOneTapeState, rightBoundingLetter))]
+                                                [SingleTapeCommand ((BCommand h, finalKPlusOneTapeState,  rightBoundingLetter), (emptySymbol, finalKPlusOneTapeState, rightBoundingLetter))]
                                                 ) : acc
                 [] -> acc
     thirdPhaseInternal commands []
@@ -155,7 +155,7 @@ mapTM2TMAfterThirdPhase
 
         let newTMCommands = Commands $ Set.fromList $ symCommands $ commandsFirstPhase ++ commandsSecondPhase ++ commandsThirdPhase
 
-        let newTMTapeAlphabets = tapeAlphabets ++ [TapeAlphabet $ Set.map (\c -> Command c) commands]
+        let newTMTapeAlphabets = tapeAlphabets ++ [TapeAlphabet $ Set.map (\c -> BCommand c) commands]
 
         let newTMStartStates = StartStates (startStates ++ [startKPlusOneTapeState])
 

@@ -20,17 +20,22 @@ import Lib
 
 instance ShowLaTeX Square where
     doLaTeX (Value sq) = raw $ fromString sq
-    doLaTeX (Command c) = showCommand c
+    doLaTeX (BCommand c) = showBCommand c
+    doLaTeX (PCommand c) = showPCommand c
 
 instance ShowLaTeX State where
     doLaTeX (State st) = raw $ fromString st
 
 
-showCommand :: [SingleTapeCommand] -> LaTeXM ()
--- showCommand = helper where
---     helper [c]    = doLaTeX c
---     helper (c:cs) = do { doLaTeX c; "|"; helper cs }
-showCommand command = do
+showPCommand :: [SingleTapeCommand] -> LaTeXM ()
+showPCommand command = do
+    let showTriple (u, q, v) = toLaTeX u <> toLaTeX q <> toLaTeX v
+    let showFrom (SingleTapeCommand (q, _)) = showTriple q
+    let showTo (SingleTapeCommand (_, q)) = showTriple q
+    pmatrix (Just HRight) $ fromLists $ map (\c -> [showFrom c, to, showTo c]) command
+
+showBCommand :: [SingleTapeCommand] -> LaTeXM ()
+showBCommand command = do
     let showTriple (u, q, v) = toLaTeX u <> toLaTeX q <> toLaTeX v
     let showFrom (SingleTapeCommand (q, _)) = showTriple q
     let showTo (SingleTapeCommand (_, q)) = showTriple q
@@ -45,9 +50,7 @@ showAlphabet :: [Square] -> LaTeXM ()
 showAlphabet = helper where
     helper [Value sq]    = math $ raw $ fromString sq
     helper (Value sq:ss) = do { math $ raw $ fromString sq; ","; showAlphabet ss }
-    helper commands = mapM_ (\(Command x) -> do { math $ showCommand x ; "\n" }) commands
-    -- helper [Command c]    = showCommand c
-    -- helper (Command c:cs) = do { showCommand c; "\n\n"; showAlphabet cs }
+    helper commands = mapM_ (\x -> do { math $ doLaTeX x ; "\n" }) commands
 
 
 instance ShowLaTeX InputAlphabet where
@@ -77,49 +80,7 @@ instance ShowLaTeX SingleTapeCommand where
 
 
 instance ShowLaTeX Commands where
-    doLaTeX (Commands commandsSet) = mapM_ (\c -> do { math $ showCommand c ; "\n" }) $ Set.toList commandsSet
-        -- let commands     = Set.toList commandsSet
-        
-        -- let showTriple (u, q, v) = toLaTeX u <> toLaTeX q <> toLaTeX v
-        
-        -- let showFrom (SingleTapeCommand (q, _)) = showTriple q
-
-        -- let showTo (SingleTapeCommand (_, q)) = showTriple q
-
-        -- --let showLine singleTapeCommands = foldl1 (&) ((map showFrom singleTapeCommands) ++ [rightarrow] ++ (map showTo singleTapeCommands))
-        -- let showCommand command = bmatrix (Just HRight) $ fromLists $ Debug.Trace.trace ("command " ++ show command) (mapM (\c -> [showFrom c, to, showTo c]) command)
-
-        -- mapM_ showCommand commands
-
---instance ShowLaTeX Commands where
---    doLaTeX (Commands commandsSet) = do
---        let commands     = Set.toList commandsSet
---        let tapesCount   = length $ head commands
---        let columnsCount = tapesCount + 1 + tapesCount
---        let tapeSpec     = [DVerticalLine, CenterColumn, VerticalLine, CenterColumn, VerticalLine, CenterColumn]
---        let halfSpec     = tail $ concat $ replicate tapesCount tapeSpec
---        let columnsSpec  = halfSpec ++ [DVerticalLine, CenterColumn, DVerticalLine] ++ halfSpec
---        let tapesNames   = map (\num -> "Tape "++ show num) [1..tapesCount]
---        let halfHeader   = foldl1 (&) $ map (\cur -> (multicolumn 3 [CenterColumn] $ fromString cur)) tapesNames
---        
---        let showTriple (u, q, v) = (math $ doLaTeX u) & (math $ doLaTeX q) & (math $ doLaTeX v)
---        
---        let showFrom (SingleTapeCommand (q, _)) = showTriple q
---
---        let showTo (SingleTapeCommand (_, q)) = showTriple q
---
---        let showLine (lineNumber, singleTapeCommands) = do
---                foldl1 (&) ((map showFrom singleTapeCommands) ++ [fromString $ show lineNumber] ++ (map showTo singleTapeCommands))
---                tabularnewline
---                hline
---
---        let tableBody = do
---                halfHeader & "№" & halfHeader
---                tabularnewline
---                hline
---                mapM_ showLine $ zip [1..] commands
---
---        tabular Nothing columnsSpec tableBody
+    doLaTeX (Commands commandsSet) = mapM_ (\c -> do { math $ showBCommand c ; "\n" }) $ Set.toList commandsSet
 
 
 instance ShowLaTeX TM where

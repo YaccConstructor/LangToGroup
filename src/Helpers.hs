@@ -10,7 +10,7 @@ module Helpers where
 
     getDisjoinSquare :: Square -> Square
     getDisjoinSquare (Value s) = if (Value s) == emptySymbol then (Value s) else Value (s ++ "'")
-    getDisjoinSquare c = c --TODO
+    getDisjoinSquare (BCommand c) = PCommand c
 
     getDisjoinSymbol :: Symbol -> Square
     getDisjoinSymbol letter = 

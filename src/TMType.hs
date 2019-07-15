@@ -19,7 +19,7 @@ newtype StartStates = StartStates [State]
 -- k - vector of end states
 newtype AccessStates = AccessStates [State]
     deriving (Eq, Ord, Show)
-data Square = Value String | Command [SingleTapeCommand]
+data Square = Value String | PCommand [SingleTapeCommand] | BCommand [SingleTapeCommand]
     deriving (Eq, Ord, Show)
 -- command of TM for single tape
 newtype SingleTapeCommand = SingleTapeCommand ((Square, State, Square), (Square, State, Square))
