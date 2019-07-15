@@ -25,7 +25,7 @@ preambula =
     <> usepackage [] "unicode-math"
     <> usepackage [] "amsmath"
     <> usepackage [] "mathtools"
-    <> usepackage ["left=2cm","right=4cm", "top=2cm", "bottom=2cm", "bindingoffset=0cm"] "geometry"
+    <> usepackage ["left=1cm","right=9cm", "top=2cm", "bottom=2cm", "bindingoffset=0cm"] "geometry"
     <> title "Examples"
 
 example :: LaTeX

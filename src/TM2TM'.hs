@@ -17,54 +17,10 @@ disjoinAcceptCommandWithOthers commands accessStates = do
 
     disjoinAcceptCommandWithOthersInternal commands []
 
--- -- надо *2к команды, дисджойня стейты и обновляя их алфавиты
--- generateSingleMoveCommands commandA commandA1 i oldstates newstates acc =
---     case (i, oldstates, newstates) of
---         (-1, oldstate : t1, newstate : t2) -> 
---             generateSingleMoveCommands commandA commandA1 i t1 t2 (SingleTapeCommand ((emptySymbol, oldstate, rightBoundingLetter), (emptySymbol, newstate, rightBoundingLetter)) : acc)
---         (-1, [], []) -> reverse acc
---         (0, oldstate : t1, newstate : t2) -> 
---             generateSingleMoveCommands commandA commandA1 (i - 1) t1 t2 (SingleTapeCommand ((commandA, oldstate, rightBoundingLetter), (commandA1, newstate, rightBoundingLetter)) : acc)
---         (_, oldstate : t1, newstate : t2) -> 
---             generateSingleMoveCommands commandA commandA1 (i - 1) t1 t2 (SingleTapeCommand ((emptySymbol, oldstate, rightBoundingLetter), (emptySymbol, newstate, rightBoundingLetter)) : acc)
-
--- getCurrentStates command acc = 
---     case command of
---         SingleTapeCommand ((_, s, _), (_, s1, _)) : t -> getCurrentStates t ((s, s1) : acc)
---         [] -> reverse acc
-
--- disjoinStates states = do
---     let disjoinStatesInternal states acc =
---             case states of
---                 State h : t ->  disjoinStatesInternal t ((State (getDisjoinLetter h)) : acc)
---                 [] -> reverse acc
---     disjoinStatesInternal states []
-
--- commandOnetify command = do
---     let (startStates, endStates) = getCurrentStates command []
--- -- как-то так, теперь надо алфавит стейтов засейвить
---     let commandOnetifyInternal oldStates newStates command i acc = 
---             case command of
---                 [SingleTapeCommand ((a, _, _), (a1, _, _))] -> 
---                     (generateSingleMoveCommands a a1 i oldStates endStates []) : acc
---                 SingleTapeCommand ((a, _, _), (a1, _, _)) : t -> 
---                     commandOnetifyInternal newStates (disjoinStates newStates) t (i + 1) ((generateSingleMoveCommands a a1 i oldStates newStates []) : acc)            
---     commandOnetifyInternal startStates (disjoinStates startStates) command -1 []
-
--- commandsOnetify commands acc =
---     case commands of
---         h : t -> 
---             commandsOnetify t ((commandOnetify h) ++ acc)
---         [] -> acc
-
-
-startKPlusOneTapeState = State "q_0^{k+1}"
-kplus1tapeState = State "q"
-firstPhaseFinalStatesTransmition (State [s]) = State ([s] ++ "'")
 firstPhaseFinalStatesTransmition (State s) = State (init s ++ "{'" ++ [last s] ++ "}")
-finalKPlusOneTapeState = firstPhaseFinalStatesTransmition kplus1tapeState           
+          
 
-firstPhase acceptCommand otherCommands startStates = do
+firstPhase startKPlusOneTapeState kplus1tapeState finalKPlusOneTapeState acceptCommand otherCommands startStates = do
 
     let generateFirstPhaseCommand command states acc =
             case states of
@@ -114,7 +70,7 @@ generateEmptyStayCommands states acc =
         h : t -> generateEmptyStayCommands t $ (SingleTapeCommand ((leftBoundingLetter, h, rightBoundingLetter), (leftBoundingLetter, h, rightBoundingLetter))) : acc
         
 
-secondPhase commands startStates accessStates = do
+secondPhase finalKPlusOneTapeState commands startStates accessStates = do
     let transformedCommands = transformStartStatesInCommands startStates commands
     let addKPlusOneTapeCommands c1 c2 acc = 
             case (c1, c2) of
@@ -131,7 +87,7 @@ secondPhase commands startStates accessStates = do
 
     (addKPlusOneTapeCommands transformedCommands commands []) ++ (returnToRightEndmarkerCommands commands [])
 
-thirdPhase commands accessStates = do
+thirdPhase finalKPlusOneTapeState commands accessStates = do
     let thirdPhaseInternal commands acc =
             case commands of
                 h : t -> thirdPhaseInternal t $ ((generateEmptyStayCommands accessStates []) ++ 
@@ -162,11 +118,15 @@ mapTM2TMAfterThirdPhase
         StartStates startStates, 
         AccessStates accessStates)
     ) = do
+        let kPlus1 = (+) 1 $ length multiTapeStates
+        let startKPlusOneTapeState = State $ "q_0^" ++ show kPlus1
+        let kplus1tapeState = State $ "q_1^" ++ show kPlus1
+        let finalKPlusOneTapeState = firstPhaseFinalStatesTransmition kplus1tapeState 
         let commandsList = Set.toList commands
         let (acceptCommand, otherCommands) = disjoinAcceptCommandWithOthers commandsList accessStates
-        let commandsFirstPhase = firstPhase acceptCommand otherCommands startStates
-        let commandsSecondPhase = secondPhase commandsList startStates accessStates
-        let commandsThirdPhase = thirdPhase commandsList accessStates
+        let commandsFirstPhase = firstPhase startKPlusOneTapeState kplus1tapeState finalKPlusOneTapeState acceptCommand otherCommands startStates
+        let commandsSecondPhase = secondPhase finalKPlusOneTapeState commandsList startStates accessStates
+        let commandsThirdPhase = thirdPhase finalKPlusOneTapeState commandsList accessStates
 
         let newTMCommands = Commands $ Set.fromList $ symCommands $ commandsFirstPhase ++ commandsSecondPhase ++ commandsThirdPhase
 
