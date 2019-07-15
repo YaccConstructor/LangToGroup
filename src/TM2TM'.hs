@@ -19,49 +19,71 @@ disjoinAcceptCommandWithOthers commands accessStates = do
 
     disjoinAcceptCommandWithOthersInternal commands []
 
-firstPhaseFinalStatesTransmition (State s) = State (init s ++ "{'" ++ [last s] ++ "}")
+firstPhaseFinalStatesTransmition tape = do
+    let tapeList = Set.toList tape
+    let getNumber (State s) = read n :: Int
+            where (_, _, _, [n]) = s =~ "q_{?([0-9]+)}?\\^{?[0-9]+\\.?[0-9]*}?" :: (String, String, String, [String])
+    let stateNumber = (+) 1 $ maximum $ map getNumber tapeList
+    let getTapeNumber (State s) = n
+            where (_, _, _, [n]) = s =~ "q_{?[0-9]+}?\\^{?([0-9]+\\.?[0-9]*)}?" :: (String, String, String, [String])
+    let tapeNumber = getTapeNumber $ head tapeList
+    State $ "q_{" ++ (show stateNumber) ++ "}^{" ++ tapeNumber ++ "}"
           
 
-firstPhase startKPlusOneTapeState kplus1tapeState finalKPlusOneTapeState acceptCommand otherCommands startStates = do
+firstPhase startKPlusOneTapeState kplus1tapeState finalKPlusOneTapeState acceptCommand otherCommands startStates multiTapeStates = do
 
     let generateFirstPhaseCommand command states acc =
             case states of
-                [] -> reverse $ (SingleTapeCommand ((emptySymbol, kplus1tapeState, rightBoundingLetter), (Command command, kplus1tapeState, rightBoundingLetter))) : acc
-                s : ss  | acc == [] -> generateFirstPhaseCommand command ss $ (SingleTapeCommand ((emptySymbol, s, rightBoundingLetter), (emptySymbol, s, rightBoundingLetter))) : acc 
-                        | otherwise -> generateFirstPhaseCommand command ss $ (SingleTapeCommand ((leftBoundingLetter, s, rightBoundingLetter), (leftBoundingLetter, s, rightBoundingLetter))) : acc 
+                [] -> 
+                    reverse $ (SingleTapeCommand ((emptySymbol, kplus1tapeState, rightBoundingLetter), (Command command, kplus1tapeState, rightBoundingLetter))) : acc
+                s : ss  | acc == [] -> 
+                    generateFirstPhaseCommand command ss $ (SingleTapeCommand ((emptySymbol, s, rightBoundingLetter), (emptySymbol, s, rightBoundingLetter))) : acc 
+                        | otherwise -> 
+                    generateFirstPhaseCommand command ss $ (SingleTapeCommand ((leftBoundingLetter, s, rightBoundingLetter), (leftBoundingLetter, s, rightBoundingLetter))) : acc 
     
-    let firstPhaseFinalCommand startStates acc =
-            case startStates of
-                [] -> reverse $ (SingleTapeCommand ((emptySymbol, kplus1tapeState, rightBoundingLetter), (emptySymbol, finalKPlusOneTapeState, rightBoundingLetter))) : acc
-                s : ss  | acc == [] -> firstPhaseFinalCommand ss $ (SingleTapeCommand ((emptySymbol, s, rightBoundingLetter), (emptySymbol, firstPhaseFinalStatesTransmition s, rightBoundingLetter))) : acc 
-                        | otherwise -> firstPhaseFinalCommand ss $ (SingleTapeCommand ((leftBoundingLetter, s, rightBoundingLetter), (leftBoundingLetter, firstPhaseFinalStatesTransmition s, rightBoundingLetter))) : acc 
+    let firstPhaseFinalCommand multiTapeStates startStates acc =
+            case (multiTapeStates, startStates) of
+                ([], []) -> 
+                    reverse $ (SingleTapeCommand ((emptySymbol, kplus1tapeState, rightBoundingLetter), (emptySymbol, finalKPlusOneTapeState, rightBoundingLetter))) : acc
+                (tape : tt, s : ss)  | acc == [] -> 
+                    firstPhaseFinalCommand tt ss $ (SingleTapeCommand ((emptySymbol, s, rightBoundingLetter), (emptySymbol, firstPhaseFinalStatesTransmition tape, rightBoundingLetter))) : acc 
+                        | otherwise -> 
+                    firstPhaseFinalCommand tt ss $ (SingleTapeCommand ((leftBoundingLetter, s, rightBoundingLetter), (leftBoundingLetter, firstPhaseFinalStatesTransmition tape, rightBoundingLetter))) : acc 
     
     let firstPhaseStartCommand startStates acc =
             case startStates of
-                [] -> reverse $ (SingleTapeCommand ((emptySymbol, startKPlusOneTapeState, rightBoundingLetter), (Command acceptCommand, kplus1tapeState, rightBoundingLetter))) : acc
-                s : ss  | acc == [] -> firstPhaseStartCommand ss $ (SingleTapeCommand ((emptySymbol, s, rightBoundingLetter), (emptySymbol, s, rightBoundingLetter))) : acc 
-                        | otherwise -> firstPhaseStartCommand ss $ (SingleTapeCommand ((leftBoundingLetter, s, rightBoundingLetter), (leftBoundingLetter, s, rightBoundingLetter))) : acc     
+                [] -> 
+                    reverse $ (SingleTapeCommand ((emptySymbol, startKPlusOneTapeState, rightBoundingLetter), (Command acceptCommand, kplus1tapeState, rightBoundingLetter))) : acc
+                s : ss  | acc == [] -> 
+                    firstPhaseStartCommand ss $ (SingleTapeCommand ((emptySymbol, s, rightBoundingLetter), (emptySymbol, s, rightBoundingLetter))) : acc 
+                        | otherwise -> 
+                    firstPhaseStartCommand ss $ (SingleTapeCommand ((leftBoundingLetter, s, rightBoundingLetter), (leftBoundingLetter, s, rightBoundingLetter))) : acc     
 
     let firstPhaseInternal commands acc = 
             case commands of
                 [] -> acc
                 h : t -> firstPhaseInternal t $ ((generateFirstPhaseCommand h startStates [])) : acc
 
-    (firstPhaseStartCommand startStates []) : (firstPhaseFinalCommand startStates []) : (firstPhaseInternal otherCommands [])
+    (firstPhaseStartCommand startStates []) : (firstPhaseFinalCommand multiTapeStates startStates []) : (firstPhaseInternal otherCommands [])
 
-transformStartStatesInCommands startStates commands = do
-    let transformCommand states command acc =
-            case (states, command) of
-                (h : t, (SingleTapeCommand ((l1, s1, r1), (l2, s2, r2))) : tcommands) 
-                    | s1 == h && s2 == h -> transformCommand t tcommands $ (SingleTapeCommand ((l1, firstPhaseFinalStatesTransmition s1, r1), (l2, firstPhaseFinalStatesTransmition s2, r2))) : acc
-                    | s1 == h -> transformCommand t tcommands $ (SingleTapeCommand ((l1, firstPhaseFinalStatesTransmition s1, r1), (l2, s2, r2))) : acc
-                    | s2 == h -> transformCommand t tcommands $ (SingleTapeCommand ((l1, s1, r1), (l2, firstPhaseFinalStatesTransmition s2, r2))) : acc
-                    | otherwise -> transformCommand t tcommands $ (SingleTapeCommand ((l1, s1, r1), (l2, s2, r2))) : acc
-                ([], []) -> reverse acc
+transformStartStatesInCommands startStates commands multiTapeStates = do
+    let transformCommand states command multiTapeStates acc =
+            case (states, command, multiTapeStates) of
+                (h : t, (SingleTapeCommand ((l1, s1, r1), (l2, s2, r2))) : tcommands, tape : tt) 
+                    | s1 == h && s2 == h -> 
+                        transformCommand t tcommands tt $ (SingleTapeCommand ((l1, newState, r1), (l2, newState, r2))) : acc
+                    | s1 == h -> 
+                        transformCommand t tcommands tt $ (SingleTapeCommand ((l1, newState, r1), (l2, s2, r2))) : acc
+                    | s2 == h -> 
+                        transformCommand t tcommands tt $ (SingleTapeCommand ((l1, s1, r1), (l2, newState, r2))) : acc
+                    | otherwise -> 
+                        transformCommand t tcommands tt $ (SingleTapeCommand ((l1, s1, r1), (l2, s2, r2))) : acc
+                            where newState = firstPhaseFinalStatesTransmition tape
+                ([], [], []) -> reverse acc
 
     let transformStartStatesInCommandsInternal commands acc = 
             case commands of
-                h : t -> transformStartStatesInCommandsInternal t $ (transformCommand startStates h []) : acc
+                h : t -> transformStartStatesInCommandsInternal t $ (transformCommand startStates h multiTapeStates []) : acc
                 [] -> reverse acc
             
     transformStartStatesInCommandsInternal commands []
@@ -72,11 +94,12 @@ generateEmptyStayCommands states acc =
         h : t -> generateEmptyStayCommands t $ (SingleTapeCommand ((leftBoundingLetter, h, rightBoundingLetter), (leftBoundingLetter, h, rightBoundingLetter))) : acc
         
 
-secondPhase finalKPlusOneTapeState commands startStates accessStates = do
-    let transformedCommands = transformStartStatesInCommands startStates commands
+secondPhase finalKPlusOneTapeState commands startStates accessStates multiTapeStates = do
+    let transformedCommands = transformStartStatesInCommands startStates commands multiTapeStates
     let addKPlusOneTapeCommands c1 c2 acc = 
             case (c1, c2) of
-                (h1 : t1, h2 : t2) -> addKPlusOneTapeCommands t1 t2 $ (h1 ++ [SingleTapeCommand ((Command h2, finalKPlusOneTapeState, emptySymbol), (emptySymbol, finalKPlusOneTapeState, Command h2))]) : acc
+                (h1 : t1, h2 : t2) -> 
+                    addKPlusOneTapeCommands t1 t2 $ (h1 ++ [SingleTapeCommand ((Command h2, finalKPlusOneTapeState, emptySymbol), (emptySymbol, finalKPlusOneTapeState, Command h2))]) : acc
                 ([], []) -> acc
 
     let returnToRightEndmarkerCommands commands acc = 
@@ -123,11 +146,11 @@ mapTM2TMAfterThirdPhase
         let kPlus1 = (+) 1 $ length multiTapeStates
         let startKPlusOneTapeState = State $ "q_0^" ++ show kPlus1
         let kplus1tapeState = State $ "q_1^" ++ show kPlus1
-        let finalKPlusOneTapeState = firstPhaseFinalStatesTransmition kplus1tapeState 
+        let finalKPlusOneTapeState = State $ "q_2^" ++ show kPlus1
         let commandsList = Set.toList commands
         let (acceptCommand, otherCommands) = disjoinAcceptCommandWithOthers commandsList accessStates
-        let commandsFirstPhase = firstPhase startKPlusOneTapeState kplus1tapeState finalKPlusOneTapeState acceptCommand otherCommands startStates
-        let commandsSecondPhase = secondPhase finalKPlusOneTapeState commandsList startStates accessStates
+        let commandsFirstPhase = firstPhase startKPlusOneTapeState kplus1tapeState finalKPlusOneTapeState acceptCommand otherCommands startStates multiTapeStates
+        let commandsSecondPhase = secondPhase finalKPlusOneTapeState commandsList startStates accessStates multiTapeStates
         let commandsThirdPhase = thirdPhase finalKPlusOneTapeState commandsList accessStates
 
         let newTMCommands = Commands $ Set.fromList $ symCommands $ commandsFirstPhase ++ commandsSecondPhase ++ commandsThirdPhase
@@ -137,7 +160,7 @@ mapTM2TMAfterThirdPhase
         let newTMStartStates = StartStates (startStates ++ [startKPlusOneTapeState])
 
         let newTMMultiTapeStates = MultiTapeStates (
-                (zipWith (\set start -> Set.insert (firstPhaseFinalStatesTransmition start) set) multiTapeStates startStates) 
+                (map (\set -> Set.insert (firstPhaseFinalStatesTransmition set) set) multiTapeStates) 
                 ++ [Set.fromList [startKPlusOneTapeState, kplus1tapeState, finalKPlusOneTapeState]]
                 )
 
@@ -147,10 +170,10 @@ mapTM2TMAfterThirdPhase
 
 doubleCommandsStateDisjoinFunction s = do
     let getNumber (State s) = n
-            where (_, _, _, [n]) = s =~ "q_{?([0-9]+)}?\\^{?'?[0-9]+}?" :: (String, String, String, [String])
+            where (_, _, _, [n]) = s =~ "q_{?([0-9]+)}?\\^{?[0-9]+}?" :: (String, String, String, [String])
     let stateNumber = getNumber s
     let getTapeNumber (State s) = read n :: Float
-            where (_, _, _, [n]) = s =~ "q_{?[0-9]+}?\\^{?'?([0-9]+)}?" :: (String, String, String, [String])
+            where (_, _, _, [n]) = s =~ "q_{?[0-9]+}?\\^{?([0-9]+)}?" :: (String, String, String, [String])
     let tapeNumber = (+) 0.5 $ getTapeNumber s
     State $ "q_{" ++ stateNumber ++ "}^{" ++ (show tapeNumber) ++ "}"    
 
@@ -177,15 +200,7 @@ doubleCommands multiTapeStates commands = do
 
     (concat $ map doubleMultitapeStates multiTapeStates, doubleCommandsInternal commands [])
 
-intermediateStateOne2TwoKTransform tape = do
-    let tapeList = Set.toList tape
-    let getNumber (State s) = trace (show s) $ read n :: Int
-            where (_, _, _, [n]) = s =~ "q_{?([0-9]+)}?\\^{?'?[0-9]+\\.?[0-9]*}?" :: (String, String, String, [String])
-    let stateNumber = (+) 1 $ maximum $ map getNumber tapeList
-    let getTapeNumber (State s) = n
-            where (_, _, _, [n]) = s =~ "q_{?[0-9]+}?\\^{?'?([0-9]+\\.?[0-9]*)}?" :: (String, String, String, [String])
-    let tapeNumber = getTapeNumber $ head tapeList
-    State $ "q_{" ++ (show stateNumber) ++ "}^{" ++ tapeNumber ++ "}"
+intermediateStateOne2TwoKTransform = firstPhaseFinalStatesTransmition
 
 one2TwoKCommands (multiTapeStates, commands) = do
     let getStartAndFinalStatesOfCommand command (starts, finals) = 
