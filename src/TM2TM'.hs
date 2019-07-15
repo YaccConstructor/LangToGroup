@@ -208,40 +208,71 @@ doubleCommands commands = do
 
 intermediateStateOne2TwoKTransform (State s) k = State (s ++ (replicate k '\'')) 
 
-one2TwoKCommands commands = do
+one2TwoKCommands tapeStates commands = do
     let getStartAndFinalStatesOfCommand command (starts, finals) = 
             case command of
                 SingleTapeCommand ((l1, s1, r1), (l2, s2, r2)) : t -> getStartAndFinalStatesOfCommand t (s1 : starts, s2 : finals)
                 [] -> (reverse starts, reverse finals)
-    let oneActionCommand (starts, finals) k command n i (newStarts, acc) =
-            case (command, starts, finals) of
-                ([], [], []) -> (reverse newStarts, reverse acc)
-                (SingleTapeCommand ((l1, s1, r1), (l2, s2, r2)) : t, start : st, final : ft)   
-                        | n == i || l1 == emptySymbol -> oneActionCommand (st, ft) k t n (i + 1) (final : newStarts, (SingleTapeCommand ((l1, start, r1), (l2, final, r2))) : acc)
-                        | start == final -> oneActionCommand (st, ft) k t n (i + 1) (final : newStarts, (SingleTapeCommand ((emptySymbol, start, r1), (emptySymbol, final, r2))) : acc)
-                        | otherwise -> oneActionCommand (st, ft) k t n (i + 1) (intermediateStateOne2TwoKTransform final k : newStarts, (SingleTapeCommand ((emptySymbol, start, r1), (emptySymbol, intermediateStateOne2TwoKTransform final k, r2))) : acc)
+    let oneActionCommand tapeStates (starts, finals) k command n i (newTapeStates, newStarts, acc) =
+            case (tapeStates, command, starts, finals) of
+                ([], [], [], []) -> (reverse newTapeStates, reverse newStarts, reverse acc)
+                (tape : tt, SingleTapeCommand ((l1, s1, r1), (l2, s2, r2)) : t, start : st, final : ft)   
+                        | start == final -> 
+                            oneActionCommand tt (st, ft) k t n (i + 1) (tape : newTapeStates, final : newStarts, (SingleTapeCommand ((emptySymbol, start, r1), (emptySymbol, final, r2))) : acc)
+                        | n == i || l1 == emptySymbol && l2 == emptySymbol -> 
+                            oneActionCommand tt (st, ft) k t n (i + 1) (tape : newTapeStates, final : newStarts, (SingleTapeCommand ((l1, start, r1), (l2, final, r2))) : acc)
+                        | otherwise -> 
+                            oneActionCommand tt (st, ft) k t n (i + 1) (Set.insert intermediateState tape : newTapeStates, intermediateState : newStarts, (SingleTapeCommand ((emptySymbol, start, r1), (emptySymbol, intermediateState, r2))) : acc)
+                                where intermediateState = intermediateStateOne2TwoKTransform final k
 
-    let onew2TwoKCommand (starts, finals) k i command immutCommand acc =
+    let onew2TwoKCommand tapeStates (starts, finals) k i command immutCommand acc =
             case command of
-                SingleTapeCommand ((l1, s1, r1), (l2, s2, r2)) : t  | l1 == emptySymbol && l2 == emptySymbol || l1 == leftBoundingLetter -> onew2TwoKCommand (starts, finals) k (i + 1) t immutCommand acc
-                                                                    | otherwise -> onew2TwoKCommand (newStarts, finals) k (i + 1) t immutCommand $ newCommands ++ acc where (newStarts, newCommands) = oneActionCommand (starts, finals) k immutCommand i 0 ([],[])
-                [] -> acc
-    let one2TwoKCommandsInternal commands i acc =
+                SingleTapeCommand ((l1, s1, r1), (l2, s2, r2)) : t  | l1 == emptySymbol && l2 == emptySymbol || l1 == leftBoundingLetter -> onew2TwoKCommand tapeStates (starts, finals) k (i + 1) t immutCommand acc
+                                                                    | otherwise -> onew2TwoKCommand newTapeStates (newStarts, finals) k (i + 1) t immutCommand $ newCommands ++ acc 
+                                                                        where (newTapeStates, newStarts, newCommands) = oneActionCommand tapeStates (starts, finals) k immutCommand i 0 ([], [], [])
+                [] -> (tapeStates, acc)
+    let one2TwoKCommandsInternal tapeStates commands i acc =
             case commands of
-                h : t -> one2TwoKCommandsInternal t (i + 1) $ (onew2TwoKCommand (getStartAndFinalStatesOfCommand h ([], [])) i 0 h h []) : acc
-                [] -> acc
+                h : t -> one2TwoKCommandsInternal newTapeStates t (i + 1) $ newCommand : acc
+                    where   (starts, finals) = getStartAndFinalStatesOfCommand h ([], []) 
+                            (newTapeStates, newCommand) = onew2TwoKCommand tapeStates (starts, finals) i 0 h h []
+                [] -> (tapeStates, acc)
 
-    one2TwoKCommandsInternal commands 1 []
 
--- mapTM2TM' :: TM -> TM
--- mapTM2TM' tm = do
---     let (TM (inputAlphabet,
---             tapeAlphabets, 
---             MultiTapeStates multiTapeStates, 
---             Commands commandsSet, 
---             StartStates startStates,
---             AccessStates accessStates)
---             ) = mapTM2TMAfterThirdPhase tm
+    one2TwoKCommandsInternal tapeStates commands 1 []
 
---     let commands = Set.toList commandsSet
---     let newTMCommands =  doubleCommands commands
+intermediateStateSingleInsertDeleteTransform (State s) = State (s ++ "'")
+
+transform2SingleInsertDeleteCommand (tapeStates, commands) = do 
+    let transformCommand tapeStates command acc1 acc2 accTape =
+            case (command, tapeStates) of
+                (SingleTapeCommand ((l1, s1, r1), (l2, s2, r2)) : t, tape : tt)
+                    | l1 /= emptySymbol && l1 /= leftBoundingLetter && l2 /= emptySymbol -> 
+                        transformCommand tt t (SingleTapeCommand ((l1, s1, r1), (emptySymbol, intermediateState, r2)) : acc1) (SingleTapeCommand ((emptySymbol, intermediateState, r1), (l2, s2, r2)) : acc2) (Set.insert intermediateState tape : accTape)
+                    | otherwise -> 
+                        transformCommand tt t (SingleTapeCommand ((l1, s1, r1), (l2, s2, r2)) : acc1) (SingleTapeCommand ((l1, s1, r1), (l2, s2, r2)) : acc2) (tape : accTape)
+                            where intermediateState = intermediateStateSingleInsertDeleteTransform s1
+                ([], [])    | acc1 == acc2 -> (reverse accTape, [reverse acc1]) 
+                            | otherwise -> (reverse accTape, [reverse acc1, reverse acc2])
+
+    let transform2SingleInsertDeleteCommandInternal tapeStates commands acc =
+            case commands of
+                h : t -> transform2SingleInsertDeleteCommandInternal newTapeStates t $ newCommands ++ acc
+                            where   (newTapeStates, newCommands) = transformCommand tapeStates h [] [] []
+                [] -> (tapeStates, acc)
+                    
+    transform2SingleInsertDeleteCommandInternal tapeStates commands []
+
+mapTM2TM' :: TM -> TM
+mapTM2TM' tm = do
+    let (TM (inputAlphabet,
+            tapeAlphabets, 
+            MultiTapeStates multiTapeStates, 
+            Commands commandsSet, 
+            startStates,
+            accessStates)
+            ) = mapTM2TMAfterThirdPhase tm
+
+    let commands = Set.toList commandsSet
+    let (newTapeStates, newTMCommands) = transform2SingleInsertDeleteCommand $ one2TwoKCommands multiTapeStates $ doubleCommands commands
+    TM (inputAlphabet, tapeAlphabets, MultiTapeStates (newTapeStates), Commands (Set.fromList newTMCommands), startStates, accessStates)
