@@ -36,7 +36,8 @@ example = execLaTeXM $
             --doLaTeX testGrammar
             --doLaTeX $ mapCfgToTM testGrammar
             --doLaTeX $ interpretTM ["a"] $ mapCfgToTM testGrammar
-            doLaTeX $ mapTM2TMAfterThirdPhase $ mapCfgToTM testGrammar
+            --doLaTeX $ mapTM2TMAfterThirdPhase $ mapCfgToTM testGrammar
+            doLaTeX $ mapTM2TM' $ mapCfgToTM testGrammar
             --newpage
             --doLaTeX epsTestGrammar
             --doLaTeX $ mapCfgToTM epsTestGrammar
