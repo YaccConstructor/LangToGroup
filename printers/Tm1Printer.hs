@@ -38,8 +38,8 @@ showCommand command = do
 
 showStates :: [State] -> LaTeXM ()
 showStates = helper where
-    helper [state]    = doLaTeX state
-    helper (state:ss) = do { doLaTeX state; ","; showStates ss }
+    helper [state]    = math $ doLaTeX state
+    helper (state:ss) = do { math $ doLaTeX state; ", "; showStates ss }
 
 showAlphabet :: [Square] -> LaTeXM ()
 showAlphabet = helper where
@@ -59,14 +59,14 @@ instance ShowLaTeX TapeAlphabet where
 
 instance ShowLaTeX MultiTapeStates where
     doLaTeX (MultiTapeStates statesList) = do
-        enumerate $ mapM_ (\states -> do { item Nothing; math $ showStates $ Set.toList $ states}) statesList
+        enumerate $ mapM_ (\states -> do { item Nothing; showStates $ Set.toList $ states}) statesList
 
 
 instance ShowLaTeX StartStates where
-    doLaTeX (StartStates states) = math $ showStates states
+    doLaTeX (StartStates states) = showStates states
 
 instance ShowLaTeX AccessStates where
-    doLaTeX (AccessStates states) = math $ showStates states
+    doLaTeX (AccessStates states) = showStates states
 
 
 instance ShowLaTeX SingleTapeCommand where
