@@ -218,10 +218,10 @@ one2TwoKCommands (multiTapeStates, commands) = do
             case (tapeStates, command, starts, finals) of
                 ([], [], [], []) -> (reverse newTapeStates, reverse newStarts, reverse acc)
                 (tape : tt, SingleTapeCommand ((l1, s1, r1), (l2, s2, r2)) : t, start : st, final : ft)   
-                        | start == final -> 
-                            oneActionCommand tt (st, ft) t n (i + 1) (tape : newTapeStates, final : newStarts, (SingleTapeCommand ((emptySymbol, start, r1), (emptySymbol, final, r2))) : acc)
                         | n == i || l1 == emptySymbol && l2 == emptySymbol -> 
                             oneActionCommand tt (st, ft) t n (i + 1) (tape : newTapeStates, final : newStarts, (SingleTapeCommand ((l1, start, r1), (l2, final, r2))) : acc)
+                        | i < n && start == final -> 
+                            oneActionCommand tt (st, ft) t n (i + 1) (tape : newTapeStates, final : newStarts, (SingleTapeCommand ((emptySymbol, start, r1), (emptySymbol, final, r2))) : acc)
                         | otherwise -> 
                             oneActionCommand tt (st, ft) t n (i + 1) ((Set.insert intermediateState tape) : newTapeStates, intermediateState : newStarts, (SingleTapeCommand ((emptySymbol, start, r1), (emptySymbol, intermediateState, r2))) : acc)
                                 where intermediateState = intermediateStateOne2TwoKTransform tape
@@ -229,7 +229,7 @@ one2TwoKCommands (multiTapeStates, commands) = do
 
     let one2TwoKCommand tapeStates (starts, finals) i command immutCommand acc =
             case command of
-                SingleTapeCommand ((l1, s1, r1), (l2, s2, r2)) : t  | l1 == emptySymbol && l2 == emptySymbol || l1 == leftBoundingLetter -> 
+                SingleTapeCommand ((l1, s1, r1), (l2, s2, r2)) : t  | l1 == emptySymbol && l2 == emptySymbol -> 
                                                                             one2TwoKCommand tapeStates (starts, finals) (i + 1) t immutCommand acc
                                                                     | otherwise -> 
                                                                             one2TwoKCommand newTapeStates (newStarts, finals) (i + 1) t immutCommand $ newCommand : acc 
@@ -279,7 +279,8 @@ mapTM2TM' tm = do
 
     let commands = Set.toList commandsSet
     let (newStartStates, newAccessStates, newTapeAlphabets, doubledTapeStates, doubledCommands) = doubleCommands startStates accessStates tapeAlphabets multiTapeStates commands
-    let (newTapeStates, newTMCommands) = transform2SingleInsertDeleteCommand $ one2TwoKCommands (doubledTapeStates, doubledCommands)
+    let (newTapeStates, newTMCommands) =    transform2SingleInsertDeleteCommand $ 
+                                            one2TwoKCommands (doubledTapeStates, doubledCommands)
     TM (inputAlphabet, 
         newTapeAlphabets, 
         MultiTapeStates (newTapeStates), 

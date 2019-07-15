@@ -9,7 +9,7 @@ module Helpers where
     getDisjoinState (State state) = State (state ++ "'") 
 
     getDisjoinSquare :: Square -> Square
-    getDisjoinSquare (Value s) = Value (s ++ "'")
+    getDisjoinSquare (Value s) = if (Value s) == emptySymbol then (Value s) else Value (s ++ "'")
     getDisjoinSquare c = c --TODO
 
     getDisjoinSymbol :: Symbol -> Square
