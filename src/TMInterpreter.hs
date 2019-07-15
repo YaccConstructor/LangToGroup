@@ -15,7 +15,8 @@ module TMInterpreter where
                             |   s1 == s && 
                                 (r1 == emptySymbol && l1 == rightBoundingLetter && r2 /= emptySymbol && l2 == rightBoundingLetter && l == [rightBoundingLetter] ||
                                 r /= [leftBoundingLetter] && r1 == (last r) && l1 == rightBoundingLetter && r2 == emptySymbol && l2 == rightBoundingLetter && l == [rightBoundingLetter] ||
-                                (last r) == r1 && (head l) == l1) -> checkCommandTapeToTape t2 t1
+                                (last r) == r1 && (head l) == l1 ||
+                                r1 == emptySymbol && r2 == emptySymbol && l1 == rightBoundingLetter && l2 == l1) -> checkCommandTapeToTape t2 t1
                             | otherwise -> False
 
     getApplicableCommands :: [([Square], State, [Square])] -> [[SingleTapeCommand]] -> [[SingleTapeCommand]] -> [[SingleTapeCommand]] 
@@ -40,6 +41,8 @@ module TMInterpreter where
                     | r1 == emptySymbol && l1 == rightBoundingLetter && l2 == rightBoundingLetter -> applyCommand t2 t1 configs $ (r ++ [r2], s2, l) : acc
                     --remove
                     | l1 == rightBoundingLetter && r2 == emptySymbol && l2 == rightBoundingLetter -> applyCommand t2 t1 configs $ (init r, s2, l) : acc
+                    --stay
+                    | r1 == emptySymbol && r2 == emptySymbol && l1 == rightBoundingLetter && l2 == l1 -> applyCommand t2 t1 configs $ (r, s2, l) : acc
                     --replace
                     | r1 == (last r) && l1 == (head l) -> applyCommand t2 t1 configs $ (init r ++ [r2], s2, l2 : (tail l)) : acc
                     | otherwise -> error ("Wrong command " ++ show command)

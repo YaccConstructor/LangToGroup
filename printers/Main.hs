@@ -35,11 +35,11 @@ example = execLaTeXM $
         document $ do
             --doLaTeX testGrammar
             doLaTeX $ mapCfgToTM testGrammar
-            --doLaTeX $ interpretTM ["a"] $ mapCfgToTM testGrammar
-            newpage
-            doLaTeX $ mapTM2TMAfterThirdPhase $ mapCfgToTM testGrammar
-            newpage
-            doLaTeX $ mapTM2TM' $ mapCfgToTM testGrammar
+            doLaTeX $ interpretTM ["a"] $ mapCfgToTM testGrammar
+            -- newpage
+            -- doLaTeX $ mapTM2TMAfterThirdPhase $ mapCfgToTM testGrammar
+            -- newpage
+            -- doLaTeX $ mapTM2TM' $ mapCfgToTM testGrammar
             --newpage
             --doLaTeX epsTestGrammar
             --doLaTeX $ mapCfgToTM epsTestGrammar
@@ -147,8 +147,7 @@ testGrammar = grammar where
         Grammar(
             (Set.fromList [nonterminal]),
             (Set.fromList [terminal]),
-            (Set.fromList [GrammarType.Relation (nonterminal,
-            [GrammarType.T terminal])]),
+            (Set.fromList [GrammarType.Relation (nonterminal, [GrammarType.T terminal])]),
             nonterminal,
             eps
         )
