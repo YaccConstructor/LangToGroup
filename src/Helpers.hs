@@ -8,6 +8,10 @@ module Helpers where
     getDisjoinState :: State -> State
     getDisjoinState (State state) = State (state ++ "'") 
 
+    getDisjoinSquare2 :: Square -> Square
+    getDisjoinSquare2 (Value s) = if (Value s) == emptySymbol then (Value s) else Value (s ++ "''")
+    getDisjoinSquare2 (BCommand c) = PCommand c
+
     getDisjoinSquare :: Square -> Square
     getDisjoinSquare (Value s) = if (Value s) == emptySymbol then (Value s) else Value (s ++ "'")
     getDisjoinSquare (BCommand c) = PCommand c

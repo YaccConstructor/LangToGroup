@@ -187,7 +187,7 @@ doubleCommands startStates accessStates tapeAlphabets multiTapeStates commands =
                                                                                 ]) 
                         | otherwise -> divideCommands t (acc ++ [
                             SingleTapeCommand ((a, s, rightBoundingLetter), (a1, s1, rightBoundingLetter)),
-                            SingleTapeCommand ((getDisjoinSquare b, doubleCommandsStateDisjoinFunction s, rightBoundingLetter), (getDisjoinSquare b1, doubleCommandsStateDisjoinFunction s1, rightBoundingLetter))
+                            SingleTapeCommand ((getDisjoinSquare2 b, doubleCommandsStateDisjoinFunction s, rightBoundingLetter), (getDisjoinSquare2 b1, doubleCommandsStateDisjoinFunction s1, rightBoundingLetter))
                                                                  ])
                 [] -> acc
 
@@ -198,7 +198,7 @@ doubleCommands startStates accessStates tapeAlphabets multiTapeStates commands =
     
     let doubleMultitapeStates states = [states, Set.map doubleCommandsStateDisjoinFunction states]
     let doubleStates state = [state, doubleCommandsStateDisjoinFunction state]
-    let doubleTapeAlphabets tapeAlphabet = [tapeAlphabet, TapeAlphabet $ Set.map getDisjoinSquare a]
+    let doubleTapeAlphabets tapeAlphabet = [tapeAlphabet, TapeAlphabet $ Set.map getDisjoinSquare2 a]
                 where (TapeAlphabet a) = tapeAlphabet
 
     (concat $ map doubleStates startStates, 
