@@ -38,9 +38,9 @@ module TMInterpreter where
             ([], []) -> configs ++ [reverse acc]
             (SingleTapeCommand ((r1, s1, l1), (r2, s2, l2)) : t1, (r, s, l) : t2) 
                     --insert
-                    | r1 == emptySymbol && l1 == rightBoundingLetter && l2 == rightBoundingLetter -> applyCommand t2 t1 configs $ (r ++ [r2], s2, l) : acc
+                    | r1 == emptySymbol && r2 /= emptySymbol && l1 == rightBoundingLetter && l2 == l1 -> applyCommand t2 t1 configs $ (r ++ [r2], s2, l) : acc
                     --remove
-                    | l1 == rightBoundingLetter && r2 == emptySymbol && l2 == rightBoundingLetter -> applyCommand t2 t1 configs $ (init r, s2, l) : acc
+                    | l1 == rightBoundingLetter && r2 == emptySymbol && r1 /= emptySymbol && l2 == l1 -> applyCommand t2 t1 configs $ (init r, s2, l) : acc
                     --stay
                     | r1 == emptySymbol && r2 == emptySymbol && l1 == rightBoundingLetter && l2 == l1 -> applyCommand t2 t1 configs $ (r, s2, l) : acc
                     --replace
@@ -92,7 +92,8 @@ module TMInterpreter where
             -- check input
             let inputSquare = map mapValue input
             let isInputCorrect = Set.isSubsetOf (Set.fromList inputSquare) inputAlphabet
-            let startConfigss = [[([leftBoundingLetter] ++ inputSquare, (head startStates), [rightBoundingLetter]) : (map (\s -> ([leftBoundingLetter], s, [rightBoundingLetter])) (tail startStates))]]
+            let startConfigss = [[([leftBoundingLetter] ++ inputSquare, (head startStates), [rightBoundingLetter]) : 
+                                    (map (\s -> ([leftBoundingLetter], s, [rightBoundingLetter])) (tail startStates))]]
             case isInputCorrect of
                 False -> error "Incorrect input"
                 True -> Configs (startInterpreting accessStates startConfigss (Set.toList commands))

@@ -33,7 +33,7 @@ example = execLaTeXM $
     do
         preambula 
         document $ do
-            --doLaTeX testGrammar
+            doLaTeX testGrammar
             doLaTeX $ mapCfgToTM testGrammar
             doLaTeX $ interpretTM ["a"] $ mapCfgToTM testGrammar
             -- newpage
