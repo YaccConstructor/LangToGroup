@@ -23,4 +23,5 @@ module Helpers where
             N (Nonterminal c) -> Value c
             E (Epsilon c) -> Value c
 
-    mapValue x = Value x
+    mapValue = map (\v -> Value v)
+    mapFromValue = map (\(Value v) -> v)

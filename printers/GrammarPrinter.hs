@@ -25,10 +25,10 @@ showTerminals = helper where
 
 
 instance ShowLaTeX Nonterminal where
-    doLaTeX (Nonterminal symbol) = fromString symbol
+    doLaTeX (Nonterminal symbol) = raw $ fromString symbol
 
 instance ShowLaTeX Terminal where
-    doLaTeX (Terminal symbol)    = fromString symbol
+    doLaTeX (Terminal symbol)    = raw $ fromString symbol
 
 instance ShowLaTeX Epsilon where
     doLaTeX (Epsilon symbol)    = fromString symbol

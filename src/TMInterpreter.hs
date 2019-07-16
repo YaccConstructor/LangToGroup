@@ -90,7 +90,7 @@ module TMInterpreter where
         StartStates startStates, 
         AccessStates accessStates)) = do
             -- check input
-            let inputSquare = map mapValue input
+            let inputSquare = mapValue input
             let isInputCorrect = Set.isSubsetOf (Set.fromList inputSquare) inputAlphabet
             let startConfigss = [[([leftBoundingLetter] ++ inputSquare, (head startStates), [rightBoundingLetter]) : 
                                     (map (\s -> ([leftBoundingLetter], s, [rightBoundingLetter])) (tail startStates))]]

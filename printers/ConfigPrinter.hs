@@ -13,6 +13,7 @@ import TMType
 import ConfigType
 import Lib
 import Tm1Printer
+import Helpers
 
 instance ShowLaTeX Configs where
     doLaTeX (Configs configs) = do
@@ -23,8 +24,7 @@ instance ShowLaTeX Configs where
         let tapesNames   = map (\num -> "Tape " ++ show num) [1..tapesCount]
         let halfHeader   = foldl1 (&) $ map (\cur -> (multicolumn 3 [CenterColumn] $ fromString cur)) tapesNames
         
-        --let showTriple (u, State q, v) = math $ fromString $ concat u ++ q ++ (concat v)
-        let showTriple (u, q, v) = (math $ fromString $ concat $ map (\(Value x) -> x) u) & (math $ doLaTeX q) & (math $ fromString $ concat $ map (\(Value x) -> x) v)
+        let showTriple (u, q, v) = (math $ raw $ fromString $ concat $ mapFromValue u) & (math $ doLaTeX q) & (math $ raw $ fromString $ concat $ mapFromValue v)
 
         let showLine (lineNumber, config) = do
                 foldl1 (&) ([fromString $ show lineNumber] ++ (map showTriple config))
