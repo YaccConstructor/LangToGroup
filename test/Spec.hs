@@ -33,7 +33,7 @@ test1Grammar = grammar where
 
 configsTest :: Assertion
 configsTest = do
-    let q1 = TMType.State "q_3^2"
+    let q1 = TMType.State "q_{3}^2"
     let a = Value "a"
     let a' = Value "a'"
     let expectedConfigs = Configs ([
@@ -47,25 +47,11 @@ configsTest = do
     
     assertEqual "config test" expectedConfigs (interpretTM ["a"] $ mapCfgToTM test1Grammar)
 
--- configsEpsTest :: Assertion
--- configsEpsTest = do
---     let q1 = TMType.State "q_3^2"
---     let expectedConfigs = Configs ([
---             [([leftBoundingLetter, "a"], startStateFirstTape, [rightBoundingLetter]), ([leftBoundingLetter], startStateSecondTape, [rightBoundingLetter])],
---             [([leftBoundingLetter, "a"], startStateFirstTape, [rightBoundingLetter]), ([leftBoundingLetter, "S"], intermediateStateSecondTape, [rightBoundingLetter])],
---             [([leftBoundingLetter, "a"], startStateFirstTape, [rightBoundingLetter]), ([leftBoundingLetter, "a'"], q1, [rightBoundingLetter])],
---             [([leftBoundingLetter, "a"], startStateFirstTape, [rightBoundingLetter]), ([leftBoundingLetter, "a'"], intermediateStateSecondTape, [rightBoundingLetter])],
---             [([leftBoundingLetter], startStateFirstTape, [rightBoundingLetter]), ([leftBoundingLetter], intermediateStateSecondTape, [rightBoundingLetter])],
---             [([leftBoundingLetter], finalStateFirstTape, [rightBoundingLetter]), ([leftBoundingLetter], finalStateSecondTape, [rightBoundingLetter])]
---             ])
-    
---     assertEqual "config test" expectedConfigs (interpretTM ["a"] $ mapCfgToTM test1Grammar)
-
 simpleCfgToTMMapTest :: Assertion
 simpleCfgToTMMapTest = do
     let letter_a = Value "a"
     let letter_S = Value "S"
-    let workState = TMType.State "q_3^2"
+    let workState = TMType.State "q_{3}^2"
     
     let expectedTM = TM (
             InputAlphabet (Set.fromList [letter_a]),
@@ -75,10 +61,10 @@ simpleCfgToTMMapTest = do
             Commands (Set.fromList [
                 [
                     SingleTapeCommand (
-                        (letter_a, 
+                        (emptySymbol, 
                         startStateFirstTape, 
                         rightBoundingLetter), 
-                        (letter_a, 
+                        (emptySymbol, 
                         startStateFirstTape, 
                         rightBoundingLetter)
                         ),
@@ -93,10 +79,10 @@ simpleCfgToTMMapTest = do
                     ],
                 [
                     SingleTapeCommand (
-                        (letter_a, 
+                        (emptySymbol, 
                         startStateFirstTape, 
                         rightBoundingLetter), 
-                        (letter_a, 
+                        (emptySymbol, 
                         startStateFirstTape, 
                         rightBoundingLetter)
                         ),
@@ -111,18 +97,18 @@ simpleCfgToTMMapTest = do
                     ],
                 [
                     SingleTapeCommand (
-                        (letter_a, 
+                        (emptySymbol, 
                         startStateFirstTape, 
                         rightBoundingLetter), 
-                        (letter_a, 
+                        (emptySymbol, 
                         startStateFirstTape, 
                         rightBoundingLetter)
                         ), 
                     SingleTapeCommand (
-                        (getDisjoinSquare letter_a, 
+                        (emptySymbol, 
                         workState, 
                         rightBoundingLetter), 
-                        (getDisjoinSquare letter_a, 
+                        (emptySymbol, 
                         intermediateStateSecondTape, 
                         rightBoundingLetter)
                         )
@@ -168,25 +154,6 @@ simpleCfgToTMMapTest = do
             AccessStates [finalStateFirstTape, finalStateSecondTape]
                 )
     assertEqual "simple cfg to TMs convertion" expectedTM (mapCfgToTM test1Grammar)
-
--- cfgWithEpsToTMMapTest :: Assertion
--- cfgWithEpsToTMMapTest = do
---     let letter_a = "a"
---     let letter_S = "S"
---     let workState = TMType.State "q_3^2"
-    
---     let expectedTM = TM (
---             InputAlphabet (Set.fromList [letter_a]),
---             [TapeAlphabet (Set.fromList [letter_a]), TapeAlphabet (Set.fromList [getDisjoinLetter letter_a, letter_S])],
---             MultiTapeStates [(Set.fromList [startStateFirstTape, finalStateFirstTape]), 
---                             (Set.fromList [startStateSecondTape, intermediateStateSecondTape, finalStateSecondTape, workState])],
---             Commands (Set.fromList [
---                 [
---                 ]),
---             StartStates [startStateFirstTape, startStateSecondTape],
---             AccessStates [finalStateFirstTape, finalStateSecondTape]
---                 )
---     assertEqual "simple cfg to TMs convertion" expectedTM (mapCfgToTM test1Grammar)
 
 genY :: Int -> [[Y]] -> [[Y]]
 genY 0 x = x
