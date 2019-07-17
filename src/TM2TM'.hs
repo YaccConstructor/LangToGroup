@@ -267,6 +267,20 @@ transform2SingleInsertDeleteCommand (tapeStates, commands) = do
                     
     transform2SingleInsertDeleteCommandInternal tapeStates commands []
 
+renameRightLeftBoundings commands = do
+    let e i = Value ("E_{" ++ (show i) ++ "}")
+    let f (State q) = Value ("F_{" ++ q ++ "}")
+    let renameRightLeftBoundingsInternal i acc command =
+            case command of
+                SingleTapeCommand ((l1, s1, r1), (l2, s2, r2)) : t 
+                    | l1 == leftBoundingLetter -> renameRightLeftBoundingsInternal (i + 1) ((PreSMCommand ((newRight, newS1), (newRight, newS2))) : acc) t
+                    | otherwise -> renameRightLeftBoundingsInternal (i + 1) ((PreSMCommand ((l1, newS1), (l2, newS2))) : acc) t
+                        where   newRight = e i
+                                newS1 = f s1
+                                newS2 = f s2
+                [] -> reverse acc
+    map (renameRightLeftBoundingsInternal 1 []) commands 
+
 mapTM2TM' :: TM -> TM
 mapTM2TM' tm = do
     let (TM (inputAlphabet,
@@ -283,7 +297,7 @@ mapTM2TM' tm = do
                                             one2TwoKCommands (doubledTapeStates, doubledCommands)
     TM (inputAlphabet, 
         newTapeAlphabets, 
-        MultiTapeStates (newTapeStates), 
-        Commands (Set.fromList newTMCommands), 
+        MultiTapeStates newTapeStates, 
+        Commands (Set.fromList $ renameRightLeftBoundings newTMCommands), 
         StartStates newStartStates, 
         AccessStates newAccessStates)

@@ -7,7 +7,7 @@ module TMInterpreter where
     import Data.Maybe
     import Helpers
 
-    checkCommandTapeToTape :: [([Square], State, [Square])] -> [SingleTapeCommand] -> Bool
+    checkCommandTapeToTape :: [([Square], State, [Square])] -> [TapeCommand] -> Bool
     checkCommandTapeToTape config command =
         case (command, config) of
             ([], []) -> True
@@ -19,20 +19,20 @@ module TMInterpreter where
                                 r1 == emptySymbol && r2 == emptySymbol && l1 == rightBoundingLetter && l2 == l1) -> checkCommandTapeToTape t2 t1
                             | otherwise -> False
 
-    getApplicableCommands :: [([Square], State, [Square])] -> [[SingleTapeCommand]] -> [[SingleTapeCommand]] -> [[SingleTapeCommand]] 
+    getApplicableCommands :: [([Square], State, [Square])] -> [[TapeCommand]] -> [[TapeCommand]] -> [[TapeCommand]] 
     getApplicableCommands config commands acc =
         case commands of
             [] -> acc
             c : t   | checkCommandTapeToTape config c -> getApplicableCommands config t $ c : acc
                     | otherwise -> getApplicableCommands config t acc
 
-    getApplicableCommandss :: [[[([Square], State, [Square])]]] -> [[SingleTapeCommand]] -> [[[SingleTapeCommand]]] -> [[[SingleTapeCommand]]]
+    getApplicableCommandss :: [[[([Square], State, [Square])]]] -> [[TapeCommand]] -> [[[TapeCommand]]] -> [[[TapeCommand]]]
     getApplicableCommandss configss commands acc =
         case configss of
             [] -> reverse acc
             h : t -> getApplicableCommandss t commands $ (getApplicableCommands (last h) commands []) : acc
 
-    applyCommand :: [([Square], State, [Square])] -> [SingleTapeCommand] -> [[([Square], State, [Square])]] -> [([Square], State, [Square])] -> [[([Square], State, [Square])]]
+    applyCommand :: [([Square], State, [Square])] -> [TapeCommand] -> [[([Square], State, [Square])]] -> [([Square], State, [Square])] -> [[([Square], State, [Square])]]
     applyCommand config command configs acc = 
         case (command, config) of
             ([], []) -> configs ++ [reverse acc]
@@ -48,13 +48,13 @@ module TMInterpreter where
                     | otherwise -> error ("Wrong command " ++ show command)
             ([], _) -> configs
 
-    applyCommands :: [[([Square], State, [Square])]] -> [[SingleTapeCommand]] -> [[[([Square], State, [Square])]]] -> [[[([Square], State, [Square])]]]
+    applyCommands :: [[([Square], State, [Square])]] -> [[TapeCommand]] -> [[[([Square], State, [Square])]]] -> [[[([Square], State, [Square])]]]
     applyCommands configs commands acc =
         case commands of
             [] -> acc
             h : t -> applyCommands configs t $ (applyCommand (last configs) h configs []) : acc
     
-    applyCommandss :: [[[([Square], State, [Square])]]] -> [[[SingleTapeCommand]]] -> [[[([Square], State, [Square])]]] -> [[[([Square], State, [Square])]]]
+    applyCommandss :: [[[([Square], State, [Square])]]] -> [[[TapeCommand]]] -> [[[([Square], State, [Square])]]] -> [[[([Square], State, [Square])]]]
     applyCommandss configss commandss acc =
         case (configss, commandss) of
             ([], []) -> acc

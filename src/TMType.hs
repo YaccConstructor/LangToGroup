@@ -19,13 +19,13 @@ newtype StartStates = StartStates [State]
 -- k - vector of end states
 newtype AccessStates = AccessStates [State]
     deriving (Eq, Ord, Show)
-data Square = Value String | PCommand [SingleTapeCommand] | BCommand [SingleTapeCommand]
-    deriving (Eq, Ord, Show)
 -- command of TM for single tape
-newtype SingleTapeCommand = SingleTapeCommand ((Square, State, Square), (Square, State, Square))
+data TapeCommand = SingleTapeCommand ((Square, State, Square), (Square, State, Square)) | PreSMCommand ((Square, Square), (Square, Square))
+    deriving (Eq, Ord, Show)
+data Square = Value String | PCommand [TapeCommand] | BCommand [TapeCommand]
     deriving (Eq, Ord, Show)
 -- commands
-newtype Commands = Commands (Set [SingleTapeCommand])
+newtype Commands = Commands (Set [TapeCommand])
     deriving (Eq, Ord, Show)
 -- leftmost square on every tape
 leftBoundingLetter = Value "α"

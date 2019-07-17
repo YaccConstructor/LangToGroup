@@ -26,19 +26,19 @@ instance ShowLaTeX Square where
 instance ShowLaTeX State where
     doLaTeX (State st) = raw $ fromString st
 
+showTriple (u, q, v) = toLaTeX u <> toLaTeX q <> toLaTeX v
+showPair (r, l) = toLaTeX r <> toLaTeX l
+showFrom (SingleTapeCommand (q, _)) = showTriple q
+showFrom (PreSMCommand (q, _)) = showPair q
+showTo (SingleTapeCommand (_, q)) = showTriple q
+showTo (PreSMCommand (_, q)) = showPair q
 
-showPCommand :: [SingleTapeCommand] -> LaTeXM ()
-showPCommand command = do
-    let showTriple (u, q, v) = toLaTeX u <> toLaTeX q <> toLaTeX v
-    let showFrom (SingleTapeCommand (q, _)) = showTriple q
-    let showTo (SingleTapeCommand (_, q)) = showTriple q
+showPCommand :: [TapeCommand] -> LaTeXM ()
+showPCommand command =
     pmatrix (Just HRight) $ fromLists $ map (\c -> [showFrom c, to, showTo c]) command
 
-showBCommand :: [SingleTapeCommand] -> LaTeXM ()
-showBCommand command = do
-    let showTriple (u, q, v) = toLaTeX u <> toLaTeX q <> toLaTeX v
-    let showFrom (SingleTapeCommand (q, _)) = showTriple q
-    let showTo (SingleTapeCommand (_, q)) = showTriple q
+showBCommand :: [TapeCommand] -> LaTeXM ()
+showBCommand command =
     bmatrix (Just HRight) $ fromLists $ map (\c -> [showFrom c, to, showTo c]) command
 
 showStates :: [State] -> LaTeXM ()
@@ -61,7 +61,7 @@ instance ShowLaTeX TapeAlphabet where
     doLaTeX (TapeAlphabet alphabet) = showAlphabet $ Set.toList alphabet
 
 instance ShowLaTeX MultiTapeStates where
-    doLaTeX (MultiTapeStates statesList) = do
+    doLaTeX (MultiTapeStates statesList) =
         enumerate $ mapM_ (\states -> do { item Nothing; showStates $ Set.toList $ states}) statesList
 
 
@@ -70,14 +70,6 @@ instance ShowLaTeX StartStates where
 
 instance ShowLaTeX AccessStates where
     doLaTeX (AccessStates states) = showStates states
-
-
-instance ShowLaTeX SingleTapeCommand where
-    doLaTeX (SingleTapeCommand ((u, q, v), (u', q', v'))) = do
-        let showTriple :: Square -> State -> Square -> LaTeX
-            showTriple a s b = (toLaTeX a) <> (toLaTeX s) <> (toLaTeX b) 
-        math $ textell $ ((showTriple u q v) <> rightarrow <> (showTriple u' q' v'))
-
 
 instance ShowLaTeX Commands where
     doLaTeX (Commands commandsSet) = mapM_ (\c -> do { math $ showBCommand c ; "\n" }) $ Set.toList commandsSet
