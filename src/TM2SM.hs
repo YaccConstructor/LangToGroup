@@ -5,6 +5,25 @@ import Data.Set (Set)
 import qualified Data.Set as Set
 
 
+devidePositiveNegativeCommands :: [[TapeCommand]] -> ([[TapeCommand]], [[TapeCommand]])
+devidePositiveNegativeCommands commands = do
+    let check21 command = 
+            case command of
+                PreSMCommand((a, b),(a1, b1)) : t 
+                    | a /= emptySymbol && a /= "E" -> True
+                    | otherwise -> check21 t
+                [] -> False
+
+    let reverseCommand (PreSMCommand((a, b),(a1, b1))) =  PreSMCommand((a1, b1),(a, b))
+
+    let devidePositiveNegativeCommandsInternal commands (accS, accA) =
+            case commands of
+                h : t 
+                    | check21 h || List.notElem (map reverseCommand h) accS -> devidePositiveNegativeCommandsInternal t (h : accS, accA)
+                    | otherwise -> devidePositiveNegativeCommandsInternal t (accS, h : accA)
+                [] -> (accS, accA)
+    devidePositiveNegativeCommandsInternal commands ([], [])
+
 delta = Y "delta" 
 alpha = Y "alpha" 
 omega = Y "omega" 
@@ -13,14 +32,12 @@ eTag = Set.fromList []
 
 standardV i = StateVal i Nothing Nothing
 
-gen name = \ j cmd s -> [ State name i eTag (StateVal j (Just cmd) (Just s)) | i <- [0..4] ]
+gen name j cmd s = [ State name i eTag (StateVal j (Just cmd) (Just s)) | i <- [0..4] ]
 
-addTag newTag q = 
-    \ j cmd s ->  
-      let _q = (q j cmd s) 
+addTag newTag q j cmd s =  
+      let _q = q j cmd s 
       in
       _q {s_tags = Set.insert newTag (s_tags _q) }
---addTagLst newTag qs = [addTag newTag p | p <- qs]
 addTags newTags qs = [addTag newTag p | p <- qs, newTag <- newTags]
         
 copySM :: SM -> (State -> Bool) -> Tag -> SM
@@ -102,8 +119,6 @@ createSMs y j cmd =
  
            in
            SM [[delta],[delta],[delta],[delta]] [[p1,p2,p3],[q1,q2,q3],[r1,r2,r3],[s1,s2,s3],[t1,t2,t3],[u1,u2,u3]] [rl1,rl2,rl3]
-
-
        sm2 =
            let     
               rl1 = 
@@ -122,41 +137,14 @@ createSMs y j cmd =
 
            in
            SM [[delta],[delta],[delta],[delta]] [[p1,p2],[q1,q2],[r1,r2],[s1,s2],[t1,t2],[u1,u2]] [rl1,rl2]
-
-
---sm3 :: SM
        sm3 = SM (yn sm1) (qn sm1) ((srs sm1) ++ (srs sm2))
-
---sm4 :: SM
        sm4 =
            let sm3' = copySM sm3 (\q -> s_id q == 3) Quote
            in  
            SM (yn sm1) (qn sm3 ++ qn sm3') (srs sm3 ++ srs sm3')
-
-
---sm4d :: SM
        sm4d = copySM sm4 (\ _ -> True) Dash
-
---sm5 :: [Y] -> Int -> TMCMD -> SMTag -> SM
        sm5 y j cmd s =
-           let
-{-        [_e,_e',_f,_f',
-         _x0,_x4,
-         _p1',_p0',
-         _q1',_r1',_s1',_t1',_u1',_p0d,
-         _q0',_r0',_s0',_t0',_u0',_p1d,
-         _q0d,_r0d,_s0d,_t0d,_u0d,
-         _q1d,_r1d,_s1d,_t1d,_u1d] = 
-           map (\ x -> x j cmd s) 
-               [e,e',f,f',
-               x0,x4,
-               p1',p0',
-               q1',r1',s1',t1',u1',p0d,
-               q0',r0',s0',t0',u0',p1d,
-               q0d,r0d,s0d,t0d,u0d,
-               q1d,r1d,s1d,t1d,u1d]
--}
-               st = [[_e], [_x0,_x4], [_f], [_e'], 
+           let st = [[_e], [_x0,_x4], [_f], [_e'], 
                      (map (\x -> x j cmd s) ps) ++ [_p0',_p1',_p2'],
                      qs ++ [q0',q1',q2'],
                      rs ++ [r0',r1',r2'],
@@ -182,20 +170,8 @@ createSMs y j cmd =
            SM ys st prg
 
        sm6 y j cmd s =
-          let
-    {-let [_p0',_p1,
-         _q0',_r0',_s0',_t0',_u0',_p1'd,
-         _q1,_r1,_s1,_t1,_u1,_p0d,
-         _q1'd,_r1'd,_s1'd,_t1'd,_u1'd,
-         _q0d,_r0d,_s0d,_t0d,_u0d] = 
-            map (\x -> x j cmd s) 
-                [p0',p1,
-                 q0',r0',s0',t0',u0',p1'd,
-                 q1,r1,s1,t1,u1,p0d,
-                 q1'd,r1'd,s1'd,t1'd,u1'd,
-                 q0d,r0d,s0d,t0d,u0d]-}
-               sm5' = sm5 y j cmd s 
-               prg = [SRule[ (Word [SmbQ _p0'], Word [SmbQ _p1]),
+            let sm5' = sm5 y j cmd s 
+                prg = [SRule[ (Word [SmbQ _p0'], Word [SmbQ _p1]),
                              (Word [SmbQ _q0', SmbQ _r0', SmbQ _s0', SmbQ _t0', SmbQ _u0', SmbQ _p1'd],
                               Word [SmbQ _q1, SmbQ _r1, SmbQ _s1, SmbQ _t1, SmbQ _u1 ,SmbQ _p0d]),
                              (Word [SmbQ _q1'd, SmbQ _r1'd, SmbQ _s1'd, SmbQ _t1'd, SmbQ _u1'd],
@@ -205,21 +181,6 @@ createSMs y j cmd =
   
        sm7 y j cmd s =
            let sm5' = sm5 y j cmd s
-    {-    [_p4,_q4,_r4,_s4,_t4,_u4] = map (\ x -> x j cmd s) [p4,q4,r4,s4,t4,u4]
-        [_p1,_q1,_r1,_s1,_t1,_u1] = map (\ x -> x j cmd s) [p1,q1,r1,s1,t1,u1]
-        [_e,_x0,_x4] = map (\ x -> x j cmd s) [e,x0,x4]
-        _p0d = p0d j cmd s
-        _q0d = q0d j cmd s
-        _r0d = r0d j cmd s
-        _s0d = s0d j cmd s
-        _t0d = t0d j cmd s
-        _u0d = u0d j cmd s
-        _p4d = p4d j cmd s
-        _q4d = q4d j cmd s
-        _r4d = r4d j cmd s
-        _s4d = s4d j cmd s
-        _t4d = t4d j cmd s
-        _u4d = u4d j cmd s-}
                prg = [SRule[ (Word [SmbQ _e, SmbQ _x0], Word [SmbQ _e, SmbQ _x4]),
                              (Word [SmbQ _p1, SmbQ _q1, SmbQ _r1, SmbQ _s1, SmbQ _t1, SmbQ _u1, SmbQ _p0d],
                               Word [SmbQ _p4, SmbQ _q4, SmbQ _r4, SmbQ _s4, SmbQ _t4, SmbQ _u4, SmbQ _p4d]),
@@ -241,8 +202,6 @@ createSMs y j cmd =
            SM (yn sm1) (qn sm8' ++ qn sm8c) (srs sm8' ++ srs sm8c)
 
        smAlpha j cmd =
-   {-let [_e,_x0,_x1,_x2,_f] = map (\ x -> x j cmd TAlpha) [e,x0,x1,x2,f] 
-   in-} 
           SM [[alpha],[alpha]] [[_e],[_x0,_x1,_x2],[_f]] [SRule [(Word [SmbQ _x0], Word [SmbY' alpha, SmbQ _x0, SmbY alpha]),
                                                                    (Word [SmbQ _e, SmbQ _x0], Word [SmbQ _e, SmbQ _x1]),
                                                                    (Word [SmbQ _x1], Word [SmbY alpha, SmbQ _x1, SmbY' alpha]),
@@ -263,14 +222,14 @@ smFinal tm =
        gamma = [T4, T9, TAlpha, TOmega]
        commands = []
        y = []
-       getFinalForTape i = []
-       getFinalQuotedForTape i = []
+       getFinalForTape i (Just tag) = State F "" (Set.fromList [tag]) $ standardV i
+       getFinalForTape i Nothing = State F "" eTag $ standardV i
        standatdState name tags = [[State name 0 tags (standardV i)]  | i <- [1..numOfTapes]]
        standatdState' name tags = [[State name 0 tags (standardV i)]  | i <- [0..numOfTapes + 1]]
        es = standatdState' E eTag
        e's = standatdState' E (Set.fromList [Quote])
-       fs = [ getFinalForTape i | i <- [0..numOfTapes + 1]]
-       f's = [ getFinalQuotedForTape i | i <- [0..numOfTapes + 1]]
+       fs = [ getFinalForTape i Nothing | i <- [0..numOfTapes + 1]]
+       f's = [ getFinalForTape i $ Just Quote | i <- [0..numOfTapes + 1]]
        xs = standatdState X eTag
        ps = standatdState P eTag
        qs = standatdState Q eTag
