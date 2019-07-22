@@ -6,7 +6,9 @@ import qualified Data.Set as Set
 import SMType
 import Prelude hiding (Word)
 
---newtype A = A ([String]) deriving (Eq, Ord, Show)
+--newtype A = A ([String]) deriving Show
+data A = A_Y Y| A_K String | A_S String 
+       | A_R SRule | A_R' SRule | A_Q State | A_W Word
 
 data ASymb = A_Y Y| A_K String | A_S String 
        | A_R SRule | A_R' SRule | A_Q (State String) | A_W Word | A_W' Word deriving (Eq, Ord)

@@ -2,50 +2,42 @@ module SMType where
 
 import Data.String
 import Data.Set (Set)
-import qualified Data.Set as Set
-import Data.Either
 import Prelude hiding (Word)
 
-newtype Y = Y String deriving (Eq,Ord)
+data TMCMD = CMD
 
-instance Show Y where
-   show (Y s) = s
+data Tag = Hat | Quote | Dash 
+   deriving (Eq,Ord)
 
-data Tag = Hat | Quote | Dash deriving (Eq,Ord)
+data SMTag = T4 | T9 | TAlpha | TOmega
 
-data StateName = X | E | F | P | Q | R | S | T | U deriving (Eq, Ord)
---data StateId = I1 | _2 | _3 | _4  
+data StateVal = StateVal {tape :: Int, tmCommand :: Maybe TMCMD, smTag :: Maybe SMTag} 
+
+type StateIndex = String
+
+data StateName = E | X | F | P | Q | R | S | T | U 
+   deriving (Eq, Show)
     
-data State v = State {s_name :: StateName, s_id :: Int, s_tags :: (Set Tag), s_val :: v} 
-                                  deriving (Eq, Ord)
-instance Show (State v) where
+data State = State {s_name :: StateName, s_idx :: StateIndex, s_tags :: Set Tag, s_val :: StateVal}
+instance Show State where
    show s = "dddd"
 
---newtype Q = Q { getQ :: String } deriving (Eq, Ord)
+newtype Y = Y String
+   deriving (Show)
 
-
---instance Show Q where
---   show q = getQ q
-
-data Smb = SmbY Y | SmbY' Y | SmbQ (State String) deriving (Eq,Ord)
+data Smb = SmbY Y | SmbY' Y | SmbQ State
 
 instance Show Smb where
    show (SmbY y) = show y
-   show (SmbY' y) = show y ++ "-1"
+   show (SmbY' y) = show y ++ "^{-1}"
    show (SmbQ q) = show q      
 
---newtype Yn = Yn ([[Y]]) deriving Show
---newtype Qn = Qn ([[Q]]) deriving Show
+newtype Word = Word [Smb] 
+   deriving (Show)
 
-newtype Word = Word ([Smb]) deriving (Eq, Ord)
-
-instance Show Word where
-   show (Word l) = show l
-
-newtype SRule = SRule [(Word, Word)] deriving (Eq,Ord) 
+newtype SRule = SRule [(Word, Word)]
 
 instance Show SRule where
    show (SRule s) = "[" ++ (foldr (\(w1,w2) acc -> show w1 ++ "->" ++ show w2 ++ ";") "" s) ++ "]\n" 
---newtype SRules = SRules ([SRule]) deriving Show
 
-data SM =  SM {yn :: [[Y]], qn :: [[State String]], srs :: [SRule]} deriving Show
+data SM =  SM {yn :: [[Y]], qn :: [[State]], srs :: [SRule]} deriving Show
