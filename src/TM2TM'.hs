@@ -269,7 +269,7 @@ transform2SingleInsertDeleteCommand (tapeStates, commands) = do
 
 renameRightLeftBoundings commands = do
     let e i = Value ("E_{" ++ (show i) ++ "}")
-    let f (State q) = Value ("F_{" ++ q ++ "}")
+    let f q = StateOmega q
     let renameRightLeftBoundingsInternal i acc command =
             case command of
                 SingleTapeCommand ((l1, s1, r1), (l2, s2, r2)) : t 

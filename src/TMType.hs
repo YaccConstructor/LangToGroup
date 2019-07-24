@@ -19,8 +19,13 @@ newtype StartStates = StartStates [State]
 -- k - vector of end states
 newtype AccessStates = AccessStates [State]
     deriving (Eq, Ord, Show)
+
+newtype StateOmega = StateOmega {state :: State}
+    deriving (Eq, Ord)
+instance Show StateOmega where
+    show s = "F_{" ++ (show $ state s) ++ "}" 
 -- command of TM for single tape
-data TapeCommand = SingleTapeCommand ((Square, State, Square), (Square, State, Square)) | PreSMCommand ((Square, Square), (Square, Square))
+data TapeCommand = SingleTapeCommand ((Square, State, Square), (Square, State, Square)) | PreSMCommand ((Square, StateOmega), (Square, StateOmega))
     deriving (Eq, Ord, Show)
 data Square = Value String | PCommand [TapeCommand] | BCommand [TapeCommand]
     deriving (Eq, Ord, Show)

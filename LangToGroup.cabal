@@ -31,7 +31,7 @@ library
       CfgToTMMapper
       GrammarType
       GRType
-      SMachineToGroup
+      --SMachineToGroup
       SMType
       TMType
       TM2SM

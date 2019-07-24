@@ -3,26 +3,25 @@ module SMType where
 import Data.String
 import Data.Set (Set)
 import Prelude hiding (Word)
-
-data TMCMD = CMD
+import TMType (TapeCommand, Square)
 
 data Tag = Hat | Quote | Dash 
    deriving (Eq,Ord)
 
 data SMTag = T4 | T9 | TAlpha | TOmega
 
-data StateVal = StateVal {tape :: Int, tmCommand :: Maybe TMCMD, smTag :: Maybe SMTag} 
+data StateVal = StateVal {tape :: Int, tmCommand :: Maybe [TapeCommand], smTag :: Maybe SMTag} 
 
 type StateIndex = String
 
 data StateName = E | X | F | P | Q | R | S | T | U 
    deriving (Eq, Show)
     
-data State = State {s_name :: StateName, s_idx :: StateIndex, s_tags :: Set Tag, s_val :: StateVal}
+data State = State {s_name :: StateName, s_idx :: StateIndex, s_tags :: Set Tag, s_val :: Maybe StateVal}
 instance Show State where
    show s = "dddd"
 
-newtype Y = Y String
+newtype Y = Y Square
    deriving (Show)
 
 data Smb = SmbY Y | SmbY' Y | SmbQ State
