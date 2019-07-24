@@ -17,6 +17,8 @@ import TMType
 import TMInterpreter
 import ConfigPrinter
 import TM2TM'
+import TM2SM
+import SMPrinter
 
 preambula :: LaTeXM ()
 preambula = 
@@ -33,35 +35,50 @@ example = execLaTeXM $
     do
         preambula 
         document $ do
-            doLaTeX testGrammar
-            doLaTeX $ mapCfgToTM testGrammar
-            doLaTeX $ interpretTM ["a"] $ mapCfgToTM testGrammar
-            newpage
-            doLaTeX $ mapTM2TM' $ mapCfgToTM testGrammar
-            newpage
-            doLaTeX epsTestGrammar
-            doLaTeX $ mapCfgToTM epsTestGrammar
-            doLaTeX $ interpretTM ["a"] $ mapCfgToTM epsTestGrammar
-            newpage
-            doLaTeX epsTestLeftGrammar
-            doLaTeX $ mapCfgToTM epsTestLeftGrammar
-            doLaTeX $ interpretTM ["a"] $ mapCfgToTM epsTestLeftGrammar
-            newpage
-            doLaTeX abTestGrammar
-            doLaTeX $ mapCfgToTM abTestGrammar
-            doLaTeX $ interpretTM ["b", "b", "a", "a"] $ mapCfgToTM abTestGrammar
-            newpage
-            doLaTeX ab2TestGrammar
-            doLaTeX $ mapCfgToTM ab2TestGrammar
-            doLaTeX $ interpretTM ["b", "a", "b", "a"] $ mapCfgToTM ab2TestGrammar
-            newpage
-            doLaTeX ab3TestGrammar
-            doLaTeX $ mapCfgToTM ab3TestGrammar
-            doLaTeX $ interpretTM ["b", "a", "b", "a"] $ mapCfgToTM ab3TestGrammar
+            -- doLaTeX testGrammar
+            -- doLaTeX $ mapCfgToTM testGrammar
+            -- doLaTeX $ interpretTM ["a"] $ mapCfgToTM testGrammar
+            -- newpage
+            -- doLaTeX $ mapTM2TM' $ mapCfgToTM testGrammar
+            -- newpage
+            -- doLaTeX epsTestGrammar
+            -- doLaTeX $ mapCfgToTM epsTestGrammar
+            -- doLaTeX $ interpretTM ["a"] $ mapCfgToTM epsTestGrammar
+            -- newpage
+            -- doLaTeX epsTestLeftGrammar
+            -- doLaTeX $ mapCfgToTM epsTestLeftGrammar
+            -- doLaTeX $ interpretTM ["a"] $ mapCfgToTM epsTestLeftGrammar
+            -- newpage
+            -- doLaTeX abTestGrammar
+            -- doLaTeX $ mapCfgToTM abTestGrammar
+            -- doLaTeX $ interpretTM ["b", "b", "a", "a"] $ mapCfgToTM abTestGrammar
+            -- newpage
+            -- doLaTeX ab2TestGrammar
+            -- doLaTeX $ mapCfgToTM ab2TestGrammar
+            -- doLaTeX $ interpretTM ["b", "a", "b", "a"] $ mapCfgToTM ab2TestGrammar
+            -- newpage
+            -- doLaTeX ab3TestGrammar
+            -- doLaTeX $ mapCfgToTM ab3TestGrammar
+            -- doLaTeX $ interpretTM ["b", "a", "b", "a"] $ mapCfgToTM ab3TestGrammar
+            doLaTeX $ smFinal tmForTestSm
 
 main :: IO()
 main = do
     renderFile "out.tex" example 
+
+tmForTestSm = tm where
+    s = Value "S"
+    q0 = StateOmega $ State "q_0"
+    q0' = StateOmega $ State "q_0'"
+    q1 = StateOmega $ State "q_1"
+    q1' = StateOmega $ State "q_1'"
+    inp = InputAlphabet (Set.fromList [])
+    tapes = [TapeAlphabet (Set.fromList [s]), TapeAlphabet (Set.fromList [])]
+    states = MultiTapeStates []
+    cmds = Commands $ Set.fromList [[PreSMCommand ((s, q0), (emptySymbol, q0')), PreSMCommand ((emptySymbol, q1), (emptySymbol, q1'))]]
+    start = StartStates []
+    access = AccessStates []
+    tm = TM (inp, tapes, states, cmds, start, access)    
 
 -- Example from test
 testGrammar = grammar where

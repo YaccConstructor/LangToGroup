@@ -29,9 +29,9 @@ devidePositiveNegativeCommands commands = do
                 [] -> (accP21, accP22, accN21, accN22)
     devidePositiveNegativeCommandsInternal commands ([], [], [], [])
 
-delta = Y $ TMType.Value "delta" 
-alpha = Y $ TMType.Value "alpha" 
-omega = Y $ TMType.Value "omega" 
+delta = Y $ TMType.Value "\\delta" 
+alpha = Y $ TMType.Value "\\alpha" 
+omega = Y $ TMType.Value "\\omega" 
        
 eTag = Set.fromList []
 

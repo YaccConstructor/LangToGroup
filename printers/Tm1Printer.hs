@@ -52,7 +52,7 @@ showStates = helper where
 showAlphabet :: [Square] -> LaTeXM ()
 showAlphabet = helper where
     helper [Value sq]    = math $ raw $ fromString sq
-    helper (Value sq:ss) = do { math $ raw $ fromString sq; ","; showAlphabet ss }
+    helper (Value sq:ss) = do { math $ raw $ fromString sq; ", "; showAlphabet ss }
     helper commands = mapM_ (\x -> do { math $ doLaTeX x ; "\n" }) commands
 
 
