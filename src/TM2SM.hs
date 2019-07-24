@@ -453,15 +453,14 @@ createPos22Rule cmd = do
 
 smFinal (TMType.TM (inputAlphabet,
         tapeAlphabets, 
-        TMType.MultiTapeStates multiTapeStates, 
+        _, 
         TMType.Commands commandsSet, 
-        TMType.StartStates startStates,
-        TMType.AccessStates accessStates)
+        _,
+        _)
         ) = 
    let numOfTapes = 2
        gamma = [T4, T9, TAlpha, TOmega]
-       commands = []
-       y = []
+       y = map (\(TMType.TapeAlphabet a) -> map (Y $) $ Set.toList a) tapeAlphabets
        getFinalForTape i (Just tag) = State F "" (Set.fromList [tag]) $ standardV i
        getFinalForTape i Nothing = State F "" eTag $ standardV i
        standatdState name tags = [[State name "" tags (standardV i)]  | i <- [1..numOfTapes]]
@@ -486,11 +485,11 @@ smFinal (TMType.TM (inputAlphabet,
        standardStates = concat [es, e's, [fs], [f's], xs, ps, qs, rs, ss, ts, us, pds, qds, rds, sds, tds, uds]
 
        (pos21, pos22, neg21, neg22) = devidePositiveNegativeCommands $ Set.toList commandsSet
-       sms = [f c | f <- zipWith copySMForCommand (createSMs y) [T4, T9, TAlpha, TOmega], c <- pos21]
+       sms = [f c | f <- zipWith copySMForCommand (createSMs y) gamma, c <- pos21]
        smsRules = concatMap srs sms
        smsStates = map concat $ transpose $ map qn sms
        smsConnectingRules = concatMap createConnectingRules pos21
        smsPos22Rules = map createPos22Rule pos22
        
    in
-   SM y [] []
+   SM y (standardStates ++ smsStates) (smsRules ++ smsConnectingRules ++ smsPos22Rules)
