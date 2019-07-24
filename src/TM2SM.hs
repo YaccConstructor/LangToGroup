@@ -485,7 +485,7 @@ smFinal (TMType.TM (inputAlphabet,
        standardStates = concat [es, e's, [fs], [f's], xs, ps, qs, rs, ss, ts, us, pds, qds, rds, sds, tds, uds]
 
        (pos21, pos22, neg21, neg22) = devidePositiveNegativeCommands $ Set.toList commandsSet
-       sms = [f c | f <- zipWith copySMForCommand (createSMs y) gamma, c <- pos21]
+       sms = [f c | f <- zipWith copySMForCommand (createSMs $ concat y) gamma, c <- pos21]
        smsRules = concatMap srs sms
        smsStates = map concat $ transpose $ map qn sms
        smsConnectingRules = concatMap createConnectingRules pos21

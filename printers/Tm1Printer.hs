@@ -26,6 +26,9 @@ instance ShowLaTeX Square where
 instance ShowLaTeX State where
     doLaTeX (State st) = raw $ fromString st
 
+instance ShowLaTeX StateOmega where
+    doLaTeX s = raw $ fromString $ show s
+
 showTriple (u, q, v) = toLaTeX u <> toLaTeX q <> toLaTeX v
 showPair (r, l) = toLaTeX r <> toLaTeX l
 showFrom (SingleTapeCommand (q, _)) = showTriple q

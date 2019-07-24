@@ -2,6 +2,7 @@ module TMType where
 
 import Data.Set (Set)
 import qualified Data.Set as Set
+
 -- input, tape alphabets
 newtype InputAlphabet = InputAlphabet (Set Square)
     deriving (Eq, Ord, Show)
@@ -23,7 +24,8 @@ newtype AccessStates = AccessStates [State]
 newtype StateOmega = StateOmega {state :: State}
     deriving (Eq, Ord)
 instance Show StateOmega where
-    show s = "F_{" ++ (show $ state s) ++ "}" 
+    show s = "F_{" ++ q ++ "}" 
+        where (State q) = state s
 -- command of TM for single tape
 data TapeCommand = SingleTapeCommand ((Square, State, Square), (Square, State, Square)) | PreSMCommand ((Square, StateOmega), (Square, StateOmega))
     deriving (Eq, Ord, Show)
