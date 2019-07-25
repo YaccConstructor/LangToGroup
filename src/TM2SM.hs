@@ -52,14 +52,16 @@ getai cmd =
     get cmd 1
 
 addICmdSmTag cmd smTag q =
-    let (_, j) = getai cmd
+    let (Command c) = cmd
+        (_, j) = getai c
     in
     case smTag of
         T4 -> q {s_val = Just $ StateVal j jcmd jsmtag}
         T9 -> q {s_val = Just $ StateVal j jcmd jsmtag}
         TAlpha -> q {s_val = Just $ StateVal 0 jcmd jsmtag}
         TOmega -> q {s_val = Just $ StateVal (k + 1) jcmd jsmtag}
-            where k = length cmd
+            where 
+                k = length c
     where   jcmd = Just cmd
             jsmtag = Just smTag
         
@@ -71,7 +73,7 @@ copySM sm qFilter newTag =
    in
    SM (yn sm) q prog
 
-copySMForCommand :: SM -> SMTag -> [TMType.TapeCommand] -> SM
+copySMForCommand :: SM -> SMTag -> TMCMD -> SM
 copySMForCommand sm smTag cmd =
    let q = map (map (addICmdSmTag cmd smTag)) (qn sm)
        filterWord (Word w) = Word(map (\s -> case s of SmbQ q -> SmbQ (addICmdSmTag cmd smTag q); _ -> s ) w)
@@ -294,7 +296,8 @@ getJIdx cmd j =
         internal cmd 1
             
 createConnectingRules cmd = do
-    let k = length cmd    
+    let (Command command) = cmd 
+    let k = length command    
 
     let e_f0        = e_f "" 0
     let e_fl'       = e_f' "" (k + 1)
@@ -351,9 +354,9 @@ createConnectingRules cmd = do
     let thd_idx idx j sm        = newState T idx hatdashTag j (Just cmd) (Just sm)
     let uhd_idx idx j sm        = newState U idx hatdashTag j (Just cmd) (Just sm)
 
-    let (a, i) = getai cmd
-    let getFromJ j = a where (a, _) = getJIdx cmd j
-    let getToJ j = a where (_, a) = getJIdx cmd j
+    let (a, i) = getai command
+    let getFromJ j = a where (a, _) = getJIdx command j
+    let getToJ j = a where (_, a) = getJIdx command j
 
     let r4 = 
             SRule $ 
@@ -437,10 +440,11 @@ createConnectingRules cmd = do
     [r4, r4alpha, ralphaomega, romega9, r9]
 
 createPos22Rule cmd = do
-    let k = length cmd
-    let (_, i) = getai cmd
-    let getFromJ j = a where (a, _) = getJIdx cmd j
-    let getToJ j = a where (_, a) = getJIdx cmd j
+    let (Command command) = cmd 
+    let k = length command
+    let (_, i) = getai command
+    let getFromJ j = a where (a, _) = getJIdx command j
+    let getToJ j = a where (_, a) = getJIdx command j
     SRule $ (++)
         [(Word [SmbQ $ e_e i, SmbQ $ e_x i, SmbQ $ e_f (getFromJ i) i, SmbQ $ e_e' i, SmbQ $ e_p i, SmbQ $ e_q i, SmbQ $ e_r i, SmbQ $ e_s i, SmbQ $ e_t i, SmbQ $ e_u i, SmbQ $ e_pd i, SmbQ $ e_qd i, SmbQ $ e_rd i, SmbQ $ e_sd i, SmbQ $ e_td i, SmbQ $ e_ud i, SmbQ $ e_f' (getFromJ i) i], 
         Word [SmbQ $ e_e i, SmbQ $ e_x i, SmbQ $ e_f (getToJ i) i, SmbQ $ e_e' i, SmbQ $ e_p i, SmbQ $ e_q i, SmbQ $ e_r i, SmbQ $ e_s i, SmbQ $ e_t i, SmbQ $ e_u i, SmbQ $ e_pd i, SmbQ $ e_qd i, SmbQ $ e_rd i, SmbQ $ e_sd i, SmbQ $ e_td i, SmbQ $ e_ud i, SmbQ $ e_f' (getToJ i) i])]
@@ -485,11 +489,11 @@ smFinal (TMType.TM (inputAlphabet,
        standardStates = concat [es, e's, [fs], [f's], xs, ps, qs, rs, ss, ts, us, pds, qds, rds, sds, tds, uds]
 
        (pos21, pos22, neg21, neg22) = devidePositiveNegativeCommands $ Set.toList commandsSet
-       sms = [f c | f <- zipWith copySMForCommand (createSMs $ concat y) gamma, c <- pos21]
+       sms = [f $ Command c | f <- zipWith copySMForCommand (createSMs $ concat y) gamma, c <- pos21]
        smsRules = concatMap srs sms
        smsStates = map concat $ transpose $ map qn sms
-       smsConnectingRules = concatMap createConnectingRules pos21
-       smsPos22Rules = map createPos22Rule pos22
+       smsConnectingRules = concatMap createConnectingRules $ map (Command $) pos21
+       smsPos22Rules = map createPos22Rule $ map (Command $) pos22
        
    in
    SM y (standardStates ++ smsStates) (smsRules ++ smsConnectingRules ++ smsPos22Rules)

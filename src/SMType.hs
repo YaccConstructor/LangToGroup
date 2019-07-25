@@ -18,7 +18,9 @@ instance Show SMTag where
          TAlpha -> "T_{\\alpha}"
          TOmega -> "T_{\\omega}"
 
-data StateVal = StateVal {tape :: Int, tmCommand :: Maybe [TapeCommand], smTag :: Maybe SMTag} 
+data TMCMD = Command [TapeCommand] | CommandAlias String 
+   deriving (Show, Eq)
+data StateVal = StateVal {tape :: Int, tmCommand :: Maybe TMCMD, smTag :: Maybe SMTag} 
    deriving (Show)
 
 data StateName = E | X | F | P | Q | R | S | T | U 
