@@ -467,8 +467,8 @@ smFinal (TMType.TM (inputAlphabet,
        y = map (\(TMType.TapeAlphabet a) -> map (Y $) $ Set.toList a) tapeAlphabets
        getFinalForTape i (Just tag) = State F "" (Set.fromList [tag]) $ standardV i
        getFinalForTape i Nothing = State F "" eTag $ standardV i
-       standatdState name tags = [[State name "" tags (standardV i)]  | i <- [1..numOfTapes]]
-       standatdState' name tags = [[State name "" tags (standardV i)]  | i <- [0..numOfTapes + 1]]
+       standatdState name tags = [State name "" tags (standardV i)  | i <- [1..numOfTapes]]
+       standatdState' name tags = [State name "" tags (standardV i)  | i <- [0..numOfTapes + 1]]
        es = standatdState' E eTag
        e's = standatdState' E (Set.fromList [Quote])
        fs = [ getFinalForTape i Nothing | i <- [0..numOfTapes + 1]]
@@ -486,7 +486,7 @@ smFinal (TMType.TM (inputAlphabet,
        sds = standatdState S (Set.fromList [Dash])
        tds = standatdState T (Set.fromList [Dash])
        uds = standatdState U (Set.fromList [Dash])
-       standardStates = concat [es, e's, [fs], [f's], xs, ps, qs, rs, ss, ts, us, pds, qds, rds, sds, tds, uds]
+       standardStates = [es, e's, fs, f's, xs, ps, qs, rs, ss, ts, us, pds, qds, rds, sds, tds, uds]
 
        (pos21, pos22, neg21, neg22) = devidePositiveNegativeCommands $ Set.toList commandsSet
        sms = [f $ Command c | f <- zipWith copySMForCommand (createSMs $ concat y) gamma, c <- pos21]
