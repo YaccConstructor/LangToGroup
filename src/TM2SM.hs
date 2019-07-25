@@ -4,7 +4,8 @@ import SMType
 import Data.Set (Set)
 import qualified Data.Set as Set
 import qualified TMType
-import Data.List (transpose)
+import Data.List (transpose, groupBy, sortBy)
+import Data.Maybe (fromJust)
 
 
 devidePositiveNegativeCommands :: [[TMType.TapeCommand]] -> ([[TMType.TapeCommand]], [[TMType.TapeCommand]], [[TMType.TapeCommand]], [[TMType.TapeCommand]])
@@ -69,7 +70,7 @@ addICmdSmTag cmd smTag q =
         
 copySM :: SM -> (State -> Bool) -> Tag -> SM
 copySM sm qFilter newTag =
-   let q = map (map (\x -> if qFilter x then addTag newTag x else x)) $ qn sm
+   let q = map (Set.map (\x -> if qFilter x then addTag newTag x else x)) $ qn sm
        filterWord (Word w) = Word(map (\s -> case s of SmbQ q | qFilter q -> SmbQ (addTag newTag q); _ -> s ) w)
        prog = map (\ (SRule l) -> SRule(map (\(w1, w2) -> (filterWord w1, filterWord w2)) l)) (srs sm)
    in
@@ -77,7 +78,7 @@ copySM sm qFilter newTag =
 
 copySMForCommand :: SM -> SMTag -> TMCMD -> SM
 copySMForCommand sm smTag cmd =
-   let q = map (map (addICmdSmTag cmd smTag)) (qn sm)
+   let q = map (Set.map (addICmdSmTag cmd smTag)) (qn sm)
        filterWord (Word w) = Word(map (\s -> case s of SmbQ q -> SmbQ (addICmdSmTag cmd smTag q); _ -> s ) w)
        prog = map (\ (SRule l) -> SRule(map (\(w1, w2) -> (filterWord w1, filterWord w2)) l)) (srs sm)
    in
@@ -150,7 +151,7 @@ createSMs y =
             
                   ]
             in
-            SM [[delta],[delta],[delta],[delta]] [[p1,p2,p3],[q1,q2,q3],[r1,r2,r3],[s1,s2,s3],[t1,t2,t3],[u1,u2,u3]] [rl1,rl2,rl3]
+            SM [[delta],[delta],[delta],[delta]] (map Set.fromList [[p1,p2,p3],[q1,q2,q3],[r1,r2,r3],[s1,s2,s3],[t1,t2,t3],[u1,u2,u3]]) [rl1,rl2,rl3]
             
         sm2 :: SM 
         sm2 =
@@ -170,7 +171,7 @@ createSMs y =
                   ]
             
             in
-            SM [[delta],[delta],[delta],[delta]] [[p1,p2],[q1,q2],[r1,r2],[s1,s2],[t1,t2],[u1,u2]] [rl1,rl2]
+            SM [[delta],[delta],[delta],[delta]] (map Set.fromList [[p1,p2],[q1,q2],[r1,r2],[s1,s2],[t1,t2],[u1,u2]]) [rl1,rl2]
             
             
         sm3 :: SM
@@ -180,7 +181,7 @@ createSMs y =
         sm4 =
             let sm3' = copySM sm3 (\q -> s_idx q /= "3") Quote
             in  
-            SM (yn sm1) (qn sm3 ++ qn sm3') (srs sm3 ++ srs sm3')
+            SM (yn sm1) (map Set.unions $ transpose [qn sm3, qn sm3']) (srs sm3 ++ srs sm3')
             
             
         sm4d :: SM
@@ -188,7 +189,7 @@ createSMs y =
             
         sm5 :: [Y] -> SM
         sm5 y =
-            let st = [[e], [x0,x4], [f], [e'], 
+            let st = map Set.fromList [[e], [x0,x4], [f], [e'], 
                       ps ++ [p0',p1',p2'],
                       qs ++ [q0',q1',q2'],
                       rs ++ [r0',r1',r2'],
@@ -247,19 +248,19 @@ createSMs y =
             let sm8' = sm8 y 
                 sm8c = copySM sm8' (\q -> (notElem (s_name q) [E, F]) && (s_idx q /= "4")) Hat
             in  
-            SM (yn sm1) (qn sm8' ++ qn sm8c) (srs sm8' ++ srs sm8c)
+            SM (yn sm1) (map Set.unions $ transpose [qn sm8', qn sm8c]) (srs sm8' ++ srs sm8c)
             
         smAlpha :: SM
-        smAlpha = SM [[alpha],[alpha]] [[e],[x0,x1,x2],[f]] [SRule [(Word [SmbQ x0], Word [SmbY' alpha, SmbQ x0, SmbY alpha]),
-                                                                         (Word [SmbQ e, SmbQ x0], Word [SmbQ e, SmbQ x1]),
-                                                                         (Word [SmbQ x1], Word [SmbY alpha, SmbQ x1, SmbY' alpha]),
-                                                                         (Word [SmbQ x1, SmbQ f], Word [SmbQ x2, SmbQ f])]]
+        smAlpha = SM [[alpha],[alpha]] (map Set.fromList [[e],[x0,x1,x2],[f]]) [SRule [(Word [SmbQ x0], Word [SmbY' alpha, SmbQ x0, SmbY alpha]),
+                                                                            (Word [SmbQ e, SmbQ x0], Word [SmbQ e, SmbQ x1]),
+                                                                            (Word [SmbQ x1], Word [SmbY alpha, SmbQ x1, SmbY' alpha]),
+                                                                            (Word [SmbQ x1, SmbQ f], Word [SmbQ x2, SmbQ f])]]
             
         smOmega :: SM
-        smOmega = SM [[omega],[omega]] [[e'],[x0',x1',x2'],[f']] [SRule [(Word [SmbQ x0'], Word [SmbY omega, SmbQ x0', SmbY' omega]),
-                                                                              (Word [SmbQ x0', SmbQ f'], Word [SmbQ x1', SmbQ f']),
-                                                                              (Word [SmbQ x1'], Word [SmbY' omega, SmbQ x1', SmbY omega]),
-                                                                              (Word [SmbQ e', SmbQ x1'], Word [SmbQ e', SmbQ x2'])]]
+        smOmega = SM [[omega],[omega]] (map Set.fromList [[e'],[x0',x1',x2'],[f']]) [SRule [(Word [SmbQ x0'], Word [SmbY omega, SmbQ x0', SmbY' omega]),
+                                                                                (Word [SmbQ x0', SmbQ f'], Word [SmbQ x1', SmbQ f']),
+                                                                                (Word [SmbQ x1'], Word [SmbY' omega, SmbQ x1', SmbY omega]),
+                                                                                (Word [SmbQ e', SmbQ x1'], Word [SmbQ e', SmbQ x2'])]]
             
    in
       [sm4, sm9 y, smAlpha, smOmega]
@@ -489,25 +490,51 @@ smFinal (TMType.TM (inputAlphabet,
         _,
         _)
         ) = 
-   let numOfTapes = length tapeAlphabets
-       gamma = [T4, T9, TAlpha, TOmega]
-       y = map (\(TMType.TapeAlphabet a) -> map (Y $) $ Set.toList a) tapeAlphabets
-       getFinalForTape tag = zipWith (\i idxs -> map (\(TMType.State idx) -> State F idx tag $ standardV i) idxs) [1 .. numOfTapes] $ map Set.toList tapesStates
-       standatdState name tags = [[State name "" tags (standardV i)]  | i <- [1..numOfTapes]]
-       es = (:) [State E "" eTag $ standardV 0] $ standatdState E eTag
-       e's = standatdState E quoteTag ++ [[State E "" quoteTag . standardV $ numOfTapes + 1]]
-       fs = (:) [State F "" eTag $ standardV 0] $ getFinalForTape eTag
-       f's = getFinalForTape quoteTag ++ [[State F "" quoteTag . standardV $ numOfTapes + 1]]
-       xs = [[State X "" eTag (standardV i)]  | i <- [0 .. numOfTapes]] ++ [[State X "" quoteTag . standardV $ numOfTapes + 1]]
-       states@[ps,qs,rs,ss,ts,us,pds,qds,rds,sds,tds,uds] = [standatdState name tag | name <- [P, Q, R, S, T, U], tag <- [eTag, dashTag]]
-       standardStates = foldr (++) [] [es, e's, fs, f's, xs, ps, qs, rs, ss, ts, us, pds, qds, rds, sds, tds, uds]
+    let numOfTapes = length tapeAlphabets
+        gamma = [T4, T9, TAlpha, TOmega]
+        y = map (\(TMType.TapeAlphabet a) -> map (Y $) $ Set.toList a) tapeAlphabets
+        getFinalForTape tag = zipWith (\i idxs -> map (\(TMType.State idx) -> State F idx tag $ standardV i) idxs) [1 .. numOfTapes] $ map Set.toList tapesStates
+        standatdState name tags = [[State name "" tags (standardV i)]  | i <- [1..numOfTapes]]
+        es = (:) [State E "" eTag $ standardV 0] $ standatdState E eTag
+        e's = standatdState E quoteTag ++ [[State E "" quoteTag . standardV $ numOfTapes + 1]]
+        fs = (:) [State F "" eTag $ standardV 0] $ getFinalForTape eTag
+        f's = getFinalForTape quoteTag ++ [[State F "" quoteTag . standardV $ numOfTapes + 1]]
+        xs = [[State X "" eTag (standardV i)]  | i <- [0 .. numOfTapes]] ++ [[State X "" quoteTag . standardV $ numOfTapes + 1]]
+        [ps,qs,rs,ss,ts,us,pds,qds,rds,sds,tds,uds] = [standatdState name tag | name <- [P, Q, R, S, T, U], tag <- [eTag, dashTag]]
+        standardStates = foldr (++) [] [es, e's, fs, f's, xs, ps, qs, rs, ss, ts, us, pds, qds, rds, sds, tds, uds]
 
-       (pos21, pos22, neg21, neg22) = devidePositiveNegativeCommands $ Set.toList commandsSet
-       sms = [f $ Command c | f <- zipWith copySMForCommand (createSMs $ concat y) gamma, c <- pos21]
-       smsRules = concatMap srs sms
-       smsStates = map concat $ transpose $ map qn sms
-       smsConnectingRules = concatMap createConnectingRules $ map (Command $) pos21
-       smsPos22Rules = map createPos22Rule $ map (Command $) pos22
-       
-   in
-   SM y (standardStates ++ smsStates) (smsRules ++ smsConnectingRules ++ smsPos22Rules)
+        (pos21, pos22, neg21, neg22) = devidePositiveNegativeCommands $ Set.toList commandsSet
+        sms = [[f $ Command c | f <- zipWith copySMForCommand (createSMs $ concat y) gamma] | c <- pos21]
+        smsRules = concatMap srs $ concat sms
+        groupByStates s1 s2 = s_name e1 == s_name e2 
+                                && Set.member Dash tag1 == Set.member Dash tag2 
+                                && id1 == id2
+                                && (s_name e1 /= E || Set.null tag1 == Set.null tag2) 
+                                && (s_name e1 /= F || Set.null tag1 == Set.null tag2)
+                                where   e1 = Set.elemAt 0 s1 
+                                        e2 = Set.elemAt 0 s2
+                                        tag1 = s_tags e1
+                                        tag2 = s_tags e2
+                                        id1 = tape . fromJust $ s_val e1
+                                        id2 = tape . fromJust $ s_val e2
+        sortByNames s1 s2 = compare (s_name e1, id1, Set.member Dash tag1, be1, bf1) (s_name e2, id2, Set.member Dash tag2, be2, bf2) 
+                                where   e1 = Set.elemAt 0 s1
+                                        e2 = Set.elemAt 0 s2 
+                                        tag1 = s_tags e1
+                                        tag2 = s_tags e2
+                                        id1 = tape . fromJust $ s_val e1
+                                        id2 = tape . fromJust $ s_val e2
+                                        be1 = s_name e1 == E && Set.null tag1 
+                                        be2 = s_name e2 == E && Set.null tag2 
+                                        bf1 = s_name e1 == F && Set.null tag1 
+                                        bf2 = s_name e2 == F && Set.null tag2 
+        filterSmsStates s = s_name e /= F
+                                where   e = Set.elemAt 0 s
+        smsStates = filter filterSmsStates . concat . map (map Set.unions . transpose . map qn) $ transpose sms
+        otherStates = [[s {s_val = Just $ (fromJust $ s_val s) {tmCommand = Just $ Command c, smTag = Just g}} | s <- state ] | g <- gamma, c <- pos21, state <- standardStates]
+        finalSmStates = map Set.unions . groupBy groupByStates . sortBy sortByNames $ (map Set.fromList standardStates) ++ (map Set.fromList otherStates) ++ smsStates
+        smsConnectingRules = concatMap createConnectingRules $ map (Command $) pos21
+        smsPos22Rules = map createPos22Rule $ map (Command $) pos22
+                                
+    in
+    SM y finalSmStates (smsRules ++ smsConnectingRules ++ smsPos22Rules)

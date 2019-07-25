@@ -109,7 +109,7 @@ module SMPrinter where
             subsection_ "Alphabet"
             enumerate $ mapM_ (\ys -> do { item Nothing; showYs ys}) $ yn sm
             subsection_ "States"
-            enumerate $ mapM_ (\states -> do { item Nothing; showSMStates states}) $ qn sm
+            enumerate $ mapM_ (\states -> do { item Nothing; showSMStates states}) . map Set.toList $ qn sm
             subsection_ "Commands"
             enumerate $ mapM_ (\(name, cmd) -> do { item Nothing ; math $ doLaTeX name ; " = " ; math $ doLaTeX cmd }) commandsName
             subsection_ "Rules"
