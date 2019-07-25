@@ -37,7 +37,9 @@ eTag = Set.fromList []
 
 standardV i = Just $ StateVal i Nothing Nothing
 
-gen name = [State name (show i) eTag Nothing | i <- [0..4]]
+eTagState name i = State name i eTag Nothing
+genRange name range = [eTagState name (show i) | i <- range]
+gen name = genRange name [0..4]
 
 addTag newTag q = q {s_tags = Set.insert newTag (s_tags q) }
 addTags newTags qs = [addTag newTag p | p <- qs, newTag <- newTags]
@@ -112,7 +114,7 @@ createSMs y =
         uds@[u0d,u1d,u2d,u3d,u4d] = addTags [Dash] us
         u'ds@[u0'd,u1'd,u2'd,u3'd,u4'd] = addTags [Dash] u's
 
-        xs@[x0,x1,x2,x3,x4] = gen X
+        xs@[x0,x1,x2,x3,x4] = eTagState X "" : genRange X [1..4]
         x's@[x0',x1',x2',x3',x4'] = addTags [Quote] xs
         xds@[x0d,x1d,x2d,x3d,x4d] = addTags [Dash] xs
         x'ds@[x0'd,x1'd,x2'd,x3'd,x4'd] = addTags [Dash] x's
@@ -127,7 +129,7 @@ createSMs y =
             let
                rl1 = 
                   SRule [ 
-                    (Word [SmbQ q1], Word [SmbY' delta, SmbY' delta, SmbQ q2, SmbY delta, SmbY delta]),
+                    (Word [SmbQ q1], Word [SmbY' delta, SmbY' delta, SmbQ q1, SmbY delta, SmbY delta]),
                     (Word [SmbQ r1], Word [SmbY' delta, SmbQ r1, SmbY delta])
                   ]
                rl2 = 
@@ -243,7 +245,7 @@ createSMs y =
         sm9 :: [Y] -> SM
         sm9 y = 
             let sm8' = sm8 y 
-                sm8c = copySM sm8' (\q -> (notElem (s_name q) [E, F]) || ("4" /= (s_idx q))) Hat
+                sm8c = copySM sm8' (\q -> (notElem (s_name q) [E, F]) && (s_idx q /= "4")) Hat
             in  
             SM (yn sm1) (qn sm8' ++ qn sm8c) (srs sm8' ++ srs sm8c)
             
