@@ -297,6 +297,7 @@ getJIdx cmd j =
     in
         internal cmd 1
             
+createConnectingRules :: TMCMD -> [SRule]
 createConnectingRules cmd = do
     let (Command command) = cmd 
     let k = length command    
@@ -360,29 +361,47 @@ createConnectingRules cmd = do
     let getFromJ j = a where (a, _) = getJIdx command j
     let getToJ j = a where (_, a) = getJIdx command j
 
-    let r4 = 
-            SRule $ 
-            (++) [(Word [SmbQ $ e_e 0], Word [SmbQ $ e 0 T4]),
+    let p4         = p_idx "1" i 
+    let q4         = q_idx "1" i
+    let r4         = r_idx "1" i
+    let s4         = s_idx "1" i 
+    let t4         = t_idx "1" i
+    let u4         = u_idx "1" i
+    let pd4 sm     = newState P "0" dashTag i (Just cmd) (Just sm) 
+    let qd4 sm     = newState Q "0" dashTag i (Just cmd) (Just sm) 
+    let rd4 sm     = newState R "0" dashTag i (Just cmd) (Just sm) 
+    let sd4 sm     = newState S "0" dashTag i (Just cmd) (Just sm) 
+    let td4 sm     = newState T "0" dashTag i (Just cmd) (Just sm)
+    let ud4 sm     = newState U "0" dashTag i (Just cmd) (Just sm)
+
+    let rule4 = 
+            SRule $ (++) 
+            [(Word [SmbQ $ e_e 0], Word [SmbQ $ e 0 T4]),
             (Word [SmbQ $ e_fl'], Word [SmbQ $ fl' T4]),
             (Word [SmbQ $ e_x 0, SmbQ $ e_f0], Word [SmbQ $ x 0 T4, SmbQ $ f0 T4]),
-            (Word [SmbQ $ e_e' (k + 1), SmbQ $ e_x' (k + 1)], Word [SmbQ $ e' (k + 1) T4, SmbQ $ x' (k + 1) T4])]
+            (Word [SmbQ $ e_e' (k + 1), SmbQ $ e_x' (k + 1)], Word [SmbQ $ e' (k + 1) T4, SmbQ $ x' (k + 1) T4]),
+            (Word [SmbQ $ e_e i], Word [SmbQ $ e i T4]),
+            (Word [SmbQ $ e_x i, SmbQ $ e_f (getFromJ i) i, SmbQ $ e_e' i, SmbQ $ e_p i], 
+            Word [SmbQ $ x i T4, SmbQ $ f (getFromJ i) i T4, SmbQ $ e' i T4, SmbQ $ p4 T4]),
+            (Word [SmbQ $ e_q i, SmbQ $ e_r i, SmbQ $ e_s i, SmbQ $ e_t i, SmbQ $ e_u i, SmbQ $ e_pd i, SmbQ $ e_qd i, SmbQ $ e_rd i, SmbQ $ e_sd i, SmbQ $ e_td i, SmbQ $ e_ud i, SmbQ $ e_f' (getFromJ i) i], 
+            Word [SmbQ $ q4 T4, SmbQ $ r4 T4, SmbQ $ s4 T4, SmbQ $ t4 T4, SmbQ $ u4 T4, SmbQ $ pd4 T4, SmbQ $ qd4 T4, SmbQ $ rd4 T4, SmbQ $ sd4 T4, SmbQ $ td4 T4, SmbQ $ ud4 T4, SmbQ $ f' (getFromJ i) i T4])]
             $ concat 
             [[(Word [SmbQ $ e_e j], Word [SmbQ $ e j T4]),
             (Word [SmbQ $ e_x j, SmbQ $ e_f (getFromJ j) j, SmbQ $ e_e' j, SmbQ $ e_p j], 
             Word [SmbQ $ x j T4, SmbQ $ f (getFromJ j) j T4, SmbQ $ e' j T4, SmbQ $ p j T4]),
             (Word [SmbQ $ e_q j, SmbQ $ e_r j, SmbQ $ e_s j, SmbQ $ e_t j, SmbQ $ e_u j, SmbQ $ e_pd j, SmbQ $ e_qd j, SmbQ $ e_rd j, SmbQ $ e_sd j, SmbQ $ e_td j, SmbQ $ e_ud j, SmbQ $ e_f' (getFromJ j) j], 
             Word [SmbQ $ q j T4, SmbQ $ r j T4, SmbQ $ s j T4, SmbQ $ t j T4, SmbQ $ u j T4, SmbQ $ pd j T4, SmbQ $ qd j T4, SmbQ $ rd j T4, SmbQ $ sd j T4, SmbQ $ td j T4, SmbQ $ ud j T4, SmbQ $ f' (getFromJ j) j T4])]
-            | j <- [1..k]]
+            | j <- [1 .. i - 1] ++ [i + 1 .. k]]
 
-    let r4alpha =
+    let rule4alpha =
             SRule $ (++)
             [(Word [SmbQ $ x 0 T4, SmbQ $ f0 T4], Word [SmbY' alpha, SmbQ $ x 0 TAlpha, SmbQ $ f0 TAlpha]),
             (Word [SmbQ $ e' (k + 1) T4, SmbQ $ x' (k + 1) T4], Word [SmbQ $ e' (k + 1) TAlpha, SmbQ $ x' (k + 1) TAlpha, SmbY' omega]),
             (Word [SmbQ $ e i T4], Word [SmbQ $ e i TAlpha]),
             (Word [SmbQ $ x i T4, SmbQ $ f (getFromJ i) i T4, SmbQ $ e' i T4, SmbQ $ p_idx' "1" i T4], 
-            Word [SmbY' $ Y a, SmbQ $ x i TAlpha, SmbQ $ f (getToJ i) i TAlpha, SmbQ $ e' i TAlpha, SmbQ $ p_idx "1" i TAlpha, SmbY' delta]),
+            Word [SmbY' $ Y a, SmbQ $ x i TAlpha, SmbQ $ f (getToJ i) i TAlpha, SmbQ $ e' i TAlpha, SmbQ $ p4 TAlpha, SmbY' delta]),
             (Word [SmbQ $ q_idx' "1" i T4, SmbQ $ r_idx' "1" i T4, SmbQ $ s_idx' "1" i T4, SmbQ $ t_idx' "1" i T4, SmbQ $ u_idx' "1" i T4], 
-            Word [SmbQ $ q_idx "1" i TAlpha, SmbQ $ r_idx "1" i TAlpha, SmbQ $ s_idx "1" i TAlpha, SmbQ $ t_idx "1" i TAlpha, SmbQ $ u_idx "1" i TAlpha]),
+            Word [SmbQ $ q4 TAlpha, SmbQ $ r4 TAlpha, SmbQ $ s4 TAlpha, SmbQ $ t4 TAlpha, SmbQ $ u4 TAlpha]),
             (Word [SmbQ $ e 0 T4], Word [SmbQ $ e 0 TAlpha]),
             (Word [SmbQ $ fl' T4], Word [SmbQ $ fl' TAlpha]),
             (Word [SmbQ $ pd i T4, SmbQ $ qd i T4, SmbQ $ rd i T4, SmbQ $ sd i T4, SmbQ $ td i T4, SmbQ $ ud i T4, SmbQ $ f' (getFromJ i) i T4], 
@@ -396,15 +415,21 @@ createConnectingRules cmd = do
             | j <- [1 .. i - 1] ++ [i + 1 .. k] ]
 
     let changeMachine from to =
-            concat
+            (++)
+            [(Word [SmbQ $ e i from], Word [SmbQ $ e i to]),
+            (Word [SmbQ $ x i from, SmbQ $ f (getToJ i) i from, SmbQ $ e' i from, SmbQ $ p4 from], 
+            Word [SmbQ $ x i to, SmbQ $ f (getToJ i) i to, SmbQ $ e' i to, SmbQ $ p4 to]),
+            (Word [SmbQ $ q4 from, SmbQ $ r4 from, SmbQ $ s4 from, SmbQ $ t4 from, SmbQ $ u4 from, SmbQ $ pd4 from, SmbQ $ qd4 from, SmbQ $ rd4 from, SmbQ $ sd4 from, SmbQ $ td4 from, SmbQ $ ud4 from, SmbQ $ f' (getToJ i) i from],
+            Word [SmbQ $ q4 to, SmbQ $ r4 to, SmbQ $ s4 to, SmbQ $ t4 to, SmbQ $ u4 to, SmbQ $ pd4 to, SmbQ $ qd4 to, SmbQ $ rd4 to, SmbQ $ sd4 to, SmbQ $ td4 to, SmbQ $ ud4 to, SmbQ $ f' (getToJ i) i to])] 
+            $ concat
             [[(Word [SmbQ $ e j from], Word [SmbQ $ e j to]),
             (Word [SmbQ $ x j from, SmbQ $ f (getToJ j) j from, SmbQ $ e' j from, SmbQ $ p j from], 
             Word [SmbQ $ x j to, SmbQ $ f (getToJ j) j to, SmbQ $ e' j to, SmbQ $ p j to]),
             (Word [SmbQ $ q j from, SmbQ $ r j from, SmbQ $ s j from, SmbQ $ t j from, SmbQ $ u j from, SmbQ $ pd j from, SmbQ $ qd j from, SmbQ $ rd j from, SmbQ $ sd j from, SmbQ $ td j from, SmbQ $ ud j from, SmbQ $ f' (getToJ j) j from],
             Word [SmbQ $ q j to, SmbQ $ r j to, SmbQ $ s j to, SmbQ $ t j to, SmbQ $ u j to, SmbQ $ pd j to, SmbQ $ qd j to, SmbQ $ rd j to, SmbQ $ sd j to, SmbQ $ td j to, SmbQ $ ud j to, SmbQ $ f' (getToJ j) j to])]
-            | j <- [1 .. k]]
+            | j <- [1 .. i - 1] ++ [i + 1 .. k]]
 
-    let ralphaomega = 
+    let rulealphaomega = 
             SRule $ (++)
             [(Word [SmbQ $ e 0 TAlpha], Word [SmbQ $ e 0 TOmega]),
             (Word [SmbQ $ x_idx "2" 0 TAlpha, SmbQ $ f0 TAlpha], Word [SmbQ $ x 0 TOmega, SmbQ $ f0 TOmega]),
@@ -412,7 +437,7 @@ createConnectingRules cmd = do
             (Word [SmbQ $ fl' TAlpha], Word [SmbQ $ fl' TOmega])]
             $ changeMachine TAlpha TOmega
 
-    let romega9 = 
+    let ruleomega9 = 
             SRule $ (++)
             [(Word [SmbQ $ e 0 TOmega], Word [SmbQ $ e 0 T9]),
             (Word [SmbQ $ x 0 TOmega, SmbQ $ f0 TOmega], Word [SmbQ $ x 0 T9, SmbQ $ f0 T9]),
@@ -420,7 +445,7 @@ createConnectingRules cmd = do
             (Word [SmbQ $ fl' TOmega], Word [SmbQ $ fl' T9])]
             $ changeMachine TOmega T9
 
-    let r9 = 
+    let rule9 = 
             SRule $ (++)
             [(Word [SmbQ $ e 0 T9], Word [SmbQ $ e_e 0]),
             (Word [SmbQ $ x 0 T9, SmbQ $ f0 T9], Word [SmbQ $ e_x 0, SmbQ e_f0]),
@@ -439,7 +464,7 @@ createConnectingRules cmd = do
             Word [SmbQ $ e_q j, SmbQ $ e_r j, SmbQ $ e_s j, SmbQ $ e_t j, SmbQ $ e_u j, SmbQ $ e_pd j, SmbQ $ e_qd j, SmbQ $ e_rd j, SmbQ $ e_sd j, SmbQ $ e_td j, SmbQ $ e_ud j, SmbQ $ e_f' (getToJ j) j])] 
             | j <- [1 .. i - 1] ++ [i + 1 .. k] ]
 
-    [r4, r4alpha, ralphaomega, romega9, r9]
+    [rule4, rule4alpha, rulealphaomega, ruleomega9, rule9]
 
 createPos22Rule cmd = do
     let (Command command) = cmd 
