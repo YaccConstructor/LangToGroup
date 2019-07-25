@@ -484,36 +484,23 @@ createPos22Rule cmd = do
 
 smFinal (TMType.TM (inputAlphabet,
         tapeAlphabets, 
-        _, 
+        TMType.MultiTapeStates tapesStates, 
         TMType.Commands commandsSet, 
         _,
         _)
         ) = 
-   let numOfTapes = 2
+   let numOfTapes = length tapeAlphabets
        gamma = [T4, T9, TAlpha, TOmega]
        y = map (\(TMType.TapeAlphabet a) -> map (Y $) $ Set.toList a) tapeAlphabets
-       getFinalForTape i (Just tag) = State F "" (Set.fromList [tag]) $ standardV i
-       getFinalForTape i Nothing = State F "" eTag $ standardV i
-       standatdState name tags = [State name "" tags (standardV i)  | i <- [1..numOfTapes]]
-       standatdState' name tags = [State name "" tags (standardV i)  | i <- [0..numOfTapes + 1]]
-       es = standatdState' E eTag
-       e's = standatdState' E (Set.fromList [Quote])
-       fs = [ getFinalForTape i Nothing | i <- [0..numOfTapes + 1]]
-       f's = [ getFinalForTape i $ Just Quote | i <- [0..numOfTapes + 1]]
-       xs = standatdState X eTag
-       ps = standatdState P eTag
-       qs = standatdState Q eTag
-       rs = standatdState R eTag
-       ss = standatdState S eTag
-       ts = standatdState T eTag
-       us = standatdState U eTag
-       pds = standatdState P (Set.fromList [Dash])
-       qds = standatdState Q (Set.fromList [Dash])
-       rds = standatdState R (Set.fromList [Dash])
-       sds = standatdState S (Set.fromList [Dash])
-       tds = standatdState T (Set.fromList [Dash])
-       uds = standatdState U (Set.fromList [Dash])
-       standardStates = [es, e's, fs, f's, xs, ps, qs, rs, ss, ts, us, pds, qds, rds, sds, tds, uds]
+       getFinalForTape tag = zipWith (\i idxs -> map (\(TMType.State idx) -> State F idx tag $ standardV i) idxs) [1 .. numOfTapes] $ map Set.toList tapesStates
+       standatdState name tags = [[State name "" tags (standardV i)]  | i <- [1..numOfTapes]]
+       es = (:) [State E "" eTag $ standardV 0] $ standatdState E eTag
+       e's = standatdState E quoteTag ++ [[State E "" quoteTag . standardV $ numOfTapes + 1]]
+       fs = (:) [State F "" eTag $ standardV 0] $ getFinalForTape eTag
+       f's = getFinalForTape quoteTag ++ [[State F "" quoteTag . standardV $ numOfTapes + 1]]
+       xs = [[State X "" eTag (standardV i)]  | i <- [0 .. numOfTapes]] ++ [[State X "" quoteTag . standardV $ numOfTapes + 1]]
+       states@[ps,qs,rs,ss,ts,us,pds,qds,rds,sds,tds,uds] = [standatdState name tag | name <- [P, Q, R, S, T, U], tag <- [eTag, dashTag]]
+       standardStates = foldr (++) [] [es, e's, fs, f's, xs, ps, qs, rs, ss, ts, us, pds, qds, rds, sds, tds, uds]
 
        (pos21, pos22, neg21, neg22) = devidePositiveNegativeCommands $ Set.toList commandsSet
        sms = [f $ Command c | f <- zipWith copySMForCommand (createSMs $ concat y) gamma, c <- pos21]

@@ -68,14 +68,15 @@ main = do
 
 tmForTestSm = tm where
     s = Value "S"
-    q0 = StateOmega $ State "q_0"
-    q0' = StateOmega $ State "q_0'"
-    q1 = StateOmega $ State "q_1"
-    q1' = StateOmega $ State "q_1'"
+    q0 = State "q_0"
+    q0' = State "q_0'"
+    q1 = State "q_1"
+    q1' = State "q_1'"
     inp = InputAlphabet (Set.fromList [])
     tapes = [TapeAlphabet (Set.fromList [s]), TapeAlphabet (Set.fromList [])]
-    states = MultiTapeStates []
-    cmds = Commands $ Set.fromList [[PreSMCommand ((s, q0), (emptySymbol, q0')), PreSMCommand ((emptySymbol, q1), (emptySymbol, q1'))]]
+    states = MultiTapeStates [Set.fromList [q0, q0'], Set.fromList [q1, q1']]
+    cmds = Commands $ Set.fromList [[PreSMCommand ((s, StateOmega q0), (emptySymbol, StateOmega q0')), 
+                                    PreSMCommand ((emptySymbol, StateOmega q1), (emptySymbol, StateOmega q1'))]]
     start = StartStates []
     access = AccessStates []
     tm = TM (inp, tapes, states, cmds, start, access)    
