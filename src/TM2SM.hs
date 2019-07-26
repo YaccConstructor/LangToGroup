@@ -15,6 +15,8 @@ devidePositiveNegativeCommands commands = do
                 TMType.PreSMCommand((a@(TMType.Value ah), b),(a1, b1)) : t 
                     | a /= TMType.emptySymbol && head ah /= 'E' -> True
                     | otherwise -> check21 t
+                TMType.PreSMCommand((TMType.BCommand _, _),(_, _)) : t -> True
+                TMType.PreSMCommand((TMType.PCommand _, _),(_, _)) : t -> True
                 [] -> False
 
     let reverseCommand (TMType.PreSMCommand((a, b),(a1, b1))) =  TMType.PreSMCommand((a1, b1),(a, b))
@@ -481,6 +483,27 @@ createPos22Rule cmd = do
         (Word [SmbQ $ e_f' (getFromJ j) j], Word [SmbQ $ e_f' (getToJ j) j])] 
         | j <- [1 .. i - 1] ++ [i + 1 .. k]]  
     
+mapTuple :: (a -> b) -> (a, a) -> (b, b)
+mapTuple f (a1, a2) = (f a1, f a2)
+
+symmetrization (SRule wordPairs) = do 
+    let groupByWord w (left, other) =
+            case w of
+                smb@(SmbY _) : t -> groupByWord t (smb : left, other)
+                smb@(SmbY' _) : t -> groupByWord t (smb : left, other)
+                smb@(SmbQ _) : t -> (reverse left, smb : t)
+    let reverseYs smb = case smb of
+                            SmbY y -> SmbY' y
+                            SmbY' y -> SmbY y 
+                            _ -> error (show smb)
+    let mapWords (Word w1, Word w2) = (Word midle, Word $ reversedLeftYs ++ w1 ++ reversedRightYs)
+                                        where 
+                                            (left, other1) = groupByWord w2 ([], [])
+                                            (right, midle) = mapTuple reverse $ groupByWord (reverse other1) ([], [])
+                                            reversedLeftYs = map reverseYs left
+                                            reversedRightYs = map reverseYs right
+
+    SRule $ map mapWords wordPairs
 
 
 smFinal (TMType.TM (inputAlphabet,
@@ -535,6 +558,9 @@ smFinal (TMType.TM (inputAlphabet,
         finalSmStates = map Set.unions . groupBy groupByStates . sortBy sortByNames $ (map Set.fromList standardStates) ++ (map Set.fromList otherStates) ++ smsStates
         smsConnectingRules = concatMap createConnectingRules $ map (Command $) pos21
         smsPos22Rules = map createPos22Rule $ map (Command $) pos22
+
+        finalSmRules = smsRules ++ smsConnectingRules ++ smsPos22Rules
+        symmFinalSmRules = (++) finalSmRules $ map symmetrization finalSmRules
                                 
     in
-    SM y finalSmStates (smsRules ++ smsConnectingRules ++ smsPos22Rules)
+    SM y finalSmStates symmFinalSmRules

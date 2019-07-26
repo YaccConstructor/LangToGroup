@@ -35,12 +35,13 @@ example = execLaTeXM $
     do
         preambula 
         document $ do
-            -- doLaTeX testGrammar
-            -- doLaTeX $ mapCfgToTM testGrammar
-            -- doLaTeX $ interpretTM ["a"] $ mapCfgToTM testGrammar
-            -- newpage
-            -- doLaTeX $ mapTM2TM' $ mapCfgToTM testGrammar
-            -- newpage
+            doLaTeX testGrammar
+            --doLaTeX $ mapCfgToTM testGrammar
+            --doLaTeX $ interpretTM ["a"] $ mapCfgToTM testGrammar
+            --newpage
+            --doLaTeX $ mapTM2TM' $ mapCfgToTM testGrammar
+            newpage
+            doLaTeX $ smFinal $ mapTM2TM' $ mapCfgToTM testGrammar
             -- doLaTeX epsTestGrammar
             -- doLaTeX $ mapCfgToTM epsTestGrammar
             -- doLaTeX $ interpretTM ["a"] $ mapCfgToTM epsTestGrammar
@@ -57,10 +58,12 @@ example = execLaTeXM $
             -- doLaTeX $ mapCfgToTM ab2TestGrammar
             -- doLaTeX $ interpretTM ["b", "a", "b", "a"] $ mapCfgToTM ab2TestGrammar
             -- newpage
+            -- doLaTeX $ smFinal $ mapTM2TM' $ mapCfgToTM ab2TestGrammar
+            -- newpage
             -- doLaTeX ab3TestGrammar
             -- doLaTeX $ mapCfgToTM ab3TestGrammar
             -- doLaTeX $ interpretTM ["b", "a", "b", "a"] $ mapCfgToTM ab3TestGrammar
-            doLaTeX $ smFinal tmForTestSm
+            --doLaTeX $ smFinal tmForTestSm
 
 main :: IO()
 main = do
