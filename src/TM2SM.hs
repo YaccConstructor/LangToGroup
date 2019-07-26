@@ -6,6 +6,7 @@ import qualified Data.Set as Set
 import qualified TMType
 import Data.List (transpose, groupBy, sortBy)
 import Data.Maybe (fromJust)
+import Debug.Trace (trace)
 
 
 devidePositiveNegativeCommands :: [[TMType.TapeCommand]] -> ([[TMType.TapeCommand]], [[TMType.TapeCommand]], [[TMType.TapeCommand]], [[TMType.TapeCommand]])
@@ -513,7 +514,7 @@ smFinal (TMType.TM (inputAlphabet,
         _,
         _)
         ) = 
-    let numOfTapes = length tapeAlphabets
+    let numOfTapes = length $ trace ("I'm here! 1") tapeAlphabets
         gamma = [T4, T9, TAlpha, TOmega]
         y = map (\(TMType.TapeAlphabet a) -> map (Y $) $ Set.toList a) tapeAlphabets
         getFinalForTape tag = zipWith (\i idxs -> map (\(TMType.State idx) -> State F idx tag $ standardV i) idxs) [1 .. numOfTapes] $ map Set.toList tapesStates

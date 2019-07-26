@@ -9,7 +9,7 @@ module SMPrinter where
     import qualified Data.Set as Set
     import Text.LaTeX.Base.Types
     import Data.Maybe
-    import Debug.Trace
+    import Debug.Trace (trace)
     import Data.List
 
     import SMType
@@ -105,7 +105,7 @@ module SMPrinter where
 
     instance ShowLaTeX SM where
         doLaTeX sm = do
-            let (rules, commandsName) = substituteCommands $ srs sm
+            let (rules, commandsName) = substituteCommands $ srs $ trace ("I'm here!") sm
             subsection_ "Alphabet"
             enumerate $ mapM_ (\ys -> do { item Nothing; showYs ys}) $ yn sm
             subsection_ "States"
