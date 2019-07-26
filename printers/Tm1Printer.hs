@@ -45,15 +45,13 @@ showBCommand command =
     bmatrix (Just HRight) $ fromLists $ map (\c -> [showFrom c, to, showTo c]) command
 
 showStates :: [State] -> LaTeXM ()
-showStates = helper where
-    helper [state]    = math $ doLaTeX state
-    helper (state:ss) = do { math $ doLaTeX state; ", "; showStates ss }
+showStates = foldl1 (\x y -> x <> ", " <> y) . map (math . doLaTeX $)
 
 showAlphabet :: [Square] -> LaTeXM ()
-showAlphabet = helper where
-    helper [Value sq]    = math $ raw $ fromString sq
-    helper (Value sq:ss) = do { math $ raw $ fromString sq; ", "; showAlphabet ss }
-    helper commands = mapM_ (\x -> do { math $ doLaTeX x ; "\n" }) commands
+showAlphabet alphabet = 
+    case map (\x -> math $ case x of Value sq -> raw $ fromString sq ; _ -> doLaTeX x) alphabet of 
+        [] -> ""
+        lst -> foldl1 (\x y -> x <> ", " <> y) lst
 
 
 instance ShowLaTeX InputAlphabet where

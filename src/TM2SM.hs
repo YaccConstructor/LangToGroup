@@ -482,7 +482,7 @@ createPos22Rule cmd = do
         $ concat 
         [[(Word [SmbQ $ e_f (getFromJ j) j], Word [SmbQ $ e_f (getToJ j) j]),
         (Word [SmbQ $ e_f' (getFromJ j) j], Word [SmbQ $ e_f' (getToJ j) j])] 
-        | j <- [1 .. i - 1] ++ [i + 1 .. k]]  
+        | j <- [1 .. i - 1] ++ [i + 1 .. k]]
     
 mapTuple :: (a -> b) -> (a, a) -> (b, b)
 mapTuple f (a1, a2) = (f a1, f a2)
@@ -528,8 +528,8 @@ smFinal (TMType.TM (inputAlphabet,
         standardStates = foldr (++) [] [es, e's, fs, f's, xs, ps, qs, rs, ss, ts, us, pds, qds, rds, sds, tds, uds]
 
         (pos21, pos22, neg21, neg22) = devidePositiveNegativeCommands $ Set.toList commandsSet
-        sms = [[f $ Command c | f <- zipWith copySMForCommand (createSMs $ concat y) gamma] | c <- pos21]
-        smsRules = concatMap srs $ concat sms
+        sms = [[f $ Command c | c <- pos21 ] | f <- zipWith copySMForCommand (createSMs $ concat y) gamma]
+        smsRules = concatMap srs $ concat $ sms
         groupByStates s1 s2 = s_name e1 == s_name e2 
                                 && Set.member Dash tag1 == Set.member Dash tag2 
                                 && id1 == id2
@@ -554,7 +554,7 @@ smFinal (TMType.TM (inputAlphabet,
                                         bf2 = s_name e2 == F && Set.null tag2 
         filterSmsStates s = s_name e /= F
                                 where   e = Set.elemAt 0 s
-        smsStates = filter filterSmsStates . concat . map (map Set.unions . transpose . map qn) $ transpose sms
+        smsStates = filter filterSmsStates . concat . map (map Set.unions . transpose . map qn) $ trace ("sms " ++ (show sms)) sms
         otherStates = [[s {s_val = Just $ (fromJust $ s_val s) {tmCommand = Just $ Command c, smTag = Just g}} | s <- state ] | g <- gamma, c <- pos21, state <- standardStates]
         finalSmStates = map Set.unions . groupBy groupByStates . sortBy sortByNames $ (map Set.fromList standardStates) ++ (map Set.fromList otherStates) ++ smsStates
         smsConnectingRules = concatMap createConnectingRules $ map (Command $) pos21
@@ -564,4 +564,5 @@ smFinal (TMType.TM (inputAlphabet,
         symmFinalSmRules = (++) finalSmRules $ map symmetrization finalSmRules
                                 
     in
-    SM y finalSmStates symmFinalSmRules
+        --SM y (trace ("finalSmsStates " ++ (show finalSmStates)) finalSmStates) (trace ("symmFinalSmRules " ++ (show symmFinalSmRules)) symmFinalSmRules)
+        SM y (trace ("finalSmsStates " ++ (show finalSmStates)) finalSmStates) (trace ("symmFinalSmRules " ++ (show symmFinalSmRules)) symmFinalSmRules)

@@ -35,12 +35,12 @@ example = execLaTeXM $
     do
         preambula 
         document $ do
-            doLaTeX testGrammar
+            --doLaTeX testGrammar
             --doLaTeX $ mapCfgToTM testGrammar
             --doLaTeX $ interpretTM ["a"] $ mapCfgToTM testGrammar
             --newpage
             --doLaTeX $ mapTM2TM' $ mapCfgToTM testGrammar
-            newpage
+            -- newpage
             doLaTeX $ smFinal $ mapTM2TM' $ mapCfgToTM testGrammar
             -- doLaTeX epsTestGrammar
             -- doLaTeX $ mapCfgToTM epsTestGrammar
@@ -68,6 +68,10 @@ example = execLaTeXM $
 main :: IO()
 main = do
     renderFile "out.tex" example 
+
+-- main :: IO()
+-- main = do
+--     putStrLn $ show $ smFinal $ mapTM2TM' $ mapCfgToTM testGrammar
 
 tmForTestSm = tm where
     s = Value "S"
