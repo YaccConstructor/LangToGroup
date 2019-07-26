@@ -554,7 +554,7 @@ smFinal (TMType.TM (inputAlphabet,
                                         bf2 = s_name e2 == F && Set.null tag2 
         filterSmsStates s = s_name e /= F
                                 where   e = Set.elemAt 0 s
-        smsStates = filter filterSmsStates . concat . map (map Set.unions . transpose . map qn) $ trace ("sms " ++ (show sms)) sms
+        smsStates = filter filterSmsStates . concat . map (map Set.unions . transpose . map qn) $ sms
         otherStates = [[s {s_val = Just $ (fromJust $ s_val s) {tmCommand = Just $ Command c, smTag = Just g}} | s <- state ] | g <- gamma, c <- pos21, state <- standardStates]
         finalSmStates = map Set.unions . groupBy groupByStates . sortBy sortByNames $ (map Set.fromList standardStates) ++ (map Set.fromList otherStates) ++ smsStates
         smsConnectingRules = concatMap createConnectingRules $ map (Command $) pos21
@@ -565,4 +565,4 @@ smFinal (TMType.TM (inputAlphabet,
                                 
     in
         --SM y (trace ("finalSmsStates " ++ (show finalSmStates)) finalSmStates) (trace ("symmFinalSmRules " ++ (show symmFinalSmRules)) symmFinalSmRules)
-        SM y (trace ("finalSmsStates " ++ (show finalSmStates)) finalSmStates) (trace ("symmFinalSmRules " ++ (show symmFinalSmRules)) symmFinalSmRules)
+        SM y finalSmStates symmFinalSmRules

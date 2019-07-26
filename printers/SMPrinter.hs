@@ -34,7 +34,7 @@ module SMPrinter where
             let tagsList = Set.toList tags
             let setTag q tag =
                     case tag of
-                        Quote -> q <> (raw "^{'}")
+                        Quote -> q ^: "'"
                         Hat -> (raw "\\hat{") <> q <> (raw "}") 
                         Dash -> (raw "\\bar{") <> q <> (raw "}")
 
@@ -44,12 +44,10 @@ module SMPrinter where
                     case (tmCommand value, smTag value) of
                         (Nothing, Nothing) -> q <> "(" <> (fromString $ show $ tape value) <> ")"
                         (Just cmd, Just smtag) -> q <> "(" <> (fromString $ show $ tape value) <> ", " <> (doLaTeX cmd) <> ", " <> (doLaTeX smtag) <> ")"
-            setVal val $ (setTags (doLaTeX name) tagsList) <> (raw "_{") <> (raw $ fromString idx) <> (raw "}")
+            setVal val $ (setTags (doLaTeX name) tagsList) !: (raw $ fromString idx) 
 
     showSMStates :: [State] -> LaTeXM ()
-    showSMStates = helper where
-        helper [state]    = math $ doLaTeX state
-        helper (state:ss) = do { math $ doLaTeX state; ", "; showSMStates ss }
+    showSMStates = foldl1 (\x y -> x <> ", " <> y) . map (math . doLaTeX $)
 
 
     showYs :: [Y] -> LaTeXM ()
@@ -58,14 +56,15 @@ module SMPrinter where
 
     instance ShowLaTeX Smb where
         toLaTeX (SmbY y) = toLaTeX y
-        toLaTeX (SmbY' y) = toLaTeX y <> raw "^{-1}"
+        toLaTeX (SmbY' y) = toLaTeX y ^: "-1"
         toLaTeX (SmbQ q) = toLaTeX q  
 
     instance ShowLaTeX SMType.Word where
-        doLaTeX (Word w) = mapM_ (\s -> do { math $ doLaTeX s ; " " }) w
-
+        doLaTeX (Word w) = 
+            foldl1 (\x y -> x <> " " <> y) $ map (\s -> math $ doLaTeX s) w 
+ 
     instance ShowLaTeX SRule where
-        doLaTeX (SRule s) = do {(foldr (\(w1,w2) acc -> do { doLaTeX w1 ; math to ; " " ; doLaTeX w2 ; lnbk ; acc }) "" s) } 
+        doLaTeX (SRule s) = foldl1 (\x y -> x <> lnbk <> y) $ map (\(w1,w2) -> doLaTeX w1 <> math to <> " " <> doLaTeX w2) s
 
     substituteCommands rules = do
         let tau i = "\\tau_{" ++ (show i) ++ "}"
@@ -95,22 +94,19 @@ module SMPrinter where
                             (newI1, newWord1, newNames1) = substituteWord i w1 [] accNames 
                             (newI2, newWord2, newNames2) = substituteWord newI1 w2 [] newNames1 
                     [] -> (i, reverse acc, accNames)
-        let internal i rules acc accNames = 
-                case rules of
-                    SRule s : t -> internal newI t ((SRule newRule) : acc) newNames
-                        where 
-                            (newI, newRule, newNames) = substituteRule i s [] accNames
-                    [] -> (reverse acc, accNames)
-        internal 0 rules [] []
+        let internal i = foldl (\(i, acc, names) (SRule s) -> let (newI, newRule, newNames) = substituteRule i s [] names 
+                                                                in (newI, (SRule newRule) : acc, newNames)) (i, [], []) 
+        let (_, newRules, names) = internal 0 rules
+        (newRules, names)
 
     instance ShowLaTeX SM where
         doLaTeX sm = do
             let (rules, commandsName) = substituteCommands $ srs $ trace ("I'm here!") sm
             subsection_ "Alphabet"
-            enumerate $ mapM_ (\ys -> do { item Nothing; showYs ys}) $ yn sm
-            subsection_ "States"
-            enumerate $ mapM_ (\states -> do { item Nothing; showSMStates states}) . map Set.toList $ qn sm
-            subsection_ "Commands"
-            enumerate $ mapM_ (\(name, cmd) -> do { item Nothing ; math $ doLaTeX name ; " = " ; math $ doLaTeX cmd }) commandsName
-            subsection_ "Rules"
-            enumerate $ mapM_ (\rule -> do { item Nothing; doLaTeX rule}) $ rules
+            enumerate $ foldl1 (<>) $ map ((<>) (item Nothing) . showYs $) $ trace ((show $ length rules) ++ " " ++ (show $ length $ Set.unions $ qn sm )) yn sm
+            --subsection_ "States"
+            --enumerate $ foldl1 (<>) $ map ((<>) (item Nothing) . showSMStates . Set.toList $) $ take 1 $ qn sm
+            -- subsection_ "Commands"
+            -- enumerate $ foldl1 (<>) $ map (\(name, cmd) -> item Nothing <> (math $ doLaTeX name) <> " = " <> (math $ doLaTeX cmd)) commandsName
+            -- subsection_ "Rules"            
+            --enumerate $ foldl1 (<>) $ map ((<>) (item Nothing) . doLaTeX $) rules
