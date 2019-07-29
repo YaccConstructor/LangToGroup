@@ -101,12 +101,12 @@ module SMPrinter where
 
     instance ShowLaTeX SM where
         doLaTeX sm = do
-            let (rules, commandsName) = substituteCommands $ srs $ trace ("I'm here!") sm
+            let (rules, commandsName) = substituteCommands $ srs sm
             subsection_ "Alphabet"
-            enumerate $ foldl1 (<>) $ map ((<>) (item Nothing) . showYs $) $ trace ((show $ length rules) ++ " " ++ (show $ length $ Set.unions $ qn sm )) yn sm
-            --subsection_ "States"
-            --enumerate $ foldl1 (<>) $ map ((<>) (item Nothing) . showSMStates . Set.toList $) $ take 1 $ qn sm
-            -- subsection_ "Commands"
-            -- enumerate $ foldl1 (<>) $ map (\(name, cmd) -> item Nothing <> (math $ doLaTeX name) <> " = " <> (math $ doLaTeX cmd)) commandsName
-            -- subsection_ "Rules"            
-            --enumerate $ foldl1 (<>) $ map ((<>) (item Nothing) . doLaTeX $) rules
+            enumerate $ foldl1 (<>) $ map ((<>) (item Nothing) . showYs $) $ yn sm
+            subsection_ "States"
+            enumerate $ foldl1 (<>) $ map ((<>) (item Nothing) . showSMStates . Set.toList $) $ take 1 $ qn sm
+            subsection_ "Commands"
+            enumerate $ foldl1 (<>) $ map (\(name, cmd) -> item Nothing <> (math $ doLaTeX name) <> " = " <> (math $ doLaTeX cmd)) commandsName
+            subsection_ "Rules"            
+            enumerate $ foldl1 (<>) $ map ((<>) (item Nothing) . doLaTeX $) rules

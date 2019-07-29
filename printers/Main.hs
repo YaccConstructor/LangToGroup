@@ -58,12 +58,12 @@ example = execLaTeXM $
             -- doLaTeX $ mapCfgToTM ab2TestGrammar
             -- doLaTeX $ interpretTM ["b", "a", "b", "a"] $ mapCfgToTM ab2TestGrammar
             -- newpage
-            doLaTeX $ smFinal $ mapTM2TM' $ mapCfgToTM ab2TestGrammar
+            --doLaTeX $ smFinal $ mapTM2TM' $ mapCfgToTM ab2TestGrammar
             -- newpage
             -- doLaTeX ab3TestGrammar
             -- doLaTeX $ mapCfgToTM ab3TestGrammar
             -- doLaTeX $ interpretTM ["b", "a", "b", "a"] $ mapCfgToTM ab3TestGrammar
-            --doLaTeX $ smFinal tmForTestSm
+            doLaTeX $ smFinal tmForTestSm
 
 main :: IO()
 main = do
