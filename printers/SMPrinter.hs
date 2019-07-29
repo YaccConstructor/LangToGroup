@@ -105,7 +105,7 @@ module SMPrinter where
             subsection_ "Alphabet"
             enumerate $ foldl1 (<>) $ map ((<>) (item Nothing) . showYs $) $ yn sm
             subsection_ "States"
-            enumerate $ foldl1 (<>) $ map ((<>) (item Nothing) . showSMStates . Set.toList $) $ take 1 $ qn sm
+            enumerate $ foldl1 (<>) $ map ((<>) (item Nothing) . showSMStates . Set.toList $) $ qn sm
             subsection_ "Commands"
             enumerate $ foldl1 (<>) $ map (\(name, cmd) -> item Nothing <> (math $ doLaTeX name) <> " = " <> (math $ doLaTeX cmd)) commandsName
             subsection_ "Rules"            
