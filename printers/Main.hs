@@ -63,7 +63,7 @@ example = execLaTeXM $
             -- doLaTeX ab3TestGrammar
             -- doLaTeX $ mapCfgToTM ab3TestGrammar
             -- doLaTeX $ interpretTM ["b", "a", "b", "a"] $ mapCfgToTM ab3TestGrammar
-            doLaTeX $ smFinal tmForTestSm
+            doLaTeX $ fst $ smFinal tmForTestSm
 
 main :: IO()
 main = do

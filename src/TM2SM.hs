@@ -273,24 +273,24 @@ dashTag = Set.fromList [Dash]
 hatTag = Set.fromList [Hat]
 hatdashTag = Set.fromList [Hat, Dash]
 newState name idx tags i cmd smTag = State name idx tags $ Just $ StateVal i cmd smTag
-e_x j       = newState X "" eTag j Nothing Nothing
-e_x' j      = newState X "" quoteTag j Nothing Nothing
-e_f idx j   = newState F idx eTag j Nothing Nothing 
-e_f' idx j  = newState F idx quoteTag j Nothing Nothing
-e_e j       = newState E "" eTag j Nothing Nothing
-e_e' j      = newState E "" quoteTag j Nothing Nothing
-e_p j       = newState P "" eTag j Nothing Nothing 
-e_q j       = newState Q "" eTag j Nothing Nothing 
-e_r j       = newState R "" eTag j Nothing Nothing 
-e_s j       = newState S "" eTag j Nothing Nothing 
-e_t j       = newState T "" eTag j Nothing Nothing 
-e_u j       = newState U "" eTag j Nothing Nothing 
-e_pd j      = newState P "" dashTag j Nothing Nothing
-e_qd j      = newState Q "" dashTag j Nothing Nothing
-e_rd j      = newState R "" dashTag j Nothing Nothing
-e_sd j      = newState S "" dashTag j Nothing Nothing
-e_td j      = newState T "" dashTag j Nothing Nothing
-e_ud j      = newState U "" dashTag j Nothing Nothing
+e_x j       = SmbQ $ newState X "" eTag j Nothing Nothing
+e_x' j      = SmbQ $ newState X "" quoteTag j Nothing Nothing
+e_f idx j   = SmbQ $ newState F idx eTag j Nothing Nothing 
+e_f' idx j  = SmbQ $ newState F idx quoteTag j Nothing Nothing
+e_e j       = SmbQ $ newState E "" eTag j Nothing Nothing
+e_e' j      = SmbQ $ newState E "" quoteTag j Nothing Nothing
+e_p j       = SmbQ $ newState P "" eTag j Nothing Nothing 
+e_q j       = SmbQ $ newState Q "" eTag j Nothing Nothing 
+e_r j       = SmbQ $ newState R "" eTag j Nothing Nothing 
+e_s j       = SmbQ $ newState S "" eTag j Nothing Nothing 
+e_t j       = SmbQ $ newState T "" eTag j Nothing Nothing 
+e_u j       = SmbQ $ newState U "" eTag j Nothing Nothing 
+e_pd j      = SmbQ $ newState P "" dashTag j Nothing Nothing
+e_qd j      = SmbQ $ newState Q "" dashTag j Nothing Nothing
+e_rd j      = SmbQ $ newState R "" dashTag j Nothing Nothing
+e_sd j      = SmbQ $ newState S "" dashTag j Nothing Nothing
+e_td j      = SmbQ $ newState T "" dashTag j Nothing Nothing
+e_ud j      = SmbQ $ newState U "" dashTag j Nothing Nothing
 
 getJIdx cmd j =
     let internal cmd i =  
@@ -309,57 +309,57 @@ createConnectingRules cmd = do
     let e_f0        = e_f "" 0
     let e_fl'       = e_f' "" (k + 1)
 
-    let x j sm        = newState X "" eTag j (Just cmd) (Just sm)
-    let x' j sm       = newState X "" quoteTag j (Just cmd) (Just sm)
-    let f' idx j sm   = newState F idx quoteTag j (Just cmd) (Just sm)
-    let f idx j sm    = newState F idx eTag j (Just cmd) (Just sm) 
-    let fl' sm        = newState F "" quoteTag (k + 1) (Just cmd) (Just sm)
-    let f0 sm         = newState F "" eTag 0 (Just cmd) (Just sm) 
-    let e' j sm       = newState E "" quoteTag j (Just cmd) (Just sm)
-    let e j sm        = newState E "" eTag j (Just cmd) (Just sm)
-    let p j sm        = newState P "" eTag j (Just cmd) (Just sm) 
-    let q j sm        = newState Q "" eTag j (Just cmd) (Just sm) 
-    let r j sm        = newState R "" eTag j (Just cmd) (Just sm) 
-    let s j sm        = newState S "" eTag j (Just cmd) (Just sm) 
-    let t j sm        = newState T "" eTag j (Just cmd) (Just sm) 
-    let u j sm        = newState U "" eTag j (Just cmd) (Just sm) 
-    let pd j sm       = newState P "" dashTag j (Just cmd) (Just sm)
-    let qd j sm       = newState Q "" dashTag j (Just cmd) (Just sm)
-    let rd j sm       = newState R "" dashTag j (Just cmd) (Just sm)
-    let sd j sm       = newState S "" dashTag j (Just cmd) (Just sm)
-    let td j sm       = newState T "" dashTag j (Just cmd) (Just sm)
-    let ud j sm       = newState U "" dashTag j (Just cmd) (Just sm)
+    let x j sm        = SmbQ $ newState X "" eTag j (Just cmd) (Just sm)
+    let x' j sm       = SmbQ $ newState X "" quoteTag j (Just cmd) (Just sm)
+    let f' idx j sm   = SmbQ $ newState F idx quoteTag j (Just cmd) (Just sm)
+    let f idx j sm    = SmbQ $ newState F idx eTag j (Just cmd) (Just sm) 
+    let fl' sm        = SmbQ $ newState F "" quoteTag (k + 1) (Just cmd) (Just sm)
+    let f0 sm         = SmbQ $ newState F "" eTag 0 (Just cmd) (Just sm) 
+    let e' j sm       = SmbQ $ newState E "" quoteTag j (Just cmd) (Just sm)
+    let e j sm        = SmbQ $ newState E "" eTag j (Just cmd) (Just sm)
+    let p j sm        = SmbQ $ newState P "" eTag j (Just cmd) (Just sm) 
+    let q j sm        = SmbQ $ newState Q "" eTag j (Just cmd) (Just sm) 
+    let r j sm        = SmbQ $ newState R "" eTag j (Just cmd) (Just sm) 
+    let s j sm        = SmbQ $ newState S "" eTag j (Just cmd) (Just sm) 
+    let t j sm        = SmbQ $ newState T "" eTag j (Just cmd) (Just sm) 
+    let u j sm        = SmbQ $ newState U "" eTag j (Just cmd) (Just sm) 
+    let pd j sm       = SmbQ $ newState P "" dashTag j (Just cmd) (Just sm)
+    let qd j sm       = SmbQ $ newState Q "" dashTag j (Just cmd) (Just sm)
+    let rd j sm       = SmbQ $ newState R "" dashTag j (Just cmd) (Just sm)
+    let sd j sm       = SmbQ $ newState S "" dashTag j (Just cmd) (Just sm)
+    let td j sm       = SmbQ $ newState T "" dashTag j (Just cmd) (Just sm)
+    let ud j sm       = SmbQ $ newState U "" dashTag j (Just cmd) (Just sm)
 
-    let p_idx idx j sm        = newState P idx eTag j (Just cmd) (Just sm) 
-    let q_idx idx j sm        = newState Q idx eTag j (Just cmd) (Just sm) 
-    let r_idx idx j sm        = newState R idx eTag j (Just cmd) (Just sm) 
-    let s_idx idx j sm        = newState S idx eTag j (Just cmd) (Just sm) 
-    let t_idx idx j sm        = newState T idx eTag j (Just cmd) (Just sm)
-    let u_idx idx j sm        = newState U idx eTag j (Just cmd) (Just sm)
-    let x_idx idx j sm        = newState X idx eTag j (Just cmd) (Just sm)    
+    let p_idx idx j sm        = SmbQ $ newState P idx eTag j (Just cmd) (Just sm) 
+    let q_idx idx j sm        = SmbQ $ newState Q idx eTag j (Just cmd) (Just sm) 
+    let r_idx idx j sm        = SmbQ $ newState R idx eTag j (Just cmd) (Just sm) 
+    let s_idx idx j sm        = SmbQ $ newState S idx eTag j (Just cmd) (Just sm) 
+    let t_idx idx j sm        = SmbQ $ newState T idx eTag j (Just cmd) (Just sm)
+    let u_idx idx j sm        = SmbQ $ newState U idx eTag j (Just cmd) (Just sm)
+    let x_idx idx j sm        = SmbQ $ newState X idx eTag j (Just cmd) (Just sm)    
     
-    let p_idx' idx j sm        = newState P idx quoteTag j (Just cmd) (Just sm) 
-    let q_idx' idx j sm        = newState Q idx quoteTag j (Just cmd) (Just sm) 
-    let r_idx' idx j sm        = newState R idx quoteTag j (Just cmd) (Just sm) 
-    let s_idx' idx j sm        = newState S idx quoteTag j (Just cmd) (Just sm) 
-    let t_idx' idx j sm        = newState T idx quoteTag j (Just cmd) (Just sm)
-    let u_idx' idx j sm        = newState U idx quoteTag j (Just cmd) (Just sm)
-    let x_idx' idx j sm        = newState X idx quoteTag j (Just cmd) (Just sm)
+    let p_idx' idx j sm        = SmbQ $ newState P idx quoteTag j (Just cmd) (Just sm) 
+    let q_idx' idx j sm        = SmbQ $ newState Q idx quoteTag j (Just cmd) (Just sm) 
+    let r_idx' idx j sm        = SmbQ $ newState R idx quoteTag j (Just cmd) (Just sm) 
+    let s_idx' idx j sm        = SmbQ $ newState S idx quoteTag j (Just cmd) (Just sm) 
+    let t_idx' idx j sm        = SmbQ $ newState T idx quoteTag j (Just cmd) (Just sm)
+    let u_idx' idx j sm        = SmbQ $ newState U idx quoteTag j (Just cmd) (Just sm)
+    let x_idx' idx j sm        = SmbQ $ newState X idx quoteTag j (Just cmd) (Just sm)
 
-    let ph_idx idx j sm        = newState P idx hatTag j (Just cmd) (Just sm) 
-    let qh_idx idx j sm        = newState Q idx hatTag j (Just cmd) (Just sm) 
-    let rh_idx idx j sm        = newState R idx hatTag j (Just cmd) (Just sm) 
-    let sh_idx idx j sm        = newState S idx hatTag j (Just cmd) (Just sm) 
-    let th_idx idx j sm        = newState T idx hatTag j (Just cmd) (Just sm)
-    let uh_idx idx j sm        = newState U idx hatTag j (Just cmd) (Just sm)
-    let xh j sm                = newState X "" hatTag j (Just cmd) (Just sm)
+    let ph_idx idx j sm        = SmbQ $ newState P idx hatTag j (Just cmd) (Just sm) 
+    let qh_idx idx j sm        = SmbQ $ newState Q idx hatTag j (Just cmd) (Just sm) 
+    let rh_idx idx j sm        = SmbQ $ newState R idx hatTag j (Just cmd) (Just sm) 
+    let sh_idx idx j sm        = SmbQ $ newState S idx hatTag j (Just cmd) (Just sm) 
+    let th_idx idx j sm        = SmbQ $ newState T idx hatTag j (Just cmd) (Just sm)
+    let uh_idx idx j sm        = SmbQ $ newState U idx hatTag j (Just cmd) (Just sm)
+    let xh j sm                = SmbQ $ newState X "" hatTag j (Just cmd) (Just sm)
 
-    let phd_idx idx j sm        = newState P idx hatdashTag j (Just cmd) (Just sm) 
-    let qhd_idx idx j sm        = newState Q idx hatdashTag j (Just cmd) (Just sm) 
-    let rhd_idx idx j sm        = newState R idx hatdashTag j (Just cmd) (Just sm) 
-    let shd_idx idx j sm        = newState S idx hatdashTag j (Just cmd) (Just sm) 
-    let thd_idx idx j sm        = newState T idx hatdashTag j (Just cmd) (Just sm)
-    let uhd_idx idx j sm        = newState U idx hatdashTag j (Just cmd) (Just sm)
+    let phd_idx idx j sm        = SmbQ $ newState P idx hatdashTag j (Just cmd) (Just sm) 
+    let qhd_idx idx j sm        = SmbQ $ newState Q idx hatdashTag j (Just cmd) (Just sm) 
+    let rhd_idx idx j sm        = SmbQ $ newState R idx hatdashTag j (Just cmd) (Just sm) 
+    let shd_idx idx j sm        = SmbQ $ newState S idx hatdashTag j (Just cmd) (Just sm) 
+    let thd_idx idx j sm        = SmbQ $ newState T idx hatdashTag j (Just cmd) (Just sm)
+    let uhd_idx idx j sm        = SmbQ $ newState U idx hatdashTag j (Just cmd) (Just sm)
 
     let (a, i) = getai command
     let getFromJ j = a where (a, _) = getJIdx command j
@@ -371,101 +371,101 @@ createConnectingRules cmd = do
     let s4         = s_idx "1" i 
     let t4         = t_idx "1" i
     let u4         = u_idx "1" i
-    let pd4 sm     = newState P "0" dashTag i (Just cmd) (Just sm) 
-    let qd4 sm     = newState Q "0" dashTag i (Just cmd) (Just sm) 
-    let rd4 sm     = newState R "0" dashTag i (Just cmd) (Just sm) 
-    let sd4 sm     = newState S "0" dashTag i (Just cmd) (Just sm) 
-    let td4 sm     = newState T "0" dashTag i (Just cmd) (Just sm)
-    let ud4 sm     = newState U "0" dashTag i (Just cmd) (Just sm)
+    let pd4 sm     = SmbQ $ newState P "0" dashTag i (Just cmd) (Just sm) 
+    let qd4 sm     = SmbQ $ newState Q "0" dashTag i (Just cmd) (Just sm) 
+    let rd4 sm     = SmbQ $ newState R "0" dashTag i (Just cmd) (Just sm) 
+    let sd4 sm     = SmbQ $ newState S "0" dashTag i (Just cmd) (Just sm) 
+    let td4 sm     = SmbQ $ newState T "0" dashTag i (Just cmd) (Just sm)
+    let ud4 sm     = SmbQ $ newState U "0" dashTag i (Just cmd) (Just sm)
 
     let rule4 = 
             SRule $ (++) 
-            [(Word [SmbQ $ e_e 0], Word [SmbQ $ e 0 T4]),
-            (Word [SmbQ $ e_fl'], Word [SmbQ $ fl' T4]),
-            (Word [SmbQ $ e_x 0, SmbQ $ e_f0], Word [SmbQ $ x 0 T4, SmbQ $ f0 T4]),
-            (Word [SmbQ $ e_e' (k + 1), SmbQ $ e_x' (k + 1)], Word [SmbQ $ e' (k + 1) T4, SmbQ $ x' (k + 1) T4]),
-            (Word [SmbQ $ e_e i], Word [SmbQ $ e i T4]),
-            (Word [SmbQ $ e_x i, SmbQ $ e_f (getFromJ i) i, SmbQ $ e_e' i, SmbQ $ e_p i], 
-            Word [SmbQ $ x i T4, SmbQ $ f (getFromJ i) i T4, SmbQ $ e' i T4, SmbQ $ p4 T4]),
-            (Word [SmbQ $ e_q i, SmbQ $ e_r i, SmbQ $ e_s i, SmbQ $ e_t i, SmbQ $ e_u i, SmbQ $ e_pd i, SmbQ $ e_qd i, SmbQ $ e_rd i, SmbQ $ e_sd i, SmbQ $ e_td i, SmbQ $ e_ud i, SmbQ $ e_f' (getFromJ i) i], 
-            Word [SmbQ $ q4 T4, SmbQ $ r4 T4, SmbQ $ s4 T4, SmbQ $ t4 T4, SmbQ $ u4 T4, SmbQ $ pd4 T4, SmbQ $ qd4 T4, SmbQ $ rd4 T4, SmbQ $ sd4 T4, SmbQ $ td4 T4, SmbQ $ ud4 T4, SmbQ $ f' (getFromJ i) i T4])]
+            [(Word [e_e 0], Word [e 0 T4]),
+            (Word [e_fl'], Word [fl' T4]),
+            (Word [e_x 0, e_f0], Word [x 0 T4, f0 T4]),
+            (Word [e_e' (k + 1), e_x' (k + 1)], Word [e' (k + 1) T4, x' (k + 1) T4]),
+            (Word [e_e i], Word [e i T4]),
+            (Word [e_x i, e_f (getFromJ i) i, e_e' i, e_p i], 
+            Word [x i T4, f (getFromJ i) i T4, e' i T4, p4 T4]),
+            (Word [e_q i, e_r i, e_s i, e_t i, e_u i, e_pd i, e_qd i, e_rd i, e_sd i, e_td i, e_ud i, e_f' (getFromJ i) i], 
+            Word [q4 T4, r4 T4, s4 T4, t4 T4, u4 T4, pd4 T4, qd4 T4, rd4 T4, sd4 T4, td4 T4, ud4 T4, f' (getFromJ i) i T4])]
             $ concat 
-            [[(Word [SmbQ $ e_e j], Word [SmbQ $ e j T4]),
-            (Word [SmbQ $ e_x j, SmbQ $ e_f (getFromJ j) j, SmbQ $ e_e' j, SmbQ $ e_p j], 
-            Word [SmbQ $ x j T4, SmbQ $ f (getFromJ j) j T4, SmbQ $ e' j T4, SmbQ $ p j T4]),
-            (Word [SmbQ $ e_q j, SmbQ $ e_r j, SmbQ $ e_s j, SmbQ $ e_t j, SmbQ $ e_u j, SmbQ $ e_pd j, SmbQ $ e_qd j, SmbQ $ e_rd j, SmbQ $ e_sd j, SmbQ $ e_td j, SmbQ $ e_ud j, SmbQ $ e_f' (getFromJ j) j], 
-            Word [SmbQ $ q j T4, SmbQ $ r j T4, SmbQ $ s j T4, SmbQ $ t j T4, SmbQ $ u j T4, SmbQ $ pd j T4, SmbQ $ qd j T4, SmbQ $ rd j T4, SmbQ $ sd j T4, SmbQ $ td j T4, SmbQ $ ud j T4, SmbQ $ f' (getFromJ j) j T4])]
+            [[(Word [e_e j], Word [e j T4]),
+            (Word [e_x j, e_f (getFromJ j) j, e_e' j, e_p j], 
+            Word [x j T4, f (getFromJ j) j T4, e' j T4, p j T4]),
+            (Word [e_q j, e_r j, e_s j, e_t j, e_u j, e_pd j, e_qd j, e_rd j, e_sd j, e_td j, e_ud j, e_f' (getFromJ j) j], 
+            Word [q j T4, r j T4, s j T4, t j T4, u j T4, pd j T4, qd j T4, rd j T4, sd j T4, td j T4, ud j T4, f' (getFromJ j) j T4])]
             | j <- [1 .. i - 1] ++ [i + 1 .. k]]
 
     let rule4alpha =
             SRule $ (++)
-            [(Word [SmbQ $ x 0 T4, SmbQ $ f0 T4], Word [SmbY' alpha, SmbQ $ x 0 TAlpha, SmbQ $ f0 TAlpha]),
-            (Word [SmbQ $ e' (k + 1) T4, SmbQ $ x' (k + 1) T4], Word [SmbQ $ e' (k + 1) TAlpha, SmbQ $ x' (k + 1) TAlpha, SmbY' omega]),
-            (Word [SmbQ $ e i T4], Word [SmbQ $ e i TAlpha]),
-            (Word [SmbQ $ x i T4, SmbQ $ f (getFromJ i) i T4, SmbQ $ e' i T4, SmbQ $ p_idx' "1" i T4], 
-            Word [SmbY' $ Y a, SmbQ $ x i TAlpha, SmbQ $ f (getToJ i) i TAlpha, SmbQ $ e' i TAlpha, SmbQ $ p4 TAlpha, SmbY' delta]),
-            (Word [SmbQ $ q_idx' "1" i T4, SmbQ $ r_idx' "1" i T4, SmbQ $ s_idx' "1" i T4, SmbQ $ t_idx' "1" i T4, SmbQ $ u_idx' "1" i T4], 
-            Word [SmbQ $ q4 TAlpha, SmbQ $ r4 TAlpha, SmbQ $ s4 TAlpha, SmbQ $ t4 TAlpha, SmbQ $ u4 TAlpha]),
-            (Word [SmbQ $ e 0 T4], Word [SmbQ $ e 0 TAlpha]),
-            (Word [SmbQ $ fl' T4], Word [SmbQ $ fl' TAlpha]),
-            (Word [SmbQ $ pd i T4, SmbQ $ qd i T4, SmbQ $ rd i T4, SmbQ $ sd i T4, SmbQ $ td i T4, SmbQ $ ud i T4, SmbQ $ f' (getFromJ i) i T4], 
-            Word [SmbQ $ pd i TAlpha, SmbQ $ qd i TAlpha, SmbQ $ rd i TAlpha, SmbQ $ sd i TAlpha, SmbQ $ td i TAlpha, SmbQ $ ud i TAlpha, SmbQ $ f' (getToJ i) i TAlpha])]
+            [(Word [x 0 T4, f0 T4], Word [SmbY' alpha, x 0 TAlpha, f0 TAlpha]),
+            (Word [e' (k + 1) T4, x' (k + 1) T4], Word [e' (k + 1) TAlpha, x' (k + 1) TAlpha, SmbY' omega]),
+            (Word [e i T4], Word [e i TAlpha]),
+            (Word [x i T4, f (getFromJ i) i T4, e' i T4, p_idx' "1" i T4], 
+            Word [SmbY' $ Y a, x i TAlpha, f (getToJ i) i TAlpha, e' i TAlpha, p4 TAlpha, SmbY' delta]),
+            (Word [q_idx' "1" i T4, r_idx' "1" i T4, s_idx' "1" i T4, t_idx' "1" i T4, u_idx' "1" i T4], 
+            Word [q4 TAlpha, r4 TAlpha, s4 TAlpha, t4 TAlpha, u4 TAlpha]),
+            (Word [e 0 T4], Word [e 0 TAlpha]),
+            (Word [fl' T4], Word [fl' TAlpha]),
+            (Word [pd i T4, qd i T4, rd i T4, sd i T4, td i T4, ud i T4, f' (getFromJ i) i T4], 
+            Word [pd i TAlpha, qd i TAlpha, rd i TAlpha, sd i TAlpha, td i TAlpha, ud i TAlpha, f' (getToJ i) i TAlpha])]
             $ concat 
-            [[(Word [SmbQ $ e j T4], Word [SmbQ $ e j TAlpha]),
-            (Word [SmbQ $ x j T4, SmbQ $ f (getFromJ j) j T4, SmbQ $ e' j T4, SmbQ $ p j T4], 
-            Word [SmbQ $ x j TAlpha, SmbQ $ f (getToJ j) j TAlpha, SmbQ $ e' j TAlpha, SmbQ $ p j TAlpha]),
-            (Word [SmbQ $ q j T4, SmbQ $ r j T4, SmbQ $ s j T4, SmbQ $ t j T4, SmbQ $ u j T4, SmbQ $ pd j T4, SmbQ $ qd j T4, SmbQ $ rd j T4, SmbQ $ sd j T4, SmbQ $ td j T4, SmbQ $ ud j T4, SmbQ $ f' (getFromJ j) j T4],
-            Word [SmbQ $ q j TAlpha, SmbQ $ r j TAlpha, SmbQ $ s j TAlpha, SmbQ $ t j TAlpha, SmbQ $ u j TAlpha, SmbQ $ pd j TAlpha, SmbQ $ qd j TAlpha, SmbQ $ rd j TAlpha, SmbQ $ sd j TAlpha, SmbQ $ td j TAlpha, SmbQ $ ud j TAlpha, SmbQ $ f' (getToJ j) j TAlpha])] 
+            [[(Word [e j T4], Word [e j TAlpha]),
+            (Word [x j T4, f (getFromJ j) j T4, e' j T4, p j T4], 
+            Word [x j TAlpha, f (getToJ j) j TAlpha, e' j TAlpha, p j TAlpha]),
+            (Word [q j T4, r j T4, s j T4, t j T4, u j T4, pd j T4, qd j T4, rd j T4, sd j T4, td j T4, ud j T4, f' (getFromJ j) j T4],
+            Word [q j TAlpha, r j TAlpha, s j TAlpha, t j TAlpha, u j TAlpha, pd j TAlpha, qd j TAlpha, rd j TAlpha, sd j TAlpha, td j TAlpha, ud j TAlpha, f' (getToJ j) j TAlpha])] 
             | j <- [1 .. i - 1] ++ [i + 1 .. k] ]
 
     let changeMachine from to =
             (++)
-            [(Word [SmbQ $ e i from], Word [SmbQ $ e i to]),
-            (Word [SmbQ $ x i from, SmbQ $ f (getToJ i) i from, SmbQ $ e' i from, SmbQ $ p4 from], 
-            Word [SmbQ $ x i to, SmbQ $ f (getToJ i) i to, SmbQ $ e' i to, SmbQ $ p4 to]),
-            (Word [SmbQ $ q4 from, SmbQ $ r4 from, SmbQ $ s4 from, SmbQ $ t4 from, SmbQ $ u4 from, SmbQ $ pd4 from, SmbQ $ qd4 from, SmbQ $ rd4 from, SmbQ $ sd4 from, SmbQ $ td4 from, SmbQ $ ud4 from, SmbQ $ f' (getToJ i) i from],
-            Word [SmbQ $ q4 to, SmbQ $ r4 to, SmbQ $ s4 to, SmbQ $ t4 to, SmbQ $ u4 to, SmbQ $ pd4 to, SmbQ $ qd4 to, SmbQ $ rd4 to, SmbQ $ sd4 to, SmbQ $ td4 to, SmbQ $ ud4 to, SmbQ $ f' (getToJ i) i to])] 
+            [(Word [e i from], Word [e i to]),
+            (Word [x i from, f (getToJ i) i from, e' i from, p4 from], 
+            Word [x i to, f (getToJ i) i to, e' i to, p4 to]),
+            (Word [q4 from, r4 from, s4 from, t4 from, u4 from, pd4 from, qd4 from, rd4 from, sd4 from, td4 from, ud4 from, f' (getToJ i) i from],
+            Word [q4 to, r4 to, s4 to, t4 to, u4 to, pd4 to, qd4 to, rd4 to, sd4 to, td4 to, ud4 to, f' (getToJ i) i to])] 
             $ concat
-            [[(Word [SmbQ $ e j from], Word [SmbQ $ e j to]),
-            (Word [SmbQ $ x j from, SmbQ $ f (getToJ j) j from, SmbQ $ e' j from, SmbQ $ p j from], 
-            Word [SmbQ $ x j to, SmbQ $ f (getToJ j) j to, SmbQ $ e' j to, SmbQ $ p j to]),
-            (Word [SmbQ $ q j from, SmbQ $ r j from, SmbQ $ s j from, SmbQ $ t j from, SmbQ $ u j from, SmbQ $ pd j from, SmbQ $ qd j from, SmbQ $ rd j from, SmbQ $ sd j from, SmbQ $ td j from, SmbQ $ ud j from, SmbQ $ f' (getToJ j) j from],
-            Word [SmbQ $ q j to, SmbQ $ r j to, SmbQ $ s j to, SmbQ $ t j to, SmbQ $ u j to, SmbQ $ pd j to, SmbQ $ qd j to, SmbQ $ rd j to, SmbQ $ sd j to, SmbQ $ td j to, SmbQ $ ud j to, SmbQ $ f' (getToJ j) j to])]
+            [[(Word [e j from], Word [e j to]),
+            (Word [x j from, f (getToJ j) j from, e' j from, p j from], 
+            Word [x j to, f (getToJ j) j to, e' j to, p j to]),
+            (Word [q j from, r j from, s j from, t j from, u j from, pd j from, qd j from, rd j from, sd j from, td j from, ud j from, f' (getToJ j) j from],
+            Word [q j to, r j to, s j to, t j to, u j to, pd j to, qd j to, rd j to, sd j to, td j to, ud j to, f' (getToJ j) j to])]
             | j <- [1 .. i - 1] ++ [i + 1 .. k]]
 
     let rulealphaomega = 
             SRule $ (++)
-            [(Word [SmbQ $ e 0 TAlpha], Word [SmbQ $ e 0 TOmega]),
-            (Word [SmbQ $ x_idx "2" 0 TAlpha, SmbQ $ f0 TAlpha], Word [SmbQ $ x 0 TOmega, SmbQ $ f0 TOmega]),
-            (Word [SmbQ $ e' (k + 1) TAlpha, SmbQ $ x' (k + 1) TAlpha], Word [SmbQ $ e' (k + 1) TOmega, SmbQ $ x' (k + 1) TOmega]),
-            (Word [SmbQ $ fl' TAlpha], Word [SmbQ $ fl' TOmega])]
+            [(Word [e 0 TAlpha], Word [e 0 TOmega]),
+            (Word [x_idx "2" 0 TAlpha, f0 TAlpha], Word [x 0 TOmega, f0 TOmega]),
+            (Word [e' (k + 1) TAlpha, x' (k + 1) TAlpha], Word [e' (k + 1) TOmega, x' (k + 1) TOmega]),
+            (Word [fl' TAlpha], Word [fl' TOmega])]
             $ changeMachine TAlpha TOmega
 
     let ruleomega9 = 
             SRule $ (++)
-            [(Word [SmbQ $ e 0 TOmega], Word [SmbQ $ e 0 T9]),
-            (Word [SmbQ $ x 0 TOmega, SmbQ $ f0 TOmega], Word [SmbQ $ x 0 T9, SmbQ $ f0 T9]),
-            (Word [SmbQ $ e' (k + 1) TOmega, SmbQ $ x_idx' "2" (k + 1) TOmega], Word [SmbQ $ e' (k + 1) TOmega, SmbQ $ x' (k + 1) T9]),
-            (Word [SmbQ $ fl' TOmega], Word [SmbQ $ fl' T9])]
+            [(Word [e 0 TOmega], Word [e 0 T9]),
+            (Word [x 0 TOmega, f0 TOmega], Word [x 0 T9, f0 T9]),
+            (Word [e' (k + 1) TOmega, x_idx' "2" (k + 1) TOmega], Word [e' (k + 1) TOmega, x' (k + 1) T9]),
+            (Word [fl' TOmega], Word [fl' T9])]
             $ changeMachine TOmega T9
 
     let rule9 = 
             SRule $ (++)
-            [(Word [SmbQ $ e 0 T9], Word [SmbQ $ e_e 0]),
-            (Word [SmbQ $ x 0 T9, SmbQ $ f0 T9], Word [SmbQ $ e_x 0, SmbQ e_f0]),
-            (Word [SmbQ $ e' (k + 1) T9, SmbQ $ x' (k + 1) T9], Word [SmbQ $ e_e' (k + 1), SmbQ $ e_x' (k + 1)]),
-            (Word [SmbQ $ fl' T9], Word [SmbQ e_fl']),
-            (Word [SmbQ $ e i T9], Word [SmbQ $ e_e i]),
-            (Word [SmbQ $ xh i T9, SmbQ $ f (getToJ i) i T9, SmbQ $ e' i T9, SmbQ $ ph_idx "1" i T9], 
-            Word [SmbQ $ e_x i, SmbQ $ e_f (getToJ i) i, SmbQ $ e_e' i, SmbQ $ e_p i]),
-            (Word [SmbQ $ qh_idx "1" i T9, SmbQ $ rh_idx "1" i T9, SmbQ $ sh_idx "1" i T9, SmbQ $ th_idx "1" i T9, SmbQ $ uh_idx "1" i T9, SmbQ $ phd_idx "0" i T9, SmbQ $ qhd_idx "0" i T9, SmbQ $ rhd_idx "0" i T9, SmbQ $ shd_idx "0" i T9, SmbQ $ thd_idx "0" i T9, SmbQ $ uhd_idx "0" i T9, SmbQ $ f' (getToJ i) i T9],
-            Word [SmbQ $ e_q i, SmbQ $ e_r i, SmbQ $ e_s i, SmbQ $ e_t i, SmbQ $ e_u i, SmbQ $ e_pd i, SmbQ $ e_qd i, SmbQ $ e_rd i, SmbQ $ e_sd i, SmbQ $ e_td i, SmbQ $ e_ud i, SmbQ $ e_f' (getToJ i) i])]
+            [(Word [e 0 T9], Word [e_e 0]),
+            (Word [x 0 T9, f0 T9], Word [e_x 0,  e_f0]),
+            (Word [e' (k + 1) T9, x' (k + 1) T9], Word [e_e' (k + 1), e_x' (k + 1)]),
+            (Word [fl' T9], Word [ e_fl']),
+            (Word [e i T9], Word [e_e i]),
+            (Word [xh i T9, f (getToJ i) i T9, e' i T9, ph_idx "1" i T9], 
+            Word [e_x i, e_f (getToJ i) i, e_e' i, e_p i]),
+            (Word [qh_idx "1" i T9, rh_idx "1" i T9, sh_idx "1" i T9, th_idx "1" i T9, uh_idx "1" i T9, phd_idx "0" i T9, qhd_idx "0" i T9, rhd_idx "0" i T9, shd_idx "0" i T9, thd_idx "0" i T9, uhd_idx "0" i T9, f' (getToJ i) i T9],
+            Word [e_q i, e_r i, e_s i, e_t i, e_u i, e_pd i, e_qd i, e_rd i, e_sd i, e_td i, e_ud i, e_f' (getToJ i) i])]
             $ concat 
-            [[(Word [SmbQ $ e j T9], Word [SmbQ $ e_e j]),
-            (Word [SmbQ $ x j T9, SmbQ $ f (getToJ j) j T9, SmbQ $ e' j T9, SmbQ $ p j T9], 
-            Word [SmbQ $ e_x j, SmbQ $ e_f (getToJ j) j, SmbQ $ e_e' j, SmbQ $ e_p j]),
-            (Word [SmbQ $ q j T9, SmbQ $ r j T9, SmbQ $ s j T9, SmbQ $ t j T9, SmbQ $ u j T9, SmbQ $ pd j T9, SmbQ $ qd j T9, SmbQ $ rd j T9, SmbQ $ sd j T9, SmbQ $ td j T9, SmbQ $ ud j T9, SmbQ $ f' (getToJ j) j T9],
-            Word [SmbQ $ e_q j, SmbQ $ e_r j, SmbQ $ e_s j, SmbQ $ e_t j, SmbQ $ e_u j, SmbQ $ e_pd j, SmbQ $ e_qd j, SmbQ $ e_rd j, SmbQ $ e_sd j, SmbQ $ e_td j, SmbQ $ e_ud j, SmbQ $ e_f' (getToJ j) j])] 
+            [[(Word [e j T9], Word [e_e j]),
+            (Word [x j T9, f (getToJ j) j T9, e' j T9, p j T9], 
+            Word [e_x j, e_f (getToJ j) j, e_e' j, e_p j]),
+            (Word [q j T9, r j T9, s j T9, t j T9, u j T9, pd j T9, qd j T9, rd j T9, sd j T9, td j T9, ud j T9, f' (getToJ j) j T9],
+            Word [e_q j, e_r j, e_s j, e_t j, e_u j, e_pd j, e_qd j, e_rd j, e_sd j, e_td j, e_ud j, e_f' (getToJ j) j])] 
             | j <- [1 .. i - 1] ++ [i + 1 .. k] ]
 
     [rule4, rule4alpha, rulealphaomega, ruleomega9, rule9]
@@ -477,11 +477,11 @@ createPos22Rule cmd = do
     let getFromJ j = a where (a, _) = getJIdx command j
     let getToJ j = a where (_, a) = getJIdx command j
     SRule $ (++)
-        [(Word [SmbQ $ e_e i, SmbQ $ e_x i, SmbQ $ e_f (getFromJ i) i, SmbQ $ e_e' i, SmbQ $ e_p i, SmbQ $ e_q i, SmbQ $ e_r i, SmbQ $ e_s i, SmbQ $ e_t i, SmbQ $ e_u i, SmbQ $ e_pd i, SmbQ $ e_qd i, SmbQ $ e_rd i, SmbQ $ e_sd i, SmbQ $ e_td i, SmbQ $ e_ud i, SmbQ $ e_f' (getFromJ i) i], 
-        Word [SmbQ $ e_e i, SmbQ $ e_x i, SmbQ $ e_f (getToJ i) i, SmbQ $ e_e' i, SmbQ $ e_p i, SmbQ $ e_q i, SmbQ $ e_r i, SmbQ $ e_s i, SmbQ $ e_t i, SmbQ $ e_u i, SmbQ $ e_pd i, SmbQ $ e_qd i, SmbQ $ e_rd i, SmbQ $ e_sd i, SmbQ $ e_td i, SmbQ $ e_ud i, SmbQ $ e_f' (getToJ i) i])]
+        [(Word [e_e i, e_x i, e_f (getFromJ i) i, e_e' i, e_p i, e_q i, e_r i, e_s i, e_t i, e_u i, e_pd i, e_qd i, e_rd i, e_sd i, e_td i, e_ud i, e_f' (getFromJ i) i], 
+        Word [e_e i, e_x i, e_f (getToJ i) i, e_e' i, e_p i, e_q i, e_r i, e_s i, e_t i, e_u i, e_pd i, e_qd i, e_rd i, e_sd i, e_td i, e_ud i, e_f' (getToJ i) i])]
         $ concat 
-        [[(Word [SmbQ $ e_f (getFromJ j) j], Word [SmbQ $ e_f (getToJ j) j]),
-        (Word [SmbQ $ e_f' (getFromJ j) j], Word [SmbQ $ e_f' (getToJ j) j])] 
+        [[(Word [e_f (getFromJ j) j], Word [e_f (getToJ j) j]),
+        (Word [e_f' (getFromJ j) j], Word [e_f' (getToJ j) j])] 
         | j <- [1 .. i - 1] ++ [i + 1 .. k]]
     
 mapTuple :: (a -> b) -> (a, a) -> (b, b)
@@ -492,7 +492,7 @@ symmetrization (SRule wordPairs) = do
             case w of
                 smb@(SmbY _) : t -> groupByWord t (smb : left, other)
                 smb@(SmbY' _) : t -> groupByWord t (smb : left, other)
-                smb@(SmbQ _) : t -> (reverse left, smb : t)
+                smb@( _) : t -> (reverse left, smb : t)
     let reverseYs smb = case smb of
                             SmbY y -> SmbY' y
                             SmbY' y -> SmbY y 
@@ -507,12 +507,22 @@ symmetrization (SRule wordPairs) = do
     SRule $ map mapWords wordPairs
 
 
+genAccessWord accessStates k = 
+    Word $
+    [e_e 0, e_x 0, e_f "" 0] ++
+    (concat $ 
+    zipWith (\k (TMType.State q) -> 
+        [e_e k, e_x k, e_f q k, e_e' k, e_p k, e_q k, e_r k, e_s k, e_t k, e_u k, e_pd k, e_qd k, e_rd k, e_sd k, e_td k, e_ud k, e_f' q k]) 
+    [1..k] accessStates) ++
+    [e_e' (k + 1), e_x' (k + 1), e_f' "" (k + 1) ]
+
+
 smFinal (TMType.TM (inputAlphabet,
         tapeAlphabets, 
         TMType.MultiTapeStates tapesStates, 
         TMType.Commands commandsSet, 
         _,
-        _)
+        TMType.AccessStates accessStates)
         ) = 
     let numOfTapes = length tapeAlphabets
         gamma = [T4, T9, TAlpha, TOmega]
@@ -564,4 +574,4 @@ smFinal (TMType.TM (inputAlphabet,
         symmFinalSmRules = (++) finalSmRules $ map symmetrization finalSmRules
                                 
     in
-        SM y finalSmStates symmFinalSmRules
+        (SM y finalSmStates symmFinalSmRules, genAccessWord accessStates numOfTapes)
