@@ -19,6 +19,8 @@ import ConfigPrinter
 import TM2TM'
 import TM2SM
 import SMPrinter
+import SMachineToGroup
+import GRType
 
 preambula :: LaTeXM ()
 preambula = 
@@ -65,13 +67,14 @@ example = execLaTeXM $
             -- doLaTeX $ interpretTM ["b", "a", "b", "a"] $ mapCfgToTM ab3TestGrammar
             doLaTeX $ fst $ smFinal tmForTestSm
 
-main :: IO()
-main = do
-    renderFile "out.tex" example 
-
 -- main :: IO()
 -- main = do
---     putStrLn $ show $ smFinal $ mapTM2TM' $ mapCfgToTM testGrammar
+--     renderFile "out.tex" example 
+
+main :: IO()
+main = do
+    let (GR (a, r)) = smToGR $ smFinal $ mapTM2TM' $ mapCfgToTM ab2TestGrammar
+    putStrLn $ (show $ length a) ++ " " ++ (show $ length r)
 
 tmForTestSm = tm where
     s = Value "S"

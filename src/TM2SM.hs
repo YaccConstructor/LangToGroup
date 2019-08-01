@@ -571,7 +571,7 @@ smFinal (TMType.TM (inputAlphabet,
         smsPos22Rules = map createPos22Rule $ map (Command $) pos22
 
         finalSmRules = smsRules ++ smsConnectingRules ++ smsPos22Rules
-        symmFinalSmRules = (++) finalSmRules $ map symmetrization finalSmRules
+        --symmFinalSmRules = (++) finalSmRules $ map symmetrization finalSmRules
                                 
     in
-        (SM y finalSmStates symmFinalSmRules, genAccessWord accessStates numOfTapes)
+        (SM y finalSmStates finalSmRules, genAccessWord accessStates numOfTapes)
