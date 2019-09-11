@@ -22,11 +22,12 @@ import SMPrinter
 import SMachineToGroup
 import GRType
 import GapFuncWriter
+import System.IO
 
 preambula :: LaTeXM ()
 preambula = 
     documentclass [] article
-    <> usepackage [utf8] inputenc
+    <> usepackage [Text.LaTeX.Packages.Inputenc.utf8] inputenc
     <> usepackage [] "unicode-math"
     <> usepackage [] "amsmath"
     <> usepackage [] "mathtools"
@@ -76,7 +77,10 @@ main :: IO()
 main = do
     let gr@(GR (a, r)) = smToGR $ smFinal $ mapTM2TM' $ mapCfgToTM testGrammar
     putStrLn $ (show $ length a) ++ " " ++ (show $ length r)
-    writeFile "group.txt" $ writeGap gr 
+    do fhandle <- openFile "group.txt" WriteMode
+       writeGap gr fhandle
+       hFlush fhandle
+       hClose fhandle
 
 tmForTestSm = tm where
     s = Value "S"
