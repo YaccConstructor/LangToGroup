@@ -21,6 +21,7 @@ import TM2SM
 import SMPrinter
 import SMachineToGroup
 import GRType
+import GapFuncWriter
 
 preambula :: LaTeXM ()
 preambula = 
@@ -73,8 +74,9 @@ example = execLaTeXM $
 
 main :: IO()
 main = do
-    let (GR (a, r)) = smToGR $ smFinal $ mapTM2TM' $ mapCfgToTM ab2TestGrammar
+    let gr@(GR (a, r)) = smToGR $ smFinal $ mapTM2TM' $ mapCfgToTM testGrammar
     putStrLn $ (show $ length a) ++ " " ++ (show $ length r)
+    writeFile "group.txt" $ writeGap gr 
 
 tmForTestSm = tm where
     s = Value "S"

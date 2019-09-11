@@ -4,11 +4,12 @@ import SMType
 import GRType
 import Data.Set (Set)
 import qualified Data.Set as Set 
+import TM2SM (alpha, omega, delta)
 
 smb2As :: Smb -> SmbR
 smb2As smb = case smb of SmbY y -> SmbA $ A_Y y ; SmbY' y -> SmbA' $ A_Y y ; SmbQ q -> SmbA $ A_Q q
 
-transitionRelations :: [SRule] -> [[State]] -> [Relation]
+transitionRelations :: [SRule] -> [[State]] -> [GrRelation]
 transitionRelations rules states = cmdQs ++ cmdRs
         where 
         powtau x tau = (SmbA' $ A_R tau) : x ++ [SmbA $ A_R tau]
@@ -19,8 +20,8 @@ transitionRelations rules states = cmdQs ++ cmdRs
                                 False -> [ Relation (powtau [SmbA $ A_Q q] r, [SmbA $ A_Q q]) | r <- rules, q <- y ] ++ x
                                 ) [] states              
 
-hubRelation :: [SmbR] -> [A] -> Relation
-hubRelation word k = Relation (posPart ++ negPart, [SmbA $ A_S "1"])
+hubRelation :: [SmbR] -> [A] -> GrRelation
+hubRelation word k = Relator (posPart ++ negPart)
         where 
         negation x = case x of SmbA y -> SmbA' y ; SmbA' y -> SmbA y 
         negationWord = foldl (\x y -> (negation y) : x) []
@@ -34,7 +35,7 @@ smToGR (SMType.SM yn
         = GRType.GR (a, relations)
         where 
         nk = 6
-        s = [A_S "alpha", A_S "omega", A_S "delta"]
+        s = [A_Y alpha, A_Y omega, A_Y delta]
         k = map (A_K $) [1 .. 2 * nk]
         ql = map Set.toList qn
         q = map (A_Q $) $ concat ql

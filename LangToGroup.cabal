@@ -38,6 +38,7 @@ library
       TM2TM'
       TMInterpreter
       ConfigType
+      GapFuncWriter
   other-modules:
       Paths_LangToGroup
   hs-source-dirs:
