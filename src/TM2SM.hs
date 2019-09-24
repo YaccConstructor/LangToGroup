@@ -5,7 +5,7 @@ import Data.Set (Set)
 import qualified Data.Set as Set
 import qualified TMType
 import Data.List (transpose, groupBy, sortBy)
-import Data.Maybe (fromJust)
+import Data.Maybe (fromJust, catMaybes)
 import Debug.Trace (trace)
 
 
@@ -516,6 +516,31 @@ genAccessWord accessStates k =
     [1..k] accessStates) ++
     [e_e' (k + 1), e_x' (k + 1), e_f' "" (k + 1) ]
 
+getStatesFromRules = groupBy groupByStates . sortBy sortByNames . concatMap getStatesFromRule
+        where 
+                getStatesFromWord (SmbQ q) = Just q
+                getStatesFromWord _ = Nothing
+                getStatesFromWords (Word l, Word r) = catMaybes $ map getStatesFromWord (l ++ r)
+                getStatesFromRule (SRule r) = concatMap getStatesFromWords r
+                groupByStates s1 s2 = s_name s1 == s_name s2 
+                                    && Set.member Dash tag1 == Set.member Dash tag2 
+                                    && id1 == id2
+                                    && (s_name s1 /= E || Set.null tag1 == Set.null tag2) 
+                                    && (s_name s1 /= F || Set.null tag1 == Set.null tag2)
+                                    where   tag1 = s_tags s1
+                                            tag2 = s_tags s2
+                                            id1 = tape . fromJust $ s_val s1
+                                            id2 = tape . fromJust $ s_val s2
+                sortByNames s1 s2 = compare (s_name s1, id1, Set.member Dash tag1, be1, bf1) (s_name s2, id2, Set.member Dash tag2, be2, bf2) 
+                                    where   tag1 = s_tags s1
+                                            tag2 = s_tags s2
+                                            id1 = tape . fromJust $ s_val s1
+                                            id2 = tape . fromJust $ s_val s2
+                                            be1 = s_name s1 == E && Set.null tag1 
+                                            be2 = s_name s2 == E && Set.null tag2 
+                                            bf1 = s_name s1 == F && Set.null tag1 
+                                            bf2 = s_name s2 == F && Set.null tag2 
+
 
 smFinal (TMType.TM (inputAlphabet,
         tapeAlphabets, 
@@ -566,8 +591,9 @@ smFinal (TMType.TM (inputAlphabet,
                                 where   e = Set.elemAt 0 s
         smsStates = filter filterSmsStates . concat . map (map Set.unions . transpose . map qn) $ transpose sms
         otherStates = [[s {s_val = Just $ (fromJust $ s_val s) {tmCommand = Just $ Command c, smTag = Just g}} | s <- state ] | g <- gamma, c <- pos21, state <- standardStates]
-        finalSmStates = map Set.unions . groupBy groupByStates . sortBy sortByNames $ (map Set.fromList standardStates) ++ (map Set.fromList otherStates) ++ smsStates
         smsConnectingRules = concatMap createConnectingRules $ map (Command $) pos21
+        crStates = getStatesFromRules smsConnectingRules
+        finalSmStates = map Set.unions . groupBy groupByStates . sortBy sortByNames $ (map Set.fromList standardStates) ++ (map Set.fromList otherStates) ++ smsStates ++ (map Set.fromList crStates)
         smsPos22Rules = map createPos22Rule $ map (Command $) pos22
 
         finalSmRules = smsRules ++ smsConnectingRules ++ smsPos22Rules

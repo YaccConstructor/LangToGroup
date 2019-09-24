@@ -67,7 +67,8 @@ example = execLaTeXM $
             -- doLaTeX ab3TestGrammar
             -- doLaTeX $ mapCfgToTM ab3TestGrammar
             -- doLaTeX $ interpretTM ["b", "a", "b", "a"] $ mapCfgToTM ab3TestGrammar
-            doLaTeX $ fst $ smFinal tmForTestSm
+            -- doLaTeX $ fst $ smFinal tmForTestSm
+            doLaTeX $ fst $ smFinal $ mapTM2TM' $ simpleTM
 
 -- main :: IO()
 -- main = do
@@ -75,12 +76,40 @@ example = execLaTeXM $
 
 main :: IO()
 main = do
-    let gr@(GR (a, r)) = smToGR $ smFinal $ mapTM2TM' $ mapCfgToTM testGrammar
+    let gr@(GR (a, r)) = smToGR $ smFinal $ mapTM2TM' oneruleTM
     putStrLn $ (show $ length a) ++ " " ++ (show $ length r)
-    do fhandle <- openFile "group.txt" WriteMode
+    do fhandle <- openFile "oneruleTM.txt" WriteMode
        writeGap gr fhandle
        hFlush fhandle
        hClose fhandle
+
+oneruleTM = tm where
+    a = Value "a"
+    q0 = State "q_0^1"
+    q1 = State "q_1^1"
+    inp = InputAlphabet (Set.fromList [a])
+    tapes = [TapeAlphabet (Set.fromList [a])]
+    states = MultiTapeStates [Set.fromList [q0, q1]]
+    cmds = Commands 
+        $ Set.fromList [[SingleTapeCommand ((a,  q0, rightBoundingLetter), (emptySymbol, q1, rightBoundingLetter))]]
+    start = StartStates [q0]
+    access = AccessStates [q1]
+    tm = TM (inp, tapes, states, cmds, start, access)  
+
+simpleTM = tm where
+    a = Value "a"
+    q0 = State "q_0^1"
+    q1 = State "q_1^1"
+    q2 = State "q_2^1"
+    inp = InputAlphabet (Set.fromList [a])
+    tapes = [TapeAlphabet (Set.fromList [a])]
+    states = MultiTapeStates [Set.fromList [q0, q1, q2]]
+    cmds = Commands 
+        $ Set.fromList [[SingleTapeCommand ((a,  q0, rightBoundingLetter), (emptySymbol, q1, rightBoundingLetter))],
+                        [SingleTapeCommand ((emptySymbol,  q1, rightBoundingLetter), (emptySymbol, q2, rightBoundingLetter))]]
+    start = StartStates [q0]
+    access = AccessStates [q2]
+    tm = TM (inp, tapes, states, cmds, start, access)    
 
 tmForTestSm = tm where
     s = Value "S"

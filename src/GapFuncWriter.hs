@@ -29,13 +29,15 @@ writeRelations relations genmap handle =
 
 writeGap :: GR -> Handle -> IO ()
 writeGap (GR (generators, relations)) handle =     
-            do hPutStr handle "f := FreeGroup( "
-               writeGenerators generators genmap handle
-               hPutStr handle " );"
-               hFlush handle
-               hPutStr handle "g := f / [ "
-               writeRelations relations genmap handle
-               hPutStr handle " ];"
-               hPutStr handle "p := PresentationFpGroup( g );"
-               hPutStr handle "SimplifyPresentation( p );"
+            do  hPutStr handle "local f, g, p;\n"
+                hPutStr handle "f := FreeGroup( "
+                writeGenerators generators genmap handle
+                hPutStr handle " );\n"
+                hFlush handle
+                hPutStr handle "g := f / [ "
+                writeRelations relations genmap handle
+                hPutStr handle " ];\n"
+                hFlush handle
+                hPutStr handle "p := SimplifiedFpGroup( g );\n"
+                hPutStr handle "return p;\n"
             where   genmap = Map.fromList $ zip generators $ map ((++) "f." . show) [1..]
