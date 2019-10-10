@@ -20,9 +20,13 @@ transitionRelations rules states = cmdQs ++ cmdRs
                                 False -> [ Relation (powtau [SmbA $ A_Q q] r, [SmbA $ A_Q q]) | r <- rules, q <- y ] ++ x
                                 ) [] states              
 
-hubRelation :: [SmbR] -> [A] -> GrRelation
-hubRelation word k = Relator (posPart ++ negPart)
+nk = 1
+k = map (A_K $) [1 .. 2 * nk]
+
+hubRelation :: SMType.Word -> [SmbR]
+hubRelation (Word w0) = posPart ++ negPart
         where 
+        word = map smb2As w0
         negation x = case x of SmbA y -> SmbA' y ; SmbA' y -> SmbA y 
         negationWord = foldl (\x y -> (negation y) : x) []
         posPart = foldl (\x (i, y) -> x ++ (case i `mod` 2 == 0 of True -> word ; False -> negationWord word) ++ [SmbA y]) [] $ zip [1..] k 
@@ -31,12 +35,10 @@ hubRelation word k = Relator (posPart ++ negPart)
 smToGR :: (SMType.SM, SMType.Word) -> GRType.GR
 smToGR (SMType.SM yn 
                   qn
-                  sRules, Word w0)
+                  sRules, w0)
         = GRType.GR (a, relations)
         where 
-        nk = 6
         s = [A_Y alpha, A_Y omega, A_Y delta]
-        k = map (A_K $) [1 .. 2 * nk]
         ql = map Set.toList qn
         q = map (A_Q $) $ concat ql
         y = map (A_Y $) $ concat yn
@@ -44,5 +46,5 @@ smToGR (SMType.SM yn
         a = concat [s, k, y, q, src]
         transition = transitionRelations sRules ql
         auxiliary = [ Relation ([SmbA t, SmbA x], [SmbA x, SmbA t]) | x <- (s ++ y ++ k), t <- src ]
-        hub = hubRelation (map smb2As w0) k
+        hub = Relator $ hubRelation w0
         relations = auxiliary ++ transition ++ [hub]

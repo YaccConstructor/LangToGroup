@@ -27,8 +27,8 @@ writeRelations relations genmap handle =
             printSmb (SmbA' a) = case Map.lookup a genmap of Just s -> "(" ++ s ++ ")^(-1)" ; Nothing -> error (show a)
             mdata = map (foldl1 (\x y -> x ++ "*" ++ y) . (map printSmb) . revert) relations
 
-writeGap :: GR -> Handle -> IO ()
-writeGap (GR (generators, relations)) handle =     
+writeGap :: GR -> Handle -> Map.Map A String -> IO ()
+writeGap (GR (generators, relations)) handle genmap =     
             do  hPutStr handle "local f, g, p;\n"
                 hPutStr handle "f := FreeGroup( "
                 writeGenerators generators genmap handle
@@ -40,4 +40,13 @@ writeGap (GR (generators, relations)) handle =
                 hFlush handle
                 hPutStr handle "p := SimplifiedFpGroup( g );\n"
                 hPutStr handle "return p;\n"
-            where   genmap = Map.fromList $ zip generators $ map ((++) "f." . show) [1..]
+
+writeWord :: [SmbR] -> Handle -> Map.Map A String -> IO()
+writeWord as handle genmap = 
+            do  hPutStr handle mdata
+                hPutStr handle ";"
+                hFlush handle
+            where 
+                printSmb (SmbA a) = case Map.lookup a genmap of Just s -> s ; Nothing -> error (show a) 
+                printSmb (SmbA' a) = case Map.lookup a genmap of Just s -> "(" ++ s ++ ")^(-1)" ; Nothing -> error (show a)
+                mdata = foldl1 (\x y -> x ++ "*" ++ y) $ map printSmb as

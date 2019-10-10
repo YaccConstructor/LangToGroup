@@ -20,9 +20,11 @@ import TM2TM'
 import TM2SM
 import SMPrinter
 import SMachineToGroup
+import qualified SMType
 import GRType
 import GapFuncWriter
 import System.IO
+import qualified Data.Map.Strict as Map
 
 preambula :: LaTeXM ()
 preambula = 
@@ -68,7 +70,7 @@ example = execLaTeXM $
             -- doLaTeX $ mapCfgToTM ab3TestGrammar
             -- doLaTeX $ interpretTM ["b", "a", "b", "a"] $ mapCfgToTM ab3TestGrammar
             -- doLaTeX $ fst $ smFinal tmForTestSm
-            doLaTeX $ fst $ smFinal $ mapTM2TM' $ simpleTM
+            doLaTeX $ mapTM2TM' $ fst $ oneruleTM
 
 -- main :: IO()
 -- main = do
@@ -76,25 +78,34 @@ example = execLaTeXM $
 
 main :: IO()
 main = do
-    let gr@(GR (a, r)) = smToGR $ smFinal $ mapTM2TM' oneruleTM
+    let (tm, w) = oneruleTM
+    let tm'@(TM (inp, tapes, states, cmds, StartStates start, access)) = mapTM2TM' tm
+    let sw = hubRelation $ sigmaFunc start w 
+    let gr@(GR (a, r)) = smToGR $ smFinal $ tm'
     putStrLn $ (show $ length a) ++ " " ++ (show $ length r)
+    let genmap = Map.fromList $ zip a $ map ((++) "f." . show) [1..]
     do fhandle <- openFile "oneruleTM.txt" WriteMode
-       writeGap gr fhandle
+       writeGap gr fhandle genmap
        hFlush fhandle
        hClose fhandle
+    do handle <- openFile "oneruleTMWord.txt" WriteMode
+       writeWord sw handle genmap
+       hFlush handle
+       hClose handle
 
-oneruleTM = tm where
+oneruleTM = (tm, w) where
     a = Value "a"
     q0 = State "q_0^1"
     q1 = State "q_1^1"
     inp = InputAlphabet (Set.fromList [a])
     tapes = [TapeAlphabet (Set.fromList [a])]
     states = MultiTapeStates [Set.fromList [q0, q1]]
-    cmds = Commands 
-        $ Set.fromList [[SingleTapeCommand ((a,  q0, rightBoundingLetter), (emptySymbol, q1, rightBoundingLetter))]]
+    cmd = [SingleTapeCommand ((a,  q0, rightBoundingLetter), (emptySymbol, q1, rightBoundingLetter))]
+    cmds = Commands $ Set.fromList [cmd]
     start = StartStates [q0]
     access = AccessStates [q1]
-    tm = TM (inp, tapes, states, cmds, start, access)  
+    tm = TM (inp, tapes, states, cmds, start, access)
+    w = [[SMType.SmbY $ SMType.Y a], [], [SMType.SmbY $ SMType.Y $ BCommand cmd], []]
 
 simpleTM = tm where
     a = Value "a"
