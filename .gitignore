@@ -22,3 +22,6 @@ cabal.project.local
 cabal.project.local~
 .HTF/
 .ghc.environment.*
+.vscode/
+.ionide/
+printers/out_log.txt

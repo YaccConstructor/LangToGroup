@@ -27,36 +27,26 @@ source-repository head
 
 library
   exposed-modules:
-      CfgToTm1Mapper
+      Helpers
+      CfgToTMMapper
       GrammarType
       GRType
-      Lib
       SMachineToGroup
       SMType
-      Tm1Type
+      TMType
       TM2SM
-      Tm2Type
+      TM2TM'
+      TMInterpreter
+      ConfigType
+      GapFuncWriter
   other-modules:
       Paths_LangToGroup
   hs-source-dirs:
       src
   build-depends:
       HaTeX >=3.20.0.0
-    , base >=4.7 && <5
-    , containers
-    , vector
-  default-language: Haskell2010
-
-executable LangToGroup-exe
-  main-is: Main.hs
-  other-modules:
-      Paths_LangToGroup
-  hs-source-dirs:
-      app
-  ghc-options: -threaded -rtsopts -with-rtsopts=-N
-  build-depends:
-      HaTeX >=3.20.0.0
-    , LangToGroup
+    , regex-tdfa
+    , matrix >= 0.3.6.1
     , base >=4.7 && <5
     , containers
     , vector
@@ -69,11 +59,14 @@ executable LangToGroup-printer
       Lib
       Tm1Printer
       Paths_LangToGroup
+      ConfigPrinter
+      SMPrinter
   hs-source-dirs:
       printers
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       HaTeX
+    , matrix >= 0.3.6.1
     , LangToGroup
     , base >=4.7 && <5
     , containers

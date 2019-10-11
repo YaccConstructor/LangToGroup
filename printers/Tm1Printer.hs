@@ -8,96 +8,86 @@ import Text.LaTeX.Base.Commands
 import Text.LaTeX.Packages.AMSMath
 import Text.LaTeX.Packages.Inputenc
 import qualified Data.Set as Set
+import Text.LaTeX.Base.Types
+import Data.Matrix
+import Data.Maybe
+import Debug.Trace
 
-import Tm1Type
+
+import TMType
 import Lib
 
+
+instance ShowLaTeX Square where
+    doLaTeX (Value sq) = raw $ fromString sq
+    doLaTeX (BCommand c) = showBCommand c
+    doLaTeX (PCommand c) = showPCommand c
 
 instance ShowLaTeX State where
     doLaTeX (State st) = raw $ fromString st
 
+instance ShowLaTeX StateOmega where
+    doLaTeX s = raw $ fromString $ show s
+
+showTriple (u, q, v) = toLaTeX u <> toLaTeX q <> toLaTeX v
+showPair (r, l) = toLaTeX r <> toLaTeX l
+showFrom (SingleTapeCommand (q, _)) = showTriple q
+showFrom (PreSMCommand (q, _)) = showPair q
+showTo (SingleTapeCommand (_, q)) = showTriple q
+showTo (PreSMCommand (_, q)) = showPair q
+
+showPCommand :: [TapeCommand] -> LaTeXM ()
+showPCommand command =
+    pmatrix (Just HRight) $ fromLists $ map (\c -> [showFrom c, to, showTo c]) command
+
+showBCommand :: [TapeCommand] -> LaTeXM ()
+showBCommand command =
+    bmatrix (Just HRight) $ fromLists $ map (\c -> [showFrom c, to, showTo c]) command
 
 showStates :: [State] -> LaTeXM ()
-showStates = helper where
-    helper [state]    = doLaTeX state
-    helper (state:ss) = do { doLaTeX state; ","; showStates ss }
+showStates = foldl1 (\x y -> x <> ", " <> y) . map (math . doLaTeX $)
+
+showAlphabet :: [Square] -> LaTeXM ()
+showAlphabet alphabet = 
+    case map (\x -> math $ case x of Value sq -> raw $ fromString sq ; _ -> doLaTeX x) alphabet of 
+        [] -> ""
+        lst -> foldl1 (\x y -> x <> ", " <> y) lst
 
 
 instance ShowLaTeX InputAlphabet where
-    doLaTeX (InputAlphabet alphabet) = math $ fromString $ Set.toList alphabet
+    doLaTeX (InputAlphabet alphabet) = showAlphabet $ Set.toList alphabet
 
 
 instance ShowLaTeX TapeAlphabet where
-    doLaTeX (TapeAlphabet alphabet) = math $ fromString $ Set.toList alphabet
-
+    doLaTeX (TapeAlphabet alphabet) = showAlphabet $ Set.toList alphabet
 
 instance ShowLaTeX MultiTapeStates where
-    doLaTeX (MultiTapeStates statesList) = do
-        enumerate $ mapM_ (\states -> do { item Nothing; math $ showStates $ Set.toList $ states}) statesList
+    doLaTeX (MultiTapeStates statesList) =
+        enumerate $ mapM_ (\states -> do { item Nothing; showStates $ Set.toList $ states}) statesList
 
 
 instance ShowLaTeX StartStates where
-    doLaTeX (StartStates states) = math $ showStates states
-
+    doLaTeX (StartStates states) = showStates states
 
 instance ShowLaTeX AccessStates where
-    doLaTeX (AccessStates states) = math $ showStates states
-
-
-instance ShowLaTeX SingleTapeCommand where
-    doLaTeX (SingleTapeCommand ((u, q, v), (u', q', v'))) = do
-        let showTriple :: Char -> State -> Char -> LaTeX
-            showTriple a s b = (fromString [a]) <> "," <> (toLaTeX s) <> "," <> (fromString [b]) 
-        math $ textell $ ((showTriple u q v) <> rightarrow <> (showTriple u' q' v'))
-    
-    doLaTeX NoCommand = "nope"
-
+    doLaTeX (AccessStates states) = showStates states
 
 instance ShowLaTeX Commands where
-    doLaTeX (Commands commandsSet) = do
-        let commands     = Set.toList commandsSet
-        let tapesCount   = length $ head commands
-        let columnsCount = tapesCount + 1 + tapesCount
-        let tapeSpec     = [DVerticalLine, CenterColumn, VerticalLine, CenterColumn, VerticalLine, CenterColumn]
-        let halfSpec     = tail $ concat $ replicate tapesCount tapeSpec
-        let columnsSpec  = halfSpec ++ [DVerticalLine, CenterColumn, DVerticalLine] ++ halfSpec
-        let tapesNames   = map (\num -> "Tape "++ show num) [1..tapesCount]
-        let halfHeader   = foldl1 (&) $ map (\cur -> (multicolumn 3 [CenterColumn] $ fromString cur)) tapesNames
-        
-        let showTriple (u, q, v) = (math $ fromString [u]) & (math $ doLaTeX q) & (math $ fromString [v])
-        
-        let showFrom (SingleTapeCommand (q, _)) = showTriple q
-            showFrom NoCommand = mempty & mempty & mempty
-
-        let showTo (SingleTapeCommand (_, q)) = showTriple q
-            showTo NoCommand = mempty & mempty & mempty
-
-        let showLine (lineNumber, singleTapeCommands) = do
-                foldl1 (&) ((map showFrom singleTapeCommands) ++ [fromString $ show lineNumber] ++ (map showTo singleTapeCommands))
-                tabularnewline
-                hline
-
-        let tableBody = do
-                halfHeader & "№" & halfHeader
-                tabularnewline
-                hline
-                mapM_ showLine $ zip [1..] commands
-
-        tabular Nothing columnsSpec tableBody
+    doLaTeX (Commands commandsSet) = mapM_ (\c -> do { math $ showBCommand c ; "\n" }) $ Set.toList commandsSet
 
 
-instance ShowLaTeX TM1 where
-    doLaTeX (TM1 (
+instance ShowLaTeX TM where
+    doLaTeX (TM (
         inputAlphabet,
-        tapeAlphabet,
+        tapeAlphabets,
         multiTapeStates,
         commands,
         startStates,
         accessStates)) = do
            subsection_ "Input alphabet"
            doLaTeX inputAlphabet
-           subsection_ "Tape alphabet"
-           doLaTeX tapeAlphabet
+           subsection_ "Tape alphabets"
+           enumerate $ mapM_ (\alphabet -> do { item Nothing; doLaTeX $ alphabet}) tapeAlphabets
            subsection_ "States"
            doLaTeX multiTapeStates
            subsection_ "Start states"
