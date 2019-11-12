@@ -6,9 +6,9 @@ author:              "Author name here"
 maintainer:          "example@example.com"
 copyright:           "2018 Author name here"
 
-extra-source-files:
-- README.md
-- ChangeLog.md
+# extra-source-files:
+# - README.md
+# - ChangeLog.md
 
 # Metadata used when publishing your package
 # synopsis:            Short description of your package
@@ -24,6 +24,7 @@ dependencies:
 - containers
 - vector
 - HaTeX >= 3.20.0.0
+- regex-tdfa
 
 library:
   source-dirs: src
@@ -38,17 +39,17 @@ executables:
     - -with-rtsopts=-N
     dependencies:
     - LangToGroup
-    - HaTeX
+    - matrix >= 0.3.6.1
  
-  LangToGroup-exe:
-    main:                Main.hs
-    source-dirs:         app
-    ghc-options:
-    - -threaded
-    - -rtsopts
-    - -with-rtsopts=-N
-    dependencies:
-    - LangToGroup
+  # LangToGroup-exe:
+  #   main:                Main.hs
+  #   source-dirs:         app
+  #   ghc-options:
+  #   - -threaded
+  #   - -rtsopts  
+  #   - -with-rtsopts=-N
+  #   dependencies:
+  #   - LangToGroup
 
 tests:
   LangToGroup-test:
