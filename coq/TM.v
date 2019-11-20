@@ -109,10 +109,10 @@ Definition apply_command {S} (cmd : @command S) (cfg : @config S) :=
   end.
 
 Lemma next_cfg_exists : forall (A S : Type) (cmd : @command S) (cfg : @config S),
-  command_right_form A cmd /\ command_applicable A cmd cfg ->
+  command_right_form A cmd -> command_applicable A cmd cfg ->
   (exists new_cfg, apply_command cmd cfg = new_cfg).
 Proof.
-  intros A S cmd cfg [H1 H2].
+  intros A S cmd cfg H1 H2.
   destruct cmd. destruct t1. destruct t2. destruct cfg.
   unfold command_right_form in H1.
   unfold command_applicable in H2.
@@ -142,6 +142,61 @@ Proof.
     destruct H5 as [a1 [a2 [a3 [a4 [H5 [H11 [H12 H13]]]]]]]; subst; try discriminate.
     + exists (Config (removelast l1 ++ [Letter a2]) s0 (Letter a4 :: tl r1)). reflexivity.
   Qed.
+
+
+Check 2 =? 2.
+Compute find (fun x => x =? 2) [2; 3].
+Check negb (2 =? 2).
+(*
+RightBounding
+  | LeftBounding
+  | Empty
+*)
+
+Definition is_L l :=
+  match l with
+  | L/_ => true
+  | _ => false
+  end.
+
+Check is_L.
+Search reflect.
+Definition foo :=
+  if Empty = Empty then 1 else 2.
+
+Definition command_right_form_b {S} (A : Type) (cmd : @command S) := 
+  match cmd with
+  | (l1, s1, r1) -> (l2, s2, r2) =>
+      r1 <> LeftBounding && r2 <> LeftBounding && l1 <> RightBounding && l2 <> RightBounding &&
+      (r1 =? r2 && (l1 =? l2 || r1 =? RightBounding && l1 <> LeftBounding && l2 <> LeftBounding) ||
+      (is_L l1 && is_L l2 && is_L r1 && is_L r2))
+  end.
+
+Definition command_applicable_b {S} (A : Type) (cmd : @command S) (cfg : @config S) :=
+  match cmd, cfg with
+  | (l1, s1, r1) -> (l2, s2, r2), Config l s r => 
+      s1 =? s && 
+      (l1 =? Empty && r1 =? RightBounding && r =? [r1] ||
+      r1 =? RightBounding && r =? [r1] && l2 =? Empty && l1 =? (last l LeftBounding) ||
+      (is_L l1 && is_L r1 && (last l LeftBounding) =? l1 && (hd RightBounding r) =? r1))
+  end.
+
+Fixpoint interpretator1 {A S} (cmds : list (@command S)) (ast : @states S) (inp : list A) : bool :=
+  let cmd_filter s 
+  let interpret cfg :=
+    match cfg with
+    | Config (l s r) => find (fun cmd => ) cmds 
+
+
+Search list.
+Compute List.length [2].
+
+Definition default_cmd {S} := (Empty, @None S, Empty) -> (Empty, @None S, Empty).
+
+Lemma next_tm_cfg_exists : forall (A S : Type) (cmds : list (@command S)) (cfgs : @tm_configuration S) (k : nat),
+  List.length cmds = k -> List.length cfgs = k -> 
+  forall i, i < k -> icmd = nth i cmds  command_right_form A (  -> command_applicable A cmd cfg ->
+  (exists new_cfg, apply_command cmd cfg = new_cfg).
 
 (*
 ((l1, s1, r1) -> (l2, s2, r2)) : t1, (l, s, r) : t2) => s1 = s /\ 
