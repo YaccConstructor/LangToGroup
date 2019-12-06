@@ -29,7 +29,8 @@ writeRelations relations genmap handle =
 
 writeGap :: GR -> Handle -> Map.Map A String -> IO ()
 writeGap (GR (generators, relations)) handle genmap =     
-            do  hPutStr handle "local f, g, p;\n"
+--            do  hPutStr handle "local f, g, p;\n"
+            do  hPutStr handle "local f, g;\n"
                 hPutStr handle "f := FreeGroup( "
                 writeGenerators generators genmap handle
                 hPutStr handle " );\n"
@@ -38,8 +39,9 @@ writeGap (GR (generators, relations)) handle genmap =
                 writeRelations relations genmap handle
                 hPutStr handle " ];\n"
                 hFlush handle
-                hPutStr handle "p := SimplifiedFpGroup( g );\n"
-                hPutStr handle "return p;\n"
+                --hPutStr handle "p := SimplifiedFpGroup( g );\n"
+                --hPutStr handle "return p;\n"
+                hPutStr handle "return g;\n"
 
 writeWord :: [SmbR] -> Handle -> Map.Map A String -> IO()
 writeWord as handle genmap = 

@@ -80,7 +80,7 @@ main :: IO()
 main = do
     let (tm, w) = oneruleTM
     let tm'@(TM (inp, tapes, states, cmds, StartStates start, access)) = mapTM2TM' tm
-    let sw = hubRelation $ sigmaFunc start w 
+    --let sw = hubRelation $ sigmaFunc start w 
     let gr@(GR (a, r)) = smToGR $ smFinal $ tm'
     putStrLn $ (show $ length a) ++ " " ++ (show $ length r)
     let genmap = Map.fromList $ zip a $ map ((++) "f." . show) [1..]
@@ -88,10 +88,10 @@ main = do
        writeGap gr fhandle genmap
        hFlush fhandle
        hClose fhandle
-    do handle <- openFile "oneruleTMWord.txt" WriteMode
-       writeWord sw handle genmap
-       hFlush handle
-       hClose handle
+    -- do handle <- openFile "oneruleTMWord.txt" WriteMode
+    --    writeWord sw handle genmap
+    --    hFlush handle
+    --    hClose handle
 
 oneruleTM = (tm, w) where
     a = Value "a"
