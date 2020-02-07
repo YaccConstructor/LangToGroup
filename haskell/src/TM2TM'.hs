@@ -153,7 +153,7 @@ mapTM2TMAfterThirdPhase
         let commandsSecondPhase = secondPhase finalKPlusOneTapeState commandsList startStates accessStates multiTapeStates
         let commandsThirdPhase = thirdPhase finalKPlusOneTapeState commandsList accessStates
 
-        let newTMCommands = Commands $ Set.fromList $ symCommands $ commandsFirstPhase ++ commandsSecondPhase ++ commandsThirdPhase
+        let newTMCommands = Commands $ Set.fromList $ commandsFirstPhase ++ commandsSecondPhase ++ commandsThirdPhase
 
         let newTMTapeAlphabets = tapeAlphabets ++ [TapeAlphabet $ Set.map (\c -> BCommand c) commands]
 
@@ -291,7 +291,27 @@ mapTM2TM' tm = do
             AccessStates accessStates)
             ) = mapTM2TMAfterThirdPhase tm
 
-    let commands = Set.toList commandsSet
+    let commands = symCommands $ Set.toList commandsSet
+    let (newStartStates, newAccessStates, newTapeAlphabets, doubledTapeStates, doubledCommands) = doubleCommands startStates accessStates tapeAlphabets multiTapeStates commands
+    let (newTapeStates, newTMCommands) =    transform2SingleInsertDeleteCommand $ 
+                                            one2TwoKCommands (doubledTapeStates, doubledCommands)
+    TM (inputAlphabet, 
+        newTapeAlphabets, 
+        MultiTapeStates newTapeStates, 
+        Commands (Set.fromList $ renameRightLeftBoundings newTMCommands), 
+        StartStates newStartStates, 
+        AccessStates newAccessStates)
+
+symTmWithoutKPlusOneTape :: TM -> TM
+symTmWithoutKPlusOneTape (TM (inputAlphabet,
+            tapeAlphabets, 
+            MultiTapeStates multiTapeStates, 
+            Commands commandsSet, 
+            StartStates startStates,
+            AccessStates accessStates)
+            ) = do
+
+    let commands = symCommands $ Set.toList commandsSet
     let (newStartStates, newAccessStates, newTapeAlphabets, doubledTapeStates, doubledCommands) = doubleCommands startStates accessStates tapeAlphabets multiTapeStates commands
     let (newTapeStates, newTMCommands) =    transform2SingleInsertDeleteCommand $ 
                                             one2TwoKCommands (doubledTapeStates, doubledCommands)
