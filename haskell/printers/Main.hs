@@ -41,57 +41,112 @@ example = execLaTeXM $
     do
         preambula 
         document $ do
-            --doLaTeX testGrammar
-            --doLaTeX $ mapCfgToTM testGrammar
-            --doLaTeX $ interpretTM ["a"] $ mapCfgToTM testGrammar
-            --newpage
-            --doLaTeX $ mapTM2TM' $ mapCfgToTM testGrammar
+            -- doLaTeX testGrammar
+            -- doLaTeX $ mapCfgToTM testGrammar
+            -- -- doLaTeX $ interpretTM ["a"] $ mapCfgToTM testGrammar
             -- newpage
-            --doLaTeX $ smFinal $ mapTM2TM' $ mapCfgToTM testGrammar
+            -- -- doLaTeX $ mapTM2TM' $ mapCfgToTM testGrammar
+            -- -- newpage
+            -- -- doLaTeX $ smFinal $ mapTM2TM' $ mapCfgToTM testGrammar
             -- doLaTeX epsTestGrammar
             -- doLaTeX $ mapCfgToTM epsTestGrammar
-            -- doLaTeX $ interpretTM ["a"] $ mapCfgToTM epsTestGrammar
-            -- newpage
-            -- doLaTeX epsTestLeftGrammar
-            -- doLaTeX $ mapCfgToTM epsTestLeftGrammar
-            -- doLaTeX $ interpretTM ["a"] $ mapCfgToTM epsTestLeftGrammar
+            -- -- doLaTeX $ interpretTM ["a"] $ mapCfgToTM epsTestGrammar
+            -- -- newpage
+            -- -- doLaTeX epsTestLeftGrammar
+            -- -- doLaTeX $ mapCfgToTM epsTestLeftGrammar
+            -- -- doLaTeX $ interpretTM ["a"] $ mapCfgToTM epsTestLeftGrammar
             -- newpage
             -- doLaTeX abTestGrammar
             -- doLaTeX $ mapCfgToTM abTestGrammar
-            -- doLaTeX $ interpretTM ["b", "b", "a", "a"] $ mapCfgToTM abTestGrammar
+            -- -- doLaTeX $ interpretTM ["b", "b", "a", "a"] $ mapCfgToTM abTestGrammar
             -- newpage
             -- doLaTeX ab2TestGrammar
             -- doLaTeX $ mapCfgToTM ab2TestGrammar
-            -- doLaTeX $ interpretTM ["b", "a", "b", "a"] $ mapCfgToTM ab2TestGrammar
-            -- newpage
-            --doLaTeX $ smFinal $ mapTM2TM' $ mapCfgToTM ab2TestGrammar
+            -- -- doLaTeX $ interpretTM ["b", "a", "b", "a"] $ mapCfgToTM ab2TestGrammar
+            -- -- newpage
+            -- -- doLaTeX $ smFinal $ mapTM2TM' $ mapCfgToTM ab2TestGrammar
             -- newpage
             -- doLaTeX ab3TestGrammar
             -- doLaTeX $ mapCfgToTM ab3TestGrammar
-            -- doLaTeX $ interpretTM ["b", "a", "b", "a"] $ mapCfgToTM ab3TestGrammar
-            -- doLaTeX $ fst $ smFinal tmForTestSm
-            doLaTeX $ mapTM2TM' $ fst $ oneruleTM
-
--- main :: IO()
--- main = do
---     renderFile "out.tex" example 
+            -- -- doLaTeX $ interpretTM ["b", "a", "b", "a"] $ mapCfgToTM ab3TestGrammar
+            -- -- doLaTeX $ fst $ smFinal tmForTestSm
+            -- doLaTeX $ symTmWithoutKPlusOneTape $ fst $ oneruleTM
+            -- doLaTeX symSmallGroup
+            -- newpage
+            -- doLaTeX $ fst $ smFinal symSmallGroup
+            doLaTeX $ (!!) (createSMs [SMType.Y $ Value "a"]) 0
 
 main :: IO()
 main = do
-    let (tm, w) = oneruleTM
-    let tm'@(TM (inp, tapes, states, cmds, StartStates start, access)) = mapTM2TM' tm
-    --let sw = hubRelation $ sigmaFunc start w 
-    let gr@(GR (a, r)) = smToGR $ smFinal $ tm'
-    putStrLn $ (show $ length a) ++ " " ++ (show $ length r)
-    let genmap = Map.fromList $ zip a $ map ((++) "f." . show) [1..]
-    do fhandle <- openFile "oneruleTM.txt" WriteMode
-       writeGap gr fhandle genmap
-       hFlush fhandle
-       hClose fhandle
-    -- do handle <- openFile "oneruleTMWord.txt" WriteMode
-    --    writeWord sw handle genmap
-    --    hFlush handle
-    --    hClose handle
+    renderFile "out.tex" example 
+
+-- main :: IO()
+-- main = do
+--     --let (tm, w) = oneruleTM
+--     --let tm'@(TM (inp, tapes, states, Commands cmds, StartStates start, access)) = symTmWithoutKPlusOneTape tm
+--     --let sw = hubRelation $ sigmaFunc start w
+--     let smw@(sm, w) = smFinal $ symSmallGroup
+--     let gr@(GR (a, r)) = smToGR $ smw
+--    -- putStrLn $ (show $ length cmds)
+--     putStrLn $ (show $ length $ SMType.srs sm)
+--     putStrLn $ (show $ length a) ++ " " ++ (show $ length r)
+--     let genmap = Map.fromList $ zip a $ map ((++) "f." . show) [1..]
+--     do fhandle <- openFile "oneruleTM.txt" WriteMode
+--        writeGap gr fhandle genmap
+--        hFlush fhandle
+--        hClose fhandle
+--     -- do handle <- openFile "oneruleTMWord.txt" WriteMode
+--     --    writeWord sw handle genmap
+--     --    hFlush handle
+--     --    hClose handle
+
+
+printCount grammar@(Grammar (n, t, r, _, _)) = do
+    putStrLn $ "T: " ++ (show $ length t) ++ " N: " ++ (show $ length n) ++ " R: " ++ (show $ length r) 
+    
+    let tm@(TM (InputAlphabet tmX, tapeAlphabet, MultiTapeStates multiTapeStates, Commands tmCmds, _, _)) = mapCfgToTM grammar
+    let tmG = foldl (\acc (TapeAlphabet a) -> acc + length a) 0 tapeAlphabet
+    let tmQ = foldl (\acc a -> acc + length a) 0 multiTapeStates
+    putStrLn $ "tmX: " ++ (show $ length tmX) ++ " tmG: " ++ (show tmG) ++ " tmQ: " ++ (show tmQ) ++ " tmCmds: " ++ (show $ length tmCmds)
+
+    let tm'@(TM (InputAlphabet tmX', tapeAlphabet', MultiTapeStates multiTapeStates', Commands tmCmds', _, _)) = symTmWithoutKPlusOneTape tm
+    let tmG' = foldl (\acc (TapeAlphabet a) -> acc + length a) 0 tapeAlphabet'
+    let tmQ' = foldl (\acc a -> acc + length a) 0 multiTapeStates'
+    putStrLn $ "tm'X: " ++ (show $ length tmX') ++ " tm'G: " ++ (show tmG') ++ " tm'Q: " ++ (show tmQ') ++ " tm'Cmds: " ++ (show $ length tmCmds')
+
+    let smw@(sm, _) = smFinal $ tm'
+    let smY = concat $ SMType.yn sm
+    let smQ = foldl (\acc a -> acc + length a) 0 (SMType.qn sm)
+    putStrLn $ "smY: " ++ (show $ length smY) ++ " smQ: " ++ (show smQ) ++ " smR: " ++ (show $ length $ SMType.srs sm)
+
+    let gr@(GR (a, r)) = smToGR $ smw
+    putStrLn $ "A: " ++ (show $ length a) ++ " R: " ++ (show $ length r)
+    putStrLn ""
+
+-- main :: IO()
+-- main = do
+--     putStrLn $ "One rule"
+--     printCount testGrammar
+    
+--     putStrLn $ "A star"
+--     printCount epsTestGrammar
+
+--     putStrLn $ "Dyck"
+--     printCount ab2TestGrammar
+
+symSmallGroup = tm where
+    a = Value "a"
+    q0 = State "q_0^1"
+    q1 = State "q_1^1"
+    inp = InputAlphabet (Set.fromList [a])
+    tapes = [TapeAlphabet (Set.fromList [a])]
+    states = MultiTapeStates [Set.fromList [q0, q1]]
+    cmd1 = [SingleTapeCommand ((a, q0, rightBoundingLetter), (emptySymbol, q1, rightBoundingLetter))]
+    cmd2 = [SingleTapeCommand ((emptySymbol, q1, rightBoundingLetter), (a, q0, rightBoundingLetter))]
+    cmds = Commands $ Set.fromList $ renameRightLeftBoundings [cmd1, cmd2]
+    start = StartStates [q0]
+    access = AccessStates [q1]
+    tm = TM (inp, tapes, states, cmds, start, access)
 
 oneruleTM = (tm, w) where
     a = Value "a"
