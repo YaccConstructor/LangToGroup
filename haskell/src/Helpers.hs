@@ -25,3 +25,6 @@ module Helpers where
 
     mapValue = map (\v -> Value v)
     mapFromValue = map (\(Value v) -> v)
+
+    tripleFst :: (a, b, c) -> a
+    tripleFst (a,_,_) = a

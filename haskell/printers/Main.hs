@@ -25,6 +25,8 @@ import GRType
 import GapFuncWriter
 import System.IO
 import qualified Data.Map.Strict as Map
+import SMInterpreter
+import Helpers
 
 preambula :: LaTeXM ()
 preambula = 
@@ -73,12 +75,16 @@ example = execLaTeXM $
             -- doLaTeX $ symTmWithoutKPlusOneTape $ fst $ oneruleTM
             -- doLaTeX symSmallGroup
             -- newpage
-            -- doLaTeX $ fst $ smFinal symSmallGroup
-            doLaTeX $ (!!) (createSMs [SMType.Y $ Value "a"]) 0
+            doLaTeX $ tripleFst $ smFinal symSmallGroup
+
+-- main :: IO()
+-- main = do
+--     renderFile "out.tex" example 
 
 main :: IO()
 main = do
-    renderFile "out.tex" example 
+    let s@(sm, w, as) = smFinal symSmallGroup
+    putStrLn $ show $ interpretSM ["a"] s
 
 -- main :: IO()
 -- main = do
@@ -114,12 +120,12 @@ printCount grammar@(Grammar (n, t, r, _, _)) = do
     let tmQ' = foldl (\acc a -> acc + length a) 0 multiTapeStates'
     putStrLn $ "tm'X: " ++ (show $ length tmX') ++ " tm'G: " ++ (show tmG') ++ " tm'Q: " ++ (show tmQ') ++ " tm'Cmds: " ++ (show $ length tmCmds')
 
-    let smw@(sm, _) = smFinal $ tm'
+    let (sm, w, _) = smFinal $ tm'
     let smY = concat $ SMType.yn sm
     let smQ = foldl (\acc a -> acc + length a) 0 (SMType.qn sm)
     putStrLn $ "smY: " ++ (show $ length smY) ++ " smQ: " ++ (show smQ) ++ " smR: " ++ (show $ length $ SMType.srs sm)
 
-    let gr@(GR (a, r)) = smToGR $ smw
+    let gr@(GR (a, r)) = smToGR $ (sm, w)
     putStrLn $ "A: " ++ (show $ length a) ++ " R: " ++ (show $ length r)
     putStrLn ""
 

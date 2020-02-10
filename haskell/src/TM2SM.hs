@@ -554,7 +554,7 @@ smFinal (TMType.TM (inputAlphabet,
         tapeAlphabets, 
         TMType.MultiTapeStates tapesStates, 
         TMType.Commands commandsSet, 
-        _,
+        TMType.StartStates startStates,
         TMType.AccessStates accessStates)
         ) = 
     let numOfTapes = length tapeAlphabets
@@ -608,4 +608,4 @@ smFinal (TMType.TM (inputAlphabet,
         --symmFinalSmRules = (++) finalSmRules $ map symmetrization finalSmRules
                                 
     in
-        (SM y finalSmStates finalSmRules, sigmaFunc accessStates $ replicate numOfTapes [])
+        (SM y finalSmStates finalSmRules, sigmaFunc accessStates $ replicate numOfTapes [], startStates)
