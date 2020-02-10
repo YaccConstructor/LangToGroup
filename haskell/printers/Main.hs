@@ -75,16 +75,16 @@ example = execLaTeXM $
             -- doLaTeX $ symTmWithoutKPlusOneTape $ fst $ oneruleTM
             -- doLaTeX symSmallGroup
             -- newpage
-            doLaTeX $ tripleFst $ smFinal symSmallGroup
-
--- main :: IO()
--- main = do
---     renderFile "out.tex" example 
+            doLaTeX $ tripleSnd $ smFinal symSmallGroup
 
 main :: IO()
 main = do
-    let s@(sm, w, as) = smFinal symSmallGroup
-    putStrLn $ show $ interpretSM ["a"] s
+    renderFile "out.tex" example 
+
+-- main :: IO()
+-- main = do
+--     let s@(sm, w, as) = smFinal symSmallGroup
+--     putStrLn $ show $ interpretSM ["a"] s
 
 -- main :: IO()
 -- main = do

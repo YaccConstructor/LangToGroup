@@ -28,3 +28,9 @@ module Helpers where
 
     tripleFst :: (a, b, c) -> a
     tripleFst (a,_,_) = a
+
+    tripleSnd :: (a, b, c) -> b
+    tripleSnd (_,a,_) = a
+
+    tripleThd :: (a, b, c) -> c
+    tripleThd (_,_,a) = a
