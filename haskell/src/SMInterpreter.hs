@@ -29,6 +29,18 @@ module SMInterpreter where
             [] -> reverse acc
             h : t -> getApplicableRules t rules $ (getApplicableRule (last h) rules []) : acc
 
+    reduceY word =
+        let reduceInternal smbs acc =
+                case smbs of
+                    [] -> reverse acc
+                    smbh1@(SmbY h1) : smbh2@(SmbY' h2) : t  | h1 == h2 -> reduceInternal t acc
+                                                            | otherwise -> reduceInternal t (smbh2 : smbh1 : acc)
+                    smbh1@(SmbY' h1) : smbh2@(SmbY h2) : t  | h1 == h2 -> reduceInternal t acc
+                                                            | otherwise -> reduceInternal t (smbh2 : smbh1 : acc)
+                    h : t ->  reduceInternal t (h : acc)
+        in
+            reduceInternal word []
+
     replaceSublist smbs (Word rulel, Word ruler) = l ++ ruler ++ rr
         where
             (l, r) = break (== (head rulel)) smbs
@@ -37,7 +49,7 @@ module SMInterpreter where
 
     applyRule :: Word -> SRule -> Word
     applyRule (Word smbs) (SRule rule) = 
-        Word $ foldl replaceSublist smbs rule
+        Word $ reduceY $ foldl replaceSublist smbs rule
 
     applyRules :: [Word] -> [SRule] -> [[Word]] -> [[Word]]
     applyRules words rules acc =
@@ -64,9 +76,7 @@ module SMInterpreter where
             Just configs -> configs
             Nothing -> startInterpreting accessWord (applyRuless wordss (getApplicableRules wordss rules []) []) rules
 
-    interpretSM :: [String] -> (SM, Word, [TMType.State]) -> [Word]
-    interpretSM input (sm, accessWord, startStates) = do
-            let inputSmb = map (\a -> SmbY $ Y a) $ mapValue input
-            let startWord = sigmaFunc startStates $ inputSmb : (replicate (length startStates - 1) [])
+    interpretSM :: Word -> SM -> Word -> [Word]
+    interpretSM startWord sm accessWord = do
             let symmSmRules = (++) (srs sm) $ map symmetrization (srs sm)
             startInterpreting accessWord [[startWord]] (symmSmRules)
