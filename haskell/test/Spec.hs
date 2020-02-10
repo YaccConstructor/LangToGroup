@@ -50,6 +50,27 @@ smInterpretationTest = do
     let history = (interpretSM startWord sm accessWord)
     assertEqual "assert access word" accessWord (last history)
 
+smInterpretationTest2 :: Assertion
+smInterpretationTest2 = do
+    let y = Y $ Value "a"
+    let q0 = SMType.State Q "0" (Set.fromList []) Nothing
+    let q1 = SMType.State Q "1" (Set.fromList []) Nothing
+    let q0' = SMType.State Q "2" (Set.fromList []) Nothing
+    let q1' = SMType.State Q "3" (Set.fromList []) Nothing
+    let from1 = Word [SmbQ q0]
+    let to1 = Word [SmbQ q0, SmbY' y]
+    let from2 = Word [SmbQ q1]
+    let to2 = Word [SmbQ q1']
+    let r1 = SRule $ [(from1, to1), (from2, to2)]
+    let r2 = SRule $ [(from1, to1)]
+    let to3 = Word [SmbQ q0']
+    let r3 = SRule $ [(from1, to3)]
+    let sm = SM [[y]] [Set.fromList [q0, q0'], Set.fromList [q1, q1']] [r1, r2, r3]
+    let startWord = Word [SmbQ q0, SmbY y, SmbY y, SmbQ q1]
+    let accessWord = Word [SmbQ q0', SmbQ q1']
+    let history = (interpretSM startWord sm accessWord)
+    assertEqual "assert access word 2" accessWord (last history)
+
 configsTest :: Assertion
 configsTest = do
     let q1 = TMType.State "q_{3}^2"
@@ -280,5 +301,6 @@ main = defaultMainWithOpts
        [testCase "simple cfg to TM map" simpleCfgToTMMapTest, 
         --testCase "sm to gr map" sMachineToGroupTest,
         testCase "cft to TM to config test" configsTest,
-        testCase "simple sm test" smInterpretationTest]
+        testCase "simple sm test" smInterpretationTest,
+        testCase "sm test 2" smInterpretationTest2]
        mempty
