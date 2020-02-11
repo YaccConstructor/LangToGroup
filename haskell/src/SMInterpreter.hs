@@ -10,6 +10,8 @@ module SMInterpreter where
     import Prelude hiding (Word)
     import TMType
     import Data.List (isInfixOf, elemIndex)
+    import Data.Map (Map)
+    import qualified Data.Map as Map
 
     checkRule :: Word -> SRule -> Bool
     checkRule (Word word) (SRule rule) = do
@@ -51,18 +53,25 @@ module SMInterpreter where
     applyRule (Word smbs) (SRule rule) = 
         Word $ reduceY $ foldl replaceSublist smbs rule
 
-    applyRules :: [Word] -> [SRule] -> [[Word]] -> [[Word]]
-    applyRules words rules acc =
+    applyRules :: [Word] -> [SRule] -> Map Word Int -> [[Word]] -> ([[Word]], Map Word Int)
+    applyRules words rules m acc =
         case rules of
-            [] -> acc
-            h : t -> applyRules words t $ (words ++ [applyRule (last words) h]) : acc
+            [] -> (acc, m)
+            h : t   | Map.member new_word m -> applyRules words t new_m $ acc
+                    | otherwise             -> applyRules words t new_m $ (words ++ [new_word]) : acc
+                                                where
+                                                    new_word = applyRule (last words) h
+                                                    new_m = Map.insertWith (+) new_word 1 m
     
-    applyRuless :: [[Word]] -> [[SRule]] -> [[Word]] -> [[Word]]
-    applyRuless wordss ruless acc =
+    applyRuless :: [[Word]] -> [[SRule]] -> Map Word Int -> [[Word]] -> ([[Word]], Map Word Int)
+    applyRuless wordss ruless m acc =
         case (wordss, ruless) of
-            ([], []) -> acc
-            (words : t1, rules : t2) -> applyRuless t1 t2 $ (applyRules words rules []) ++ acc
+            ([], []) -> (acc, m)
+            (words : t1, rules : t2) -> applyRuless t1 t2 new_m $ acc_apply ++ acc
+                                        where
+                                            (acc_apply, new_m) = applyRules words rules m []
             _ -> error "Commandss and configss don't match"
+                                        
 
     isHereAccessWord :: Word -> [[Word]] -> Maybe [Word]
     isHereAccessWord accessWord words =
@@ -71,12 +80,16 @@ module SMInterpreter where
             h : t   | (last h) == accessWord -> Just h
                     | otherwise -> isHereAccessWord accessWord t
 
-    startInterpreting accessWord wordss rules =
+    startInterpreting accessWord wordss rules m =
         case isHereAccessWord accessWord wordss of
-            Just configs -> configs
-            Nothing -> startInterpreting accessWord (applyRuless wordss (getApplicableRules wordss rules []) []) rules
+            Just path -> (path, m)
+            Nothing -> startInterpreting accessWord acc_apply rules new_m
+        where
+            (acc_apply, new_m) = applyRuless wordss (getApplicableRules wordss rules []) m []
 
     interpretSM :: Word -> SM -> Word -> [Word]
     interpretSM startWord sm accessWord = do
+            let m = Map.fromList [(startWord, 1)]
             let symmSmRules = (++) (srs sm) $ map symmetrization (srs sm)
-            startInterpreting accessWord [[startWord]] (symmSmRules)
+            let (path, new_m) = startInterpreting accessWord [[startWord]] (symmSmRules) m
+            path

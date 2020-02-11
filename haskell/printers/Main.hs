@@ -86,7 +86,7 @@ main = do
     let s@(sm, w, as) = smFinal symSmallGroup
     let inputSmb = map (\a -> SMType.SmbY $ SMType.Y a) $ mapValue ["a"]
     let startWord = sigmaFunc as $ inputSmb : (replicate (length as - 1) [])
-    putStrLn $ show $ interpretSM startWord sm w
+    putStrLn $ show $ length $ interpretSM startWord sm w
 
 -- main :: IO()
 -- main = do
