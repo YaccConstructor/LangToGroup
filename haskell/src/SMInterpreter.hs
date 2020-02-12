@@ -25,11 +25,11 @@ module SMInterpreter where
             c : t   | checkRule word c -> getApplicableRule word t $ c : acc
                     | otherwise -> getApplicableRule word t acc
 
-    getApplicableRules :: [[Word]] -> [SRule] -> [[SRule]] -> [[SRule]]
-    getApplicableRules wordss rules acc =
-        case wordss of
+    getApplicableRules :: [Word] -> [SRule] -> [[SRule]] -> [[SRule]]
+    getApplicableRules words rules acc =
+        case words of
             [] -> reverse acc
-            h : t -> getApplicableRules t rules $ (getApplicableRule (last h) rules []) : acc
+            h : t -> getApplicableRules t rules $ (getApplicableRule h rules []) : acc
 
     reduceY word =
         let reduceInternal smbs acc =
@@ -80,12 +80,14 @@ module SMInterpreter where
             h : t   | (last h) == accessWord -> Just h
                     | otherwise -> isHereAccessWord accessWord t
 
+    get_front wordss = map last wordss
+
     startInterpreting accessWord wordss rules m =
         case isHereAccessWord accessWord wordss of
             Just path -> (path, m)
             Nothing -> startInterpreting accessWord acc_apply rules new_m
         where
-            (acc_apply, new_m) = applyRuless wordss (getApplicableRules wordss rules []) m []
+            (acc_apply, new_m) = applyRuless wordss (getApplicableRules (get_front wordss) rules []) m []
 
     interpretSM :: Word -> SM -> Word -> [Word]
     interpretSM startWord sm accessWord = do
@@ -93,3 +95,37 @@ module SMInterpreter where
             let symmSmRules = (++) (srs sm) $ map symmetrization (srs sm)
             let (path, new_m) = startInterpreting accessWord [[startWord]] (symmSmRules) m
             path
+
+    getRestrictedGraph :: Word -> SM -> Int -> ([(Word, Int, Word)], Map Word Int)
+    getRestrictedGraph startWord sm height = do
+            let m = Map.fromList [(startWord, 1)]
+            let symmSmRules = srs sm ++ map symmetrization (srs sm)
+            let getRuleNumber rule = 
+                    case elemIndex rule $ reverse symmSmRules of
+                        Nothing -> error "Can't found the rule in set"
+                        Just i  -> (i `mod` l) + 1 
+                    where
+                        l = length $ srs sm
+            let applyRs old_word rules m front_acc acc =
+                    case rules of
+                        [] -> (acc, m, front_acc)
+                        h : t   | Map.member new_word m -> applyRs old_word t new_m front_acc $ acc
+                                | otherwise             -> applyRs old_word t new_m new_front_acc $ (old_word, getRuleNumber h, new_word) : acc
+                                                            where
+                                                                new_word = applyRule old_word h
+                                                                new_m = Map.insertWith (+) new_word 1 m
+                                                                new_front_acc = new_word : front_acc
+
+            let applyRss words ruless m front_acc acc =
+                    case (words, ruless) of
+                        ([], []) -> (acc, m, front_acc)
+                        (word : t1, rules : t2) -> applyRss t1 t2 new_m new_front_acc acc_apply
+                                                    where
+                                                        (acc_apply, new_m, new_front_acc) = applyRs word rules m front_acc acc
+                        _ -> error "Commandss and configss don't match"
+            let interpret words m i acc = if height > i then interpret new_front new_m (i + 1) acc_apply else (acc, m)
+                    where
+                        (acc_apply, new_m, new_front) = applyRss words (getApplicableRules words symmSmRules []) m [] acc
+
+            interpret [startWord] m 0 []
+            

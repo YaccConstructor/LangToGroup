@@ -27,6 +27,7 @@ import System.IO
 import qualified Data.Map.Strict as Map
 import SMInterpreter
 import Helpers
+import DotGraphWriter
 
 preambula :: LaTeXM ()
 preambula = 
@@ -80,14 +81,20 @@ example = execLaTeXM $
 -- main :: IO()
 -- main = do
 --     renderFile "out.tex" example 
+--     --putStrLn $ show $ render example 
 
 main :: IO()
 main = do
-    let s@(sm, w, as) = smFinal symSmallGroup
-    let inputSmb = map (\a -> SMType.SmbY $ SMType.Y a) $ mapValue ["a"]
-    let startWord = sigmaFunc as $ inputSmb : (replicate (length as - 1) [])
-    putStrLn $ show $ length $ interpretSM startWord sm w
-
+        putStrLn $ show $ foldl (+) 0 $ map snd $ Map.toList m
+        handle <- openFile "sm10.dot" WriteMode
+        writeGraph g handle
+        hClose handle
+        where 
+            s@(sm, w, as) = smFinal symSmallGroup
+            inputSmb = map (\a -> SMType.SmbY $ SMType.Y a) $ mapValue ["a"]
+            startWord = sigmaFunc as $ inputSmb : (replicate (length as - 1) [])
+            g@(graph, m) = getRestrictedGraph startWord sm 1
+    
 -- main :: IO()
 -- main = do
 --     --let (tm, w) = oneruleTM
