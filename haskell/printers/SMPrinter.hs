@@ -61,32 +61,32 @@ module SMPrinter where
 
     instance ShowLaTeX SMType.Word where
         doLaTeX (Word w) = 
-            foldl1 (\x y -> x <> " " <> y) $ map (\s -> math $ doLaTeX s) w 
+                math $ foldl1 (\x y -> x <> " " <> y) $ map (\s -> doLaTeX s) w 
  
     instance ShowLaTeX SRule where
         doLaTeX (SRule s) = foldl1 (\x y -> x <> lnbk <> y) $ map (\(w1,w2) -> doLaTeX w1 <> math to <> " " <> doLaTeX w2) s
 
-    substituteCommands rules = do
-        let tau i = "\\tau_{" ++ (show i) ++ "}"
-        
-        let substituteWord i w acc accNames =
-                case w of
-                    [] -> (i, reverse acc, accNames)
-                    smbq@(SmbQ s) : t 
-                        | isJust cmd && isNothing cmdInAcc -> substituteWord (i + 1) t (newSmbQ : acc) ((name, command) : accNames)
-                        | isJust cmd -> substituteWord i t (newSmbQ : acc) accNames
-                        | otherwise -> substituteWord i t (smbq : acc) accNames
-                            where 
-                                (Just sval) = s_val s 
-                                cmd = tmCommand sval
-                                (Just command) = cmd 
-                                cmdInAcc = find (\(_, c1) -> command == c1) accNames
-                                name = CommandAlias $ tau i
-                                newSmbQ = case cmdInAcc of 
-                                            Nothing -> SmbQ $ s {s_val = Just $ sval {tmCommand = Just name}}
-                                            (Just (n, c)) -> SmbQ $ s {s_val = Just $ sval {tmCommand = Just n}}
+    tau_alias i = "\\tau_{" ++ (show i) ++ "}"
 
-                    s : t -> substituteWord i t (s : acc) accNames
+    substituteWord i w acc accNames =
+        case w of
+            [] -> (i, reverse acc, accNames)
+            smbq@(SmbQ s) : t 
+                | isJust cmd && isNothing cmdInAcc -> substituteWord (i + 1) t (newSmbQ : acc) ((name, command) : accNames)
+                | isJust cmd -> substituteWord i t (newSmbQ : acc) accNames
+                | otherwise -> substituteWord i t (smbq : acc) accNames
+                    where 
+                        (Just sval) = s_val s 
+                        cmd = tmCommand sval
+                        (Just command) = cmd 
+                        cmdInAcc = find (\(_, c1) -> command == c1) accNames
+                        name = CommandAlias $ tau_alias i
+                        newSmbQ = case cmdInAcc of 
+                                    Nothing -> SmbQ $ s {s_val = Just $ sval {tmCommand = Just name}}
+                                    (Just (n, c)) -> SmbQ $ s {s_val = Just $ sval {tmCommand = Just n}}
+            s : t -> substituteWord i t (s : acc) accNames
+
+    substituteCommands rules = do
         let substituteRule i rule acc accNames =
                 case rule of
                     (Word w1, Word w2) : t -> substituteRule newI2 t ((Word newWord1, Word newWord2) : acc) newNames2

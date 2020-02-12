@@ -76,7 +76,7 @@ example = execLaTeXM $
             -- doLaTeX $ symTmWithoutKPlusOneTape $ fst $ oneruleTM
             -- doLaTeX symSmallGroup
             -- newpage
-            doLaTeX $ tripleSnd $ smFinal symSmallGroup
+            doLaTeX $ tripleFst $ smFinal symSmallGroup
 
 -- main :: IO()
 -- main = do
@@ -85,15 +85,22 @@ example = execLaTeXM $
 
 main :: IO()
 main = do
-        putStrLn $ show $ foldl (+) 0 $ map snd $ Map.toList m
-        handle <- openFile "sm10.dot" WriteMode
-        writeGraph g handle
-        hClose handle
-        where 
-            s@(sm, w, as) = smFinal symSmallGroup
-            inputSmb = map (\a -> SMType.SmbY $ SMType.Y a) $ mapValue ["a"]
-            startWord = sigmaFunc as $ inputSmb : (replicate (length as - 1) [])
-            g@(graph, m) = getRestrictedGraph startWord sm 1
+        let s@(sm, w, as) = smFinal symSmallGroup
+        let inputSmb = map (\a -> SMType.SmbY $ SMType.Y a) $ mapValue ["a"]
+        let startWord = sigmaFunc as $ inputSmb : (replicate (length as - 1) [])
+        putStrLn $ show $ length $ interpretSM startWord sm w
+
+-- main :: IO()
+-- main = do
+--         putStrLn $ show $ (foldl (+) 0 $ map snd $ Map.toList m) - length m
+--         handle <- openFile "sm10.dot" WriteMode
+--         writeGraph g handle
+--         hClose handle
+--         where 
+--             s@(sm, w, as) = smFinal symSmallGroup
+--             inputSmb = map (\a -> SMType.SmbY $ SMType.Y a) $ mapValue ["a"]
+--             startWord = sigmaFunc as $ inputSmb : (replicate (length as - 1) [])
+--             g@(graph, m) = getRestrictedGraph startWord sm 11
     
 -- main :: IO()
 -- main = do

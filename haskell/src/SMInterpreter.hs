@@ -12,6 +12,7 @@ module SMInterpreter where
     import Data.List (isInfixOf, elemIndex)
     import Data.Map (Map)
     import qualified Data.Map as Map
+    import Debug.Trace
 
     checkRule :: Word -> SRule -> Bool
     checkRule (Word word) (SRule rule) = do
@@ -106,26 +107,26 @@ module SMInterpreter where
                         Just i  -> (i `mod` l) + 1 
                     where
                         l = length $ srs sm
-            let applyRs old_word rules m front_acc acc =
+            let applyRs old_word rules m front_acc k acc =
                     case rules of
-                        [] -> (acc, m, front_acc)
-                        h : t   | Map.member new_word m -> applyRs old_word t new_m front_acc $ acc
-                                | otherwise             -> applyRs old_word t new_m new_front_acc $ (old_word, getRuleNumber h, new_word) : acc
+                        [] -> (acc, m, front_acc, k)
+                        h : t   | Map.member new_word m -> applyRs old_word t new_m front_acc (k + 1) acc
+                                | otherwise             -> applyRs old_word t new_m new_front_acc k $ (old_word, getRuleNumber h, new_word) : acc
                                                             where
                                                                 new_word = applyRule old_word h
                                                                 new_m = Map.insertWith (+) new_word 1 m
                                                                 new_front_acc = new_word : front_acc
 
-            let applyRss words ruless m front_acc acc =
+            let applyRss words ruless m front_acc k acc =
                     case (words, ruless) of
-                        ([], []) -> (acc, m, front_acc)
-                        (word : t1, rules : t2) -> applyRss t1 t2 new_m new_front_acc acc_apply
+                        ([], []) -> (acc, m, front_acc, k)
+                        (word : t1, rules : t2) -> applyRss t1 t2 new_m new_front_acc new_k acc_apply
                                                     where
-                                                        (acc_apply, new_m, new_front_acc) = applyRs word rules m front_acc acc
+                                                        (acc_apply, new_m, new_front_acc, new_k) = applyRs word rules m front_acc k acc
                         _ -> error "Commandss and configss don't match"
-            let interpret words m i acc = if height > i then interpret new_front new_m (i + 1) acc_apply else (acc, m)
+            let interpret words m i k acc = if height > i then interpret new_front new_m (i + 1) new_k acc_apply else (acc, m)
                     where
-                        (acc_apply, new_m, new_front) = applyRss words (getApplicableRules words symmSmRules []) m [] acc
+                        (acc_apply, new_m, new_front, new_k) = applyRss words (getApplicableRules words symmSmRules []) m [] k acc
 
-            interpret [startWord] m 0 []
+            interpret [startWord] m 0 1 []
             

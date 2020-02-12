@@ -12,24 +12,30 @@ import Lib
 import Data.Map (Map)
 import qualified Data.Map as Map
 import Data.Maybe
+import Helpers
 
 tex2text tex = show $ render $ execLaTeXM tex
+
+substCommandsInWord (Word word) = Word $ tripleSnd $ substituteWord 0 word [] []
 
 writeGraph :: ([(Word, Int, Word)], Map Word Int) -> Handle -> IO ()
 writeGraph graph_map handle =
             do  hPutStr handle "digraph graphname {\n"
+                hPutStr handle "node [shape=none]\n"
                 mapM_ ( \x -> 
                             hPutStr handle ((fromJust $ Map.lookup x str_m) ++ " [label=" ++
-                            (tex2text $ doLaTeX x) ++
-                            "];\n")) a
+                            (tex2text $ doLaTeX $ substCommandsInWord x) ++
+                            "];\n") <>
+                            hFlush handle) a
                 mapM_ ( \(from, rule_i, to) -> 
                                 hPutStr handle (
                                 (fromJust $ Map.lookup from str_m) ++ 
                                 " -> " ++
                                 (fromJust $ Map.lookup to str_m) ++ 
-                                "[label=\"" ++
+                                "[label=\" " ++
                                 (show rule_i) ++
-                                "\"];\n")) graph
+                                " \"];\n") <>
+                                hFlush handle) graph
                 hPutStr handle "}\n"
                 hFlush handle
                         where 

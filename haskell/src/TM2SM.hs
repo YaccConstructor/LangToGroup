@@ -254,16 +254,18 @@ createSMs y =
             SM (yn sm1) (map Set.unions $ transpose [qn sm8', qn sm8c]) (srs sm8' ++ srs sm8c)
             
         smAlpha :: SM
-        smAlpha = SM [[alpha],[alpha]] (map Set.fromList [[e],[x0,x1,x2],[f]]) [SRule [(Word [SmbQ x0], Word [SmbY' alpha, SmbQ x0, SmbY alpha]),
-                                                                            (Word [SmbQ e, SmbQ x0], Word [SmbQ e, SmbQ x1]),
-                                                                            (Word [SmbQ x1], Word [SmbY alpha, SmbQ x1, SmbY' alpha]),
-                                                                            (Word [SmbQ x1, SmbQ f], Word [SmbQ x2, SmbQ f])]]
+        smAlpha = SM [[alpha],[alpha]] (map Set.fromList [[e],[x0,x1,x2],[f]]) 
+                                                                                [SRule [(Word [SmbQ x0], Word [SmbY' alpha, SmbQ x0, SmbY alpha])],
+                                                                                SRule [(Word [SmbQ e, SmbQ x0], Word [SmbQ e, SmbQ x1])],
+                                                                                SRule [(Word [SmbQ x1], Word [SmbY alpha, SmbQ x1, SmbY' alpha])],
+                                                                                SRule [(Word [SmbQ x1, SmbQ f], Word [SmbQ x2, SmbQ f])]]
             
         smOmega :: SM
-        smOmega = SM [[omega],[omega]] (map Set.fromList [[e'],[x0',x1',x2'],[f']]) [SRule [(Word [SmbQ x0'], Word [SmbY omega, SmbQ x0', SmbY' omega]),
-                                                                                (Word [SmbQ x0', SmbQ f'], Word [SmbQ x1', SmbQ f']),
-                                                                                (Word [SmbQ x1'], Word [SmbY' omega, SmbQ x1', SmbY omega]),
-                                                                                (Word [SmbQ e', SmbQ x1'], Word [SmbQ e', SmbQ x2'])]]
+        smOmega = SM [[omega],[omega]] (map Set.fromList [[e'],[x0',x1',x2'],[f']]) 
+                                                                                [SRule [(Word [SmbQ x0'], Word [SmbY omega, SmbQ x0', SmbY' omega])],
+                                                                                SRule [(Word [SmbQ x0', SmbQ f'], Word [SmbQ x1', SmbQ f'])],
+                                                                                SRule [(Word [SmbQ x1'], Word [SmbY' omega, SmbQ x1', SmbY omega])],
+                                                                                SRule [(Word [SmbQ e', SmbQ x1'], Word [SmbQ e', SmbQ x2'])]]
             
    in
       [sm4, sm9 y, smAlpha, smOmega]
@@ -408,8 +410,8 @@ createConnectingRules cmd = do
             Word [q4 TAlpha, r4 TAlpha, s4 TAlpha, t4 TAlpha, u4 TAlpha]),
             (Word [e 0 T4], Word [e 0 TAlpha]),
             (Word [fl' T4], Word [fl' TAlpha]),
-            (Word [pd i T4, qd i T4, rd i T4, sd i T4, td i T4, ud i T4, f' (getFromJ i) i T4], 
-            Word [pd i TAlpha, qd i TAlpha, rd i TAlpha, sd i TAlpha, td i TAlpha, ud i TAlpha, f' (getToJ i) i TAlpha])]
+            (Word [pd4 T4, qd4 T4, rd4 T4, sd4 T4, td4 T4, ud4 T4, f' (getFromJ i) i T4], 
+            Word [pd4 TAlpha, qd4 TAlpha, rd4 TAlpha, sd4 TAlpha, td4 TAlpha, ud4 TAlpha, f' (getToJ i) i TAlpha])]
             $ concat 
             [[(Word [e j T4], Word [e j TAlpha]),
             (Word [x j T4, f (getFromJ j) j T4, e' j T4, p j T4], 
