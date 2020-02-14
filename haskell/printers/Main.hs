@@ -100,7 +100,7 @@ main = do
 --             s@(sm, w, as) = smFinal symSmallGroup
 --             inputSmb = map (\a -> SMType.SmbY $ SMType.Y a) $ mapValue ["a"]
 --             startWord = sigmaFunc as $ inputSmb : (replicate (length as - 1) [])
---             g@(graph, m) = getRestrictedGraph startWord sm 11
+--             g@(graph, m) = getRestrictedGraph startWord sm 13
     
 -- main :: IO()
 -- main = do

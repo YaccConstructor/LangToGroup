@@ -447,7 +447,7 @@ createConnectingRules cmd = do
             SRule $ (++)
             [(Word [e 0 TOmega], Word [e 0 T9]),
             (Word [x 0 TOmega, f0 TOmega], Word [x 0 T9, f0 T9]),
-            (Word [e' (k + 1) TOmega, x_idx' "2" (k + 1) TOmega], Word [e' (k + 1) TOmega, x' (k + 1) T9]),
+            (Word [e' (k + 1) TOmega, x_idx' "2" (k + 1) TOmega], Word [e' (k + 1) T9, x' (k + 1) T9]),
             (Word [fl' TOmega], Word [fl' T9])]
             $ changeMachine TOmega T9
 

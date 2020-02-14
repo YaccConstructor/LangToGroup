@@ -13,6 +13,8 @@ import Data.Map (Map)
 import qualified Data.Map as Map
 import Data.Maybe
 import Helpers
+import qualified TMType
+import Data.Set (Set, fromList)
 
 tex2text tex = show $ render $ execLaTeXM tex
 
@@ -20,7 +22,8 @@ substCommandsInWord (Word word) = Word $ tripleSnd $ substituteWord 0 word [] []
 
 writeGraph :: ([(Word, Int, Word)], Map Word Int) -> Handle -> IO ()
 writeGraph graph_map handle =
-            do  hPutStr handle "digraph graphname {\n"
+            do  
+                hPutStr handle "digraph graphname {\n"
                 hPutStr handle "node [shape=none]\n"
                 mapM_ ( \x -> 
                             hPutStr handle ((fromJust $ Map.lookup x str_m) ++ " [label=" ++
