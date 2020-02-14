@@ -86,9 +86,11 @@ module SMInterpreter where
     startInterpreting accessWord wordss rules m =
         case isHereAccessWord accessWord wordss of
             Just path -> (path, m)
-            Nothing -> startInterpreting accessWord acc_apply rules new_m
+            Nothing | ruless == [[]]    -> error "No rule is applicable"
+                    | otherwise         -> startInterpreting accessWord acc_apply rules new_m
         where
-            (acc_apply, new_m) = applyRuless wordss (getApplicableRules (get_front wordss) rules []) m []
+            ruless = getApplicableRules (get_front wordss) rules []
+            (acc_apply, new_m) = applyRuless wordss ruless m []
 
     interpretSM :: Word -> SM -> Word -> [Word]
     interpretSM startWord sm accessWord = do
