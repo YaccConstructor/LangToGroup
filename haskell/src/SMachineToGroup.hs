@@ -47,8 +47,8 @@ smToGRInternal (SMType.SM yn
         a = concat [s, k, y, q, src]
         transition = transitionRelations sRules ql
         auxiliary = [ Relation ([SmbA t, SmbA x], [SmbA x, SmbA t]) | x <- (s ++ y ++ k), t <- src ]
-        --hub = Relator $ hubRelation w0
-        hub = Relator $ easyHubRelation w0
+        hub = Relator $ hubRelation w0
+        --hub = Relator $ easyHubRelation w0
         relations = auxiliary ++ transition ++ [hub]
 
 smToGR :: (SMType.SM, SMType.Word) -> GRType.GR
