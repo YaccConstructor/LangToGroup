@@ -14,6 +14,7 @@ import TMInterpreter
 import ConfigType
 import Helpers
 import SMTests
+import GrTests
 
 
 test1Grammar = grammar where
@@ -159,5 +160,6 @@ main = defaultMainWithOpts
        [testCase "simple cfg to TM map" simpleCfgToTMMapTest,
         testCase "cft to TM to config test" configsTest,
         testCase "simple sm test" smInterpretationTest,
-        testCase "sm test 2" smInterpretationTest2]
+        testCase "sm test 2" smInterpretationTest2,
+        testCase "sm2gr test" sm2GrTest]
        mempty

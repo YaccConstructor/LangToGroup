@@ -61,6 +61,6 @@ newtype SRule = SRule [(Word, Word)]
    deriving (Eq, Ord)
 
 instance Show SRule where
-   show (SRule s) = "[" ++ (foldr (\(w1,w2) acc -> show w1 ++ "->" ++ show w2 ++ ";") "" s) ++ "]\n" 
+   show (SRule s) = "[" ++ (foldr (\(w1,w2) acc -> show w1 ++ "->" ++ show w2 ++ ";" ++ acc) "" s) ++ "]\n" 
 
 data SM =  SM {yn :: [[Y]], qn :: [Set State], srs :: [SRule]} deriving (Show, Eq, Ord)

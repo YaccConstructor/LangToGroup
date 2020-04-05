@@ -26,6 +26,7 @@ library
       CfgToTMMapper
       ConfigType
       GapFuncWriter
+      MapleFuncWriter
       GrammarType
       GRType
       Helpers
@@ -76,6 +77,7 @@ test-suite LangToGroup-test
   main-is: Spec.hs
   other-modules:
       SMTests
+      GrTests
       Paths_LangToGroup
   hs-source-dirs:
       test

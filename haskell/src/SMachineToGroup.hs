@@ -30,15 +30,16 @@ hubRelation (Word w0) = posPart ++ negPart
         negation x = case x of SmbA y -> SmbA' y ; SmbA' y -> SmbA y 
         negationWord = foldl (\x y -> (negation y) : x) []
         posPart = foldl (\x (i, y) -> x ++ (case i `mod` 2 == 0 of True -> word ; False -> negationWord word) ++ [SmbA y]) [] $ zip [1..] k 
-        negPart = negationWord . reverse . foldl (\x (i, y) -> x ++ (case i `mod` 2 == 0 of False -> word ; True -> negationWord word) ++ [SmbA y]) [] $ zip [1..] k
+        negPart = negationWord . foldl (\x (i, y) -> x ++ [SmbA y] ++ (case i `mod` 2 == 0 of False -> word ; True -> negationWord word)) [] $ reverse $ zip [1..] k
 
-smToGR :: (SMType.SM, SMType.Word) -> GRType.GR
-smToGR (SMType.SM yn 
+easyHubRelation (Word w0) = [SmbA $ (!!) k 0] ++ (map smb2As w0) ++ [SmbA $ (!!) k 1]
+
+smToGRInternal :: (SMType.SM, SMType.Word) -> [A] -> GRType.GR
+smToGRInternal (SMType.SM yn 
                   qn
-                  sRules, w0)
-        = GRType.GR (a, relations)
-        where 
-        s = [A_Y alpha, A_Y omega, A_Y delta]
+                  sRules, w0) s
+        = GRType.GR (Set.fromList a, Set.fromList relations)
+        where
         ql = map Set.toList qn
         q = map (A_Q $) $ concat ql
         y = map (A_Y $) $ concat yn
@@ -46,5 +47,12 @@ smToGR (SMType.SM yn
         a = concat [s, k, y, q, src]
         transition = transitionRelations sRules ql
         auxiliary = [ Relation ([SmbA t, SmbA x], [SmbA x, SmbA t]) | x <- (s ++ y ++ k), t <- src ]
-        hub = Relator $ hubRelation w0
+        --hub = Relator $ hubRelation w0
+        hub = Relator $ easyHubRelation w0
         relations = auxiliary ++ transition ++ [hub]
+
+smToGR :: (SMType.SM, SMType.Word) -> GRType.GR
+smToGR sw = smToGRInternal sw [A_Y alpha, A_Y omega, A_Y delta]
+
+smToGREmpty :: (SMType.SM, SMType.Word) -> GRType.GR
+smToGREmpty sw = smToGRInternal sw []

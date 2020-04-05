@@ -7,6 +7,7 @@ import qualified TMType
 import Data.List (transpose, groupBy, sortBy, length, zip4)
 import Data.Maybe (fromJust, catMaybes)
 import Debug.Trace (trace)
+import TM2TM' (renameRightLeftBoundings)
 
 
 devidePositiveNegativeCommands :: [[TMType.TapeCommand]] -> ([[TMType.TapeCommand]], [[TMType.TapeCommand]], [[TMType.TapeCommand]], [[TMType.TapeCommand]])
@@ -572,7 +573,8 @@ smFinal (TMType.TM (inputAlphabet,
         [ps,qs,rs,ss,ts,us,pds,qds,rds,sds,tds,uds] = [standatdState name tag | name <- [P, Q, R, S, T, U], tag <- [eTag, dashTag]]
         standardStates = foldr (++) [] [es, e's, fs, f's, xs, ps, qs, rs, ss, ts, us, pds, qds, rds, sds, tds, uds]
 
-        (pos21, pos22, neg21, neg22) = devidePositiveNegativeCommands $ Set.toList commandsSet
+        commands = renameRightLeftBoundings $ Set.toList commandsSet
+        (pos21, pos22, neg21, neg22) = devidePositiveNegativeCommands $ commands
         sms = [[f $ Command c | f <- zipWith copySMForCommand (createSMs $ (!!) y $ (snd $ getai c) - 1) gamma] | c <- pos21 ]
         smsRules = concatMap srs $ concat $ sms
         groupByStates s1 s2 = s_name e1 == s_name e2 

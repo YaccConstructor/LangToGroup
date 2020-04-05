@@ -248,21 +248,20 @@ one2TwoKCommands (multiTapeStates, commands) = do
 intermediateStateSingleInsertDeleteTransform = intermediateStateOne2TwoKTransform
 
 transform2SingleInsertDeleteCommand (tapeStates, commands) = do 
-    let transformCommand tapeStates command acc1 acc2 accTape =
-            case (command, tapeStates) of
-                (SingleTapeCommand ((l1, s1, r1), (l2, s2, r2)) : t, tape : tt)
-                    | l1 /= emptySymbol && l1 /= leftBoundingLetter && l2 /= emptySymbol -> 
-                        transformCommand tt t (SingleTapeCommand ((l1, s1, r1), (emptySymbol, intermediateState, r2)) : acc1) (SingleTapeCommand ((emptySymbol, intermediateState, r1), (l2, s2, r2)) : acc2) (Set.insert intermediateState tape : accTape)
-                    | otherwise -> 
-                        transformCommand tt t (SingleTapeCommand ((l1, s1, r1), (l2, s2, r2)) : acc1) (SingleTapeCommand ((l1, s1, r1), (l2, s2, r2)) : acc2) (tape : accTape)
-                            where intermediateState = intermediateStateSingleInsertDeleteTransform tape
-                ([], [])    | acc1 == acc2 -> (reverse accTape, [reverse acc1]) 
-                            | otherwise -> (reverse accTape, [reverse acc1, reverse acc2])
+    let transformCommand tapeStates command = (newTapeStates, [c1, c2])
+            where 
+                func (SingleTapeCommand ((l1, s1, r1), (l2, s2, r2))) tape = (SingleTapeCommand ((l1, s1, r1), (emptySymbol, intermediateState, r1)), SingleTapeCommand ((emptySymbol, intermediateState, r1), (l2, s2, r2)), Set.insert intermediateState tape)
+                    where 
+                        intermediateState = intermediateStateSingleInsertDeleteTransform tape
+                (c1, c2, newTapeStates) = unzip3 $ zipWith func command tapeStates
+    
+    let checkLeftBounding command = all (\(SingleTapeCommand ((l1, _, _), (l2, _, _))) -> l1 == leftBoundingLetter || l1 == emptySymbol || l2 == emptySymbol) command
 
     let transform2SingleInsertDeleteCommandInternal tapeStates commands acc =
             case commands of
-                h : t -> transform2SingleInsertDeleteCommandInternal newTapeStates t $ newCommands ++ acc
-                            where   (newTapeStates, newCommands) = transformCommand tapeStates h [] [] []
+                h : t   | checkLeftBounding h -> transform2SingleInsertDeleteCommandInternal tapeStates t $ h : acc
+                        | otherwise -> transform2SingleInsertDeleteCommandInternal newTapeStates t $ newCommands ++ acc
+                            where   (newTapeStates, newCommands) = transformCommand tapeStates h
                 [] -> (tapeStates, acc)
                     
     transform2SingleInsertDeleteCommandInternal tapeStates commands []
@@ -311,13 +310,14 @@ symTmWithoutKPlusOneTape (TM (inputAlphabet,
             AccessStates accessStates)
             ) = do
 
-    let commands = symCommands $ Set.toList commandsSet
+    let commands = Set.toList commandsSet
     let (newStartStates, newAccessStates, newTapeAlphabets, doubledTapeStates, doubledCommands) = doubleCommands startStates accessStates tapeAlphabets multiTapeStates commands
     let (newTapeStates, newTMCommands) =    transform2SingleInsertDeleteCommand $ 
                                             one2TwoKCommands (doubledTapeStates, doubledCommands)
     TM (inputAlphabet, 
         newTapeAlphabets, 
         MultiTapeStates newTapeStates, 
-        Commands (Set.fromList $ renameRightLeftBoundings newTMCommands), 
+        --Commands (Set.fromList $ renameRightLeftBoundings newTMCommands),
+        Commands (Set.fromList $ symCommands newTMCommands), 
         StartStates newStartStates, 
         AccessStates newAccessStates)

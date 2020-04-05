@@ -28,6 +28,7 @@ import qualified Data.Map.Strict as Map
 import SMInterpreter
 import Helpers
 import DotGraphWriter
+import MapleFuncWriter
 
 preambula :: LaTeXM ()
 preambula = 
@@ -48,9 +49,9 @@ example = execLaTeXM $
             -- doLaTeX $ mapCfgToTM testGrammar
             -- -- doLaTeX $ interpretTM ["a"] $ mapCfgToTM testGrammar
             -- newpage
-            -- -- doLaTeX $ mapTM2TM' $ mapCfgToTM testGrammar
-            -- -- newpage
-            -- -- doLaTeX $ smFinal $ mapTM2TM' $ mapCfgToTM testGrammar
+            -- doLaTeX $ symTmWithoutKPlusOneTape $ mapCfgToTM testGrammar
+            -- newpage
+            -- doLaTeX $ tripleFst $ smFinal $ symTmWithoutKPlusOneTape $ mapCfgToTM testGrammar
             -- doLaTeX epsTestGrammar
             -- doLaTeX $ mapCfgToTM epsTestGrammar
             -- -- doLaTeX $ interpretTM ["a"] $ mapCfgToTM epsTestGrammar
@@ -73,22 +74,35 @@ example = execLaTeXM $
             -- doLaTeX $ mapCfgToTM ab3TestGrammar
             -- -- doLaTeX $ interpretTM ["b", "a", "b", "a"] $ mapCfgToTM ab3TestGrammar
             -- -- doLaTeX $ fst $ smFinal tmForTestSm
-            -- doLaTeX $ symTmWithoutKPlusOneTape $ fst $ oneruleTM
-            -- doLaTeX symSmallGroup
+            doLaTeX $ symTmWithoutKPlusOneTape $ mapCfgToTM testGrammar
+            --doLaTeX $ tripleFst $ smFinal $ symTmWithoutKPlusOneTape $ fst $ oneruleTM
+            -- doLaTeX symSmallMachine
             -- newpage
-            doLaTeX $ tripleFst $ smFinal symSmallGroup
+            --doLaTeX $ tripleFst $ smFinal symSmallMachine
 
 -- main :: IO()
 -- main = do
 --     renderFile "out.tex" example 
---     --putStrLn $ show $ render example 
+
+-- main :: IO()
+-- main = do
+--         let tm = symTmWithoutKPlusOneTape $ mapCfgToTM testGrammar
+--         let input = ["a"]
+--         putStrLn $ show $ interpretTM input tm
 
 main :: IO()
 main = do
-        let s@(sm, w, as) = smFinal symSmallGroup
+        let s@(sm, w, as) = smFinal $ symTmWithoutKPlusOneTape $ mapCfgToTM testGrammar
         let inputSmb = map (\a -> SMType.SmbY $ SMType.Y a) $ mapValue ["a"]
         let startWord = sigmaFunc as $ inputSmb : (replicate (length as - 1) [])
         putStrLn $ show $ length $ interpretSM startWord sm w
+
+-- main :: IO()
+-- main = do
+--         let s@(sm, w, as) = smFinal symSmallMachine
+--         let inputSmb = map (\a -> SMType.SmbY $ SMType.Y a) $ mapValue ["a"]
+--         let startWord = sigmaFunc as $ inputSmb : (replicate (length as - 1) [])
+--         putStrLn $ show $ length $ interpretSM startWord sm w
 
 -- main :: IO()
 -- main = do
@@ -97,31 +111,79 @@ main = do
 --         writeGraph g handle
 --         hClose handle
 --         where 
---             s@(sm, w, as) = smFinal symSmallGroup
+--             s@(sm, w, as) = smFinal $ symTmWithoutKPlusOneTape $ mapCfgToTM testGrammar
 --             inputSmb = map (\a -> SMType.SmbY $ SMType.Y a) $ mapValue ["a"]
 --             startWord = sigmaFunc as $ inputSmb : (replicate (length as - 1) [])
---             g@(graph, m) = getRestrictedGraph startWord sm 13
+--             g@(graph, m) = getRestrictedGraph startWord sm 1
     
 -- main :: IO()
 -- main = do
---     --let (tm, w) = oneruleTM
---     --let tm'@(TM (inp, tapes, states, Commands cmds, StartStates start, access)) = symTmWithoutKPlusOneTape tm
---     --let sw = hubRelation $ sigmaFunc start w
---     let smw@(sm, w) = smFinal $ symSmallGroup
---     let gr@(GR (a, r)) = smToGR $ smw
---    -- putStrLn $ (show $ length cmds)
---     putStrLn $ (show $ length $ SMType.srs sm)
+--     let smw@(sm, w0, as) = smFinal $ symSmallMachine
+--     --let (sm, w0, word) = oneRuleSm
+--     let gr@(GR (a, r)) = smToGR (sm, w0)
+--     --let (gr@(GR (a, r)), word) = oneRuleGr
+--     --putStrLn $ (show $ length $ SMType.srs sm)
 --     putStrLn $ (show $ length a) ++ " " ++ (show $ length r)
---     let genmap = Map.fromList $ zip a $ map ((++) "f." . show) [1..]
---     do fhandle <- openFile "oneruleTM.txt" WriteMode
+--     let genmap = Map.fromList $ zip (Set.toList a) $ map ((++) "f." . show) [1..]
+--     let inputSmb = map (\a -> SMType.SmbY $ SMType.Y a) $ mapValue ["a"]
+--     let startSMWord = sigmaFunc as $ inputSmb : (replicate (length as - 1) [])
+--     let word = easyHubRelation startSMWord
+--     let fword = foldl1 (\x y -> x ++ "*" ++ y) $ map (printSmb genmap) word 
+--     putStrLn fword
+--     do fhandle <- openFile "symSmallMachineGroup.txt" WriteMode
 --        writeGap gr fhandle genmap
 --        hFlush fhandle
 --        hClose fhandle
---     -- do handle <- openFile "oneruleTMWord.txt" WriteMode
---     --    writeWord sw handle genmap
---     --    hFlush handle
---     --    hClose handle
 
+-- main :: IO()
+-- main = do
+--     let (sm, accessWord, startWord, word) = aStarSMachine
+--     let gr@(GR (a, r)) = smToGR (sm, accessWord)
+--     putStrLn $ (show $ length a) ++ " " ++ (show $ length r)
+--     let genmap = Map.fromList $ zip (Set.toList a) $ map ((++) "f." . show) [1..]
+--     --let word = foldl (\acc x -> [(SmbA' $ A_R x)] ++ acc ++ [(SmbA $ A_R x)]) (easyHubRelation startWord) $ SMType.srs sm
+--     --putStrLn $ show word
+--     let fword = foldl1 (\x y -> x ++ "*" ++ y) $ map (printSmb genmap) word 
+--     putStrLn fword
+--     do fhandle <- openFile "aStarSMachineGroup.txt" WriteMode
+--        writeGap gr fhandle genmap
+--        hFlush fhandle
+--        hClose fhandle
+
+oneRuleGr = do
+    let y = SMType.Y $ TMType.Value "a"
+    let q0 = SMType.State SMType.Q "0" (Set.fromList []) Nothing
+    let q1 = SMType.State SMType.Q "1" (Set.fromList []) Nothing
+    let q0' = SMType.State SMType.Q "2" (Set.fromList []) Nothing
+    let q1' = SMType.State SMType.Q "3" (Set.fromList []) Nothing
+    let from1 = SMType.Word [SMType.SmbQ q0]
+    let to1 = SMType.Word [SMType.SmbQ q0', SMType.SmbY' y]
+    let from2 = SMType.Word [SMType.SmbQ q1]
+    let to2 = SMType.Word [SMType.SmbQ q1']
+    let r = SMType.SRule $ [(from1, to1), (from2, to2)]
+    let as = [A_Y y, A_Q q0, A_Q q1, A_Q q0', A_Q q1', A_R r, A_K 1, A_K 2]
+    let powr x = (GRType.SmbA' $ A_R r) : x ++ [GRType.SmbA $ A_R r]
+    let u = hubRelation $ SMType.Word $ [SMType.SmbQ q0', SMType.SmbQ q1']
+    let relations = [   GRType.Relation (powr [smb2As $ SMType.SmbQ q0], map smb2As [SMType.SmbQ q0', SMType.SmbY' y]),
+                        GRType.Relation (powr [smb2As $ SMType.SmbQ q1], [smb2As $ SMType.SmbQ q1'])] ++
+                        [GRType.Relation ([GRType.SmbA $ A_R r, GRType.SmbA $ A_Y y], [GRType.SmbA $ A_Y y, GRType.SmbA $ A_R r])] ++
+                        [GRType.Relator u]
+    let startWord = hubRelation $ SMType.Word [SMType.SmbQ q0, SMType.SmbY y, SMType.SmbQ q1]
+    (GR (Set.fromList as, Set.fromList relations), startWord)
+
+oneRuleSm = do
+    let y = SMType.Y $ TMType.Value "a"
+    let q0 = SMType.State SMType.Q "0" (Set.fromList []) Nothing
+    let q1 = SMType.State SMType.Q "1" (Set.fromList []) Nothing
+    let q0' = SMType.State SMType.Q "2" (Set.fromList []) Nothing
+    let q1' = SMType.State SMType.Q "3" (Set.fromList []) Nothing
+    let from1 = SMType.Word [SMType.SmbQ q0]
+    let to1 = SMType.Word [SMType.SmbQ q0', SMType.SmbY' y]
+    let from2 = SMType.Word [SMType.SmbQ q1]
+    let to2 = SMType.Word [SMType.SmbQ q1']
+    let r = SMType.SRule $ [(from1, to1), (from2, to2)]
+    let startWord = hubRelation $ SMType.Word [SMType.SmbQ q0, SMType.SmbY y, SMType.SmbQ q1]
+    (SMType.SM [[y]] [Set.fromList [q0, q0'], Set.fromList [q1, q1']] [r], SMType.Word [SMType.SmbQ q0', SMType.SmbQ q1'], startWord)
 
 printCount grammar@(Grammar (n, t, r, _, _)) = do
     putStrLn $ "T: " ++ (show $ length t) ++ " N: " ++ (show $ length n) ++ " R: " ++ (show $ length r) 
@@ -141,7 +203,7 @@ printCount grammar@(Grammar (n, t, r, _, _)) = do
     let smQ = foldl (\acc a -> acc + length a) 0 (SMType.qn sm)
     putStrLn $ "smY: " ++ (show $ length smY) ++ " smQ: " ++ (show smQ) ++ " smR: " ++ (show $ length $ SMType.srs sm)
 
-    let gr@(GR (a, r)) = smToGR $ (sm, w)
+    let gr@(GR (a, r)) = smToGR (sm, w)
     putStrLn $ "A: " ++ (show $ length a) ++ " R: " ++ (show $ length r)
     putStrLn ""
 
@@ -156,7 +218,7 @@ printCount grammar@(Grammar (n, t, r, _, _)) = do
 --     putStrLn $ "Dyck"
 --     printCount ab2TestGrammar
 
-symSmallGroup = tm where
+symSmallMachine = tm where
     a = Value "a"
     q0 = State "q_0^1"
     q1 = State "q_1^1"
@@ -169,6 +231,58 @@ symSmallGroup = tm where
     start = StartStates [q0]
     access = AccessStates [q1]
     tm = TM (inp, tapes, states, cmds, start, access)
+
+aStarSMachine = (SMType.SM alphabet states relations, accessWord, startWord, word) 
+    where
+    a = SMType.Y $ TMType.Value "a"
+    a1 = SMType.Y $ TMType.Value "a_1"
+    a2 = SMType.Y $ TMType.Value "a_2"
+    alphabet = [[a, a1], [a2]]
+    q0 = SMType.State SMType.Q "0" (Set.fromList []) Nothing
+    q1 = SMType.State SMType.Q "1" (Set.fromList []) Nothing
+    q2 = SMType.State SMType.Q "2" (Set.fromList []) Nothing
+    alp = SMType.State SMType.E "" (Set.fromList []) Nothing
+    alp1 = SMType.State SMType.E "1" (Set.fromList []) Nothing
+    alp2 = SMType.State SMType.E "2" (Set.fromList []) Nothing
+    alp3 = SMType.State SMType.E "3" (Set.fromList []) Nothing
+    p = SMType.State SMType.P "" (Set.fromList []) Nothing
+    p1 = SMType.State SMType.P "1" (Set.fromList []) Nothing
+    p2 = SMType.State SMType.P "2" (Set.fromList []) Nothing
+    p3 = SMType.State SMType.P "3" (Set.fromList []) Nothing
+    states = [Set.fromList [alp, alp1, alp2, alp3], Set.fromList [p, p1, p2, p3], Set.fromList [q0, q1, q2]]
+    r1 = SMType.SRule $ [   (SMType.Word [SMType.SmbQ alp], SMType.Word [SMType.SmbQ alp1]), 
+                            (SMType.Word [SMType.SmbQ p, SMType.SmbQ q1], SMType.Word [SMType.SmbQ p, SMType.SmbQ q1])]
+    r2 = SMType.SRule $ [   (SMType.Word [SMType.SmbQ alp1], SMType.Word [SMType.SmbQ alp]), 
+                            (SMType.Word [SMType.SmbQ p, SMType.SmbQ q1], SMType.Word [SMType.SmbY' a, SMType.SmbQ p, SMType.SmbQ q2])]
+    r3 = SMType.SRule $ [   (SMType.Word [SMType.SmbQ alp], SMType.Word [SMType.SmbQ alp2]), 
+                            (SMType.Word [SMType.SmbQ p, SMType.SmbQ q2], SMType.Word [SMType.SmbQ p, SMType.SmbQ q2])]
+    r4 = SMType.SRule $ [   (SMType.Word [SMType.SmbQ alp2], SMType.Word [SMType.SmbQ alp2]), 
+                            (SMType.Word [SMType.SmbQ p, SMType.SmbQ q2], SMType.Word [SMType.SmbY' a, SMType.SmbQ p1, SMType.SmbQ q2])]
+    r5 = SMType.SRule $ [   (SMType.Word [SMType.SmbQ alp2], SMType.Word [SMType.SmbQ alp2]), 
+                            (SMType.Word [SMType.SmbQ p1], SMType.Word [SMType.SmbY' a1, SMType.SmbQ p1, SMType.SmbY a2]),
+                            (SMType.Word [SMType.SmbQ q2], SMType.Word [SMType.SmbQ q2])]
+    r6 = SMType.SRule $ [   (SMType.Word [SMType.SmbQ alp2], SMType.Word [SMType.SmbQ alp2]), 
+                            (SMType.Word [SMType.SmbQ p1], SMType.Word [SMType.SmbY' a, SMType.SmbY a1, SMType.SmbQ p2]),
+                            (SMType.Word [SMType.SmbQ q2], SMType.Word [SMType.SmbQ q2])]
+    r7 = SMType.SRule $ [   (SMType.Word [SMType.SmbQ alp2], SMType.Word [SMType.SmbQ alp2]), 
+                            (SMType.Word [SMType.SmbQ p2], SMType.Word [SMType.SmbY a, SMType.SmbQ p2, SMType.SmbY' a2]),
+                            (SMType.Word [SMType.SmbQ q2], SMType.Word [SMType.SmbQ q2])]
+    r8 = SMType.SRule $ [   (SMType.Word [SMType.SmbQ alp2], SMType.Word [SMType.SmbQ alp2]), 
+                            (SMType.Word [SMType.SmbQ p2, SMType.SmbQ q2], SMType.Word [SMType.SmbQ p1, SMType.SmbQ q2])]
+    r9 = SMType.SRule $ [   (SMType.Word [SMType.SmbQ alp2, SMType.SmbQ p1], SMType.Word [SMType.SmbQ alp2, SMType.SmbQ p3]), 
+                            (SMType.Word [SMType.SmbQ q2], SMType.Word [SMType.SmbQ q2])]
+    r10 = SMType.SRule $ [  (SMType.Word [SMType.SmbQ alp2], SMType.Word [SMType.SmbQ alp2]), 
+                            (SMType.Word [SMType.SmbQ p3], SMType.Word [SMType.SmbY a, SMType.SmbQ p3, SMType.SmbY' a2]),
+                            (SMType.Word [SMType.SmbQ q2], SMType.Word [SMType.SmbQ q2])]
+    r11 = SMType.SRule $ [  (SMType.Word [SMType.SmbQ alp2], SMType.Word [SMType.SmbQ alp]), 
+                            (SMType.Word [SMType.SmbQ p3, SMType.SmbQ q2], SMType.Word [SMType.SmbQ p, SMType.SmbQ q2])]
+    r12 = SMType.SRule $ [  (SMType.Word [SMType.SmbQ alp], SMType.Word [SMType.SmbQ alp3]), 
+                            (SMType.Word [SMType.SmbQ p, SMType.SmbQ q2], SMType.Word [SMType.SmbQ p, SMType.SmbQ q2])]
+    r13 = SMType.SRule $ [  (SMType.Word [SMType.SmbQ alp3, SMType.SmbQ p, SMType.SmbQ q2], SMType.Word [SMType.SmbQ alp, SMType.SmbQ p, SMType.SmbQ q0])]                                                                                                              
+    relations = [r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, r13]
+    startWord = SMType.Word [SMType.SmbQ alp, SMType.SmbY a, SMType.SmbQ p, SMType.SmbQ q1]
+    word = foldl (\acc x -> [(SmbA' $ A_R x)] ++ acc ++ [(SmbA $ A_R x)]) (easyHubRelation startWord) $ [r1, r2, r12, r13]
+    accessWord = SMType.Word [SMType.SmbQ alp, SMType.SmbQ p, SMType.SmbQ q0]
 
 oneruleTM = (tm, w) where
     a = Value "a"

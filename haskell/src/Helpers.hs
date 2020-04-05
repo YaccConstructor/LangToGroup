@@ -1,12 +1,15 @@
 module Helpers where
     import GrammarType
     import TMType
+    import qualified Data.Map.Strict as Map
+    import SMType
+    import GRType
 
     getDisjoinLetter :: String -> String
     getDisjoinLetter letter = letter ++ "'"
 
-    getDisjoinState :: State -> State
-    getDisjoinState (State state) = State (state ++ "'") 
+    getDisjoinState :: TMType.State -> TMType.State
+    getDisjoinState (TMType.State state) = TMType.State (state ++ "'") 
 
     getDisjoinSquare2 :: Square -> Square
     getDisjoinSquare2 (Value s) = if (Value s) == emptySymbol then (Value s) else Value (s ++ "''")
@@ -19,9 +22,9 @@ module Helpers where
     getDisjoinSymbol :: Symbol -> Square
     getDisjoinSymbol letter = 
         case letter of
-            T (Terminal c) -> Value $ c ++ "'"
+            GrammarType.T (Terminal c) -> Value $ c ++ "'"
             N (Nonterminal c) -> Value c
-            E (Epsilon c) -> Value c
+            GrammarType.E (Epsilon c) -> Value c
 
     mapValue = map (\v -> Value v)
     mapFromValue = map (\(Value v) -> v)
@@ -34,3 +37,6 @@ module Helpers where
 
     tripleThd :: (a, b, c) -> c
     tripleThd (_,_,a) = a
+
+    printSmb genmap (SmbA a) = case Map.lookup a genmap of Just s -> s ; Nothing -> error (show a) 
+    printSmb genmap (SmbA' a) = case Map.lookup a genmap of Just s -> "(" ++ s ++ ")^(-1)" ; Nothing -> error (show a)

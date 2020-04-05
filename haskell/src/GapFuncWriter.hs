@@ -5,6 +5,9 @@ import qualified Data.Map.Strict as Map
 import SMType
 import TMType
 import System.IO
+import Data.Set (Set)
+import qualified Data.Set as Set 
+import Helpers
 
 writeGenerators :: [A] -> Map.Map A String -> Handle -> IO ()
 writeGenerators generators amap handle = 
@@ -23,12 +26,10 @@ writeRelations relations genmap handle =
     where   revertSmb smb = case smb of SmbA a -> SmbA' a ; SmbA' a -> SmbA a
             revert (Relation (from, to)) = foldl (\x y -> (revertSmb y) : x) from to
             revert (Relator smb) = smb
-            printSmb (SmbA a) = case Map.lookup a genmap of Just s -> s ; Nothing -> error (show a) 
-            printSmb (SmbA' a) = case Map.lookup a genmap of Just s -> "(" ++ s ++ ")^(-1)" ; Nothing -> error (show a)
-            mdata = map (foldl1 (\x y -> x ++ "*" ++ y) . (map printSmb) . revert) relations
+            mdata = map (foldl1 (\x y -> x ++ "*" ++ y) . (map (printSmb genmap)) . revert) relations
 
 writeGap :: GR -> Handle -> Map.Map A String -> IO ()
-writeGap (GR (generators, relations)) handle genmap =     
+writeGap (GR (g, r)) handle genmap =     
 --            do  hPutStr handle "local f, g, p;\n"
             do  hPutStr handle "local f, g;\n"
                 hPutStr handle "f := FreeGroup( "
@@ -42,6 +43,10 @@ writeGap (GR (generators, relations)) handle genmap =
                 --hPutStr handle "p := SimplifiedFpGroup( g );\n"
                 --hPutStr handle "return p;\n"
                 hPutStr handle "return g;\n"
+
+                    where 
+                        generators = Set.toList g
+                        relations = Set.toList r
 
 writeWord :: [SmbR] -> Handle -> Map.Map A String -> IO()
 writeWord as handle genmap = 
