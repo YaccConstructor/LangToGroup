@@ -80,15 +80,15 @@ example = execLaTeXM $
             -- newpage
             --doLaTeX $ tripleFst $ smFinal symSmallMachine
 
-main :: IO()
-main = do
-    renderFile "out.tex" example 
-
 -- main :: IO()
 -- main = do
---         let tm = mapTM2TMAfterThirdPhase $ fst $ oneruleTM
---         let input = ["a"]
---         putStrLn $ show $ interpretTM input tm
+--     renderFile "out.tex" example 
+
+main :: IO()
+main = do
+        let tm = mapTM2TMAfterThirdPhase $ mapCfgToTM testGrammar
+        let input = ["a"]
+        putStrLn $ show $ interpretTM input tm
 
 -- main :: IO()
 -- main = do

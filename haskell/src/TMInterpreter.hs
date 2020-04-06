@@ -16,7 +16,9 @@ module TMInterpreter where
                                 (r1 == emptySymbol && l1 == rightBoundingLetter && r2 /= emptySymbol && l2 == rightBoundingLetter && l == [rightBoundingLetter] ||
                                 r /= [leftBoundingLetter] && r1 == (last r) && l1 == rightBoundingLetter && r2 == emptySymbol && l2 == rightBoundingLetter && l == [rightBoundingLetter] ||
                                 (last r) == r1 && (head l) == l1 ||
-                                r1 == emptySymbol && r2 == emptySymbol && l1 == rightBoundingLetter && l2 == l1) -> checkCommandTapeToTape t2 t1
+                                r1 == emptySymbol && r2 == emptySymbol && l1 == rightBoundingLetter && l2 == l1 ||
+                                r1 /= leftBoundingLetter && r1 /= emptySymbol && s1 == s2 && r1 == (last r) && r1 == l2 && l1 == emptySymbol && l1 == r2 ||
+                                l1 /= leftBoundingLetter && l1 /= emptySymbol && s1 == s2 && l1 == (head l) && l1 == r2 && r1 == emptySymbol && r1 == l2) -> checkCommandTapeToTape t2 t1
                             | otherwise -> False
 
     getApplicableCommands :: [([Square], State, [Square])] -> [[TapeCommand]] -> [[TapeCommand]] -> [[TapeCommand]] 
@@ -45,6 +47,9 @@ module TMInterpreter where
                     | r1 == emptySymbol && r2 == emptySymbol && l1 == rightBoundingLetter && l2 == l1 -> applyCommand t2 t1 configs $ (r, s2, l) : acc
                     --replace
                     | r1 == (last r) && l1 == (head l) -> applyCommand t2 t1 configs $ (init r ++ [r2], s2, l2 : (tail l)) : acc
+                    --move
+                    | r1 == l2 && l1 == r2 && l1 == emptySymbol && r1 == (last r) -> applyCommand t2 t1 configs $ (init r, s2, l2 : l) : acc
+                    | r1 == l2 && l1 == r2 && r1 == emptySymbol && l1 == (head l) -> applyCommand t2 t1 configs $ (r ++ [r2], s2, tail l) : acc
                     | otherwise -> error ("Wrong command " ++ show command)
             ([], _) -> configs
 
@@ -79,7 +84,10 @@ module TMInterpreter where
     startInterpreting accessStates configss commands =
         case isHereEmptyConfigss accessStates configss of
             Just configs -> configs
-            Nothing -> startInterpreting accessStates (applyCommandss configss (getApplicableCommandss configss commands []) []) commands
+            Nothing | rules /= [[]] -> startInterpreting accessStates (applyCommandss configss rules []) commands
+                    | otherwise -> error $ "No applicable rule " ++ (show $ map last configss)
+                    where
+                        rules = getApplicableCommandss configss commands []
 
     interpretTM :: [String] -> TM -> Configs
     interpretTM input (TM
