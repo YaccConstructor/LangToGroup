@@ -74,21 +74,21 @@ example = execLaTeXM $
             -- doLaTeX $ mapCfgToTM ab3TestGrammar
             -- -- doLaTeX $ interpretTM ["b", "a", "b", "a"] $ mapCfgToTM ab3TestGrammar
             -- -- doLaTeX $ fst $ smFinal tmForTestSm
-            doLaTeX $ mapTM2TMAfterThirdPhase $ fst $ oneruleTM
+            doLaTeX $ mapTM2TMAfterThirdPhase simpleTM
             --doLaTeX $ tripleFst $ smFinal $ symTmWithoutKPlusOneTape $ fst $ oneruleTM
             -- doLaTeX symSmallMachine
             -- newpage
             --doLaTeX $ tripleFst $ smFinal symSmallMachine
 
--- main :: IO()
--- main = do
---     renderFile "out.tex" example 
-
 main :: IO()
 main = do
-        let tm = mapTM2TMAfterThirdPhase $ mapCfgToTM testGrammar
-        let input = ["a"]
-        putStrLn $ show $ interpretTM input tm
+    renderFile "out.tex" example 
+
+-- main :: IO()
+-- main = do
+--         let tm = mapTM2TM' $ fst $ oneruleTM
+--         let input = ["a"]
+--         putStrLn $ show $ interpretTM input tm
 
 -- main :: IO()
 -- main = do
@@ -308,7 +308,7 @@ simpleTM = tm where
     states = MultiTapeStates [Set.fromList [q0, q1, q2]]
     cmds = Commands 
         $ Set.fromList [[SingleTapeCommand ((a,  q0, rightBoundingLetter), (emptySymbol, q1, rightBoundingLetter))],
-                        [SingleTapeCommand ((emptySymbol,  q1, rightBoundingLetter), (emptySymbol, q2, rightBoundingLetter))]]
+                        [SingleTapeCommand ((leftBoundingLetter,  q1, rightBoundingLetter), (leftBoundingLetter, q2, rightBoundingLetter))]]
     start = StartStates [q0]
     access = AccessStates [q2]
     tm = TM (inp, tapes, states, cmds, start, access)    

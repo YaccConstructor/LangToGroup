@@ -127,7 +127,7 @@ mapTM2TMAfterThirdPhase
         let acceptKPlusOneTapeState = State $ "q_3^" ++ show kPlus1
         let commandsList = Set.toList commands
         let (acceptCommand, otherCommands) = disjoinAcceptCommandWithOthers commandsList accessStates
-        let startFirstPhaseStates = map (\i -> State $ "q_{-1}^" ++ show i) [1..(length multiTapeStates)]
+        let startFirstPhaseStates = map (\tape -> firstPhaseFinalStatesTransmition tape) multiTapeStates
         let commandsFirstPhase = firstPhase startKPlusOneTapeState kplus1tapeState finalKPlusOneTapeState acceptCommand otherCommands startStates multiTapeStates startFirstPhaseStates
         let commandsSecondPhase = secondPhase finalKPlusOneTapeState commandsList startStates accessStates multiTapeStates
         let commandsThirdPhase = thirdPhase finalKPlusOneTapeState commandsList accessStates
