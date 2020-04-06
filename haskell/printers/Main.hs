@@ -37,7 +37,7 @@ preambula =
     <> usepackage [] "unicode-math"
     <> usepackage [] "amsmath"
     <> usepackage [] "mathtools"
-    <> usepackage ["left=1cm","right=3cm", "top=2cm", "bottom=2cm", "bindingoffset=0cm"] "geometry"
+    <> usepackage ["left=1cm","right=5cm", "top=2cm", "bottom=2cm", "bindingoffset=0cm"] "geometry"
     <> title "Examples"
 
 example :: LaTeX
@@ -74,28 +74,28 @@ example = execLaTeXM $
             -- doLaTeX $ mapCfgToTM ab3TestGrammar
             -- -- doLaTeX $ interpretTM ["b", "a", "b", "a"] $ mapCfgToTM ab3TestGrammar
             -- -- doLaTeX $ fst $ smFinal tmForTestSm
-            doLaTeX $ symTmWithoutKPlusOneTape $ mapCfgToTM testGrammar
+            doLaTeX $ mapTM2TMAfterThirdPhase $ fst $ oneruleTM
             --doLaTeX $ tripleFst $ smFinal $ symTmWithoutKPlusOneTape $ fst $ oneruleTM
             -- doLaTeX symSmallMachine
             -- newpage
             --doLaTeX $ tripleFst $ smFinal symSmallMachine
 
--- main :: IO()
--- main = do
---     renderFile "out.tex" example 
+main :: IO()
+main = do
+    renderFile "out.tex" example 
 
 -- main :: IO()
 -- main = do
---         let tm = symTmWithoutKPlusOneTape $ mapCfgToTM testGrammar
+--         let tm = mapTM2TMAfterThirdPhase $ fst $ oneruleTM
 --         let input = ["a"]
 --         putStrLn $ show $ interpretTM input tm
 
-main :: IO()
-main = do
-        let s@(sm, w, as) = smFinal $ symTmWithoutKPlusOneTape $ mapCfgToTM testGrammar
-        let inputSmb = map (\a -> SMType.SmbY $ SMType.Y a) $ mapValue ["a"]
-        let startWord = sigmaFunc as $ inputSmb : (replicate (length as - 1) [])
-        putStrLn $ show $ length $ interpretSM startWord sm w
+-- main :: IO()
+-- main = do
+--         let s@(sm, w, as) = smFinal $ symTmWithoutKPlusOneTape $ mapCfgToTM testGrammar
+--         let inputSmb = map (\a -> SMType.SmbY $ SMType.Y a) $ mapValue ["a"]
+--         let startWord = sigmaFunc as $ inputSmb : (replicate (length as - 1) [])
+--         putStrLn $ show $ length $ interpretSM startWord sm w
 
 -- main :: IO()
 -- main = do
