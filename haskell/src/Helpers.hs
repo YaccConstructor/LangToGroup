@@ -4,6 +4,9 @@ module Helpers where
     import qualified Data.Map.Strict as Map
     import SMType
     import GRType
+    import Data.Set (Set)
+    import qualified Data.Set as Set
+    import Text.Regex.TDFA
 
     getDisjoinLetter :: String -> String
     getDisjoinLetter letter = letter ++ "'"
@@ -12,11 +15,11 @@ module Helpers where
     getDisjoinState (TMType.State state) = TMType.State (state ++ "'") 
 
     getDisjoinSquare2 :: Square -> Square
-    getDisjoinSquare2 (Value s) = if (Value s) == emptySymbol then (Value s) else Value (s ++ "''")
+    getDisjoinSquare2 (Value s) = if (Value s) == eL then (Value s) else Value (s ++ "''")
     getDisjoinSquare2 (BCommand c) = PCommand c
 
     getDisjoinSquare :: Square -> Square
-    getDisjoinSquare (Value s) = if (Value s) == emptySymbol then (Value s) else Value (s ++ "'")
+    getDisjoinSquare (Value s) = if (Value s) == eL then (Value s) else Value (s ++ "'")
     getDisjoinSquare (BCommand c) = PCommand c
 
     getDisjoinSymbol :: Symbol -> Square
@@ -40,3 +43,16 @@ module Helpers where
 
     printSmb genmap (SmbA a) = case Map.lookup a genmap of Just s -> s ; Nothing -> error (show a) 
     printSmb genmap (SmbA' a) = case Map.lookup a genmap of Just s -> "(" ++ s ++ ")^(-1)" ; Nothing -> error (show a)
+
+    genNextStateList :: [TMType.State] -> TMType.State
+    genNextStateList tapeList = do
+        let getNumber (TMType.State s) = read n :: Int
+                where (_, _, _, [n]) = s =~ "q_{?([0-9]+)}?\\^{?[0-9]+\\.?[0-9]*}?" :: (String, String, String, [String])
+        let stateNumber = (+) 1 $ maximum $ map getNumber tapeList
+        let getTapeNumber (TMType.State s) = n
+                where (_, _, _, [n]) = s =~ "q_{?[0-9]+}?\\^{?([0-9]+\\.?[0-9]*)}?" :: (String, String, String, [String])
+        let tapeNumber = getTapeNumber $ head tapeList
+        TMType.State $ "q_{" ++ (show stateNumber) ++ "}^{" ++ tapeNumber ++ "}"
+
+    genNextState :: Set TMType.State -> TMType.State
+    genNextState tape = genNextStateList $ Set.toList tape

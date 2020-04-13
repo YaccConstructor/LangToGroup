@@ -3,7 +3,7 @@ import Test.Framework
 import Test.Framework.Providers.HUnit
 import Data.Monoid
 import Control.Monad
-import CfgToTMMapper
+import CFG2TM
 import Helpers
 import GrammarType
 import TMType
@@ -33,127 +33,52 @@ test1Grammar = grammar where
 
 configsTest :: Assertion
 configsTest = do
-    let q1 = TMType.State "q_{3}^2"
+    let q1 = TMType.State "q_{3}^{2}"
     let a = Value "a"
     let a' = Value "a'"
     let expectedConfigs = Configs ([
-            [([leftBoundingLetter, a], startStateFirstTape, [rightBoundingLetter]), ([leftBoundingLetter], startStateSecondTape, [rightBoundingLetter])],
-            [([leftBoundingLetter, a], startStateFirstTape, [rightBoundingLetter]), ([leftBoundingLetter, Value "S"], intermediateStateSecondTape, [rightBoundingLetter])],
-            [([leftBoundingLetter, a], startStateFirstTape, [rightBoundingLetter]), ([leftBoundingLetter, a'], q1, [rightBoundingLetter])],
-            [([leftBoundingLetter, a], startStateFirstTape, [rightBoundingLetter]), ([leftBoundingLetter, a'], intermediateStateSecondTape, [rightBoundingLetter])],
-            [([leftBoundingLetter], startStateFirstTape, [rightBoundingLetter]), ([leftBoundingLetter], intermediateStateSecondTape, [rightBoundingLetter])],
-            [([leftBoundingLetter], finalStateFirstTape, [rightBoundingLetter]), ([leftBoundingLetter], finalStateSecondTape, [rightBoundingLetter])]
+            [([lBL, a], sSFT, [rBL]), ([lBL], sSST, [rBL])],
+            [([lBL, a], sSFT, [rBL]), ([lBL, Value "S"], iSST, [rBL])],
+            [([lBL, a], sSFT, [rBL]), ([lBL, a'], q1, [rBL])],
+            [([lBL, a], sSFT, [rBL]), ([lBL, a'], iSST, [rBL])],
+            [([lBL], sSFT, [rBL]), ([lBL], iSST, [rBL])],
+            [([lBL], fSFT, [rBL]), ([lBL], fSST, [rBL])]
             ])
     
-    assertEqual "config test" expectedConfigs (interpretTM ["a"] $ mapCfgToTM test1Grammar)
+    assertEqual "config test" expectedConfigs (interpretTM ["a"] $ cfg2tm test1Grammar)
 
 simpleCfgToTMMapTest :: Assertion
 simpleCfgToTMMapTest = do
     let letter_a = Value "a"
     let letter_S = Value "S"
-    let workState = TMType.State "q_{3}^2"
+    let workState = TMType.State "q_{3}^{2}"
     
     let expectedTM = TM (
             InputAlphabet (Set.fromList [letter_a]),
             [TapeAlphabet (Set.fromList [letter_a]), TapeAlphabet (Set.fromList [getDisjoinSquare letter_a, letter_S])],
-            MultiTapeStates [(Set.fromList [startStateFirstTape, finalStateFirstTape]), 
-                            (Set.fromList [startStateSecondTape, intermediateStateSecondTape, finalStateSecondTape, workState])],
+            MultiTapeStates [(Set.fromList [sSFT, fSFT]), 
+                            (Set.fromList [sSST, iSST, fSST, workState])],
             Commands (Set.fromList [
                 [
-                    SingleTapeCommand (
-                        (emptySymbol, 
-                        startStateFirstTape, 
-                        rightBoundingLetter), 
-                        (emptySymbol, 
-                        startStateFirstTape, 
-                        rightBoundingLetter)
-                        ),
-                    SingleTapeCommand (
-                        (emptySymbol, 
-                        startStateSecondTape, 
-                        rightBoundingLetter), 
-                        (letter_S, 
-                        intermediateStateSecondTape, 
-                        rightBoundingLetter)
-                        )
-                    ],
+                    SingleTapeCommand ((eL, sSFT, rBL), (eL, sSFT, rBL)),
+                    SingleTapeCommand ((eL, sSST, rBL), (letter_S, iSST, rBL))],
                 [
-                    SingleTapeCommand (
-                        (emptySymbol, 
-                        startStateFirstTape, 
-                        rightBoundingLetter), 
-                        (emptySymbol, 
-                        startStateFirstTape, 
-                        rightBoundingLetter)
-                        ),
-                    SingleTapeCommand (
-                        (letter_S, 
-                        intermediateStateSecondTape, 
-                        rightBoundingLetter), 
-                        (getDisjoinSquare letter_a, 
-                        workState, 
-                        rightBoundingLetter)
-                        )
-                    ],
+                    SingleTapeCommand ((eL, sSFT, rBL), (eL, sSFT, rBL)),
+                    SingleTapeCommand ((letter_S, iSST, rBL), (getDisjoinSquare letter_a, workState, rBL))],
                 [
-                    SingleTapeCommand (
-                        (emptySymbol, 
-                        startStateFirstTape, 
-                        rightBoundingLetter), 
-                        (emptySymbol, 
-                        startStateFirstTape, 
-                        rightBoundingLetter)
-                        ), 
-                    SingleTapeCommand (
-                        (emptySymbol, 
-                        workState, 
-                        rightBoundingLetter), 
-                        (emptySymbol, 
-                        intermediateStateSecondTape, 
-                        rightBoundingLetter)
-                        )
-                    ],
+                    SingleTapeCommand ((eL, sSFT, rBL), (eL, sSFT, rBL)), 
+                    SingleTapeCommand ((eL, workState, rBL), (eL, iSST, rBL))],
                 [ 
-                    SingleTapeCommand (
-                        (letter_a, 
-                        startStateFirstTape, 
-                        rightBoundingLetter), 
-                        (emptySymbol, 
-                        startStateFirstTape, 
-                        rightBoundingLetter)
-                        ),
-                    SingleTapeCommand (
-                        (getDisjoinSquare letter_a, 
-                        intermediateStateSecondTape, 
-                        rightBoundingLetter), 
-                        (emptySymbol, 
-                        intermediateStateSecondTape, 
-                        rightBoundingLetter)
-                        )
-                    ],
+                    SingleTapeCommand ((letter_a, sSFT, rBL), (eL, sSFT, rBL)),
+                    SingleTapeCommand ((getDisjoinSquare letter_a, iSST, rBL), (eL, iSST, rBL))],
                 [
-                    SingleTapeCommand (
-                        (leftBoundingLetter, 
-                        startStateFirstTape, 
-                        rightBoundingLetter), 
-                        (leftBoundingLetter, 
-                        finalStateFirstTape, 
-                        rightBoundingLetter)
-                        ),
-                    SingleTapeCommand (
-                        (leftBoundingLetter, 
-                        intermediateStateSecondTape, 
-                        rightBoundingLetter), 
-                        (leftBoundingLetter, 
-                        finalStateSecondTape, 
-                        rightBoundingLetter)
-                        )
-                    ]
+                    SingleTapeCommand ((lBL, sSFT, rBL), (lBL, fSFT, rBL)),
+                    SingleTapeCommand ((lBL, iSST, rBL), (lBL, fSST, rBL))]
                 ]),
-            StartStates [startStateFirstTape, startStateSecondTape],
-            AccessStates [finalStateFirstTape, finalStateSecondTape]
+            StartStates [sSFT, sSST],
+            AccessStates [fSFT, fSST]
                 )
-    assertEqual "simple cfg to TMs convertion" expectedTM (mapCfgToTM test1Grammar)
+    assertEqual "simple cfg to TMs convertion" expectedTM (cfg2tm test1Grammar)
 
 main :: IO ()
 main = defaultMainWithOpts

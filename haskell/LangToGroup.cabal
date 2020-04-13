@@ -23,7 +23,7 @@ source-repository head
 
 library
   exposed-modules:
-      CfgToTMMapper
+      CFG2TM
       ConfigType
       GapFuncWriter
       MapleFuncWriter

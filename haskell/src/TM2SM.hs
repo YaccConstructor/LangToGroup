@@ -15,7 +15,7 @@ devidePositiveNegativeCommands commands = do
     let check21 command = 
             case command of
                 TMType.PreSMCommand((a@(TMType.Value ah), b),(a1, b1)) : t 
-                    | a /= TMType.emptySymbol && head ah /= 'E' -> True
+                    | a /= TMType.eL && head ah /= 'E' -> True
                     | otherwise -> check21 t
                 TMType.PreSMCommand((TMType.BCommand _, _),(_, _)) : t -> True
                 TMType.PreSMCommand((TMType.PCommand _, _),(_, _)) : t -> True
@@ -53,7 +53,7 @@ getai cmd =
     let get cmd i =  
             case cmd of
                 TMType.PreSMCommand ((a, _), _) : t 
-                    | a /= TMType.emptySymbol -> (a, i)
+                    | a /= TMType.eL -> (a, i)
                     | otherwise -> get t (i + 1)
     in 
     get cmd 1

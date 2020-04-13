@@ -12,7 +12,7 @@ import GrammarPrinter
 import Tm1Printer
 import Lib
 import GrammarType
-import CfgToTMMapper 
+import CFG2TM 
 import TMType
 import TMInterpreter
 import ConfigPrinter
@@ -45,36 +45,36 @@ example = execLaTeXM $
     do
         preambula 
         document $ do
-            -- doLaTeX testGrammar
-            -- doLaTeX $ mapCfgToTM testGrammar
-            -- -- doLaTeX $ interpretTM ["a"] $ mapCfgToTM testGrammar
+            doLaTeX testGrammar
+            doLaTeX $ cfg2tm testGrammar
+            -- -- doLaTeX $ interpretTM ["a"] $ cfg2tm testGrammar
             -- newpage
-            -- doLaTeX $ symTmWithoutKPlusOneTape $ mapCfgToTM testGrammar
+            -- doLaTeX $ symTmWithoutKPlusOneTape $ cfg2tm testGrammar
             -- newpage
-            -- doLaTeX $ tripleFst $ smFinal $ symTmWithoutKPlusOneTape $ mapCfgToTM testGrammar
+            -- doLaTeX $ tripleFst $ smFinal $ symTmWithoutKPlusOneTape $ cfg2tm testGrammar
             -- doLaTeX epsTestGrammar
-            -- doLaTeX $ mapCfgToTM epsTestGrammar
-            -- -- doLaTeX $ interpretTM ["a"] $ mapCfgToTM epsTestGrammar
+            -- doLaTeX $ cfg2tm epsTestGrammar
+            -- -- doLaTeX $ interpretTM ["a"] $ cfg2tm epsTestGrammar
             -- -- newpage
             -- -- doLaTeX epsTestLeftGrammar
-            -- -- doLaTeX $ mapCfgToTM epsTestLeftGrammar
-            -- -- doLaTeX $ interpretTM ["a"] $ mapCfgToTM epsTestLeftGrammar
+            -- -- doLaTeX $ cfg2tm epsTestLeftGrammar
+            -- -- doLaTeX $ interpretTM ["a"] $ cfg2tm epsTestLeftGrammar
             -- newpage
             -- doLaTeX abTestGrammar
-            -- doLaTeX $ mapCfgToTM abTestGrammar
-            -- -- doLaTeX $ interpretTM ["b", "b", "a", "a"] $ mapCfgToTM abTestGrammar
+            -- doLaTeX $ cfg2tm abTestGrammar
+            -- -- doLaTeX $ interpretTM ["b", "b", "a", "a"] $ cfg2tm abTestGrammar
             -- newpage
             -- doLaTeX ab2TestGrammar
-            -- doLaTeX $ mapCfgToTM ab2TestGrammar
-            -- -- doLaTeX $ interpretTM ["b", "a", "b", "a"] $ mapCfgToTM ab2TestGrammar
+            -- doLaTeX $ cfg2tm ab2TestGrammar
+            -- -- doLaTeX $ interpretTM ["b", "a", "b", "a"] $ cfg2tm ab2TestGrammar
             -- -- newpage
-            -- -- doLaTeX $ smFinal $ mapTM2TM' $ mapCfgToTM ab2TestGrammar
+            -- -- doLaTeX $ smFinal $ mapTM2TM' $ cfg2tm ab2TestGrammar
             -- newpage
             -- doLaTeX ab3TestGrammar
-            -- doLaTeX $ mapCfgToTM ab3TestGrammar
-            -- -- doLaTeX $ interpretTM ["b", "a", "b", "a"] $ mapCfgToTM ab3TestGrammar
+            -- doLaTeX $ cfg2tm ab3TestGrammar
+            -- -- doLaTeX $ interpretTM ["b", "a", "b", "a"] $ cfg2tm ab3TestGrammar
             -- -- doLaTeX $ fst $ smFinal tmForTestSm
-            doLaTeX $ mapTM2TMAfterThirdPhase simpleTM
+            --doLaTeX $ mapTM2TMAfterThirdPhase simpleTM
             --doLaTeX $ tripleFst $ smFinal $ symTmWithoutKPlusOneTape $ fst $ oneruleTM
             -- doLaTeX symSmallMachine
             -- newpage
@@ -92,7 +92,7 @@ main = do
 
 -- main :: IO()
 -- main = do
---         let s@(sm, w, as) = smFinal $ symTmWithoutKPlusOneTape $ mapCfgToTM testGrammar
+--         let s@(sm, w, as) = smFinal $ symTmWithoutKPlusOneTape $ cfg2tm testGrammar
 --         let inputSmb = map (\a -> SMType.SmbY $ SMType.Y a) $ mapValue ["a"]
 --         let startWord = sigmaFunc as $ inputSmb : (replicate (length as - 1) [])
 --         putStrLn $ show $ length $ interpretSM startWord sm w
@@ -111,7 +111,7 @@ main = do
 --         writeGraph g handle
 --         hClose handle
 --         where 
---             s@(sm, w, as) = smFinal $ symTmWithoutKPlusOneTape $ mapCfgToTM testGrammar
+--             s@(sm, w, as) = smFinal $ symTmWithoutKPlusOneTape $ cfg2tm testGrammar
 --             inputSmb = map (\a -> SMType.SmbY $ SMType.Y a) $ mapValue ["a"]
 --             startWord = sigmaFunc as $ inputSmb : (replicate (length as - 1) [])
 --             g@(graph, m) = getRestrictedGraph startWord sm 1
@@ -188,7 +188,7 @@ oneRuleSm = do
 printCount grammar@(Grammar (n, t, r, _, _)) = do
     putStrLn $ "T: " ++ (show $ length t) ++ " N: " ++ (show $ length n) ++ " R: " ++ (show $ length r) 
     
-    let tm@(TM (InputAlphabet tmX, tapeAlphabet, MultiTapeStates multiTapeStates, Commands tmCmds, _, _)) = mapCfgToTM grammar
+    let tm@(TM (InputAlphabet tmX, tapeAlphabet, MultiTapeStates multiTapeStates, Commands tmCmds, _, _)) = cfg2tm grammar
     let tmG = foldl (\acc (TapeAlphabet a) -> acc + length a) 0 tapeAlphabet
     let tmQ = foldl (\acc a -> acc + length a) 0 multiTapeStates
     putStrLn $ "tmX: " ++ (show $ length tmX) ++ " tmG: " ++ (show tmG) ++ " tmQ: " ++ (show tmQ) ++ " tmCmds: " ++ (show $ length tmCmds)
@@ -225,8 +225,8 @@ symSmallMachine = tm where
     inp = InputAlphabet (Set.fromList [a])
     tapes = [TapeAlphabet (Set.fromList [a])]
     states = MultiTapeStates [Set.fromList [q0, q1]]
-    cmd1 = [SingleTapeCommand ((a, q0, rightBoundingLetter), (emptySymbol, q1, rightBoundingLetter))]
-    cmd2 = [SingleTapeCommand ((emptySymbol, q1, rightBoundingLetter), (a, q0, rightBoundingLetter))]
+    cmd1 = [SingleTapeCommand ((a, q0, rBL), (eL, q1, rBL))]
+    cmd2 = [SingleTapeCommand ((eL, q1, rBL), (a, q0, rBL))]
     cmds = Commands $ Set.fromList $ renameRightLeftBoundings [cmd1, cmd2]
     start = StartStates [q0]
     access = AccessStates [q1]
@@ -291,7 +291,7 @@ oneruleTM = (tm, w) where
     inp = InputAlphabet (Set.fromList [a])
     tapes = [TapeAlphabet (Set.fromList [a])]
     states = MultiTapeStates [Set.fromList [q0, q1]]
-    cmd = [SingleTapeCommand ((a,  q0, rightBoundingLetter), (emptySymbol, q1, rightBoundingLetter))]
+    cmd = [SingleTapeCommand ((a,  q0, rBL), (eL, q1, rBL))]
     cmds = Commands $ Set.fromList [cmd]
     start = StartStates [q0]
     access = AccessStates [q1]
@@ -307,8 +307,8 @@ simpleTM = tm where
     tapes = [TapeAlphabet (Set.fromList [a])]
     states = MultiTapeStates [Set.fromList [q0, q1, q2]]
     cmds = Commands 
-        $ Set.fromList [[SingleTapeCommand ((a,  q0, rightBoundingLetter), (emptySymbol, q1, rightBoundingLetter))],
-                        [SingleTapeCommand ((leftBoundingLetter,  q1, rightBoundingLetter), (leftBoundingLetter, q2, rightBoundingLetter))]]
+        $ Set.fromList [[SingleTapeCommand ((a,  q0, rBL), (eL, q1, rBL))],
+                        [SingleTapeCommand ((lBL,  q1, rBL), (lBL, q2, rBL))]]
     start = StartStates [q0]
     access = AccessStates [q2]
     tm = TM (inp, tapes, states, cmds, start, access)    
@@ -322,8 +322,8 @@ tmForTestSm = tm where
     inp = InputAlphabet (Set.fromList [])
     tapes = [TapeAlphabet (Set.fromList [s]), TapeAlphabet (Set.fromList [])]
     states = MultiTapeStates [Set.fromList [q0, q0'], Set.fromList [q1, q1']]
-    cmds = Commands $ Set.fromList [[PreSMCommand ((s, StateOmega q0), (emptySymbol, StateOmega q0')), 
-                                    PreSMCommand ((emptySymbol, StateOmega q1), (emptySymbol, StateOmega q1'))]]
+    cmds = Commands $ Set.fromList [[PreSMCommand ((s, StateOmega q0), (eL, StateOmega q0')), 
+                                    PreSMCommand ((eL, StateOmega q1), (eL, StateOmega q1'))]]
     start = StartStates []
     access = AccessStates []
     tm = TM (inp, tapes, states, cmds, start, access)    

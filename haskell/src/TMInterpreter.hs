@@ -13,12 +13,12 @@ module TMInterpreter where
             ([], []) -> True
             ((SingleTapeCommand ((r1, s1, l1), (r2, s2, l2)) : t1), ((r, s, l) : t2)) 
                             |   s1 == s && 
-                                (r1 == emptySymbol && l1 == rightBoundingLetter && r2 /= emptySymbol && l2 == rightBoundingLetter && l == [rightBoundingLetter] ||
-                                r /= [leftBoundingLetter] && r1 == (last r) && l1 == rightBoundingLetter && r2 == emptySymbol && l2 == rightBoundingLetter && l == [rightBoundingLetter] ||
+                                (r1 == eL && l1 == rBL && r2 /= eL && l2 == rBL && l == [rBL] ||
+                                r /= [lBL] && r1 == (last r) && l1 == rBL && r2 == eL && l2 == rBL && l == [rBL] ||
                                 (last r) == r1 && (head l) == l1 ||
-                                r1 == emptySymbol && r2 == emptySymbol && l1 == rightBoundingLetter && l2 == l1 ||
-                                r1 /= leftBoundingLetter && r1 /= emptySymbol && s1 == s2 && r1 == (last r) && r1 == l2 && l1 == emptySymbol && l1 == r2 ||
-                                l1 /= leftBoundingLetter && l1 /= emptySymbol && s1 == s2 && l1 == (head l) && l1 == r2 && r1 == emptySymbol && r1 == l2) -> checkCommandTapeToTape t2 t1
+                                r1 == eL && r2 == eL && l1 == rBL && l2 == l1 ||
+                                r1 /= lBL && r1 /= eL && s1 == s2 && r1 == (last r) && r1 == l2 && l1 == eL && l1 == r2 ||
+                                l1 /= lBL && l1 /= eL && s1 == s2 && l1 == (head l) && l1 == r2 && r1 == eL && r1 == l2) -> checkCommandTapeToTape t2 t1
                             | otherwise -> False
 
     getApplicableCommands :: [([Square], State, [Square])] -> [[TapeCommand]] -> [[TapeCommand]] -> [[TapeCommand]] 
@@ -40,16 +40,16 @@ module TMInterpreter where
             ([], []) -> configs ++ [reverse acc]
             (SingleTapeCommand ((r1, s1, l1), (r2, s2, l2)) : t1, (r, s, l) : t2) 
                     --insert
-                    | r1 == emptySymbol && r2 /= emptySymbol && l1 == rightBoundingLetter && l2 == l1 -> applyCommand t2 t1 configs $ (r ++ [r2], s2, l) : acc
+                    | r1 == eL && r2 /= eL && l1 == rBL && l2 == l1 -> applyCommand t2 t1 configs $ (r ++ [r2], s2, l) : acc
                     --remove
-                    | l1 == rightBoundingLetter && r2 == emptySymbol && r1 /= emptySymbol && l2 == l1 -> applyCommand t2 t1 configs $ (init r, s2, l) : acc
+                    | l1 == rBL && r2 == eL && r1 /= eL && l2 == l1 -> applyCommand t2 t1 configs $ (init r, s2, l) : acc
                     --stay
-                    | r1 == emptySymbol && r2 == emptySymbol && l1 == rightBoundingLetter && l2 == l1 -> applyCommand t2 t1 configs $ (r, s2, l) : acc
+                    | r1 == eL && r2 == eL && l1 == rBL && l2 == l1 -> applyCommand t2 t1 configs $ (r, s2, l) : acc
                     --replace
                     | r1 == (last r) && l1 == (head l) -> applyCommand t2 t1 configs $ (init r ++ [r2], s2, l2 : (tail l)) : acc
                     --move
-                    | r1 == l2 && l1 == r2 && l1 == emptySymbol && r1 == (last r) -> applyCommand t2 t1 configs $ (init r, s2, l2 : l) : acc
-                    | r1 == l2 && l1 == r2 && r1 == emptySymbol && l1 == (head l) -> applyCommand t2 t1 configs $ (r ++ [r2], s2, tail l) : acc
+                    | r1 == l2 && l1 == r2 && l1 == eL && r1 == (last r) -> applyCommand t2 t1 configs $ (init r, s2, l2 : l) : acc
+                    | r1 == l2 && l1 == r2 && r1 == eL && l1 == (head l) -> applyCommand t2 t1 configs $ (r ++ [r2], s2, tail l) : acc
                     | otherwise -> error ("Wrong command " ++ show command)
             ([], _) -> configs
 
@@ -70,7 +70,7 @@ module TMInterpreter where
     checkFinalEmptyStates accessStates config =
         case (accessStates, config) of
             ([], []) -> True
-            (s1 : t1, ([l2], s2, [r2]) : t2) | l2 ==  leftBoundingLetter && r2 == rightBoundingLetter && s1 == s2 -> checkFinalEmptyStates t1 t2
+            (s1 : t1, ([l2], s2, [r2]) : t2) | l2 ==  lBL && r2 == rBL && s1 == s2 -> checkFinalEmptyStates t1 t2
             _ -> False
 
     isHereEmptyConfigss :: [State] -> [[[([Square], State, [Square])]]] -> Maybe [[([Square], State, [Square])]]
@@ -100,8 +100,8 @@ module TMInterpreter where
             -- check input
             let inputSquare = mapValue input
             let isInputCorrect = Set.isSubsetOf (Set.fromList inputSquare) inputAlphabet
-            let startConfigss = [[([leftBoundingLetter] ++ inputSquare, (head startStates), [rightBoundingLetter]) : 
-                                    (map (\s -> ([leftBoundingLetter], s, [rightBoundingLetter])) (tail startStates))]]
+            let startConfigss = [[([lBL] ++ inputSquare, (head startStates), [rBL]) : 
+                                    (map (\s -> ([lBL], s, [rBL])) (tail startStates))]]
             case isInputCorrect of
                 False -> error "Incorrect input"
                 True -> Configs (startInterpreting accessStates startConfigss (Set.toList commands))

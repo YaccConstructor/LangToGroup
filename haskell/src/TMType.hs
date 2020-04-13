@@ -35,10 +35,10 @@ data Square = Value String | PCommand [TapeCommand] | BCommand [TapeCommand]
 newtype Commands = Commands (Set [TapeCommand])
     deriving (Eq, Ord, Show)
 -- leftmost square on every tape
-leftBoundingLetter = Value "α"
+lBL = Value "α"
 -- rightmost square on every tape
-rightBoundingLetter = Value "ω"
-emptySymbol = Value ""
+rBL = Value "ω"
+eL = Value ""
 -- TM
 newtype TM = TM (InputAlphabet, [TapeAlphabet], MultiTapeStates, Commands, StartStates, AccessStates)
     deriving (Eq, Ord, Show)
