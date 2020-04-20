@@ -10,8 +10,8 @@ import Data.Maybe (fromJust, catMaybes)
 import Debug.Trace (trace)
 import Helpers
 
-devidePositiveNegativeCommands :: [[TMType.TapeCommand]] -> ([[TMType.TapeCommand]], [[TMType.TapeCommand]], [[TMType.TapeCommand]], [[TMType.TapeCommand]])
-devidePositiveNegativeCommands commands = do
+splitPosNegCmds :: [[TMType.TapeCommand]] -> ([[TMType.TapeCommand]], [[TMType.TapeCommand]], [[TMType.TapeCommand]], [[TMType.TapeCommand]])
+splitPosNegCmds commands = do
     let check21 command = 
             case command of
                 TMType.PreSMCommand((a@(TMType.Value ah), b),(a1, b1)) : t 
@@ -23,16 +23,16 @@ devidePositiveNegativeCommands commands = do
 
     let reverseCommand (TMType.PreSMCommand((a, b),(a1, b1))) =  TMType.PreSMCommand((a1, b1),(a, b))
 
-    let devidePositiveNegativeCommandsInternal commands (accP21, accP22, accN21, accN22) =
+    let splitPosNegCmdsInternal commands (accP21, accP22, accN21, accN22) =
             case commands of
                 h : t 
-                    | check21 h -> devidePositiveNegativeCommandsInternal t (h : accP21, accP22, accN21, accN22)
-                    | check21 reversedH -> devidePositiveNegativeCommandsInternal t (accP21, accP22, h : accN21, accN22)
-                    | notElem reversedH accP22 -> devidePositiveNegativeCommandsInternal t (accP21, h : accP22, accN21, accN22)
-                    | otherwise -> devidePositiveNegativeCommandsInternal t (accP21, accP22, accN21, h : accN22)
+                    | check21 h -> splitPosNegCmdsInternal t (h : accP21, accP22, accN21, accN22)
+                    | check21 reversedH -> splitPosNegCmdsInternal t (accP21, accP22, h : accN21, accN22)
+                    | notElem reversedH accP22 -> splitPosNegCmdsInternal t (accP21, h : accP22, accN21, accN22)
+                    | otherwise -> splitPosNegCmdsInternal t (accP21, accP22, accN21, h : accN22)
                     where reversedH = map reverseCommand h
                 [] -> (accP21, accP22, accN21, accN22)
-    devidePositiveNegativeCommandsInternal commands ([], [], [], [])
+    splitPosNegCmdsInternal commands ([], [], [], [])
 
 
 copySMForCommand :: SM -> SMTag -> TMCMD -> SM
@@ -235,8 +235,8 @@ createSMs y =
    in
       [sm4, sm9 y, smAlpha, smOmega]
             
-createConnectingRules :: TMCMD -> [SRule]
-createConnectingRules cmd = do
+genConnectingRules :: TMCMD -> [SRule]
+genConnectingRules cmd = do
     let (Command command) = cmd 
     let k = length command    
 
@@ -404,8 +404,8 @@ createConnectingRules cmd = do
 
     [rule4, rule4alpha, rulealphaomega, ruleomega9, rule9]
 
-createPos22Rule :: TMCMD -> SRule
-createPos22Rule cmd = do
+genPos22Rule :: TMCMD -> SRule
+genPos22Rule cmd = do
     let (Command command) = cmd 
     let k = length command
     let (_, i) = getai command
@@ -419,8 +419,8 @@ createPos22Rule cmd = do
         (Word [e_f' (getFromJ j) j], Word [e_f' (getToJ j) j])] 
         | j <- [1 .. i - 1] ++ [i + 1 .. k]]
 
-symmetrization :: SRule -> SRule
-symmetrization (SRule wordPairs) = do 
+symSM :: SRule -> SRule
+symSM (SRule wordPairs) = do 
     let groupByWord w (left, other) =
             case w of
                 smb@(SmbY _) : t -> groupByWord t (smb : left, other)
@@ -494,7 +494,7 @@ tm2sm (TMType.TM (inputAlphabet,
         standardStates = foldr (++) [] [es, e's, fs, f's, xs, ps, qs, rs, ss, ts, us, pds, qds, rds, sds, tds, uds]
 
         commands = renameRightLeftBoundings $ Set.toList commandsSet
-        (pos21, pos22, neg21, neg22) = devidePositiveNegativeCommands $ commands
+        (pos21, pos22, neg21, neg22) = splitPosNegCmds $ commands
         sms = [[f $ Command c | f <- zipWith copySMForCommand (createSMs $ (!!) y $ (snd $ getai c) - 1) gamma] | c <- pos21 ]
         smsRules = concatMap srs $ concat $ sms
         groupByStates s1 s2 = s_name e1 == s_name e2 
@@ -523,7 +523,7 @@ tm2sm (TMType.TM (inputAlphabet,
                                 where   e = Set.elemAt 0 s
         smsStates = filter filterSmsStates . concat . map (map Set.unions . transpose . map qn) $ transpose sms
         otherStates = [[s {s_val = Just $ (fromJust $ s_val s) {tmCommand = Just $ Command c, smTag = Just g}} | s <- state ] | g <- gamma, c <- pos21, state <- standardStates]
-        smsConnectingRules = concatMap createConnectingRules $ map (Command $) pos21
+        smsConnectingRules = concatMap genConnectingRules $ map (Command $) pos21
         crStates = groupBy groupByStates . sortBy sortByNames . concatMap getStatesFromRule $ smsConnectingRules
                 where 
                         getStatesFromWord (SmbQ q) = Just q
@@ -549,10 +549,10 @@ tm2sm (TMType.TM (inputAlphabet,
                                                     bf1 = s_name s1 == F && Set.null tag1 
                                                     bf2 = s_name s2 == F && Set.null tag2 
         finalSmStates = map Set.unions . groupBy groupByStates . sortBy sortByNames $ (map Set.fromList standardStates) ++ (map Set.fromList otherStates) ++ smsStates ++ (map Set.fromList crStates)
-        smsPos22Rules = map createPos22Rule $ map (Command $) pos22
+        smsPos22Rules = map genPos22Rule $ map (Command $) pos22
 
         finalSmRules = smsRules ++ smsConnectingRules ++ smsPos22Rules
-        --symmFinalSmRules = (++) finalSmRules $ map symmetrization finalSmRules
+        --symmFinalSmRules = (++) finalSmRules $ map symSM finalSmRules
                                 
     in
         (SM y finalSmStates finalSmRules, sigmaFunc accessStates $ replicate numOfTapes [], startStates)

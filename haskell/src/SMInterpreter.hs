@@ -95,14 +95,14 @@ module SMInterpreter where
     interpretSM :: Word -> SM -> Word -> [Word]
     interpretSM startWord sm accessWord = do
             let m = Map.fromList [(startWord, 1)]
-            let symmSmRules = (++) (srs sm) $ map symmetrization (srs sm)
+            let symmSmRules = (++) (srs sm) $ map symSM (srs sm)
             let (path, new_m) = startInterpreting accessWord [[startWord]] (symmSmRules) m
             path
 
     getRestrictedGraph :: Word -> SM -> Int -> ([(Word, Int, Word)], Map Word Int)
     getRestrictedGraph startWord sm height = do
             let m = Map.fromList [(startWord, 1)]
-            let symmSmRules = srs sm ++ map symmetrization (srs sm)
+            let symmSmRules = srs sm ++ map symSM (srs sm)
             let getRuleNumber rule = 
                     case elemIndex rule $ reverse symmSmRules of
                         Nothing -> error "Can't found the rule in set"
