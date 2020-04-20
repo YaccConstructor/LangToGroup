@@ -16,7 +16,7 @@ import CFG2TM
 import TMType
 import TMInterpreter
 import ConfigPrinter
-import TM2TM'
+import TM2SymTM
 import TM2SM
 import SMPrinter
 import SMachineToGroup

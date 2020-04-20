@@ -34,7 +34,7 @@ library
       SMInterpreter
       SMType
       TM2SM
-      TM2TM'
+      TM2SymTM
       TMInterpreter
       TMType
   other-modules:
