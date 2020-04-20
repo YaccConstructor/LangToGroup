@@ -86,5 +86,5 @@ main = defaultMainWithOpts
         testCase "cft to TM to config test" configsTest,
         testCase "simple sm test" smInterpretationTest,
         testCase "sm test 2" smInterpretationTest2,
-        testCase "sm2gr test" sm2GrTest]
+        testCase "sm2gr test" sm2grTest]
        mempty

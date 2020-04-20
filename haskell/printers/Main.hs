@@ -19,7 +19,7 @@ import ConfigPrinter
 import TM2SymTM
 import TM2SM
 import SMPrinter
-import SMachineToGroup
+import SM2GR
 import qualified SMType
 import GRType
 import GapFuncWriter
@@ -121,7 +121,7 @@ main = do
 -- main = do
 --     let smw@(sm, w0, as) = tm2sm $ symSmallMachine
 --     --let (sm, w0, word) = oneRuleSm
---     let gr@(GR (a, r)) = smToGR (sm, w0)
+--     let gr@(GR (a, r)) = sm2gr (sm, w0)
 --     --let (gr@(GR (a, r)), word) = oneRuleGr
 --     --putStrLn $ (show $ length $ SMType.srs sm)
 --     putStrLn $ (show $ length a) ++ " " ++ (show $ length r)
@@ -139,7 +139,7 @@ main = do
 -- main :: IO()
 -- main = do
 --     let (sm, accessWord, startWord, word) = aStarSMachine
---     let gr@(GR (a, r)) = smToGR (sm, accessWord)
+--     let gr@(GR (a, r)) = sm2gr (sm, accessWord)
 --     putStrLn $ (show $ length a) ++ " " ++ (show $ length r)
 --     let genmap = Map.fromList $ zip (Set.toList a) $ map ((++) "f." . show) [1..]
 --     --let word = foldl (\acc x -> [(SmbA' $ A_R x)] ++ acc ++ [(SmbA $ A_R x)]) (easyHubRelation startWord) $ SMType.srs sm
@@ -204,7 +204,7 @@ printCount grammar@(Grammar (n, t, r, _, _)) = do
     let smQ = foldl (\acc a -> acc + length a) 0 (SMType.qn sm)
     putStrLn $ "smY: " ++ (show $ length smY) ++ " smQ: " ++ (show smQ) ++ " smR: " ++ (show $ length $ SMType.srs sm)
 
-    let gr@(GR (a, r)) = smToGR (sm, w)
+    let gr@(GR (a, r)) = sm2gr (sm, w)
     putStrLn $ "A: " ++ (show $ length a) ++ " R: " ++ (show $ length r)
     putStrLn ""
 

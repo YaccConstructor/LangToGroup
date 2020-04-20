@@ -30,7 +30,7 @@ library
       GrammarType
       GRType
       Helpers
-      SMachineToGroup
+      SM2GR
       SMInterpreter
       SMType
       TM2SM

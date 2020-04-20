@@ -12,10 +12,10 @@ import Test.HUnit
 import SMType
 import GRType
 import qualified TMType
-import SMachineToGroup
+import SM2GR
 
-sm2GrTest :: Assertion
-sm2GrTest = do
+sm2grTest :: Assertion
+sm2grTest = do
     let y = Y $ TMType.Value "a"
     let q0 = SMType.State Q "0" (fromList []) Nothing
     let q1 = SMType.State Q "1" (fromList []) Nothing
@@ -28,7 +28,7 @@ sm2GrTest = do
     let r = SRule $ [(from1, to1), (from2, to2)]
     let sm = SM [[y]] [fromList [q0, q0'], fromList [q1, q1']] [r]
     let accessWord = Word [SmbQ q0', SmbQ q1']
-    let gr = smToGREmpty (sm, accessWord)
+    let gr = sm2grEmpty (sm, accessWord)
     let k = map (A_K $) [1, 2]
     let as = [A_Y y, A_Q q0, A_Q q1, A_Q q0', A_Q q1', A_R r] ++ k
     let powr x = (SmbA' $ A_R r) : x ++ [SmbA $ A_R r]

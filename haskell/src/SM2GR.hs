@@ -1,4 +1,4 @@
-module SMachineToGroup where
+module SM2GR where
 
 import SMType 
 import GRType
@@ -34,8 +34,8 @@ hubRelation (Word w0) = posPart ++ negPart
 
 easyHubRelation (Word w0) = [SmbA $ (!!) k 0] ++ (map smb2As w0) ++ [SmbA $ (!!) k 1]
 
-smToGRInternal :: (SMType.SM, SMType.Word) -> [A] -> GRType.GR
-smToGRInternal (SMType.SM yn 
+sm2grInternal :: (SMType.SM, SMType.Word) -> [A] -> GRType.GR
+sm2grInternal (SMType.SM yn 
                   qn
                   sRules, w0) s
         = GRType.GR (Set.fromList a, Set.fromList relations)
@@ -51,8 +51,8 @@ smToGRInternal (SMType.SM yn
         --hub = Relator $ easyHubRelation w0
         relations = auxiliary ++ transition ++ [hub]
 
-smToGR :: (SMType.SM, SMType.Word) -> GRType.GR
-smToGR sw = smToGRInternal sw [A_Y alpha, A_Y omega, A_Y delta]
+sm2gr :: (SMType.SM, SMType.Word) -> GRType.GR
+sm2gr sw = sm2grInternal sw [A_Y alpha, A_Y omega, A_Y delta]
 
-smToGREmpty :: (SMType.SM, SMType.Word) -> GRType.GR
-smToGREmpty sw = smToGRInternal sw []
+sm2grEmpty :: (SMType.SM, SMType.Word) -> GRType.GR
+sm2grEmpty sw = sm2grInternal sw []
