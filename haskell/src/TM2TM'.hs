@@ -6,21 +6,10 @@ import qualified Data.Set as Set
 import Helpers
 import Text.Regex.TDFA
 import Debug.Trace
-
-disjoinAcceptCommandWithOthers commands accessStates = do
-    let isAcceptCommand command access = 
-            case (command, access) of 
-                ((SingleTapeCommand ((_, _, _), (_, sh, _))) : st, ah : at) -> if sh == ah then isAcceptCommand st at else False
-                ([], []) -> True
-    let disjoinAcceptCommandWithOthersInternal allCommands acc = 
-            case allCommands of
-                (h : t) -> if isAcceptCommand h accessStates then (h, acc ++ t) else disjoinAcceptCommandWithOthersInternal t (h : acc)
-                [] -> error "No accept command"
-
-    disjoinAcceptCommandWithOthersInternal commands []
           
-
-firstPhase startKPlusOneTapeState kplus1tapeState finalKPlusOneTapeState acceptCommand otherCommands startStates multiTapeStates startFirstPhaseStates = do
+firstPhase :: [State] -> [TapeCommand] -> [[TapeCommand]] -> [State] -> [Set State] -> [State] -> [[TapeCommand]]
+firstPhase kplus1tapeStates acceptCommand otherCommands startStates multiTapeStates startFirstPhaseStates = do
+    let [startKPlusOneTapeState, kplus1tapeState, finalKPlusOneTapeState] = kplus1tapeStates
 
     let generateFirstPhaseCommand command states acc =
             case states of
@@ -61,7 +50,7 @@ generateEmptyStayCommands states acc =
         [] -> reverse acc
         h : t -> generateEmptyStayCommands t $ (SingleTapeCommand ((lBL, h, rBL), (lBL, h, rBL))) : acc
         
-
+secondPhase :: State -> [[TapeCommand]] -> [State] -> [State] -> [Set State] -> [[TapeCommand]]
 secondPhase finalKPlusOneTapeState commands startStates accessStates multiTapeStates = do
     let addKPlusOneTapeCommands cmd acc = 
             case cmd of
@@ -79,6 +68,7 @@ secondPhase finalKPlusOneTapeState commands startStates accessStates multiTapeSt
 
     (addKPlusOneTapeCommands commands []) ++ (returnToRightEndmarkerCommands commands [])
 
+thirdPhase :: State -> [[TapeCommand]] -> [State] -> [[TapeCommand]]
 thirdPhase finalKPlusOneTapeState commands accessStates = do
     let thirdPhaseInternal commands acc =
             case commands of
@@ -88,6 +78,7 @@ thirdPhase finalKPlusOneTapeState commands accessStates = do
                 [] -> acc
     thirdPhaseInternal commands []
 
+symCommands :: [[TapeCommand]] -> [[TapeCommand]] 
 symCommands commands = do
     let reverseCommands commands acc =
             case commands of
@@ -100,8 +91,8 @@ symCommands commands = do
                 [] -> acc
     reverseAllCommands commands commands
 
-mapTM2TMAfterThirdPhase :: TM -> TM
-mapTM2TMAfterThirdPhase 
+threePhaseProcessing :: TM -> TM
+threePhaseProcessing 
     (TM
         (inputAlphabet,
         tapeAlphabets, 
@@ -116,9 +107,16 @@ mapTM2TMAfterThirdPhase
         let finalKPlusOneTapeState = State $ "q_2^" ++ show kPlus1
         let acceptKPlusOneTapeState = State $ "q_3^" ++ show kPlus1
         let commandsList = Set.toList commands
-        let (acceptCommand, otherCommands) = disjoinAcceptCommandWithOthers commandsList accessStates
+        let (acceptCommand, otherCommands) = disjoinAcceptCommandWithOthersInternal commandsList []
+                where
+                    isAcceptCommand command access = all (\((SingleTapeCommand (_, (_, sh, _))), ah) -> sh == ah) $ zip command access
+                    disjoinAcceptCommandWithOthersInternal allCommands acc = 
+                        case allCommands of
+                            (h : t) | isAcceptCommand h accessStates -> (h, acc ++ t) 
+                                    | otherwise -> disjoinAcceptCommandWithOthersInternal t (h : acc)
+                            [] -> error "No accept command"
         let startFirstPhaseStates = map (\tape -> genNextState tape) multiTapeStates
-        let commandsFirstPhase = firstPhase startKPlusOneTapeState kplus1tapeState finalKPlusOneTapeState acceptCommand otherCommands startStates multiTapeStates startFirstPhaseStates
+        let commandsFirstPhase = firstPhase [startKPlusOneTapeState, kplus1tapeState, finalKPlusOneTapeState] acceptCommand otherCommands startStates multiTapeStates startFirstPhaseStates
         let commandsSecondPhase = secondPhase finalKPlusOneTapeState commandsList startStates accessStates multiTapeStates
         let commandsThirdPhase = thirdPhase finalKPlusOneTapeState commandsList accessStates
         
@@ -141,16 +139,18 @@ mapTM2TMAfterThirdPhase
 
         TM (inputAlphabet, newTMTapeAlphabets, newTMMultiTapeStates, newTMCommands, newTMStartStates, newTMAccessStates)
 
-doubleCommandsStateDisjoinFunction s = do
-    let getNumber (State s) = n
-            where (_, _, _, [n]) = s =~ "q_{?([0-9]+)}?\\^{?[0-9]+}?" :: (String, String, String, [String])
-    let stateNumber = getNumber s
-    let getTapeNumber (State s) = read n :: Float
-            where (_, _, _, [n]) = s =~ "q_{?[0-9]+}?\\^{?([0-9]+)}?" :: (String, String, String, [String])
-    let tapeNumber = (+) 0.5 $ getTapeNumber s
-    State $ "q_{" ++ stateNumber ++ "}^{" ++ (show tapeNumber) ++ "}"    
-
+doubleCommands :: [State] -> [State] -> [TapeAlphabet] -> [Set State] -> [[TapeCommand]] -> ([State], [State], [TapeAlphabet], [Set State], [[TapeCommand]])
 doubleCommands startStates accessStates tapeAlphabets multiTapeStates commands = do
+
+    let doubleCommandsStateDisjoinFunction s = State $ "q_{" ++ stateNumber ++ "}^{" ++ (show tapeNumber) ++ "}" 
+            where
+                getNumber (State s) = n
+                        where (_, _, _, [n]) = s =~ "q_{?([0-9]+)}?\\^{?[0-9]+}?" :: (String, String, String, [String])
+                stateNumber = getNumber s
+                getTapeNumber (State s) = read n :: Float
+                        where (_, _, _, [n]) = s =~ "q_{?[0-9]+}?\\^{?([0-9]+)}?" :: (String, String, String, [String])
+                tapeNumber = (+) 0.5 $ getTapeNumber s   
+
     let divideCommands commands acc =
             case commands of 
                 SingleTapeCommand ((a, s, b), (a1, s1, b1)) : t 
@@ -180,8 +180,8 @@ doubleCommands startStates accessStates tapeAlphabets multiTapeStates commands =
         concat $ map doubleMultitapeStates multiTapeStates, 
         doubleCommandsInternal commands [])
 
-
-one2TwoKCommands (multiTapeStates, commands) = do
+one2KCmds :: ([Set State], [[TapeCommand]]) -> ([Set State], [[TapeCommand]])
+one2KCmds (multiTapeStates, commands) = do
     let getStartAndFinalStatesOfCommand command (starts, finals) = 
             case command of
                 SingleTapeCommand ((l1, s1, r1), (l2, s2, r2)) : t -> getStartAndFinalStatesOfCommand t (s1 : starts, s2 : finals)
@@ -199,25 +199,25 @@ one2TwoKCommands (multiTapeStates, commands) = do
                                 where intermediateState = genNextState tape
                 _ -> error $ "Non-exhaustive patterns in case " ++ show (reverse newTapeStates, reverse newStarts, reverse acc)
 
-    let one2TwoKCommand tapeStates (starts, finals) i command immutCommand acc =
+    let one2KCmd tapeStates (starts, finals) i command immutCommand acc =
             case command of
                 SingleTapeCommand ((l1, s1, r1), (l2, s2, r2)) : t  | l1 == eL && l2 == eL -> 
-                                                                            one2TwoKCommand tapeStates (starts, finals) (i + 1) t immutCommand acc
+                                                                            one2KCmd tapeStates (starts, finals) (i + 1) t immutCommand acc
                                                                     | otherwise -> 
-                                                                            one2TwoKCommand newTapeStates (newStarts, finals) (i + 1) t immutCommand $ newCommand : acc 
+                                                                            one2KCmd newTapeStates (newStarts, finals) (i + 1) t immutCommand $ newCommand : acc 
                                                                                 where (newTapeStates, newStarts, newCommand) = oneActionCommand tapeStates (starts, finals) immutCommand i 0 ([], [], [])
                 [] -> (tapeStates, acc)
-    let one2TwoKCommandsInternal tapeStates commands acc =
+    let one2KCmdsInternal tapeStates commands acc =
             case commands of
-                h : t -> one2TwoKCommandsInternal newTapeStates t $ newCommands ++ acc
+                h : t -> one2KCmdsInternal newTapeStates t $ newCommands ++ acc
                     where   (starts, finals) = getStartAndFinalStatesOfCommand h ([], []) 
-                            (newTapeStates, newCommands) = one2TwoKCommand tapeStates (starts, finals) 0 h h []
+                            (newTapeStates, newCommands) = one2KCmd tapeStates (starts, finals) 0 h h []
                 [] -> (tapeStates, acc)
 
 
-    one2TwoKCommandsInternal multiTapeStates commands []
+    one2KCmdsInternal multiTapeStates commands []
 
-
+transform2SingleInsertDeleteCommand :: ([Set State], [[TapeCommand]]) -> ([Set State], [[TapeCommand]])
 transform2SingleInsertDeleteCommand (tapeStates, commands) = do 
     let transformCommand tapeStates command = (newTapeStates, [c1, c2])
             where 
@@ -237,44 +237,29 @@ transform2SingleInsertDeleteCommand (tapeStates, commands) = do
                     
     transform2SingleInsertDeleteCommandInternal tapeStates commands []
 
-renameRightLeftBoundings commands = do
-    let e i = Value ("E_{" ++ (show i) ++ "}")
-    let f q = StateOmega q
-    let renameRightLeftBoundingsInternal i acc command =
-            case command of
-                SingleTapeCommand ((l1, s1, r1), (l2, s2, r2)) : t 
-                    | l1 == lBL -> renameRightLeftBoundingsInternal (i + 1) ((PreSMCommand ((newRight, newS1), (newRight, newS2))) : acc) t
-                    | otherwise -> renameRightLeftBoundingsInternal (i + 1) ((PreSMCommand ((l1, newS1), (l2, newS2))) : acc) t
-                        where   newRight = e i
-                                newS1 = f s1
-                                newS2 = f s2
-                [] -> reverse acc
-    map (renameRightLeftBoundingsInternal 1 []) commands 
-
-mapTM2TM' :: TM -> TM
-mapTM2TM' tm = do
+symTM :: TM -> TM
+symTM tm = do
     let (TM (inputAlphabet,
             tapeAlphabets, 
             MultiTapeStates multiTapeStates, 
             Commands commandsSet, 
             StartStates startStates,
             AccessStates accessStates)
-            ) = mapTM2TMAfterThirdPhase tm
+            ) = threePhaseProcessing tm
 
     let commands = Set.toList commandsSet
     let (newStartStates, newAccessStates, newTapeAlphabets, doubledTapeStates, doubledCommands) = doubleCommands startStates accessStates tapeAlphabets multiTapeStates commands
     let (newTapeStates, newTMCommands) =    transform2SingleInsertDeleteCommand $ 
-                                            one2TwoKCommands (doubledTapeStates, doubledCommands)
+                                            one2KCmds (doubledTapeStates, doubledCommands)
     TM (inputAlphabet, 
         newTapeAlphabets, 
         MultiTapeStates newTapeStates, 
-        --Commands (Set.fromList $ symCommands newTMCommands), 
-        Commands (Set.fromList newTMCommands), 
+        Commands (Set.fromList $ symCommands newTMCommands),
         StartStates newStartStates, 
         AccessStates newAccessStates)
 
-symTmWithoutKPlusOneTape :: TM -> TM
-symTmWithoutKPlusOneTape (TM (inputAlphabet,
+symDetTM :: TM -> TM
+symDetTM (TM (inputAlphabet,
             tapeAlphabets, 
             MultiTapeStates multiTapeStates, 
             Commands commandsSet, 
@@ -285,11 +270,10 @@ symTmWithoutKPlusOneTape (TM (inputAlphabet,
     let commands = Set.toList commandsSet
     let (newStartStates, newAccessStates, newTapeAlphabets, doubledTapeStates, doubledCommands) = doubleCommands startStates accessStates tapeAlphabets multiTapeStates commands
     let (newTapeStates, newTMCommands) =    transform2SingleInsertDeleteCommand $ 
-                                            one2TwoKCommands (doubledTapeStates, doubledCommands)
+                                            one2KCmds (doubledTapeStates, doubledCommands)
     TM (inputAlphabet, 
         newTapeAlphabets, 
-        MultiTapeStates newTapeStates, 
-        --Commands (Set.fromList $ renameRightLeftBoundings newTMCommands),
+        MultiTapeStates newTapeStates,
         Commands (Set.fromList $ symCommands newTMCommands), 
         StartStates newStartStates, 
         AccessStates newAccessStates)

@@ -45,20 +45,21 @@ example = execLaTeXM $
     do
         preambula 
         document $ do
-            doLaTeX testGrammar
-            doLaTeX $ cfg2tm testGrammar
+            --doLaTeX testGrammar
+            --doLaTeX $ cfg2tm testGrammar
             -- -- doLaTeX $ interpretTM ["a"] $ cfg2tm testGrammar
             -- newpage
-            -- doLaTeX $ symTmWithoutKPlusOneTape $ cfg2tm testGrammar
+            -- doLaTeX $ symDetTM $ cfg2tm testGrammar
             -- newpage
-            -- doLaTeX $ tripleFst $ smFinal $ symTmWithoutKPlusOneTape $ cfg2tm testGrammar
+            -- doLaTeX $ tripleFst $ smFinal $ symDetTM $ cfg2tm testGrammar
             -- doLaTeX epsTestGrammar
             -- doLaTeX $ cfg2tm epsTestGrammar
             -- -- doLaTeX $ interpretTM ["a"] $ cfg2tm epsTestGrammar
             -- -- newpage
-            -- -- doLaTeX epsTestLeftGrammar
-            -- -- doLaTeX $ cfg2tm epsTestLeftGrammar
-            -- -- doLaTeX $ interpretTM ["a"] $ cfg2tm epsTestLeftGrammar
+            doLaTeX epsTestLeftGrammar
+            doLaTeX $ cfg2tm epsTestLeftGrammar
+            doLaTeX $ interpretTM ["a"] $ cfg2tm epsTestLeftGrammar
+            doLaTeX $ interpretTM [] $ cfg2tm epsTestLeftGrammar
             -- newpage
             -- doLaTeX abTestGrammar
             -- doLaTeX $ cfg2tm abTestGrammar
@@ -68,14 +69,14 @@ example = execLaTeXM $
             -- doLaTeX $ cfg2tm ab2TestGrammar
             -- -- doLaTeX $ interpretTM ["b", "a", "b", "a"] $ cfg2tm ab2TestGrammar
             -- -- newpage
-            -- -- doLaTeX $ smFinal $ mapTM2TM' $ cfg2tm ab2TestGrammar
+            -- -- doLaTeX $ smFinal $ symTM $ cfg2tm ab2TestGrammar
             -- newpage
             -- doLaTeX ab3TestGrammar
             -- doLaTeX $ cfg2tm ab3TestGrammar
             -- -- doLaTeX $ interpretTM ["b", "a", "b", "a"] $ cfg2tm ab3TestGrammar
             -- -- doLaTeX $ fst $ smFinal tmForTestSm
-            --doLaTeX $ mapTM2TMAfterThirdPhase simpleTM
-            --doLaTeX $ tripleFst $ smFinal $ symTmWithoutKPlusOneTape $ fst $ oneruleTM
+            --doLaTeX $ threePhaseProcessing simpleTM
+            --doLaTeX $ tripleFst $ smFinal $ symDetTM $ fst $ oneruleTM
             -- doLaTeX symSmallMachine
             -- newpage
             --doLaTeX $ tripleFst $ smFinal symSmallMachine
@@ -86,13 +87,13 @@ main = do
 
 -- main :: IO()
 -- main = do
---         let tm = mapTM2TM' $ fst $ oneruleTM
+--         let tm = symTM $ fst $ oneruleTM
 --         let input = ["a"]
 --         putStrLn $ show $ interpretTM input tm
 
 -- main :: IO()
 -- main = do
---         let s@(sm, w, as) = smFinal $ symTmWithoutKPlusOneTape $ cfg2tm testGrammar
+--         let s@(sm, w, as) = smFinal $ symDetTM $ cfg2tm testGrammar
 --         let inputSmb = map (\a -> SMType.SmbY $ SMType.Y a) $ mapValue ["a"]
 --         let startWord = sigmaFunc as $ inputSmb : (replicate (length as - 1) [])
 --         putStrLn $ show $ length $ interpretSM startWord sm w
@@ -111,7 +112,7 @@ main = do
 --         writeGraph g handle
 --         hClose handle
 --         where 
---             s@(sm, w, as) = smFinal $ symTmWithoutKPlusOneTape $ cfg2tm testGrammar
+--             s@(sm, w, as) = smFinal $ symDetTM $ cfg2tm testGrammar
 --             inputSmb = map (\a -> SMType.SmbY $ SMType.Y a) $ mapValue ["a"]
 --             startWord = sigmaFunc as $ inputSmb : (replicate (length as - 1) [])
 --             g@(graph, m) = getRestrictedGraph startWord sm 1
@@ -193,7 +194,7 @@ printCount grammar@(Grammar (n, t, r, _, _)) = do
     let tmQ = foldl (\acc a -> acc + length a) 0 multiTapeStates
     putStrLn $ "tmX: " ++ (show $ length tmX) ++ " tmG: " ++ (show tmG) ++ " tmQ: " ++ (show tmQ) ++ " tmCmds: " ++ (show $ length tmCmds)
 
-    let tm'@(TM (InputAlphabet tmX', tapeAlphabet', MultiTapeStates multiTapeStates', Commands tmCmds', _, _)) = symTmWithoutKPlusOneTape tm
+    let tm'@(TM (InputAlphabet tmX', tapeAlphabet', MultiTapeStates multiTapeStates', Commands tmCmds', _, _)) = symDetTM tm
     let tmG' = foldl (\acc (TapeAlphabet a) -> acc + length a) 0 tapeAlphabet'
     let tmQ' = foldl (\acc a -> acc + length a) 0 multiTapeStates'
     putStrLn $ "tm'X: " ++ (show $ length tmX') ++ " tm'G: " ++ (show tmG') ++ " tm'Q: " ++ (show tmQ') ++ " tm'Cmds: " ++ (show $ length tmCmds')

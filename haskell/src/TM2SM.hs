@@ -7,7 +7,6 @@ import qualified TMType
 import Data.List (transpose, groupBy, sortBy, length, zip4)
 import Data.Maybe (fromJust, catMaybes)
 import Debug.Trace (trace)
-import TM2TM' (renameRightLeftBoundings)
 
 
 devidePositiveNegativeCommands :: [[TMType.TapeCommand]] -> ([[TMType.TapeCommand]], [[TMType.TapeCommand]], [[TMType.TapeCommand]], [[TMType.TapeCommand]])
@@ -552,7 +551,21 @@ getStatesFromRules = groupBy groupByStates . sortBy sortByNames . concatMap getS
                                             bf1 = s_name s1 == F && Set.null tag1 
                                             bf2 = s_name s2 == F && Set.null tag2 
 
-
+renameRightLeftBoundings :: [[TMType.TapeCommand]] -> [[TMType.TapeCommand]]
+renameRightLeftBoundings = map (renameRightLeftBoundingsInternal 1 []) 
+    where
+        e i = TMType.Value ("E_{" ++ (show i) ++ "}")
+        f q = TMType.StateOmega q
+        renameRightLeftBoundingsInternal i acc command =
+            case command of
+                TMType.SingleTapeCommand ((l1, s1, r1), (l2, s2, r2)) : t 
+                    | l1 == TMType.lBL -> renameRightLeftBoundingsInternal (i + 1) ((TMType.PreSMCommand ((newRight, newS1), (newRight, newS2))) : acc) t
+                    | otherwise -> renameRightLeftBoundingsInternal (i + 1) ((TMType.PreSMCommand ((l1, newS1), (l2, newS2))) : acc) t
+                        where   newRight = e i
+                                newS1 = f s1
+                                newS2 = f s2
+                [] -> reverse acc
+    
 smFinal (TMType.TM (inputAlphabet,
         tapeAlphabets, 
         TMType.MultiTapeStates tapesStates, 

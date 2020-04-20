@@ -18,11 +18,7 @@ iSST = State "q_{1}^{2}"
 genRelationCommand :: Relation -> [State] -> ([State], [[TapeCommand]])
 genRelationCommand (Relation (Nonterminal start, [E (Epsilon eps)])) states = 
     (states,
-    [[SingleTapeCommand ((lBL, sSFT, rBL), (lBL, sSFT, rBL)),
-    SingleTapeCommand ((Value start, iSST, rBL), (eL, iSST, rBL))], 
-    [SingleTapeCommand ((lBL, sSFT, rBL), (lBL, sSFT, rBL)),
-    SingleTapeCommand ((eL, sSST, rBL), (Value start, iSST, rBL))],
-    [SingleTapeCommand ((eL, sSFT, rBL), (eL, sSFT, rBL)),
+    [[SingleTapeCommand ((eL, sSFT, rBL), (eL, sSFT, rBL)),
     SingleTapeCommand ((Value start, iSST, rBL), (eL, iSST, rBL))]])
 genRelationCommand (Relation (Nonterminal nonterminalSymbol, symbols)) states = (newStates, lcmd : commands)
     where
