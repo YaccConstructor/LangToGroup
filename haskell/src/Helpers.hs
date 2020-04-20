@@ -56,3 +56,6 @@ module Helpers where
 
     genNextState :: Set TMType.State -> TMType.State
     genNextState tape = genNextStateList $ Set.toList tape
+
+    mapTuple :: (a -> b) -> (a, a) -> (b, b)
+    mapTuple f (a1, a2) = (f a1, f a2)

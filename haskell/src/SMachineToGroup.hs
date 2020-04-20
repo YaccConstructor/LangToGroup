@@ -2,9 +2,9 @@ module SMachineToGroup where
 
 import SMType 
 import GRType
+import TM2SMHelpers
 import Data.Set (Set)
 import qualified Data.Set as Set 
-import TM2SM (alpha, omega, delta)
 
 smb2As :: Smb -> SmbR
 smb2As smb = case smb of SmbY y -> SmbA $ A_Y y ; SmbY' y -> SmbA' $ A_Y y ; SmbQ q -> SmbA $ A_Q q

@@ -51,7 +51,7 @@ example = execLaTeXM $
             -- newpage
             -- doLaTeX $ symDetTM $ cfg2tm testGrammar
             -- newpage
-            -- doLaTeX $ tripleFst $ smFinal $ symDetTM $ cfg2tm testGrammar
+            -- doLaTeX $ tripleFst $ tm2sm $ symDetTM $ cfg2tm testGrammar
             -- doLaTeX epsTestGrammar
             -- doLaTeX $ cfg2tm epsTestGrammar
             -- -- doLaTeX $ interpretTM ["a"] $ cfg2tm epsTestGrammar
@@ -69,17 +69,17 @@ example = execLaTeXM $
             -- doLaTeX $ cfg2tm ab2TestGrammar
             -- -- doLaTeX $ interpretTM ["b", "a", "b", "a"] $ cfg2tm ab2TestGrammar
             -- -- newpage
-            -- -- doLaTeX $ smFinal $ symTM $ cfg2tm ab2TestGrammar
+            -- -- doLaTeX $ tm2sm $ symTM $ cfg2tm ab2TestGrammar
             -- newpage
             -- doLaTeX ab3TestGrammar
             -- doLaTeX $ cfg2tm ab3TestGrammar
             -- -- doLaTeX $ interpretTM ["b", "a", "b", "a"] $ cfg2tm ab3TestGrammar
-            -- -- doLaTeX $ fst $ smFinal tmForTestSm
+            -- -- doLaTeX $ fst $ tm2sm tmForTestSm
             --doLaTeX $ threePhaseProcessing simpleTM
-            --doLaTeX $ tripleFst $ smFinal $ symDetTM $ fst $ oneruleTM
+            --doLaTeX $ tripleFst $ tm2sm $ symDetTM $ fst $ oneruleTM
             -- doLaTeX symSmallMachine
             -- newpage
-            --doLaTeX $ tripleFst $ smFinal symSmallMachine
+            --doLaTeX $ tripleFst $ tm2sm symSmallMachine
 
 main :: IO()
 main = do
@@ -93,14 +93,14 @@ main = do
 
 -- main :: IO()
 -- main = do
---         let s@(sm, w, as) = smFinal $ symDetTM $ cfg2tm testGrammar
+--         let s@(sm, w, as) = tm2sm $ symDetTM $ cfg2tm testGrammar
 --         let inputSmb = map (\a -> SMType.SmbY $ SMType.Y a) $ mapValue ["a"]
 --         let startWord = sigmaFunc as $ inputSmb : (replicate (length as - 1) [])
 --         putStrLn $ show $ length $ interpretSM startWord sm w
 
 -- main :: IO()
 -- main = do
---         let s@(sm, w, as) = smFinal symSmallMachine
+--         let s@(sm, w, as) = tm2sm symSmallMachine
 --         let inputSmb = map (\a -> SMType.SmbY $ SMType.Y a) $ mapValue ["a"]
 --         let startWord = sigmaFunc as $ inputSmb : (replicate (length as - 1) [])
 --         putStrLn $ show $ length $ interpretSM startWord sm w
@@ -112,14 +112,14 @@ main = do
 --         writeGraph g handle
 --         hClose handle
 --         where 
---             s@(sm, w, as) = smFinal $ symDetTM $ cfg2tm testGrammar
+--             s@(sm, w, as) = tm2sm $ symDetTM $ cfg2tm testGrammar
 --             inputSmb = map (\a -> SMType.SmbY $ SMType.Y a) $ mapValue ["a"]
 --             startWord = sigmaFunc as $ inputSmb : (replicate (length as - 1) [])
 --             g@(graph, m) = getRestrictedGraph startWord sm 1
     
 -- main :: IO()
 -- main = do
---     let smw@(sm, w0, as) = smFinal $ symSmallMachine
+--     let smw@(sm, w0, as) = tm2sm $ symSmallMachine
 --     --let (sm, w0, word) = oneRuleSm
 --     let gr@(GR (a, r)) = smToGR (sm, w0)
 --     --let (gr@(GR (a, r)), word) = oneRuleGr
@@ -199,7 +199,7 @@ printCount grammar@(Grammar (n, t, r, _, _)) = do
     let tmQ' = foldl (\acc a -> acc + length a) 0 multiTapeStates'
     putStrLn $ "tm'X: " ++ (show $ length tmX') ++ " tm'G: " ++ (show tmG') ++ " tm'Q: " ++ (show tmQ') ++ " tm'Cmds: " ++ (show $ length tmCmds')
 
-    let (sm, w, _) = smFinal $ tm'
+    let (sm, w, _) = tm2sm $ tm'
     let smY = concat $ SMType.yn sm
     let smQ = foldl (\acc a -> acc + length a) 0 (SMType.qn sm)
     putStrLn $ "smY: " ++ (show $ length smY) ++ " smQ: " ++ (show smQ) ++ " smR: " ++ (show $ length $ SMType.srs sm)

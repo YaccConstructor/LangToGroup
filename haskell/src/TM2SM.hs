@@ -4,10 +4,11 @@ import SMType
 import Data.Set (Set)
 import qualified Data.Set as Set
 import qualified TMType
+import TM2SMHelpers
 import Data.List (transpose, groupBy, sortBy, length, zip4)
 import Data.Maybe (fromJust, catMaybes)
 import Debug.Trace (trace)
-
+import Helpers
 
 devidePositiveNegativeCommands :: [[TMType.TapeCommand]] -> ([[TMType.TapeCommand]], [[TMType.TapeCommand]], [[TMType.TapeCommand]], [[TMType.TapeCommand]])
 devidePositiveNegativeCommands commands = do
@@ -33,51 +34,6 @@ devidePositiveNegativeCommands commands = do
                 [] -> (accP21, accP22, accN21, accN22)
     devidePositiveNegativeCommandsInternal commands ([], [], [], [])
 
-delta = Y $ TMType.Value "\\delta" 
-alpha = Y $ TMType.Value "\\alpha" 
-omega = Y $ TMType.Value "\\omega" 
-       
-eTag = Set.fromList []
-
-standardV i = Just $ StateVal i Nothing Nothing
-
-eTagState name i = State name i eTag Nothing
-genRange name range = [eTagState name (show i) | i <- range]
-gen name = genRange name [0..4]
-
-addTag newTag q = q {s_tags = Set.insert newTag (s_tags q) }
-addTags newTags qs = [addTag newTag p | p <- qs, newTag <- newTags]
-
-getai cmd =
-    let get cmd i =  
-            case cmd of
-                TMType.PreSMCommand ((a, _), _) : t 
-                    | a /= TMType.eL -> (a, i)
-                    | otherwise -> get t (i + 1)
-    in 
-    get cmd 1
-
-addICmdSmTag cmd smTag q =
-    let (Command c) = cmd
-        (_, j) = getai c
-    in
-    case smTag of
-        T4 -> q {s_val = Just $ StateVal j jcmd jsmtag}
-        T9 -> q {s_val = Just $ StateVal j jcmd jsmtag}
-        TAlpha -> q {s_val = Just $ StateVal 0 jcmd jsmtag}
-        TOmega -> q {s_val = Just $ StateVal (k + 1) jcmd jsmtag}
-            where 
-                k = length c
-    where   jcmd = Just cmd
-            jsmtag = Just smTag
-        
-copySM :: SM -> (State -> Bool) -> Tag -> SM
-copySM sm qFilter newTag =
-   let q = map (Set.map (\x -> if qFilter x then addTag newTag x else x)) $ qn sm
-       filterWord (Word w) = Word(map (\s -> case s of SmbQ q | qFilter q -> SmbQ (addTag newTag q); _ -> s ) w)
-       prog = map (\ (SRule l) -> SRule(map (\(w1, w2) -> (filterWord w1, filterWord w2)) l)) (srs sm)
-   in
-   SM (yn sm) q prog
 
 copySMForCommand :: SM -> SMTag -> TMCMD -> SM
 copySMForCommand sm smTag cmd =
@@ -87,6 +43,7 @@ copySMForCommand sm smTag cmd =
    in
    SM (yn sm) q prog
 
+createSMs :: [Y] -> [SM]
 createSMs y =
     let ps@[p0,p1,p2,p3,p4] = gen P
         p's@[p0',p1',p2',p3',p4'] = addTags [Quote] ps
@@ -127,6 +84,14 @@ createSMs y =
         e' = State E "" (Set.fromList [Quote]) Nothing
         f = State F "" eTag Nothing
         f' = State F "" (Set.fromList [Quote]) Nothing
+
+        copySM :: SM -> (State -> Bool) -> Tag -> SM
+        copySM sm qFilter newTag =
+            let q = map (Set.map (\x -> if qFilter x then addTag newTag x else x)) $ qn sm
+                filterWord (Word w) = Word(map (\s -> case s of SmbQ q | qFilter q -> SmbQ (addTag newTag q); _ -> s ) w)
+                prog = map (\ (SRule l) -> SRule(map (\(w1, w2) -> (filterWord w1, filterWord w2)) l)) (srs sm)
+            in
+                SM (yn sm) q prog
 
         sm1 :: SM
         sm1 =
@@ -269,39 +234,6 @@ createSMs y =
             
    in
       [sm4, sm9 y, smAlpha, smOmega]
-
-quoteTag = Set.fromList [Quote]
-dashTag = Set.fromList [Dash]
-hatTag = Set.fromList [Hat]
-hatdashTag = Set.fromList [Hat, Dash]
-newState name idx tags i cmd smTag = State name idx tags $ Just $ StateVal i cmd smTag
-e_x j       = SmbQ $ newState X "" eTag j Nothing Nothing
-e_x' j      = SmbQ $ newState X "" quoteTag j Nothing Nothing
-e_f idx j   = SmbQ $ newState F idx eTag j Nothing Nothing 
-e_f' idx j  = SmbQ $ newState F idx quoteTag j Nothing Nothing
-e_e j       = SmbQ $ newState E "" eTag j Nothing Nothing
-e_e' j      = SmbQ $ newState E "" quoteTag j Nothing Nothing
-e_p j       = SmbQ $ newState P "" eTag j Nothing Nothing 
-e_q j       = SmbQ $ newState Q "" eTag j Nothing Nothing 
-e_r j       = SmbQ $ newState R "" eTag j Nothing Nothing 
-e_s j       = SmbQ $ newState S "" eTag j Nothing Nothing 
-e_t j       = SmbQ $ newState T "" eTag j Nothing Nothing 
-e_u j       = SmbQ $ newState U "" eTag j Nothing Nothing 
-e_pd j      = SmbQ $ newState P "" dashTag j Nothing Nothing
-e_qd j      = SmbQ $ newState Q "" dashTag j Nothing Nothing
-e_rd j      = SmbQ $ newState R "" dashTag j Nothing Nothing
-e_sd j      = SmbQ $ newState S "" dashTag j Nothing Nothing
-e_td j      = SmbQ $ newState T "" dashTag j Nothing Nothing
-e_ud j      = SmbQ $ newState U "" dashTag j Nothing Nothing
-
-getJIdx cmd j =
-    let internal cmd i =  
-            case cmd of
-                TMType.PreSMCommand ((_, TMType.StateOmega(TMType.State b)), (_, TMType.StateOmega(TMType.State b1))) : t 
-                    | j == i -> (b, b1)
-                    | otherwise -> internal t (i + 1)
-    in
-        internal cmd 1
             
 createConnectingRules :: TMCMD -> [SRule]
 createConnectingRules cmd = do
@@ -472,6 +404,7 @@ createConnectingRules cmd = do
 
     [rule4, rule4alpha, rulealphaomega, ruleomega9, rule9]
 
+createPos22Rule :: TMCMD -> SRule
 createPos22Rule cmd = do
     let (Command command) = cmd 
     let k = length command
@@ -485,10 +418,8 @@ createPos22Rule cmd = do
         [[(Word [e_f (getFromJ j) j], Word [e_f (getToJ j) j]),
         (Word [e_f' (getFromJ j) j], Word [e_f' (getToJ j) j])] 
         | j <- [1 .. i - 1] ++ [i + 1 .. k]]
-    
-mapTuple :: (a -> b) -> (a, a) -> (b, b)
-mapTuple f (a1, a2) = (f a1, f a2)
 
+symmetrization :: SRule -> SRule
 symmetrization (SRule wordPairs) = do 
     let groupByWord w (left, other) =
             case w of
@@ -526,31 +457,6 @@ sigmaFunc states u =
             omegan = replicate n $ SmbY omega
             deltan = map (\i -> replicate i $ SmbY delta) un 
 
-getStatesFromRules = groupBy groupByStates . sortBy sortByNames . concatMap getStatesFromRule
-        where 
-                getStatesFromWord (SmbQ q) = Just q
-                getStatesFromWord _ = Nothing
-                getStatesFromWords (Word l, Word r) = catMaybes $ map getStatesFromWord (l ++ r)
-                getStatesFromRule (SRule r) = concatMap getStatesFromWords r
-                groupByStates s1 s2 = s_name s1 == s_name s2 
-                                    && Set.member Dash tag1 == Set.member Dash tag2 
-                                    && id1 == id2
-                                    && (s_name s1 /= E || Set.null tag1 == Set.null tag2) 
-                                    && (s_name s1 /= F || Set.null tag1 == Set.null tag2)
-                                    where   tag1 = s_tags s1
-                                            tag2 = s_tags s2
-                                            id1 = tape . fromJust $ s_val s1
-                                            id2 = tape . fromJust $ s_val s2
-                sortByNames s1 s2 = compare (s_name s1, id1, Set.member Dash tag1, be1, bf1) (s_name s2, id2, Set.member Dash tag2, be2, bf2) 
-                                    where   tag1 = s_tags s1
-                                            tag2 = s_tags s2
-                                            id1 = tape . fromJust $ s_val s1
-                                            id2 = tape . fromJust $ s_val s2
-                                            be1 = s_name s1 == E && Set.null tag1 
-                                            be2 = s_name s2 == E && Set.null tag2 
-                                            bf1 = s_name s1 == F && Set.null tag1 
-                                            bf2 = s_name s2 == F && Set.null tag2 
-
 renameRightLeftBoundings :: [[TMType.TapeCommand]] -> [[TMType.TapeCommand]]
 renameRightLeftBoundings = map (renameRightLeftBoundingsInternal 1 []) 
     where
@@ -565,8 +471,9 @@ renameRightLeftBoundings = map (renameRightLeftBoundingsInternal 1 [])
                                 newS1 = f s1
                                 newS2 = f s2
                 [] -> reverse acc
-    
-smFinal (TMType.TM (inputAlphabet,
+
+tm2sm :: TMType.TM -> (SM, SMType.Word, [TMType.State])    
+tm2sm (TMType.TM (inputAlphabet,
         tapeAlphabets, 
         TMType.MultiTapeStates tapesStates, 
         TMType.Commands commandsSet, 
@@ -617,7 +524,30 @@ smFinal (TMType.TM (inputAlphabet,
         smsStates = filter filterSmsStates . concat . map (map Set.unions . transpose . map qn) $ transpose sms
         otherStates = [[s {s_val = Just $ (fromJust $ s_val s) {tmCommand = Just $ Command c, smTag = Just g}} | s <- state ] | g <- gamma, c <- pos21, state <- standardStates]
         smsConnectingRules = concatMap createConnectingRules $ map (Command $) pos21
-        crStates = getStatesFromRules smsConnectingRules
+        crStates = groupBy groupByStates . sortBy sortByNames . concatMap getStatesFromRule $ smsConnectingRules
+                where 
+                        getStatesFromWord (SmbQ q) = Just q
+                        getStatesFromWord _ = Nothing
+                        getStatesFromWords (Word l, Word r) = catMaybes $ map getStatesFromWord (l ++ r)
+                        getStatesFromRule (SRule r) = concatMap getStatesFromWords r
+                        groupByStates s1 s2 = s_name s1 == s_name s2 
+                                            && Set.member Dash tag1 == Set.member Dash tag2 
+                                            && id1 == id2
+                                            && (s_name s1 /= E || Set.null tag1 == Set.null tag2) 
+                                            && (s_name s1 /= F || Set.null tag1 == Set.null tag2)
+                                            where   tag1 = s_tags s1
+                                                    tag2 = s_tags s2
+                                                    id1 = tape . fromJust $ s_val s1
+                                                    id2 = tape . fromJust $ s_val s2
+                        sortByNames s1 s2 = compare (s_name s1, id1, Set.member Dash tag1, be1, bf1) (s_name s2, id2, Set.member Dash tag2, be2, bf2) 
+                                            where   tag1 = s_tags s1
+                                                    tag2 = s_tags s2
+                                                    id1 = tape . fromJust $ s_val s1
+                                                    id2 = tape . fromJust $ s_val s2
+                                                    be1 = s_name s1 == E && Set.null tag1 
+                                                    be2 = s_name s2 == E && Set.null tag2 
+                                                    bf1 = s_name s1 == F && Set.null tag1 
+                                                    bf2 = s_name s2 == F && Set.null tag2 
         finalSmStates = map Set.unions . groupBy groupByStates . sortBy sortByNames $ (map Set.fromList standardStates) ++ (map Set.fromList otherStates) ++ smsStates ++ (map Set.fromList crStates)
         smsPos22Rules = map createPos22Rule $ map (Command $) pos22
 
