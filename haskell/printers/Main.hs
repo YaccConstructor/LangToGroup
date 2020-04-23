@@ -45,8 +45,8 @@ example = execLaTeXM $
     do
         preambula 
         document $ do
-            --doLaTeX testGrammar
-            --doLaTeX $ cfg2tm testGrammar
+            -- doLaTeX testGrammar
+            -- doLaTeX $ cfg2tm testGrammar
             -- -- doLaTeX $ interpretTM ["a"] $ cfg2tm testGrammar
             -- newpage
             -- doLaTeX $ symDetTM $ cfg2tm testGrammar
@@ -56,20 +56,22 @@ example = execLaTeXM $
             -- doLaTeX $ cfg2tm epsTestGrammar
             -- -- doLaTeX $ interpretTM ["a"] $ cfg2tm epsTestGrammar
             -- -- newpage
-            doLaTeX epsTestLeftGrammar
-            doLaTeX $ cfg2tm epsTestLeftGrammar
-            doLaTeX $ interpretTM ["a"] $ cfg2tm epsTestLeftGrammar
-            doLaTeX $ interpretTM [] $ cfg2tm epsTestLeftGrammar
+            -- doLaTeX epsTestLeftGrammar
+            -- doLaTeX $ cfg2tm epsTestLeftGrammar
+            -- doLaTeX $ interpretTM ["a"] $ cfg2tm epsTestLeftGrammar
+            -- doLaTeX $ interpretTM [] $ cfg2tm epsTestLeftGrammar
             -- newpage
             -- doLaTeX abTestGrammar
             -- doLaTeX $ cfg2tm abTestGrammar
             -- -- doLaTeX $ interpretTM ["b", "b", "a", "a"] $ cfg2tm abTestGrammar
             -- newpage
-            -- doLaTeX ab2TestGrammar
-            -- doLaTeX $ cfg2tm ab2TestGrammar
+            doLaTeX ab2TestGrammar
+            doLaTeX $ symDetTM $ cfg2tm ab2TestGrammar
             -- -- doLaTeX $ interpretTM ["b", "a", "b", "a"] $ cfg2tm ab2TestGrammar
             -- -- newpage
             -- -- doLaTeX $ tm2sm $ symTM $ cfg2tm ab2TestGrammar
+            -- doLaTeX abNoEpsTestGrammar
+            -- doLaTeX $ cfg2tm abNoEpsTestGrammar
             -- newpage
             -- doLaTeX ab3TestGrammar
             -- doLaTeX $ cfg2tm ab3TestGrammar
@@ -81,14 +83,14 @@ example = execLaTeXM $
             -- newpage
             --doLaTeX $ tripleFst $ tm2sm symSmallMachine
 
-main :: IO()
-main = do
-    renderFile "out.tex" example 
+-- main :: IO()
+-- main = do
+--     renderFile "out.tex" example 
 
 -- main :: IO()
 -- main = do
---         let tm = symTM $ fst $ oneruleTM
---         let input = ["a"]
+--         let tm = symDetTM $ cfg2tm ab2TestGrammar
+--         let input = ["b", "b", "a", "a"]
 --         putStrLn $ show $ interpretTM input tm
 
 -- main :: IO()
@@ -208,16 +210,16 @@ printCount grammar@(Grammar (n, t, r, _, _)) = do
     putStrLn $ "A: " ++ (show $ length a) ++ " R: " ++ (show $ length r)
     putStrLn ""
 
--- main :: IO()
--- main = do
---     putStrLn $ "One rule"
---     printCount testGrammar
+main :: IO()
+main = do
+    putStrLn $ "One rule"
+    printCount testGrammar
     
---     putStrLn $ "A star"
---     printCount epsTestGrammar
+    putStrLn $ "A star"
+    printCount epsTestGrammar
 
---     putStrLn $ "Dyck"
---     printCount ab2TestGrammar
+    putStrLn $ "Dyck"
+    printCount ab2TestGrammar
 
 symSmallMachine = tm where
     a = Value "a"
@@ -422,6 +424,29 @@ ab2TestGrammar = grammar where
                 GrammarType.Relation (aN, [GrammarType.T a]),
                 GrammarType.Relation (bN, [GrammarType.T b]),
                 GrammarType.Relation (b1, [GrammarType.N bN, GrammarType.N s])
+                ]),
+            s,
+            eps
+        )
+
+abNoEpsTestGrammar = grammar where
+    a = Terminal "a"
+    b = Terminal "b"
+    s = Nonterminal "S"
+    s1 = Nonterminal "C"
+    aN = Nonterminal "A"
+    bN = Nonterminal "B"
+    eps = Epsilon "ε"
+    grammar =
+        Grammar(
+            (Set.fromList [s, s1, aN, bN]),
+            (Set.fromList [a, b]),
+            (Set.fromList [
+                GrammarType.Relation (s, [GrammarType.N aN, GrammarType.N s1]),
+                GrammarType.Relation (s, [GrammarType.N aN, GrammarType.N bN]),
+                GrammarType.Relation (s1, [GrammarType.N s, GrammarType.N bN]),
+                GrammarType.Relation (aN, [GrammarType.T a]),
+                GrammarType.Relation (bN, [GrammarType.T b])
                 ]),
             s,
             eps

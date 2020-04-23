@@ -5,6 +5,7 @@ import TMType
 import Data.Set (Set)
 import qualified Data.Set as Set
 import Helpers
+import Data.List (partition, elemIndices)
 
 -- define a start states
 sSFT = State "q_{0}^{1}"
@@ -15,12 +16,28 @@ fSST = State "q_{2}^{2}"
 
 iSST = State "q_{1}^{2}"
 
-genRelationCommand :: Relation -> [State] -> ([State], [[TapeCommand]])
-genRelationCommand (Relation (Nonterminal start, [E (Epsilon eps)])) states = 
+first rels (T (Terminal t)) = [t]
+first rels e@(E _) = concat . map (\(Relation (n, _)) -> follow rels (N n)) . filter (\(Relation (_, eps : _)) -> e == eps) $ rels
+first rels (N n) = concat . map (\(Relation (_, h : _)) -> first rels h) . filter (\(Relation (x, _)) -> x == n) $ rels
+
+follow rels n = concat 
+                    . map (first rels) 
+                    . concat 
+                    . map (\(Relation (nont, symb)) -> map ((!!) symb) . filter (< (length symb)) . map (+ 1) $ elemIndices n symb) 
+                    . filter (\(Relation (_, symb)) -> elem n symb) $ rels
+
+genRelationCommand :: Relation -> [State] -> [Relation] -> ([State], [[TapeCommand]])
+genRelationCommand (Relation (ns@(Nonterminal start), [E _])) states rels = 
     (states,
-    [[SingleTapeCommand ((eL, sSFT, rBL), (eL, sSFT, rBL)),
-    SingleTapeCommand ((Value start, iSST, rBL), (eL, iSST, rBL))]])
-genRelationCommand (Relation (Nonterminal nonterminalSymbol, symbols)) states = (newStates, lcmd : commands)
+    [[SingleTapeCommand ((lBL, sSFT, rBL), (lBL, sSFT, rBL)),
+    SingleTapeCommand ((Value start, iSST, rBL), (eL, iSST, rBL))],
+    [SingleTapeCommand ((lBL, sSFT, rBL), (lBL, sSFT, rBL)),
+    SingleTapeCommand ((eL, sSST, rBL), (Value start, iSST, rBL))]] ++ followcmds)
+    where
+        -- TODO: multiple follows
+        followcmds = map (\fns -> [SingleTapeCommand ((Value fns, sSFT, rBL), (Value fns, sSFT, rBL)),
+                                        SingleTapeCommand ((Value start, iSST, rBL), (eL, iSST, rBL))]) $ follow rels $ N ns
+genRelationCommand (Relation (Nonterminal nonterminalSymbol, symbols)) states rels = (newStates, lcmd : commands)
     where
         reversedSymbols = reverse symbols
         foldFunc acc x = (nextState : prevStates, cmd : prevCmds)
@@ -31,9 +48,12 @@ genRelationCommand (Relation (Nonterminal nonterminalSymbol, symbols)) states = 
                         SingleTapeCommand ((eL, prevState, rBL), (getDisjoinSymbol x, nextState, rBL))]
         hsymbol : tsymbols = reversedSymbols
         startState = genNextStateList states
-        fcmd = [SingleTapeCommand ((eL, sSFT, rBL), (eL, sSFT, rBL)),
-                SingleTapeCommand ((Value nonterminalSymbol, iSST, rBL), (getDisjoinSymbol hsymbol, startState, rBL))]
-        (newStates, commands) = foldl foldFunc (startState : states, [fcmd]) tsymbols
+        -- TODO: multiple firsts
+        fnts = first rels $ head symbols
+        makefcmd fnt = [SingleTapeCommand ((Value fnt, sSFT, rBL), (Value fnt, sSFT, rBL)),
+                        SingleTapeCommand ((Value nonterminalSymbol, iSST, rBL), (getDisjoinSymbol hsymbol, startState, rBL))]
+        fcmds = map makefcmd fnts
+        (newStates, commands) = foldl foldFunc (startState : states, fcmds) tsymbols
         lcmd = [SingleTapeCommand ((eL, sSFT, rBL), (eL, sSFT, rBL)),
                 SingleTapeCommand ((eL, head newStates, rBL), (eL, iSST, rBL))]
                 
@@ -72,11 +92,10 @@ cfg2tm
     -- define first transition
     let firstCommand = [SingleTapeCommand ((eL, sSFT, rBL), (eL, sSFT, rBL)),
                         SingleTapeCommand ((eL, sSST, rBL), (Value startSymbol, iSST, rBL))]
-
     -- convert relations
     let proxyGenRelation (states, acccmds) x = (newStates, cmds ++ acccmds)
             where
-                (newStates, cmds) = genRelationCommand x states
+                (newStates, cmds) = genRelationCommand x states (Set.elems setOfRelations)
     let (listOfStates, mappedRelations) = foldl proxyGenRelation ([fSST, sSST, iSST], []) $ Set.elems setOfRelations
     -- map terminals to transitions
     let mappedTerminals = map genEraseCommand terminalsList

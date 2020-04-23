@@ -6,6 +6,7 @@ import qualified Data.Set as Set
 import Helpers
 import Text.Regex.TDFA
 import Debug.Trace
+import Data.List (partition)
           
 firstPhase :: [State] -> [TapeCommand] -> [[TapeCommand]] -> [State] -> [Set State] -> [State] -> [[TapeCommand]]
 firstPhase kplus1tapeStates acceptCommand otherCommands startStates multiTapeStates startFirstPhaseStates = do
@@ -107,14 +108,10 @@ threePhaseProcessing
         let finalKPlusOneTapeState = State $ "q_2^" ++ show kPlus1
         let acceptKPlusOneTapeState = State $ "q_3^" ++ show kPlus1
         let commandsList = Set.toList commands
-        let (acceptCommand, otherCommands) = disjoinAcceptCommandWithOthersInternal commandsList []
+        let ([acceptCommand], otherCommands) = if cmds1 == [] then error "No accept command" else (cmds1, cmds2)
                 where
-                    isAcceptCommand command access = all (\((SingleTapeCommand (_, (_, sh, _))), ah) -> sh == ah) $ zip command access
-                    disjoinAcceptCommandWithOthersInternal allCommands acc = 
-                        case allCommands of
-                            (h : t) | isAcceptCommand h accessStates -> (h, acc ++ t) 
-                                    | otherwise -> disjoinAcceptCommandWithOthersInternal t (h : acc)
-                            [] -> error "No accept command"
+                    isAcceptCommand command = all (\((SingleTapeCommand (_, (_, sh, _))), ah) -> sh == ah) $ zip command accessStates
+                    (cmds1, cmds2) = partition isAcceptCommand commandsList
         let startFirstPhaseStates = map (\tape -> genNextState tape) multiTapeStates
         let commandsFirstPhase = firstPhase [startKPlusOneTapeState, kplus1tapeState, finalKPlusOneTapeState] acceptCommand otherCommands startStates multiTapeStates startFirstPhaseStates
         let commandsSecondPhase = secondPhase finalKPlusOneTapeState commandsList startStates accessStates multiTapeStates
