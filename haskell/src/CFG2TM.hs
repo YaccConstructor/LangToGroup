@@ -5,7 +5,7 @@ import TMType
 import Data.Set (Set)
 import qualified Data.Set as Set
 import Helpers
-import Data.List (partition, elemIndices)
+import Data.List (partition, elemIndices, groupBy, sortBy)
 
 -- define a start states
 sSFT = State "q_{0}^{1}"
@@ -26,35 +26,48 @@ follow rels n = concat
                     . map (\(Relation (nont, symb)) -> map ((!!) symb) . filter (< (length symb)) . map (+ 1) $ elemIndices n symb) 
                     . filter (\(Relation (_, symb)) -> elem n symb) $ rels
 
-genRelationCommand :: Relation -> [State] -> [Relation] -> ([State], [[TapeCommand]])
-genRelationCommand (Relation (ns@(Nonterminal start), [E _])) states rels = 
+first2 symb rels acc =
+    case symb of
+        (E _) : t -> first2 t rels acc
+        (N n) : t -> concat . map (\(Relation (_, s)) -> first2 (s ++ t) rels acc) . filter (\(Relation (x, _)) -> x == n) $ rels
+        (T (Terminal term)) : t | length acc == 1 -> [term]
+                                | otherwise -> first2 t rels (term : acc)
+        [] -> []
+
+
+genRelationCommand :: (Relation, State) -> [State] -> [Relation] -> ([State], [[TapeCommand]])
+genRelationCommand (Relation (ns@(Nonterminal start), [E _]), state) states rels = 
     (states,
     [[SingleTapeCommand ((lBL, sSFT, rBL), (lBL, sSFT, rBL)),
     SingleTapeCommand ((Value start, iSST, rBL), (eL, iSST, rBL))],
     [SingleTapeCommand ((lBL, sSFT, rBL), (lBL, sSFT, rBL)),
     SingleTapeCommand ((eL, sSST, rBL), (Value start, iSST, rBL))]] ++ followcmds)
     where
-        -- TODO: multiple follows
-        followcmds = map (\fns -> [SingleTapeCommand ((Value fns, sSFT, rBL), (Value fns, sSFT, rBL)),
+        followcmds = map (\fns -> [SingleTapeCommand ((Value fns, state, rBL), (Value fns, state, rBL)),
                                         SingleTapeCommand ((Value start, iSST, rBL), (eL, iSST, rBL))]) $ follow rels $ N ns
-genRelationCommand (Relation (Nonterminal nonterminalSymbol, symbols)) states rels = (newStates, lcmd : commands)
+genRelationCommand (Relation (Nonterminal nonterminalSymbol, [symbol]), state) states rels = 
+    (states, 
+    [[SingleTapeCommand ((Value fnt, state, rBL), (Value fnt, state, rBL)),
+    SingleTapeCommand ((Value nonterminalSymbol, iSST, rBL), (getDisjoinSymbol symbol, iSST, rBL))]])
+    where
+        [fnt] = first rels symbol
+genRelationCommand (Relation (Nonterminal nonterminalSymbol, symbols), state) states rels = (newStates, lcmd : commands)
     where
         reversedSymbols = reverse symbols
         foldFunc acc x = (nextState : prevStates, cmd : prevCmds)
             where 
                 (prevStates@(prevState : _), prevCmds) = acc
                 nextState = genNextStateList prevStates
-                cmd = [ SingleTapeCommand ((eL, sSFT, rBL),(eL, sSFT, rBL)),
+                cmd = [ SingleTapeCommand ((eL, state, rBL),(eL, state, rBL)),
                         SingleTapeCommand ((eL, prevState, rBL), (getDisjoinSymbol x, nextState, rBL))]
         hsymbol : tsymbols = reversedSymbols
         startState = genNextStateList states
-        -- TODO: multiple firsts
         fnts = first rels $ head symbols
-        makefcmd fnt = [SingleTapeCommand ((Value fnt, sSFT, rBL), (Value fnt, sSFT, rBL)),
+        makefcmd fnt = [SingleTapeCommand ((Value fnt, state, rBL), (Value fnt, state, rBL)),
                         SingleTapeCommand ((Value nonterminalSymbol, iSST, rBL), (getDisjoinSymbol hsymbol, startState, rBL))]
         fcmds = map makefcmd fnts
         (newStates, commands) = foldl foldFunc (startState : states, fcmds) tsymbols
-        lcmd = [SingleTapeCommand ((eL, sSFT, rBL), (eL, sSFT, rBL)),
+        lcmd = [SingleTapeCommand ((eL, state, rBL), (eL, sSFT, rBL)),
                 SingleTapeCommand ((eL, head newStates, rBL), (eL, iSST, rBL))]
                 
 
@@ -66,6 +79,39 @@ genEraseCommand (Terminal terminal) =  [SingleTapeCommand ((x, sSFT, rBL), (eL, 
                 where 
                     x = Value terminal
                     
+genPreviewCommand :: [Relation] -> [State] -> ([State], [[TapeCommand]], [(Relation, State)])
+genPreviewCommand rels states = if all checkDeterm groups then foldl func (states, [], []) groups else (states, [], map (\r -> (r, sSFT)) rels)
+    where
+        groups = groupBy (\(Relation (n1, h1 : _)) (Relation (n2, h2 : _)) -> n1 == n2 && (first rels h1) == (first rels h2)) . 
+                    sortBy (\(Relation (n1, h1 : _)) (Relation (n2, h2 : _)) -> compare (n1, first rels h1) (n2, first rels h2) ) $ rels
+        getFirst2 (Relation (_, symb)) = first2 symb rels []
+        getFirst (Relation (_, h : t)) = first rels h
+        getNonterm (Relation (Nonterminal n, _)) = n
+        isOne = (==) 1 . length . Set.fromList . getFirst2
+        isAllDiff gr = (==) (length gr) . length . Set.fromList . concat . map getFirst2 $ gr
+        checkDeterm [h] = True
+        checkDeterm gr = all isOne gr && isAllDiff gr
+        func (sts, commands, relState) [h] = (sts, commands, (h, sSFT) : relState)
+        func (sts, commands, relState) gr = (newStates, newcmds, rs)
+            where 
+                fL = Value $ head $ getFirst $ head gr
+                nterm = Value $ getNonterm $ head gr
+                startState = genNextStateList states
+                gencmds (newstates, cmds, rs) r = (endState : findState : newstates, newCmds ++ cmds, (r, endState) : rs)
+                            where 
+                                f2 = Value $ head $ getFirst2 r
+                                findState = genNextStateList newstates
+                                endState = genNextStateList (findState : newstates)
+                                newCmds = [ [SingleTapeCommand ((f2, startState, fL), (f2, findState, fL)), 
+                                            SingleTapeCommand ((nterm, iSST, rBL), (nterm, iSST, rBL))],
+                                            [SingleTapeCommand ((eL, findState, fL), (fL, findState, eL)), 
+                                            SingleTapeCommand ((nterm, iSST, rBL), (nterm, iSST, rBL))],
+                                            [SingleTapeCommand ((fL, findState, rBL), (fL, endState, rBL)), 
+                                            SingleTapeCommand ((nterm, iSST, rBL), (nterm, iSST, rBL))]]
+                startCmd = [SingleTapeCommand ((fL, sSFT, eL), (eL, startState, fL)), 
+                            SingleTapeCommand ((nterm, iSST, rBL), (nterm, iSST, rBL))]
+                (newStates, newcmds, rs) = foldl gencmds (startState : sts, startCmd : commands, relState) gr
+                
 
 cfg2tm :: Grammar -> TM
 cfg2tm 
@@ -93,17 +139,19 @@ cfg2tm
     let firstCommand = [SingleTapeCommand ((eL, sSFT, rBL), (eL, sSFT, rBL)),
                         SingleTapeCommand ((eL, sSST, rBL), (Value startSymbol, iSST, rBL))]
     -- convert relations
+    let rels = Set.elems setOfRelations
+    let (firstStatesAfterPreview, previewCmds, relStates) = genPreviewCommand rels [sSFT, fSFT]
     let proxyGenRelation (states, acccmds) x = (newStates, cmds ++ acccmds)
             where
-                (newStates, cmds) = genRelationCommand x states (Set.elems setOfRelations)
-    let (listOfStates, mappedRelations) = foldl proxyGenRelation ([fSST, sSST, iSST], []) $ Set.elems setOfRelations
+                (newStates, cmds) = genRelationCommand x states rels
+    let (listOfStates, mappedRelations) = foldl proxyGenRelation ([fSST, sSST, iSST], []) $ relStates
     -- map terminals to transitions
     let mappedTerminals = map genEraseCommand terminalsList
     let acceptCommand = [SingleTapeCommand ((lBL, sSFT, rBL), (lBL, fSFT, rBL)),
                         SingleTapeCommand ((lBL, iSST, rBL), (lBL, fSST, rBL))]
-    let transitions = Set.fromList ([acceptCommand, firstCommand] ++ mappedTerminals ++ mappedRelations)
+    let transitions = Set.fromList ([acceptCommand, firstCommand] ++ mappedTerminals ++ mappedRelations ++ previewCmds)
     let multiTapeStates = MultiTapeStates [
-            (Set.fromList [sSFT, fSFT]),
+            (Set.fromList firstStatesAfterPreview),
             (Set.fromList listOfStates)
             ]
     TM (tmInputAlphabet, tmTapeAlphabets, multiTapeStates, Commands transitions, startStates, accessStates)

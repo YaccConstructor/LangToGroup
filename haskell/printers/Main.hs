@@ -65,13 +65,13 @@ example = execLaTeXM $
             -- doLaTeX $ cfg2tm abTestGrammar
             -- -- doLaTeX $ interpretTM ["b", "b", "a", "a"] $ cfg2tm abTestGrammar
             -- newpage
-            doLaTeX ab2TestGrammar
-            doLaTeX $ symDetTM $ cfg2tm ab2TestGrammar
+            -- doLaTeX ab2TestGrammar
+            -- doLaTeX $ symDetTM $ cfg2tm ab2TestGrammar
             -- -- doLaTeX $ interpretTM ["b", "a", "b", "a"] $ cfg2tm ab2TestGrammar
             -- -- newpage
             -- -- doLaTeX $ tm2sm $ symTM $ cfg2tm ab2TestGrammar
-            -- doLaTeX abNoEpsTestGrammar
-            -- doLaTeX $ cfg2tm abNoEpsTestGrammar
+            doLaTeX abNoEpsTestGrammar
+            doLaTeX $ cfg2tm abNoEpsTestGrammar
             -- newpage
             -- doLaTeX ab3TestGrammar
             -- doLaTeX $ cfg2tm ab3TestGrammar
@@ -87,11 +87,11 @@ example = execLaTeXM $
 -- main = do
 --     renderFile "out.tex" example 
 
--- main :: IO()
--- main = do
---         let tm = symDetTM $ cfg2tm ab2TestGrammar
---         let input = ["b", "b", "a", "a"]
---         putStrLn $ show $ interpretTM input tm
+main :: IO()
+main = do
+        let tm = symDetTM $ cfg2tm abNoEpsTestGrammar
+        let input = ["b", "b", "a", "a"]
+        putStrLn $ show $ interpretTM input tm
 
 -- main :: IO()
 -- main = do
@@ -196,7 +196,7 @@ printCount grammar@(Grammar (n, t, r, _, _)) = do
     let tmQ = foldl (\acc a -> acc + length a) 0 multiTapeStates
     putStrLn $ "tmX: " ++ (show $ length tmX) ++ " tmG: " ++ (show tmG) ++ " tmQ: " ++ (show tmQ) ++ " tmCmds: " ++ (show $ length tmCmds)
 
-    let tm'@(TM (InputAlphabet tmX', tapeAlphabet', MultiTapeStates multiTapeStates', Commands tmCmds', _, _)) = symDetTM tm
+    let tm'@(TM (InputAlphabet tmX', tapeAlphabet', MultiTapeStates multiTapeStates', Commands tmCmds', _, _)) = symTM tm
     let tmG' = foldl (\acc (TapeAlphabet a) -> acc + length a) 0 tapeAlphabet'
     let tmQ' = foldl (\acc a -> acc + length a) 0 multiTapeStates'
     putStrLn $ "tm'X: " ++ (show $ length tmX') ++ " tm'G: " ++ (show tmG') ++ " tm'Q: " ++ (show tmQ') ++ " tm'Cmds: " ++ (show $ length tmCmds')
@@ -210,16 +210,16 @@ printCount grammar@(Grammar (n, t, r, _, _)) = do
     putStrLn $ "A: " ++ (show $ length a) ++ " R: " ++ (show $ length r)
     putStrLn ""
 
-main :: IO()
-main = do
-    putStrLn $ "One rule"
-    printCount testGrammar
+-- main :: IO()
+-- main = do
+--     putStrLn $ "One rule"
+--     printCount testGrammar
     
-    putStrLn $ "A star"
-    printCount epsTestGrammar
+--     putStrLn $ "A star"
+--     printCount epsTestGrammar
 
-    putStrLn $ "Dyck"
-    printCount ab2TestGrammar
+--     putStrLn $ "Dyck"
+--     printCount ab2TestGrammar
 
 symSmallMachine = tm where
     a = Value "a"

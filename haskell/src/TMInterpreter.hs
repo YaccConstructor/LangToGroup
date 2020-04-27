@@ -17,8 +17,8 @@ module TMInterpreter where
                                 r /= [lBL] && r1 == (last r) && l1 == rBL && r2 == eL && l2 == rBL && l == [rBL] ||
                                 (last r) == r1 && (head l) == l1 ||
                                 r1 == eL && r2 == eL && l1 == rBL && l2 == l1 ||
-                                r1 /= lBL && r1 /= eL && s1 == s2 && r1 == (last r) && r1 == l2 && l1 == eL && l1 == r2 ||
-                                l1 /= lBL && l1 /= eL && s1 == s2 && l1 == (head l) && l1 == r2 && r1 == eL && r1 == l2) -> checkCommandTapeToTape t2 t1
+                                r1 /= lBL && r1 /= eL && r1 == (last r) && r1 == l2 && l1 == eL && l1 == r2 ||
+                                l1 /= lBL && l1 /= eL && l1 == (head l) && l1 == r2 && r1 == eL && r1 == l2) -> checkCommandTapeToTape t2 t1
                             | otherwise -> False
 
     getApplicableCommands :: [([Square], State, [Square])] -> [[TapeCommand]] -> [[TapeCommand]] -> [[TapeCommand]] 

@@ -33,13 +33,11 @@ test1Grammar = grammar where
 
 configsTest :: Assertion
 configsTest = do
-    let q1 = TMType.State "q_{3}^{2}"
     let a = Value "a"
     let a' = Value "a'"
     let expectedConfigs = Configs ([
             [([lBL, a], sSFT, [rBL]), ([lBL], sSST, [rBL])],
             [([lBL, a], sSFT, [rBL]), ([lBL, Value "S"], iSST, [rBL])],
-            [([lBL, a], sSFT, [rBL]), ([lBL, a'], q1, [rBL])],
             [([lBL, a], sSFT, [rBL]), ([lBL, a'], iSST, [rBL])],
             [([lBL], sSFT, [rBL]), ([lBL], iSST, [rBL])],
             [([lBL], fSFT, [rBL]), ([lBL], fSST, [rBL])]
@@ -51,23 +49,19 @@ simpleCfgToTMMapTest :: Assertion
 simpleCfgToTMMapTest = do
     let letter_a = Value "a"
     let letter_S = Value "S"
-    let workState = TMType.State "q_{3}^{2}"
     
     let expectedTM = TM (
             InputAlphabet (Set.fromList [letter_a]),
             [TapeAlphabet (Set.fromList [letter_a]), TapeAlphabet (Set.fromList [getDisjoinSquare letter_a, letter_S])],
             MultiTapeStates [(Set.fromList [sSFT, fSFT]), 
-                            (Set.fromList [sSST, iSST, fSST, workState])],
+                            (Set.fromList [sSST, iSST, fSST])],
             Commands (Set.fromList [
                 [
                     SingleTapeCommand ((eL, sSFT, rBL), (eL, sSFT, rBL)),
                     SingleTapeCommand ((eL, sSST, rBL), (letter_S, iSST, rBL))],
                 [
-                    SingleTapeCommand ((eL, sSFT, rBL), (eL, sSFT, rBL)),
-                    SingleTapeCommand ((letter_S, iSST, rBL), (getDisjoinSquare letter_a, workState, rBL))],
-                [
-                    SingleTapeCommand ((eL, sSFT, rBL), (eL, sSFT, rBL)), 
-                    SingleTapeCommand ((eL, workState, rBL), (eL, iSST, rBL))],
+                    SingleTapeCommand ((letter_a, sSFT, rBL), (letter_a, sSFT, rBL)),
+                    SingleTapeCommand ((letter_S, iSST, rBL), (getDisjoinSquare letter_a, iSST, rBL))],
                 [ 
                     SingleTapeCommand ((letter_a, sSFT, rBL), (eL, sSFT, rBL)),
                     SingleTapeCommand ((getDisjoinSquare letter_a, iSST, rBL), (eL, iSST, rBL))],
