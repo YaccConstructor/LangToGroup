@@ -45,15 +45,15 @@ example = execLaTeXM $
     do
         preambula 
         document $ do
-            -- doLaTeX testGrammar
-            -- doLaTeX $ cfg2tm testGrammar
+            doLaTeX testGrammar
+            doLaTeX $ cfg2tm testGrammar
             -- -- doLaTeX $ interpretTM ["a"] $ cfg2tm testGrammar
             -- newpage
             -- doLaTeX $ symDetTM $ cfg2tm testGrammar
             -- newpage
             -- doLaTeX $ tripleFst $ tm2sm $ symDetTM $ cfg2tm testGrammar
-            -- doLaTeX epsTestGrammar
-            -- doLaTeX $ cfg2tm epsTestGrammar
+            doLaTeX epsTestGrammar
+            doLaTeX $ cfg2tm epsTestGrammar
             -- -- doLaTeX $ interpretTM ["a"] $ cfg2tm epsTestGrammar
             -- -- newpage
             -- doLaTeX epsTestLeftGrammar
@@ -65,13 +65,13 @@ example = execLaTeXM $
             -- doLaTeX $ cfg2tm abTestGrammar
             -- -- doLaTeX $ interpretTM ["b", "b", "a", "a"] $ cfg2tm abTestGrammar
             -- newpage
-            -- doLaTeX ab2TestGrammar
-            -- doLaTeX $ symDetTM $ cfg2tm ab2TestGrammar
+            doLaTeX ab2TestGrammar
+            doLaTeX $ cfg2tm ab2TestGrammar
             -- -- doLaTeX $ interpretTM ["b", "a", "b", "a"] $ cfg2tm ab2TestGrammar
             -- -- newpage
             -- -- doLaTeX $ tm2sm $ symTM $ cfg2tm ab2TestGrammar
-            doLaTeX abNoEpsTestGrammar
-            doLaTeX $ cfg2tm abNoEpsTestGrammar
+            -- doLaTeX abNoEpsTestGrammar
+            -- doLaTeX $ cfg2tm abNoEpsTestGrammar
             -- newpage
             -- doLaTeX ab3TestGrammar
             -- doLaTeX $ cfg2tm ab3TestGrammar
@@ -89,8 +89,8 @@ example = execLaTeXM $
 
 main :: IO()
 main = do
-        let tm = symDetTM $ cfg2tm abNoEpsTestGrammar
-        let input = ["b", "b", "a", "a"]
+        let tm = cfg2tm ab2TestGrammar
+        let input = ["b", "a", "b", "b", "a", "b", "a", "a"]
         putStrLn $ show $ interpretTM input tm
 
 -- main :: IO()
