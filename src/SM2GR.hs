@@ -3,7 +3,6 @@ module SM2GR where
 import SMType 
 import GRType
 import TM2SMHelpers
-import Data.Set (Set)
 import qualified Data.Set as Set 
 
 smb2As :: Smb -> SmbR
@@ -20,7 +19,9 @@ transitionRelations rules states = cmdQs ++ cmdRs
                                 False -> [ Relation (powtau [SmbA $ A_Q q] r, [SmbA $ A_Q q]) | r <- rules, q <- y ] ++ x
                                 ) [] states              
 
+nk :: Int
 nk = 1
+k :: [A]
 k = map (A_K $) [1 .. 2 * nk]
 
 hubRelation :: SMType.Word -> [SmbR]
@@ -32,17 +33,18 @@ hubRelation (Word w0) = posPart ++ negPart
         posPart = foldl (\x (i, y) -> x ++ (case i `mod` 2 == 0 of True -> word ; False -> negationWord word) ++ [SmbA y]) [] $ zip [1..] k 
         negPart = negationWord . foldl (\x (i, y) -> x ++ [SmbA y] ++ (case i `mod` 2 == 0 of False -> word ; True -> negationWord word)) [] $ reverse $ zip [1..] k
 
+easyHubRelation :: SMType.Word -> [SmbR]
 easyHubRelation (Word w0) = [SmbA $ (!!) k 0] ++ (map smb2As w0) ++ [SmbA $ (!!) k 1]
 
 sm2grInternal :: (SMType.SM, SMType.Word) -> [A] -> GRType.GR
-sm2grInternal (SMType.SM yn 
-                  qn
+sm2grInternal (SMType.SM ys
+                  qs
                   sRules, w0) s
         = GRType.GR (Set.fromList a, Set.fromList relations)
         where
-        ql = map Set.toList qn
+        ql = map Set.toList qs
         q = map (A_Q $) $ concat ql
-        y = map (A_Y $) $ concat yn
+        y = map (A_Y $) $ concat ys
         src = map (A_R $) sRules
         a = concat [s, k, y, q, src]
         transition = transitionRelations sRules ql

@@ -2,10 +2,7 @@ module MapleFuncWriter where
 
 import GRType
 import qualified Data.Map.Strict as Map
-import SMType
-import TMType
 import System.IO
-import Data.Set (Set)
 import qualified Data.Set as Set 
 import Helpers
 

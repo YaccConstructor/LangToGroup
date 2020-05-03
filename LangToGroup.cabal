@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: f451a5fe421fc524c9c2efa437a15fd48b6ca14b3eb8fa45a0631aeebcb34df4
+-- hash: 40d20c039ed25ba7b7fc73a8ba8297795e31ee638955483f60db2dd512aa9b69
 
 name:           LangToGroup
 version:        0.1.0.0
@@ -15,6 +15,7 @@ author:         Author name here
 maintainer:     example@example.com
 copyright:      2018 Author name here
 license:        BSD3
+license-file:   LICENSE
 build-type:     Simple
 
 source-repository head
@@ -26,10 +27,10 @@ library
       CFG2TM
       ConfigType
       GapFuncWriter
-      MapleFuncWriter
       GrammarType
       GRType
       Helpers
+      MapleFuncWriter
       SM2GR
       SMInterpreter
       SMType
@@ -42,6 +43,7 @@ library
       Paths_LangToGroup
   hs-source-dirs:
       src
+  ghc-options: -Wall -fno-warn-type-defaults
   build-depends:
       HaTeX >=3.20.0.0
     , base >=4.7 && <5
@@ -54,12 +56,12 @@ executable LangToGroup-printer
   main-is: Main.hs
   other-modules:
       ConfigPrinter
+      DotGraphWriter
       GrammarPrinter
       Lib
       SMPrinter
       Tm1Printer
       Paths_LangToGroup
-      DotGraphWriter
   hs-source-dirs:
       printers
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
@@ -77,8 +79,8 @@ test-suite LangToGroup-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
-      SMTests
       GrTests
+      SMTests
       Paths_LangToGroup
   hs-source-dirs:
       test

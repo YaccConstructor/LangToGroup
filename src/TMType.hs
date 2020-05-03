@@ -1,7 +1,6 @@
 module TMType where
 
 import Data.Set (Set)
-import qualified Data.Set as Set
 
 -- input, tape alphabets
 newtype InputAlphabet = InputAlphabet (Set Square)
@@ -35,9 +34,12 @@ data Square = Value String | PCommand [TapeCommand] | BCommand [TapeCommand]
 newtype Commands = Commands (Set [TapeCommand])
     deriving (Eq, Ord, Show)
 -- leftmost square on every tape
+lBL :: Square
 lBL = Value "α"
 -- rightmost square on every tape
+rBL :: Square
 rBL = Value "ω"
+eL :: Square
 eL = Value ""
 -- TM
 newtype TM = TM (InputAlphabet, [TapeAlphabet], MultiTapeStates, Commands, StartStates, AccessStates)

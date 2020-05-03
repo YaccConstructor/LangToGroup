@@ -1,7 +1,6 @@
 module GrammarType where
 
 import Data.Set (Set)
-import qualified Data.Set as Set
 
 newtype Terminal = Terminal String
     deriving (Eq, Ord)

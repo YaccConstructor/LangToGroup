@@ -1,17 +1,14 @@
 module TMInterpreter where
     import TMType
     import ConfigType
-    import Data.Set (Set)
     import qualified Data.Set as Set
-    import Debug.Trace
-    import Data.Maybe
     import Helpers
 
     checkCommandTapeToTape :: [([Square], State, [Square])] -> [TapeCommand] -> Bool
     checkCommandTapeToTape config command =
         case (command, config) of
             ([], []) -> True
-            ((SingleTapeCommand ((r1, s1, l1), (r2, s2, l2)) : t1), ((r, s, l) : t2)) 
+            ((SingleTapeCommand ((r1, s1, l1), (r2, _, l2)) : t1), ((r, s, l) : t2)) 
                             |   s1 == s && 
                                 (r1 == eL && l1 == rBL && r2 /= eL && l2 == rBL && l == [rBL] ||
                                 r /= [lBL] && r1 == (last r) && l1 == rBL && r2 == eL && l2 == rBL && l == [rBL] ||
@@ -20,6 +17,7 @@ module TMInterpreter where
                                 r1 /= lBL && r1 /= eL && r1 == (last r) && r1 == l2 && l1 == eL && l1 == r2 ||
                                 l1 /= lBL && l1 /= eL && l1 == (head l) && l1 == r2 && r1 == eL && r1 == l2) -> checkCommandTapeToTape t2 t1
                             | otherwise -> False
+            _ -> error "Wrong command type"
 
     getApplicableCommands :: [([Square], State, [Square])] -> [[TapeCommand]] -> [[TapeCommand]] -> [[TapeCommand]] 
     getApplicableCommands config commands acc =
@@ -38,7 +36,7 @@ module TMInterpreter where
     applyCommand config command configs acc = 
         case (command, config) of
             ([], []) -> configs ++ [reverse acc]
-            (SingleTapeCommand ((r1, s1, l1), (r2, s2, l2)) : t1, (r, s, l) : t2) 
+            (SingleTapeCommand ((r1, _, l1), (r2, s2, l2)) : t1, (r, _, l) : t2) 
                     --insert
                     | r1 == eL && r2 /= eL && l1 == rBL && l2 == l1 -> applyCommand t2 t1 configs $ (r ++ [r2], s2, l) : acc
                     --remove
@@ -52,6 +50,7 @@ module TMInterpreter where
                     | r1 == l2 && l1 == r2 && r1 == eL && l1 == (head l) -> applyCommand t2 t1 configs $ (r ++ [r2], s2, tail l) : acc
                     | otherwise -> error ("Wrong command " ++ show command)
             ([], _) -> configs
+            _ -> error "Can not apply command"
 
     applyCommands :: [[([Square], State, [Square])]] -> [[TapeCommand]] -> [[[([Square], State, [Square])]]] -> [[[([Square], State, [Square])]]]
     applyCommands configs commands acc =
@@ -80,7 +79,10 @@ module TMInterpreter where
             h : t   | checkFinalEmptyStates accessStates (last h) -> Just h
                     | otherwise -> isHereEmptyConfigss accessStates t
             
-
+    startInterpreting :: [State]
+                           -> [[[([Square], State, [Square])]]]
+                           -> [[TapeCommand]]
+                           -> [[([Square], State, [Square])]]
     startInterpreting accessStates configss commands =
         case isHereEmptyConfigss accessStates configss of
             Just configs -> configs
@@ -92,8 +94,8 @@ module TMInterpreter where
     interpretTM :: [String] -> TM -> Configs
     interpretTM input (TM
         (InputAlphabet inputAlphabet,
-        tapeAlphabets, 
-        MultiTapeStates multiTapeStates, 
+        _, 
+        _, 
         Commands commands, 
         StartStates startStates, 
         AccessStates accessStates)) = do

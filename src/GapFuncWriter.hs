@@ -2,10 +2,7 @@ module GapFuncWriter where
 
 import GRType
 import qualified Data.Map.Strict as Map
-import SMType
-import TMType
 import System.IO
-import Data.Set (Set)
 import qualified Data.Set as Set 
 import Helpers
 
@@ -53,7 +50,5 @@ writeWord as handle genmap =
             do  hPutStr handle mdata
                 hPutStr handle ";"
                 hFlush handle
-            where 
-                printSmb (SmbA a) = case Map.lookup a genmap of Just s -> s ; Nothing -> error (show a) 
-                printSmb (SmbA' a) = case Map.lookup a genmap of Just s -> "(" ++ s ++ ")^(-1)" ; Nothing -> error (show a)
-                mdata = foldl1 (\x y -> x ++ "*" ++ y) $ map printSmb as
+            where
+                mdata = foldl1 (\x y -> x ++ "*" ++ y) $ map (printSmb genmap) as

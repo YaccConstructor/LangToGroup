@@ -1,18 +1,11 @@
 module SMInterpreter where
     import SMType
-    import ConfigType
-    import Data.Set (Set)
-    import qualified Data.Set as Set
-    import Debug.Trace
     import Data.Maybe
     import TM2SM
-    import Helpers
     import Prelude hiding (Word)
-    import TMType
     import Data.List (isInfixOf, elemIndex)
     import Data.Map (Map)
     import qualified Data.Map as Map
-    import Debug.Trace
 
     checkRule :: Word -> SRule -> Bool
     checkRule (Word word) (SRule rule) = do
@@ -27,11 +20,12 @@ module SMInterpreter where
                     | otherwise -> getApplicableRule word t acc
 
     getApplicableRules :: [Word] -> [SRule] -> [[SRule]] -> [[SRule]]
-    getApplicableRules words rules acc =
-        case words of
+    getApplicableRules wrds rules acc =
+        case wrds of
             [] -> reverse acc
             h : t -> getApplicableRules t rules $ (getApplicableRule h rules []) : acc
 
+    reduceY :: [Smb] -> [Smb]
     reduceY word =
         let reduceInternal smbs acc =
                 case smbs of
@@ -44,6 +38,7 @@ module SMInterpreter where
         in
             reduceInternal word []
 
+    replaceSublist :: [Smb] -> (Word, Word) -> [Smb]
     replaceSublist smbs (Word rulel, Word ruler) = l ++ ruler ++ rr
         where
             (l, r) = break (== (head rulel)) smbs
@@ -55,34 +50,36 @@ module SMInterpreter where
         Word $ reduceY $ foldl replaceSublist smbs rule
 
     applyRules :: [Word] -> [SRule] -> Map Word Int -> [[Word]] -> ([[Word]], Map Word Int)
-    applyRules words rules m acc =
+    applyRules wrds rules m acc =
         case rules of
             [] -> (acc, m)
-            h : t   | Map.member new_word m -> applyRules words t new_m $ acc
-                    | otherwise             -> applyRules words t new_m $ (words ++ [new_word]) : acc
+            h : t   | Map.member new_word m -> applyRules wrds t new_m $ acc
+                    | otherwise             -> applyRules wrds t new_m $ (wrds ++ [new_word]) : acc
                                                 where
-                                                    new_word = applyRule (last words) h
+                                                    new_word = applyRule (last wrds) h
                                                     new_m = Map.insertWith (+) new_word 1 m
     
     applyRuless :: [[Word]] -> [[SRule]] -> Map Word Int -> [[Word]] -> ([[Word]], Map Word Int)
     applyRuless wordss ruless m acc =
         case (wordss, ruless) of
             ([], []) -> (acc, m)
-            (words : t1, rules : t2) -> applyRuless t1 t2 new_m $ acc_apply ++ acc
+            (wrds : t1, rules : t2) -> applyRuless t1 t2 new_m $ acc_apply ++ acc
                                         where
-                                            (acc_apply, new_m) = applyRules words rules m []
+                                            (acc_apply, new_m) = applyRules wrds rules m []
             _ -> error "Commandss and configss don't match"
                                         
 
     isHereAccessWord :: Word -> [[Word]] -> Maybe [Word]
-    isHereAccessWord accessWord words =
-        case words of
+    isHereAccessWord accessWord wrds =
+        case wrds of
             [] -> Nothing
             h : t   | (last h) == accessWord -> Just h
                     | otherwise -> isHereAccessWord accessWord t
 
+    get_front :: [[Word]] -> [Word]
     get_front wordss = map last wordss
 
+    startInterpreting :: Word -> [[Word]] -> [SRule] -> Map Word Int -> ([Word], Map Word Int)
     startInterpreting accessWord wordss rules m =
         case isHereAccessWord accessWord wordss of
             Just path -> (path, m)
@@ -96,7 +93,7 @@ module SMInterpreter where
     interpretSM startWord sm accessWord = do
             let m = Map.fromList [(startWord, 1)]
             let symmSmRules = (++) (srs sm) $ map symSM (srs sm)
-            let (path, new_m) = startInterpreting accessWord [[startWord]] (symmSmRules) m
+            let (path, _) = startInterpreting accessWord [[startWord]] (symmSmRules) m
             path
 
     getRestrictedGraph :: Word -> SM -> Int -> ([(Word, Int, Word)], Map Word Int)
@@ -109,26 +106,26 @@ module SMInterpreter where
                         Just i  -> (i `mod` l) + 1 
                     where
                         l = length $ srs sm
-            let applyRs old_word rules m front_acc k acc =
+            let applyRs old_word rules nm front_acc k acc =
                     case rules of
-                        [] -> (acc, m, front_acc, k)
-                        h : t   | Map.member new_word m -> applyRs old_word t new_m front_acc (k + 1) acc
+                        [] -> (acc, nm, front_acc, k)
+                        h : t   | Map.member new_word nm -> applyRs old_word t new_m front_acc (k + 1) acc
                                 | otherwise             -> applyRs old_word t new_m new_front_acc k $ (old_word, getRuleNumber h, new_word) : acc
                                                             where
                                                                 new_word = applyRule old_word h
-                                                                new_m = Map.insertWith (+) new_word 1 m
+                                                                new_m = Map.insertWith (+) new_word 1 nm
                                                                 new_front_acc = new_word : front_acc
 
-            let applyRss words ruless m front_acc k acc =
-                    case (words, ruless) of
-                        ([], []) -> (acc, m, front_acc, k)
+            let applyRss wrds ruless nm front_acc k acc =
+                    case (wrds, ruless) of
+                        ([], []) -> (acc, nm, front_acc, k)
                         (word : t1, rules : t2) -> applyRss t1 t2 new_m new_front_acc new_k acc_apply
                                                     where
-                                                        (acc_apply, new_m, new_front_acc, new_k) = applyRs word rules m front_acc k acc
+                                                        (acc_apply, new_m, new_front_acc, new_k) = applyRs word rules nm front_acc k acc
                         _ -> error "Commandss and configss don't match"
-            let interpret words m i k acc = if height > i then interpret new_front new_m (i + 1) new_k acc_apply else (acc, m)
+            let interpret wrds nm i k acc = if height > i then interpret new_front new_m (i + 1) new_k acc_apply else (acc, nm)
                     where
-                        (acc_apply, new_m, new_front, new_k) = applyRss words (getApplicableRules words symmSmRules []) m [] k acc
+                        (acc_apply, new_m, new_front, new_k) = applyRss wrds (getApplicableRules wrds symmSmRules []) nm [] k acc
 
             interpret [startWord] m 0 1 []
             

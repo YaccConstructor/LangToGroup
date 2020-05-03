@@ -28,6 +28,9 @@ dependencies:
 
 library:
   source-dirs: src
+  ghc-options: 
+    -Wall
+    -fno-warn-type-defaults
 
 executables:
   LangToGroup-printer:
