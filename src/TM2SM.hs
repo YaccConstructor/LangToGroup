@@ -96,8 +96,8 @@ createSMs y =
             let
                rl1 = 
                   SRule [ 
-                    (Word [SmbQ q1], Word [SmbY' delta, SmbY' delta, SmbQ q1, SmbY delta, SmbY delta]),
-                    (Word [SmbQ r1], Word [SmbY' delta, SmbQ r1, SmbY delta])
+                    (Word [SmbQ q1], Word [SmbY' deltaVal, SmbY' deltaVal, SmbQ q1, SmbY deltaVal, SmbY deltaVal]),
+                    (Word [SmbQ r1], Word [SmbY' deltaVal, SmbQ r1, SmbY deltaVal])
                   ]
                rl2 = 
                   SRule [ 
@@ -105,11 +105,11 @@ createSMs y =
                     (Word [SmbQ r1], Word [SmbQ r2]),
                     (Word [SmbQ s1], Word [SmbQ s2]),
                     (Word [SmbQ t1], Word [SmbQ t2]),
-                    (Word [SmbQ u1], Word [SmbY delta, SmbQ u2])
+                    (Word [SmbQ u1], Word [SmbY deltaVal, SmbQ u2])
                   ]
                rl3 = 
                   SRule [ 
-                    (Word [SmbQ p1, SmbY delta, SmbQ q1], Word [SmbQ p3, SmbY delta, SmbQ q3]),
+                    (Word [SmbQ p1, SmbY deltaVal, SmbQ q1], Word [SmbQ p3, SmbY deltaVal, SmbQ q3]),
                     (Word [SmbQ r1], Word [SmbQ r3]),
                     (Word [SmbQ s1], Word [SmbQ s3]),
                     (Word [SmbQ t1], Word [SmbQ t3]),
@@ -117,15 +117,15 @@ createSMs y =
             
                   ]
             in
-            SM [[delta],[delta],[delta],[delta]] (map Set.fromList [[p1,p2,p3],[q1,q2,q3],[r1,r2,r3],[s1,s2,s3],[t1,t2,t3],[u1,u2,u3]]) [rl1,rl2,rl3]
+            SM [[deltaVal],[deltaVal],[deltaVal],[deltaVal]] (map Set.fromList [[p1,p2,p3],[q1,q2,q3],[r1,r2,r3],[s1,s2,s3],[t1,t2,t3],[u1,u2,u3]]) [rl1,rl2,rl3]
             
         sm2 :: SM 
         sm2 =
             let     
                rl1 = 
                   SRule [ 
-                    (Word [SmbQ q2], Word [SmbY delta, SmbQ q2, SmbY' delta]),
-                    (Word [SmbQ s2], Word [SmbY' delta, SmbQ s2, SmbY delta])
+                    (Word [SmbQ q2], Word [SmbY deltaVal, SmbQ q2, SmbY' deltaVal]),
+                    (Word [SmbQ s2], Word [SmbY' deltaVal, SmbQ s2, SmbY deltaVal])
                   ]
 
                rl2 = 
@@ -137,7 +137,7 @@ createSMs y =
                   ]
             
             in
-            SM [[delta],[delta],[delta],[delta]] (map Set.fromList [[p1,p2],[q1,q2],[r1,r2],[s1,s2],[t1,t2],[u1,u2]]) [rl1,rl2]
+            SM [[deltaVal],[deltaVal],[deltaVal],[deltaVal]] (map Set.fromList [[p1,p2],[q1,q2],[r1,r2],[s1,s2],[t1,t2],[u1,u2]]) [rl1,rl2]
             
             
         sm3 :: SM
@@ -169,11 +169,11 @@ createSMs y =
                       tds ++ [t0'd,t1'd,t2'd],
                       uds ++ [u0'd,u1'd,u2'd],
                       [f']]
-                yss = [ys,ys,[],[],[delta],[delta],[delta],[delta],[delta],[],[delta],[delta],[delta],[delta],[delta],[]]
+                yss = [ys,ys,[],[],[deltaVal],[deltaVal],[deltaVal],[deltaVal],[deltaVal],[],[deltaVal],[deltaVal],[deltaVal],[deltaVal],[deltaVal],[]]
                 prg = map (\a -> SRule[ (Word [SmbQ x0], Word [SmbY' a, SmbQ x0, SmbY a]),
                                         (Word [SmbQ p1'], Word [SmbQ p0']),
                                         (Word [SmbQ q1', SmbQ r1', SmbQ s1', SmbQ t1', SmbQ u1', SmbQ p0d],
-                                         Word [SmbY' delta, SmbQ q0', SmbQ r0', SmbQ s0', SmbQ t0', SmbQ u0', SmbQ p1d, SmbY delta]),
+                                         Word [SmbY' deltaVal, SmbQ q0', SmbQ r0', SmbQ s0', SmbQ t0', SmbQ u0', SmbQ p1d, SmbY deltaVal]),
                                         (Word [SmbQ q0d, SmbQ r0d, SmbQ s0d, SmbQ t0d, SmbQ u0d],
                                          Word [SmbQ q1d, SmbQ r1d, SmbQ s1d, SmbQ t1d, SmbQ u1d])
                                       ]) y
@@ -217,17 +217,17 @@ createSMs y =
             SM (yn sm1) (map Set.unions $ transpose [qn sm8', qn sm8c]) (srs sm8' ++ srs sm8c)
             
         smAlpha :: SM
-        smAlpha = SM [[alpha],[alpha]] (map Set.fromList [[e],[x0,x1,x2],[f]]) 
-                                                                                [SRule [(Word [SmbQ x0], Word [SmbY' alpha, SmbQ x0, SmbY alpha])],
+        smAlpha = SM [[alphaVal],[alphaVal]] (map Set.fromList [[e],[x0,x1,x2],[f]]) 
+                                                                                [SRule [(Word [SmbQ x0], Word [SmbY' alphaVal, SmbQ x0, SmbY alphaVal])],
                                                                                 SRule [(Word [SmbQ e, SmbQ x0], Word [SmbQ e, SmbQ x1])],
-                                                                                SRule [(Word [SmbQ x1], Word [SmbY alpha, SmbQ x1, SmbY' alpha])],
+                                                                                SRule [(Word [SmbQ x1], Word [SmbY alphaVal, SmbQ x1, SmbY' alphaVal])],
                                                                                 SRule [(Word [SmbQ x1, SmbQ f], Word [SmbQ x2, SmbQ f])]]
             
         smOmega :: SM
-        smOmega = SM [[omega],[omega]] (map Set.fromList [[e'],[x0',x1',x2'],[f']]) 
-                                                                                [SRule [(Word [SmbQ x0'], Word [SmbY omega, SmbQ x0', SmbY' omega])],
+        smOmega = SM [[omegaVal],[omegaVal]] (map Set.fromList [[e'],[x0',x1',x2'],[f']]) 
+                                                                                [SRule [(Word [SmbQ x0'], Word [SmbY omegaVal, SmbQ x0', SmbY' omegaVal])],
                                                                                 SRule [(Word [SmbQ x0', SmbQ f'], Word [SmbQ x1', SmbQ f'])],
-                                                                                SRule [(Word [SmbQ x1'], Word [SmbY' omega, SmbQ x1', SmbY omega])],
+                                                                                SRule [(Word [SmbQ x1'], Word [SmbY' omegaVal, SmbQ x1', SmbY omegaVal])],
                                                                                 SRule [(Word [SmbQ e', SmbQ x1'], Word [SmbQ e', SmbQ x2'])]]
             
    in
@@ -331,11 +331,11 @@ genConnectingRules cmd = do
 
     let rule4alpha =
             SRule $ (++)
-            [(Word [x 0 T4, f0 T4], Word [SmbY' alpha, x 0 TAlpha, f0 TAlpha]),
-            (Word [e' (k + 1) T4, x' (k + 1) T4], Word [e' (k + 1) TAlpha, x' (k + 1) TAlpha, SmbY' omega]),
+            [(Word [x 0 T4, f0 T4], Word [SmbY' alphaVal, x 0 TAlpha, f0 TAlpha]),
+            (Word [e' (k + 1) T4, x' (k + 1) T4], Word [e' (k + 1) TAlpha, x' (k + 1) TAlpha, SmbY' omegaVal]),
             (Word [e i T4], Word [e i TAlpha]),
             (Word [x i T4, f (getFromJ i) i T4, e' i T4, p_index' "1" i T4], 
-            Word [SmbY' $ Y a, x i TAlpha, f (getToJ i) i TAlpha, e' i TAlpha, p4 TAlpha, SmbY' delta]),
+            Word [SmbY' $ Y a, x i TAlpha, f (getToJ i) i TAlpha, e' i TAlpha, p4 TAlpha, SmbY' deltaVal]),
             (Word [q_index' "1" i T4, r_index' "1" i T4, s_index' "1" i T4, t_index' "1" i T4, u_index' "1" i T4], 
             Word [q4 TAlpha, r4 TAlpha, s4 TAlpha, t4 TAlpha, u4 TAlpha]),
             (Word [e 0 T4], Word [e 0 TAlpha]),
@@ -446,15 +446,15 @@ sigmaFunc states u =
     map (\(i, TMType.State q, d, w) -> 
         (e_e i) : w ++ [e_x i, e_f q i, e_e' i, e_p i] ++ d 
                     ++ [e_q i, e_r i, e_s i, e_t i, e_u i, e_pd i, e_qd i, e_rd i, e_sd i, e_td i, e_ud i, e_f' q i]) 
-    $ zip4 [1..] states deltan u) ++
+    $ zip4 [1..] states deltaValn u) ++
     [e_e' (k + 1), e_x' (k + 1)] ++ omegan ++ [e_f' "" (k + 1)]
     where 
             un = map length u
             k = length states
             n = foldl (+) 0 un
-            alphan = replicate n $ SmbY alpha
-            omegan = replicate n $ SmbY omega
-            deltan = map (\i -> replicate i $ SmbY delta) un 
+            alphan = replicate n $ SmbY alphaVal
+            omegan = replicate n $ SmbY omegaVal
+            deltaValn = map (\i -> replicate i $ SmbY deltaVal) un 
 
 renameRightLeftBoundings :: [[TMType.TapeCommand]] -> [[TMType.TapeCommand]]
 renameRightLeftBoundings = map (renameRightLeftBoundingsInternal 1 []) 

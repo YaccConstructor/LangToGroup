@@ -88,11 +88,11 @@ example = execLaTeXM $
 -- main = do
 --     renderFile "out.tex" example 
 
-main :: IO()
-main = do
-        let tm = cfg2tm ab2TestGrammar
-        let inp = ["b", "a", "b", "b", "a", "b", "a", "a"]
-        putStrLn $ show $ interpretTM inp tm
+-- main :: IO()
+-- main = do
+--         let tm = cfg2tm ab2TestGrammar
+--         let inp = ["b", "a", "b", "b", "a", "b", "a", "a"]
+--         putStrLn $ show $ interpretTM inp tm
 
 -- main :: IO()
 -- main = do
@@ -108,17 +108,15 @@ main = do
 --         let startWord = sigmaFunc as $ inputSmb : (replicate (length as - 1) [])
 --         putStrLn $ show $ length $ interpretSM startWord sm w
 
--- main :: IO()
--- main = do
---         putStrLn $ show $ (foldl (+) 0 $ map snd $ Map.toList m) - length m
---         handle <- openFile "sm10.dot" WriteMode
---         writeGraph g handle
---         hClose handle
---         where 
---             s@(sm, w, as) = tm2sm $ symDetTM $ cfg2tm testGrammar
---             inputSmb = map (\a -> SMType.SmbY $ SMType.Y a) $ mapValue ["a"]
---             startWord = sigmaFunc as $ inputSmb : (replicate (length as - 1) [])
---             g@(graph, m) = getRestrictedGraph startWord sm 1
+main :: IO()
+main = do
+        putStrLn $ show $ (foldl (+) 0 $ map snd $ Map.toList m) - length m
+        writeGraph "test.tex" g
+        where 
+            (sm, _, as) = tm2sm $ symDetTM $ cfg2tm testGrammar
+            inputSmb = map (\a -> SMType.SmbY $ SMType.Y a) $ mapValue ["a"]
+            startWord = sigmaFunc as $ inputSmb : (replicate (length as - 1) [])
+            (g, m) = getRestrictedGraph startWord sm 1
     
 -- main :: IO()
 -- main = do

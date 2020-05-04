@@ -42,19 +42,19 @@ first2 symb rels acc =
 genRelationCommand :: (Relation, State) -> [State] -> [Relation] -> ([State], [[TapeCommand]])
 genRelationCommand (Relation (ns@(Nonterminal start), [E _]), st) states rels = 
     (states,
-    [[  SingleTapeCommand ((lBL, sSFT, rBL), (lBL, sSFT, rBL)),
+        [[SingleTapeCommand ((lBL, sSFT, rBL), (lBL, sSFT, rBL)),
         SingleTapeCommand ((Value start, iSST, rBL), (eL, iSST, rBL))],
-    [   SingleTapeCommand ((lBL, sSFT, rBL), (lBL, sSFT, rBL)),
+        [SingleTapeCommand ((lBL, sSFT, rBL), (lBL, sSFT, rBL)),
         SingleTapeCommand ((eL, sSST, rBL), (Value start, iSST, rBL))]] ++ followcmds)
             where
             followcmds = map (\fns -> [SingleTapeCommand ((Value fns, st, rBL), (Value fns, st, rBL)),
                                             SingleTapeCommand ((Value start, iSST, rBL), (eL, iSST, rBL))]) $ follow rels $ N ns
 genRelationCommand (Relation (Nonterminal nonterminalSymbol, [symbol]), st) states rels = 
     (states, 
-    [[SingleTapeCommand ((Value fnt, st, rBL), (Value fnt, st, rBL)),
-    SingleTapeCommand ((Value nonterminalSymbol, iSST, rBL), (getDisjoinSymbol symbol, iSST, rBL))]])
-    where
-        [fnt] = first rels symbol
+        [[SingleTapeCommand ((Value fnt, st, rBL), (Value fnt, st, rBL)),
+        SingleTapeCommand ((Value nonterminalSymbol, iSST, rBL), (getDisjoinSymbol symbol, iSST, rBL))]])
+            where
+            [fnt] = first rels symbol
 genRelationCommand (Relation (_, []), _) _ _ = error "Relation production is empty"
 genRelationCommand (Relation (Nonterminal nonterminalSymbol, symbols), st) states rels = (newStates, lcmd : commands)
     where

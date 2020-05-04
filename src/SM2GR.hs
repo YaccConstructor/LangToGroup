@@ -54,7 +54,7 @@ sm2grInternal (SMType.SM ys
         relations = auxiliary ++ transition ++ [hub]
 
 sm2gr :: (SMType.SM, SMType.Word) -> GRType.GR
-sm2gr sw = sm2grInternal sw [A_Y alpha, A_Y omega, A_Y delta]
+sm2gr sw = sm2grInternal sw [A_Y alphaVal, A_Y omegaVal, A_Y deltaVal]
 
 sm2grEmpty :: (SMType.SM, SMType.Word) -> GRType.GR
 sm2grEmpty sw = sm2grInternal sw []

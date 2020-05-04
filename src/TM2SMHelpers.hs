@@ -4,13 +4,14 @@ import SMType
 import Data.Set (Set)
 import qualified Data.Set as Set
 import qualified TMType
+import Text.LaTeX.Packages.AMSMath
 
-delta :: Y
-delta = Y $ TMType.Value "\\delta" 
-alpha :: Y
-alpha = Y $ TMType.Value "\\alpha" 
-omega :: Y
-omega = Y $ TMType.Value "\\omega" 
+deltaVal :: Y
+deltaVal = Y $ TMType.Value "\\deltaVal" 
+alphaVal :: Y
+alphaVal = Y $ TMType.Value "\\alpha" 
+omegaVal :: Y
+omegaVal = Y $ TMType.Value "\\omega" 
 eTag :: Set Tag
 eTag = Set.fromList []
 standardV :: Int -> Maybe StateVal

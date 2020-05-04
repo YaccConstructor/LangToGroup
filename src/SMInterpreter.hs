@@ -6,6 +6,8 @@ module SMInterpreter where
     import Data.List (isInfixOf, elemIndex)
     import Data.Map (Map)
     import qualified Data.Map as Map
+    import Data.Graph.Inductive.Graph (mkGraph)
+    import Data.Graph.Inductive.PatriciaTree (Gr)
 
     checkRule :: Word -> SRule -> Bool
     checkRule (Word word) (SRule rule) = do
@@ -96,7 +98,7 @@ module SMInterpreter where
             let (path, _) = startInterpreting accessWord [[startWord]] (symmSmRules) m
             path
 
-    getRestrictedGraph :: Word -> SM -> Int -> ([(Word, Int, Word)], Map Word Int)
+    getRestrictedGraph :: Word -> SM -> Int -> (Gr Word Int, Map Word Int)
     getRestrictedGraph startWord sm height = do
             let m = Map.fromList [(startWord, 1)]
             let symmSmRules = srs sm ++ map symSM (srs sm)
@@ -106,26 +108,32 @@ module SMInterpreter where
                         Just i  -> (i `mod` l) + 1 
                     where
                         l = length $ srs sm
-            let applyRs old_word rules nm front_acc k acc =
+            let applyRs old_word rules nm front_acc acc =
                     case rules of
-                        [] -> (acc, nm, front_acc, k)
-                        h : t   | Map.member new_word nm -> applyRs old_word t new_m front_acc (k + 1) acc
-                                | otherwise             -> applyRs old_word t new_m new_front_acc k $ (old_word, getRuleNumber h, new_word) : acc
+                        [] -> (acc, nm, front_acc)
+                        h : t   | Map.member new_word nm -> applyRs old_word t new_m front_acc acc
+                                | otherwise             -> applyRs old_word t new_m new_front_acc $ (old_word, getRuleNumber h, new_word) : acc
                                                             where
                                                                 new_word = applyRule old_word h
                                                                 new_m = Map.insertWith (+) new_word 1 nm
                                                                 new_front_acc = new_word : front_acc
 
-            let applyRss wrds ruless nm front_acc k acc =
+            let applyRss wrds ruless nm front_acc acc =
                     case (wrds, ruless) of
-                        ([], []) -> (acc, nm, front_acc, k)
-                        (word : t1, rules : t2) -> applyRss t1 t2 new_m new_front_acc new_k acc_apply
+                        ([], []) -> (acc, nm, front_acc)
+                        (word : t1, rules : t2) -> applyRss t1 t2 new_m new_front_acc acc_apply
                                                     where
-                                                        (acc_apply, new_m, new_front_acc, new_k) = applyRs word rules nm front_acc k acc
+                                                        (acc_apply, new_m, new_front_acc) = applyRs word rules nm front_acc acc
                         _ -> error "Commandss and configss don't match"
-            let interpret wrds nm i k acc = if height > i then interpret new_front new_m (i + 1) new_k acc_apply else (acc, nm)
+            let interpret wrds nm i acc = if height > i then interpret new_front new_m (i + 1) acc_apply else (acc, nm)
                     where
-                        (acc_apply, new_m, new_front, new_k) = applyRss wrds (getApplicableRules wrds symmSmRules []) nm [] k acc
+                        (acc_apply, new_m, new_front) = applyRss wrds (getApplicableRules wrds symmSmRules []) nm [] acc
 
-            interpret [startWord] m 0 1 []
+            let (acc, nm) = interpret [startWord] m 0 []
+            let a = map fst $ Map.toList nm
+            let m_nodes = Map.fromList $ zip a [1..]
+            let get_node w = fromJust $ Map.lookup w m_nodes
+            let g = mkGraph (zip [1..] a)
+                                (map (\(from_part, rule_i, to_part) -> (get_node from_part, get_node to_part, rule_i)) acc)
+            (g, nm)
             
