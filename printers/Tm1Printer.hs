@@ -3,15 +3,9 @@
 module Tm1Printer where
 
 import Text.LaTeX.Base
-import Text.LaTeX.Base.Class
-import Text.LaTeX.Base.Commands
 import Text.LaTeX.Packages.AMSMath
-import Text.LaTeX.Packages.Inputenc
 import qualified Data.Set as Set
-import Text.LaTeX.Base.Types
 import Data.Matrix
-import Data.Maybe
-import Debug.Trace
 
 
 import TMType
@@ -29,10 +23,18 @@ instance ShowLaTeX State where
 instance ShowLaTeX StateOmega where
     doLaTeX s = raw $ fromString $ show s
 
+showTriple :: (ShowLaTeX a1, ShowLaTeX a2, ShowLaTeX a3) =>
+                    (a1, a2, a3) -> LaTeX
 showTriple (u, q, v) = toLaTeX u <> toLaTeX q <> toLaTeX v
+
+showPair :: (ShowLaTeX a1, ShowLaTeX a2) => (a1, a2) -> LaTeX
 showPair (r, l) = toLaTeX r <> toLaTeX l
+
+showFrom :: TapeCommand -> LaTeX
 showFrom (SingleTapeCommand (q, _)) = showTriple q
 showFrom (PreSMCommand (q, _)) = showPair q
+
+showTo :: TapeCommand -> LaTeX
 showTo (SingleTapeCommand (_, q)) = showTriple q
 showTo (PreSMCommand (_, q)) = showPair q
 

@@ -29,6 +29,7 @@ import SMInterpreter
 import Helpers
 import DotGraphWriter
 import MapleFuncWriter
+import Data.Tuple.Utils
 
 preambula :: LaTeXM ()
 preambula = 
@@ -51,7 +52,7 @@ example = execLaTeXM $
             -- newpage
             -- doLaTeX $ symDetTM $ cfg2tm testGrammar
             -- newpage
-            -- doLaTeX $ tripleFst $ tm2sm $ symDetTM $ cfg2tm testGrammar
+            -- doLaTeX $ fst3 $ tm2sm $ symDetTM $ cfg2tm testGrammar
             doLaTeX epsTestGrammar
             doLaTeX $ cfg2tm epsTestGrammar
             -- -- doLaTeX $ interpretTM ["a"] $ cfg2tm epsTestGrammar
@@ -78,10 +79,10 @@ example = execLaTeXM $
             -- -- doLaTeX $ interpretTM ["b", "a", "b", "a"] $ cfg2tm ab3TestGrammar
             -- -- doLaTeX $ fst $ tm2sm tmForTestSm
             --doLaTeX $ threePhaseProcessing simpleTM
-            --doLaTeX $ tripleFst $ tm2sm $ symDetTM $ fst $ oneruleTM
+            --doLaTeX $ fst3 $ tm2sm $ symDetTM $ fst $ oneruleTM
             -- doLaTeX symSmallMachine
             -- newpage
-            --doLaTeX $ tripleFst $ tm2sm symSmallMachine
+            --doLaTeX $ fst3 $ tm2sm symSmallMachine
 
 -- main :: IO()
 -- main = do
@@ -90,8 +91,8 @@ example = execLaTeXM $
 main :: IO()
 main = do
         let tm = cfg2tm ab2TestGrammar
-        let input = ["b", "a", "b", "b", "a", "b", "a", "a"]
-        putStrLn $ show $ interpretTM input tm
+        let inp = ["b", "a", "b", "b", "a", "b", "a", "a"]
+        putStrLn $ show $ interpretTM inp tm
 
 -- main :: IO()
 -- main = do
@@ -153,6 +154,7 @@ main = do
 --        hFlush fhandle
 --        hClose fhandle
 
+oneRuleGr :: (GR, [SmbR])
 oneRuleGr = do
     let y = SMType.Y $ TMType.Value "a"
     let q0 = SMType.State SMType.Q "0" (Set.fromList []) Nothing
@@ -174,6 +176,7 @@ oneRuleGr = do
     let startWord = hubRelation $ SMType.Word [SMType.SmbQ q0, SMType.SmbY y, SMType.SmbQ q1]
     (GR (Set.fromList as, Set.fromList relations), startWord)
 
+oneRuleSm :: (SMType.SM, SMType.Word, [SmbR])
 oneRuleSm = do
     let y = SMType.Y $ TMType.Value "a"
     let q0 = SMType.State SMType.Q "0" (Set.fromList []) Nothing
@@ -188,6 +191,7 @@ oneRuleSm = do
     let startWord = hubRelation $ SMType.Word [SMType.SmbQ q0, SMType.SmbY y, SMType.SmbQ q1]
     (SMType.SM [[y]] [Set.fromList [q0, q0'], Set.fromList [q1, q1']] [r], SMType.Word [SMType.SmbQ q0', SMType.SmbQ q1'], startWord)
 
+printCount :: Grammar -> IO ()
 printCount grammar@(Grammar (n, t, r, _, _)) = do
     putStrLn $ "T: " ++ (show $ length t) ++ " N: " ++ (show $ length n) ++ " R: " ++ (show $ length r) 
     
@@ -206,8 +210,8 @@ printCount grammar@(Grammar (n, t, r, _, _)) = do
     let smQ = foldl (\acc a -> acc + length a) 0 (SMType.qn sm)
     putStrLn $ "smY: " ++ (show $ length smY) ++ " smQ: " ++ (show smQ) ++ " smR: " ++ (show $ length $ SMType.srs sm)
 
-    let gr@(GR (a, r)) = sm2gr (sm, w)
-    putStrLn $ "A: " ++ (show $ length a) ++ " R: " ++ (show $ length r)
+    let (GR (a, rels)) = sm2gr (sm, w)
+    putStrLn $ "A: " ++ (show $ length a) ++ " R: " ++ (show $ length rels)
     putStrLn ""
 
 -- main :: IO()
@@ -221,6 +225,7 @@ printCount grammar@(Grammar (n, t, r, _, _)) = do
 --     putStrLn $ "Dyck"
 --     printCount ab2TestGrammar
 
+symSmallMachine :: TM
 symSmallMachine = tm where
     a = Value "a"
     q0 = State "q_0^1"
@@ -235,6 +240,7 @@ symSmallMachine = tm where
     access = AccessStates [q1]
     tm = TM (inp, tapes, states, cmds, start, access)
 
+aStarSMachine :: (SMType.SM, SMType.Word, SMType.Word, [SmbR])
 aStarSMachine = (SMType.SM alphabet states relations, accessWord, startWord, word) 
     where
     a = SMType.Y $ TMType.Value "a"
@@ -287,6 +293,7 @@ aStarSMachine = (SMType.SM alphabet states relations, accessWord, startWord, wor
     word = foldl (\acc x -> [(SmbA' $ A_R x)] ++ acc ++ [(SmbA $ A_R x)]) (easyHubRelation startWord) $ [r1, r2, r12, r13]
     accessWord = SMType.Word [SMType.SmbQ alp, SMType.SmbQ p, SMType.SmbQ q0]
 
+oneruleTM :: (TM, [[SMType.Smb]])
 oneruleTM = (tm, w) where
     a = Value "a"
     q0 = State "q_0^1"
@@ -301,6 +308,7 @@ oneruleTM = (tm, w) where
     tm = TM (inp, tapes, states, cmds, start, access)
     w = [[SMType.SmbY $ SMType.Y a], [], [SMType.SmbY $ SMType.Y $ BCommand cmd], []]
 
+simpleTM :: TM
 simpleTM = tm where
     a = Value "a"
     q0 = State "q_0^1"
@@ -316,6 +324,7 @@ simpleTM = tm where
     access = AccessStates [q2]
     tm = TM (inp, tapes, states, cmds, start, access)    
 
+tmForTestSm :: TM
 tmForTestSm = tm where
     s = Value "S"
     q0 = State "q_0"
@@ -331,7 +340,8 @@ tmForTestSm = tm where
     access = AccessStates []
     tm = TM (inp, tapes, states, cmds, start, access)    
 
--- Example from test
+
+testGrammar :: Grammar
 testGrammar = grammar where
     terminal = Terminal "a"
     nonterminal = Nonterminal "S"
@@ -345,6 +355,7 @@ testGrammar = grammar where
             eps
         )
 
+epsTestGrammar :: Grammar
 epsTestGrammar = grammar where
     terminal = Terminal "a"
     start = Nonterminal "S"
@@ -363,6 +374,7 @@ epsTestGrammar = grammar where
             eps
         )
 
+epsTestLeftGrammar :: Grammar
 epsTestLeftGrammar = grammar where
     terminal = Terminal "a"
     start = Nonterminal "S"
@@ -381,6 +393,7 @@ epsTestLeftGrammar = grammar where
             eps
         )
 
+abTestGrammar :: Grammar
 abTestGrammar = grammar where
     a = Terminal "a"
     b = Terminal "b"
@@ -404,6 +417,7 @@ abTestGrammar = grammar where
             eps
         )
 
+ab2TestGrammar :: Grammar
 ab2TestGrammar = grammar where
     a = Terminal "a"
     b = Terminal "b"
@@ -429,6 +443,7 @@ ab2TestGrammar = grammar where
             eps
         )
 
+abNoEpsTestGrammar :: Grammar
 abNoEpsTestGrammar = grammar where
     a = Terminal "a"
     b = Terminal "b"
@@ -452,6 +467,7 @@ abNoEpsTestGrammar = grammar where
             eps
         )
 
+ab3TestGrammar :: Grammar
 ab3TestGrammar = grammar where
     a = Terminal "a"
     b = Terminal "b"

@@ -175,10 +175,10 @@ doubleCommands startStates accessStates tapeAlphabets multiTapeStates allcommand
     let doubleTapeAlphabets tapeAlphabet = [tapeAlphabet, TapeAlphabet $ Set.map getDisjoinSquare2 a]
                 where (TapeAlphabet a) = tapeAlphabet
 
-    (concat $ map doubleStates startStates, 
-        concat $ map doubleStates accessStates, 
-        concat $ map doubleTapeAlphabets tapeAlphabets, 
-        concat $ map doubleMultitapeStates multiTapeStates, 
+    (concatMap doubleStates startStates, 
+        concatMap doubleStates accessStates, 
+        concatMap doubleTapeAlphabets tapeAlphabets, 
+        concatMap doubleMultitapeStates multiTapeStates, 
         doubleCommandsInternal allcommands [])
 
 one2KCmds :: ([Set State], [[TapeCommand]]) -> ([Set State], [[TapeCommand]])

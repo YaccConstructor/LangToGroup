@@ -2,16 +2,9 @@
 
 module SMPrinter where
     import Text.LaTeX.Base
-    import Text.LaTeX.Base.Class
-    import Text.LaTeX.Base.Commands
-    import Text.LaTeX.Packages.AMSMath
-    import Text.LaTeX.Packages.Inputenc
     import qualified Data.Set as Set
-    import Text.LaTeX.Base.Types
     import Data.Maybe
-    import Debug.Trace (trace)
     import Data.List
-
     import SMType
     import Lib
     import Tm1Printer
@@ -40,10 +33,11 @@ module SMPrinter where
 
             let setTags = foldl setTag
             let setVal Nothing q = q
-            let setVal (Just value) q  = 
+                setVal (Just value) q  = 
                     case (tmCommand value, smTag value) of
                         (Nothing, Nothing) -> q <> "(" <> (fromString $ show $ tape value) <> ")"
                         (Just cmd, Just smtag) -> q <> "(" <> (fromString $ show $ tape value) <> ", " <> (doLaTeX cmd) <> ", " <> (doLaTeX smtag) <> ")"
+                        _ -> error "Must match"
             setVal val $ (setTags (doLaTeX name) tagsList) !: (raw $ fromString idx) 
 
     showSMStates :: [State] -> LaTeXM ()
@@ -66,8 +60,14 @@ module SMPrinter where
     instance ShowLaTeX SRule where
         doLaTeX (SRule s) = foldl1 (\x y -> x <> lnbk <> y) $ map (\(w1,w2) -> doLaTeX w1 <> math to <> " " <> doLaTeX w2) s
 
+    tau_alias :: Show a => a -> [Char]
     tau_alias i = "\\tau_{" ++ (show i) ++ "}"
 
+    substituteWord :: Int
+                        -> [Smb]
+                        -> [Smb]
+                        -> [(TMCMD, TMCMD)]
+                        -> (Int, [Smb], [(TMCMD, TMCMD)])
     substituteWord i w acc accNames =
         case w of
             [] -> (i, reverse acc, accNames)
@@ -83,19 +83,21 @@ module SMPrinter where
                         name = CommandAlias $ tau_alias i
                         newSmbQ = case cmdInAcc of 
                                     Nothing -> SmbQ $ s {s_val = Just $ sval {tmCommand = Just name}}
-                                    (Just (n, c)) -> SmbQ $ s {s_val = Just $ sval {tmCommand = Just n}}
+                                    (Just (n, _)) -> SmbQ $ s {s_val = Just $ sval {tmCommand = Just n}}
             s : t -> substituteWord i t (s : acc) accNames
 
+    substituteCommands :: Foldable t =>
+                            t SRule -> ([SRule], [(TMCMD, TMCMD)])
     substituteCommands rules = do
-        let substituteRule i rule acc accNames =
-                case rule of
+        let substituteRule i r acc accNames =
+                case r of
                     (Word w1, Word w2) : t -> substituteRule newI2 t ((Word newWord1, Word newWord2) : acc) newNames2
                         where
                             (newI1, newWord1, newNames1) = substituteWord i w1 [] accNames 
                             (newI2, newWord2, newNames2) = substituteWord newI1 w2 [] newNames1 
                     [] -> (i, reverse acc, accNames)
-        let internal i = foldl (\(i, acc, names) (SRule s) -> let (newI, newRule, newNames) = substituteRule i s [] names 
-                                                                in (newI, (SRule newRule) : acc, newNames)) (i, [], []) 
+        let internal k = foldl (\(j, acc, names) (SRule s) -> let (newI, newRule, newNames) = substituteRule j s [] names 
+                                                                in (newI, (SRule newRule) : acc, newNames)) (k, [], []) 
         let (_, newRules, names) = internal 0 rules
         (newRules, names)
 

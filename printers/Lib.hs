@@ -2,7 +2,6 @@ module Lib where
 
 import Text.LaTeX.Base
 import Text.LaTeX.Base.Class
-import Text.LaTeX.Base.Writer
 
 
 -- section without numbering

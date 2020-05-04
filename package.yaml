@@ -1,6 +1,6 @@
 name:                LangToGroup
 version:             0.1.0.0
-github:              "githubuser/LangToGroup"
+github:              "YaccConstructor/LangToGroup"
 license:             BSD3
 author:              "Author name here"
 maintainer:          "example@example.com"
@@ -25,6 +25,7 @@ dependencies:
 - vector
 - HaTeX >= 3.20.0.0
 - regex-tdfa
+- MissingH
 
 library:
   source-dirs: src
@@ -40,19 +41,12 @@ executables:
     - -threaded
     - -rtsopts
     - -with-rtsopts=-N
+    - -Wall
+    - -fno-warn-type-defaults
+    - -fno-warn-orphans
     dependencies:
     - LangToGroup
     - matrix >= 0.3.6.1
- 
-  # LangToGroup-exe:
-  #   main:                Main.hs
-  #   source-dirs:         app
-  #   ghc-options:
-  #   - -threaded
-  #   - -rtsopts  
-  #   - -with-rtsopts=-N
-  #   dependencies:
-  #   - LangToGroup
 
 tests:
   LangToGroup-test:
@@ -62,6 +56,8 @@ tests:
     - -threaded
     - -rtsopts
     - -with-rtsopts=-N
+    - -Wall
+    - -fno-warn-type-defaults
     dependencies:
     - LangToGroup
     - HUnit

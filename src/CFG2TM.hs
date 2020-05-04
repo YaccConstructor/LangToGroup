@@ -4,7 +4,7 @@ import GrammarType
 import TMType
 import qualified Data.Set as Set
 import Helpers
-import Data.List (elemIndices, groupBy, sortBy)
+import Data.List (elemIndices, groupBy, sortBy, sort, group)
 
 -- define a start states
 sSFT :: State
@@ -21,21 +21,19 @@ iSST = State "q_{1}^{2}"
 
 first :: [Relation] -> Symbol -> [String]
 first _ (T (Terminal t)) = [t]
-first rels e@(E _) = concat . map (\(Relation (n, _)) -> follow rels (N n)) . filter (\(Relation (_, eps : _)) -> e == eps) $ rels
-first rels (N n) = concat . map (\(Relation (_, h : _)) -> first rels h) . filter (\(Relation (x, _)) -> x == n) $ rels
+first rels e@(E _) = concatMap (\(Relation (n, _)) -> follow rels (N n)) . filter (\(Relation (_, eps : _)) -> e == eps) $ rels
+first rels (N n) = concatMap (\(Relation (_, h : _)) -> first rels h) . filter (\(Relation (x, _)) -> x == n) $ rels
 
 follow :: [Relation] -> Symbol -> [String]
-follow rels n = concat 
-                    . map (first rels) 
-                    . concat 
-                    . map (\(Relation (_, symb)) -> map ((!!) symb) . filter (< (length symb)) . map (+ 1) $ elemIndices n symb) 
+follow rels n = concatMap (first rels) 
+                    . concatMap (\(Relation (_, symb)) -> map ((!!) symb) . filter (< (length symb)) . map (+ 1) $ elemIndices n symb) 
                     . filter (\(Relation (_, symb)) -> elem n symb) $ rels
 
 first2 :: [Symbol] -> [Relation] -> [String] -> [String]
 first2 symb rels acc =
     case symb of
         (E _) : t -> first2 t rels acc
-        (N n) : t -> concat . map (\(Relation (_, s)) -> first2 (s ++ t) rels acc) . filter (\(Relation (x, _)) -> x == n) $ rels
+        (N n) : t -> concatMap (\(Relation (_, s)) -> first2 (s ++ t) rels acc) . filter (\(Relation (x, _)) -> x == n) $ rels
         (T (Terminal term)) : t | length acc == 1 -> [term]
                                 | otherwise -> first2 t rels (term : acc)
         [] -> []
@@ -44,19 +42,20 @@ first2 symb rels acc =
 genRelationCommand :: (Relation, State) -> [State] -> [Relation] -> ([State], [[TapeCommand]])
 genRelationCommand (Relation (ns@(Nonterminal start), [E _]), st) states rels = 
     (states,
-    [[SingleTapeCommand ((lBL, sSFT, rBL), (lBL, sSFT, rBL)),
-    SingleTapeCommand ((Value start, iSST, rBL), (eL, iSST, rBL))],
-    [SingleTapeCommand ((lBL, sSFT, rBL), (lBL, sSFT, rBL)),
-    SingleTapeCommand ((eL, sSST, rBL), (Value start, iSST, rBL))]] ++ followcmds)
-    where
-        followcmds = map (\fns -> [SingleTapeCommand ((Value fns, st, rBL), (Value fns, st, rBL)),
-                                        SingleTapeCommand ((Value start, iSST, rBL), (eL, iSST, rBL))]) $ follow rels $ N ns
+    [[  SingleTapeCommand ((lBL, sSFT, rBL), (lBL, sSFT, rBL)),
+        SingleTapeCommand ((Value start, iSST, rBL), (eL, iSST, rBL))],
+    [   SingleTapeCommand ((lBL, sSFT, rBL), (lBL, sSFT, rBL)),
+        SingleTapeCommand ((eL, sSST, rBL), (Value start, iSST, rBL))]] ++ followcmds)
+            where
+            followcmds = map (\fns -> [SingleTapeCommand ((Value fns, st, rBL), (Value fns, st, rBL)),
+                                            SingleTapeCommand ((Value start, iSST, rBL), (eL, iSST, rBL))]) $ follow rels $ N ns
 genRelationCommand (Relation (Nonterminal nonterminalSymbol, [symbol]), st) states rels = 
     (states, 
     [[SingleTapeCommand ((Value fnt, st, rBL), (Value fnt, st, rBL)),
     SingleTapeCommand ((Value nonterminalSymbol, iSST, rBL), (getDisjoinSymbol symbol, iSST, rBL))]])
     where
         [fnt] = first rels symbol
+genRelationCommand (Relation (_, []), _) _ _ = error "Relation production is empty"
 genRelationCommand (Relation (Nonterminal nonterminalSymbol, symbols), st) states rels = (newStates, lcmd : commands)
     where
         reversedSymbols = reverse symbols
@@ -94,8 +93,8 @@ genPreviewCommand rels states = if all checkDeterm groups then foldl func (state
         getFirst (Relation (_, h : _)) = first rels h
         getFirst (Relation (_, [])) = error "Empty symb"
         getNonterm (Relation (Nonterminal n, _)) = n
-        isOne = (==) 1 . length . Set.fromList . getFirst2
-        isAllDiff gr = (==) (length gr) . length . Set.fromList . concat . map getFirst2 $ gr
+        isOne = (==) 1 . length . group . sort . getFirst2
+        isAllDiff gr = (==) (length gr) . length . group . sort . concatMap getFirst2 $ gr
         checkDeterm [_] = True
         checkDeterm gr = all isOne gr && isAllDiff gr
         func (sts, commands, relState) [h] = (sts, commands, (h, sSFT) : relState)

@@ -6,19 +6,17 @@ import System.IO
 import Prelude hiding (Word)
 import Text.LaTeX.Base.Render
 import Text.LaTeX.Base
-import Text.LaTeX.Base.Class
-import Text.LaTeX.Packages.Inputenc
 import Lib
 import Data.Map (Map)
 import qualified Data.Map as Map
 import Data.Maybe
-import Helpers
-import qualified TMType
-import Data.Set (Set, fromList)
+import Data.Tuple.Utils
 
-tex2text tex = show $ render $ execLaTeXM tex
+tex2text :: LaTeXM a -> String
+tex2text = show . render . execLaTeXM
 
-substCommandsInWord (Word word) = Word $ tripleSnd $ substituteWord 0 word [] []
+substCommandsInWord :: Word -> Word
+substCommandsInWord (Word word) = Word $ snd3 $ substituteWord 0 word [] []
 
 writeGraph :: ([(Word, Int, Word)], Map Word Int) -> Handle -> IO ()
 writeGraph graph_map handle =
@@ -30,11 +28,11 @@ writeGraph graph_map handle =
                             (tex2text $ doLaTeX $ substCommandsInWord x) ++
                             "];\n") <>
                             hFlush handle) a
-                mapM_ ( \(from, rule_i, to) -> 
+                mapM_ ( \(from_part, rule_i, to_part) -> 
                                 hPutStr handle (
-                                (fromJust $ Map.lookup from str_m) ++ 
+                                (fromJust $ Map.lookup from_part str_m) ++ 
                                 " -> " ++
-                                (fromJust $ Map.lookup to str_m) ++ 
+                                (fromJust $ Map.lookup to_part str_m) ++ 
                                 "[label=\" " ++
                                 (show rule_i) ++
                                 " \"];\n") <>

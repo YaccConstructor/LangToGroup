@@ -37,15 +37,6 @@ module Helpers where
     mapFromValue :: [Square] -> [String]
     mapFromValue = map (\(Value v) -> v)
 
-    tripleFst :: (a, b, c) -> a
-    tripleFst (a,_,_) = a
-
-    tripleSnd :: (a, b, c) -> b
-    tripleSnd (_,a,_) = a
-
-    tripleThd :: (a, b, c) -> c
-    tripleThd (_,_,a) = a
-
     printSmb :: Map.Map A [Char] -> SmbR -> [Char]
     printSmb genmap (SmbA a) = case Map.lookup a genmap of Just s -> s ; Nothing -> error (show a) 
     printSmb genmap (SmbA' a) = case Map.lookup a genmap of Just s -> "(" ++ s ++ ")^(-1)" ; Nothing -> error (show a)
