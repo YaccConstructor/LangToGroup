@@ -4,7 +4,6 @@ import SMType
 import Data.Set (Set)
 import qualified Data.Set as Set
 import qualified TMType
-import Text.LaTeX.Packages.AMSMath
 
 eTag :: Set Tag
 eTag = Set.fromList []
@@ -25,7 +24,7 @@ getai c =
     let get cmd i =  
             case cmd of
                 TMType.PreSMCommand ((a, _), _) : t 
-                    | a /= TMType.eL -> (a, i)
+                    | a /= TMType.ES -> (a, i)
                     | otherwise -> get t (i + 1)
                 _ -> error "Must be PreSMCommand"
     in 

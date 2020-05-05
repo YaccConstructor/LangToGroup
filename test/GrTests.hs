@@ -1,18 +1,11 @@
 module GrTests where
 
-import Test.Framework
-import Test.Framework.Providers.HUnit
-import Data.Monoid
-import Control.Monad
-import Data.Set (Set, fromList)
 import SMType
-import Data.List
-import Helpers
 import Test.HUnit
-import SMType
 import GRType
 import qualified TMType
 import SM2GR
+import Data.Set (fromList)
 
 sm2grTest :: Assertion
 sm2grTest = do
@@ -29,7 +22,6 @@ sm2grTest = do
     let sm = SM [[y]] [fromList [q0, q0'], fromList [q1, q1']] [r]
     let accessWord = Word [SmbQ q0', SmbQ q1']
     let gr = sm2grEmpty (sm, accessWord)
-    let k = map (A_K $) [1, 2]
     let as = [A_Y y, A_Q q0, A_Q q1, A_Q q0', A_Q q1', A_R r] ++ k
     let powr x = (SmbA' $ A_R r) : x ++ [SmbA $ A_R r]
     let u = [SmbA $ A_Q q0', SmbA $ A_Q q1']

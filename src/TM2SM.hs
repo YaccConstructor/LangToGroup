@@ -13,7 +13,7 @@ splitPosNegCmds commands = do
     let check21 command = 
             case command of
                 TMType.PreSMCommand((a@(TMType.Value ah), _),_) : t 
-                    | a /= TMType.eL && head ah /= 'E' -> True
+                    | a /= TMType.ES && head ah /= 'E' -> True
                     | otherwise -> check21 t
                 TMType.PreSMCommand((TMType.BCommand _, _),(_, _)) : _ -> True
                 TMType.PreSMCommand((TMType.PCommand _, _),(_, _)) : _ -> True
@@ -464,7 +464,7 @@ renameRightLeftBoundings = map (renameRightLeftBoundingsInternal 1 [])
         renameRightLeftBoundingsInternal i acc command =
             case command of
                 TMType.SingleTapeCommand ((l1, s1, _), (l2, s2, _)) : t 
-                    | l1 == TMType.lBL -> renameRightLeftBoundingsInternal (i + 1) ((TMType.PreSMCommand ((newRight, newS1), (newRight, newS2))) : acc) t
+                    | l1 == TMType.LBS -> renameRightLeftBoundingsInternal (i + 1) ((TMType.PreSMCommand ((newRight, newS1), (newRight, newS2))) : acc) t
                     | otherwise -> renameRightLeftBoundingsInternal (i + 1) ((TMType.PreSMCommand ((l1, newS1), (l2, newS2))) : acc) t
                         where   newRight = e i
                                 newS1 = f s1

@@ -14,6 +14,9 @@ import Lib
 
 instance ShowLaTeX Square where
     doLaTeX (Value sq) = raw $ fromString sq
+    doLaTeX RBS = omega
+    doLaTeX LBS = alpha
+    doLaTeX ES = raw $ fromString ""
     doLaTeX (BCommand c) = showBCommand c
     doLaTeX (PCommand c) = showPCommand c
 

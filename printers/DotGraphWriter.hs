@@ -2,16 +2,10 @@ module DotGraphWriter where
 
 import SMPrinter
 import SMType
-import System.IO (Handle)
-import Data.Text.Lazy.IO
 import Prelude hiding (Word)
 import Text.LaTeX.Base.Render
 import Text.LaTeX.Base
-import Text.LaTeX.Base.Class
-import Text.LaTeX.Packages.Inputenc
 import Lib
-import Data.Map (Map)
-import qualified Data.Map as Map
 import Data.Tuple.Utils
 import Data.Graph.Inductive.PatriciaTree (Gr)
 import Data.Text.Lazy (fromStrict, replace, pack)

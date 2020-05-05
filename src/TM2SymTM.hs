@@ -14,30 +14,30 @@ firstPhase kplus1tapeStates acceptCommand otherCommands startStates multiTapeSta
     let generateFirstPhaseCommand command states acc =
             case states of
                 [] -> 
-                    reverse $ (SingleTapeCommand ((eL, kplus1tapeState, rBL), (BCommand command, kplus1tapeState, rBL))) : acc
+                    reverse $ (SingleTapeCommand ((ES, kplus1tapeState, RBS), (BCommand command, kplus1tapeState, RBS))) : acc
                 s : ss  | acc == [] -> 
-                    generateFirstPhaseCommand command ss $ (SingleTapeCommand ((eL, s, rBL), (eL, s, rBL))) : acc 
+                    generateFirstPhaseCommand command ss $ (SingleTapeCommand ((ES, s, RBS), (ES, s, RBS))) : acc 
                         | otherwise -> 
-                    generateFirstPhaseCommand command ss $ (SingleTapeCommand ((lBL, s, rBL), (lBL, s, rBL))) : acc 
+                    generateFirstPhaseCommand command ss $ (SingleTapeCommand ((LBS, s, RBS), (LBS, s, RBS))) : acc 
     
     let firstPhaseFinalCommand tapeStates states sStates acc =
             case (tapeStates, states, sStates) of
                 ([], [], []) -> 
-                    reverse $ (SingleTapeCommand ((eL, kplus1tapeState, rBL), (eL, finalKPlusOneTapeState, rBL))) : acc
+                    reverse $ (SingleTapeCommand ((ES, kplus1tapeState, RBS), (ES, finalKPlusOneTapeState, RBS))) : acc
                 (_ : tt, s1 : ss1, s2 : ss2)  | acc == [] -> 
-                    firstPhaseFinalCommand tt ss1 ss2 $ (SingleTapeCommand ((eL, s1, rBL), (eL, s2, rBL))) : acc 
+                    firstPhaseFinalCommand tt ss1 ss2 $ (SingleTapeCommand ((ES, s1, RBS), (ES, s2, RBS))) : acc 
                         | otherwise -> 
-                    firstPhaseFinalCommand tt ss1 ss2 $ (SingleTapeCommand ((lBL, s1, rBL), (lBL, s2, rBL))) : acc 
+                    firstPhaseFinalCommand tt ss1 ss2 $ (SingleTapeCommand ((LBS, s1, RBS), (LBS, s2, RBS))) : acc 
                 _ -> error "States don't match"
     
     let firstPhaseStartCommand states acc =
             case states of
                 [] -> 
-                    reverse $ (SingleTapeCommand ((eL, startKPlusOneTapeState, rBL), (BCommand acceptCommand, kplus1tapeState, rBL))) : acc
+                    reverse $ (SingleTapeCommand ((ES, startKPlusOneTapeState, RBS), (BCommand acceptCommand, kplus1tapeState, RBS))) : acc
                 s : ss  | acc == [] -> 
-                    firstPhaseStartCommand ss $ (SingleTapeCommand ((eL, s, rBL), (eL, s, rBL))) : acc 
+                    firstPhaseStartCommand ss $ (SingleTapeCommand ((ES, s, RBS), (ES, s, RBS))) : acc 
                         | otherwise -> 
-                    firstPhaseStartCommand ss $ (SingleTapeCommand ((lBL, s, rBL), (lBL, s, rBL))) : acc     
+                    firstPhaseStartCommand ss $ (SingleTapeCommand ((LBS, s, RBS), (LBS, s, RBS))) : acc     
 
     let firstPhaseInternal commands acc = 
             case commands of
@@ -51,21 +51,21 @@ generateEmptyStayCommands :: [State]
 generateEmptyStayCommands states acc =
     case states of
         [] -> reverse acc
-        h : t -> generateEmptyStayCommands t $ (SingleTapeCommand ((lBL, h, rBL), (lBL, h, rBL))) : acc
+        h : t -> generateEmptyStayCommands t $ (SingleTapeCommand ((LBS, h, RBS), (LBS, h, RBS))) : acc
         
 secondPhase :: State -> [[TapeCommand]] -> [State] -> [[TapeCommand]]
 secondPhase finalKPlusOneTapeState allcommands accessStates = do
     let addKPlusOneTapeCommands cmd acc = 
             case cmd of
                 h : t -> 
-                    addKPlusOneTapeCommands t $ (h ++ [SingleTapeCommand ((BCommand h, finalKPlusOneTapeState, eL), (eL, finalKPlusOneTapeState, BCommand h))]) : acc
+                    addKPlusOneTapeCommands t $ (h ++ [SingleTapeCommand ((BCommand h, finalKPlusOneTapeState, ES), (ES, finalKPlusOneTapeState, BCommand h))]) : acc
                 [] -> acc
 
     let returnToRightEndmarkerCommands commands acc = 
             case commands of
                 h : t -> returnToRightEndmarkerCommands t $ 
                                 ((generateEmptyStayCommands accessStates []) ++ 
-                                [SingleTapeCommand ((eL, finalKPlusOneTapeState, BCommand h), (BCommand h, finalKPlusOneTapeState, eL))]
+                                [SingleTapeCommand ((ES, finalKPlusOneTapeState, BCommand h), (BCommand h, finalKPlusOneTapeState, ES))]
                                 ) : acc
                 [] -> acc
 
@@ -76,7 +76,7 @@ thirdPhase finalKPlusOneTapeState allcommands accessStates = do
     let thirdPhaseInternal commands acc =
             case commands of
                 h : t -> thirdPhaseInternal t $ ((generateEmptyStayCommands accessStates []) ++ 
-                                                [SingleTapeCommand ((BCommand h, finalKPlusOneTapeState,  rBL), (eL, finalKPlusOneTapeState, rBL))]
+                                                [SingleTapeCommand ((BCommand h, finalKPlusOneTapeState,  RBS), (ES, finalKPlusOneTapeState, RBS))]
                                                 ) : acc
                 [] -> acc
     thirdPhaseInternal allcommands []
@@ -121,8 +121,8 @@ threePhaseProcessing
         let commandsThirdPhase = thirdPhase finalKPlusOneTapeState commandsList accessStates
         
         let tmAcceptCommand = 
-                (map (\st -> SingleTapeCommand ((lBL, st, rBL), (lBL, st, rBL))) accessStates) ++
-                [SingleTapeCommand ((lBL, finalKPlusOneTapeState, rBL), (lBL, acceptKPlusOneTapeState, rBL))]
+                (map (\st -> SingleTapeCommand ((LBS, st, RBS), (LBS, st, RBS))) accessStates) ++
+                [SingleTapeCommand ((LBS, finalKPlusOneTapeState, RBS), (LBS, acceptKPlusOneTapeState, RBS))]
 
         let newTMCommands = Commands $ Set.fromList $ commandsFirstPhase ++ commandsSecondPhase ++ commandsThirdPhase ++ [tmAcceptCommand]
 
@@ -154,13 +154,13 @@ doubleCommands startStates accessStates tapeAlphabets multiTapeStates allcommand
     let divideCommands commands acc =
             case commands of 
                 SingleTapeCommand ((a, s, b), (a1, s1, b1)) : t 
-                        | b == rBL -> divideCommands t (acc ++ [
-                            SingleTapeCommand ((a, s, rBL), (a1, s1, rBL)),
-                            SingleTapeCommand ((lBL, doubleCommandsStateDisjoinFunction s, rBL), (lBL, doubleCommandsStateDisjoinFunction s1, rBL))                                                                                                          
+                        | b == RBS -> divideCommands t (acc ++ [
+                            SingleTapeCommand ((a, s, RBS), (a1, s1, RBS)),
+                            SingleTapeCommand ((LBS, doubleCommandsStateDisjoinFunction s, RBS), (LBS, doubleCommandsStateDisjoinFunction s1, RBS))                                                                                                          
                                                                                 ]) 
                         | otherwise -> divideCommands t (acc ++ [
-                            SingleTapeCommand ((a, s, rBL), (a1, s1, rBL)),
-                            SingleTapeCommand ((getDisjoinSquare2 b, doubleCommandsStateDisjoinFunction s, rBL), (getDisjoinSquare2 b1, doubleCommandsStateDisjoinFunction s1, rBL))
+                            SingleTapeCommand ((a, s, RBS), (a1, s1, RBS)),
+                            SingleTapeCommand ((getDisjoinSquare2 b, doubleCommandsStateDisjoinFunction s, RBS), (getDisjoinSquare2 b1, doubleCommandsStateDisjoinFunction s1, RBS))
                                                                  ])
                 [] -> acc
                 _ -> error "Must be SingleTapeCommand"
@@ -192,18 +192,18 @@ one2KCmds (multiTapeStates, allcommands) = do
             case (states, command, starts, finals) of
                 ([], [], [], []) -> (reverse newTapeStates, reverse newStarts, reverse acc)
                 (tape : tt, SingleTapeCommand ((l1, _, r1), (l2, _, r2)) : t, start : st, final : ft)   
-                        | n == i || l1 == eL && l2 == eL -> 
+                        | n == i || l1 == ES && l2 == ES -> 
                             oneActionCommand tt (st, ft) t n (i + 1) (tape : newTapeStates, final : newStarts, (SingleTapeCommand ((l1, start, r1), (l2, final, r2))) : acc)
                         | i < n && start == final -> 
-                            oneActionCommand tt (st, ft) t n (i + 1) (tape : newTapeStates, final : newStarts, (SingleTapeCommand ((eL, start, r1), (eL, final, r2))) : acc)
+                            oneActionCommand tt (st, ft) t n (i + 1) (tape : newTapeStates, final : newStarts, (SingleTapeCommand ((ES, start, r1), (ES, final, r2))) : acc)
                         | otherwise -> 
-                            oneActionCommand tt (st, ft) t n (i + 1) ((Set.insert intermediateState tape) : newTapeStates, intermediateState : newStarts, (SingleTapeCommand ((eL, start, r1), (eL, intermediateState, r2))) : acc)
+                            oneActionCommand tt (st, ft) t n (i + 1) ((Set.insert intermediateState tape) : newTapeStates, intermediateState : newStarts, (SingleTapeCommand ((ES, start, r1), (ES, intermediateState, r2))) : acc)
                                 where intermediateState = genNextState tape
                 _ -> error $ "Non-exhaustive patterns in case " ++ show (reverse newTapeStates, reverse newStarts, reverse acc)
 
     let one2KCmd states (starts, finals) i command immutCommand acc =
             case command of
-                SingleTapeCommand ((l1, _, _), (l2, _, _)) : t  | l1 == eL && l2 == eL -> 
+                SingleTapeCommand ((l1, _, _), (l2, _, _)) : t  | l1 == ES && l2 == ES -> 
                                                                             one2KCmd states (starts, finals) (i + 1) t immutCommand acc
                                                                     | otherwise -> 
                                                                             one2KCmd newTapeStates (newStarts, finals) (i + 1) t immutCommand $ newCommand : acc 
@@ -224,13 +224,13 @@ cmd2SIDCmd :: ([Set State], [[TapeCommand]]) -> ([Set State], [[TapeCommand]])
 cmd2SIDCmd (tSts, allcommands) = do 
     let transformCommand states command = (newTapeStates, [c1, c2])
             where 
-                func (SingleTapeCommand ((l1, s1, r1), (l2, s2, r2))) tape = (SingleTapeCommand ((l1, s1, r1), (eL, intermediateState, r1)), SingleTapeCommand ((eL, intermediateState, r1), (l2, s2, r2)), Set.insert intermediateState tape)
+                func (SingleTapeCommand ((l1, s1, r1), (l2, s2, r2))) tape = (SingleTapeCommand ((l1, s1, r1), (ES, intermediateState, r1)), SingleTapeCommand ((ES, intermediateState, r1), (l2, s2, r2)), Set.insert intermediateState tape)
                     where 
                         intermediateState = genNextState tape
                 func _ _ = error "Must be SingleTapeCommand"
                 (c1, c2, newTapeStates) = unzip3 $ zipWith func command states
     
-    let checkLeftBounding command = all (\(SingleTapeCommand ((l1, _, _), (l2, _, _))) -> l1 == lBL || l1 == eL || l2 == eL) command
+    let checkLeftBounding command = all (\(SingleTapeCommand ((l1, _, _), (l2, _, _))) -> l1 == LBS || l1 == ES || l2 == ES) command
 
     let cmd2SIDCmdInternal states commands acc =
             case commands of

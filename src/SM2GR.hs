@@ -2,7 +2,6 @@ module SM2GR where
 
 import SMType 
 import GRType
-import TM2SMHelpers
 import qualified Data.Set as Set 
 
 smb2As :: Smb -> SmbR

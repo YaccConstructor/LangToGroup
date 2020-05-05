@@ -1,22 +1,17 @@
 import Test.HUnit
 import Test.Framework
 import Test.Framework.Providers.HUnit
-import Data.Monoid
-import Control.Monad
 import CFG2TM
 import Helpers
 import GrammarType
 import TMType
-import Data.Set (Set)
 import qualified Data.Set as Set
-import Data.List
 import TMInterpreter
 import ConfigType
-import Helpers
 import SMTests
 import GrTests
 
-
+test1Grammar :: Grammar
 test1Grammar = grammar where
     terminal = Terminal "a"
     nonterminal = Nonterminal "S"
@@ -36,11 +31,11 @@ configsTest = do
     let a = Value "a"
     let a' = Value "a'"
     let expectedConfigs = Configs ([
-            [([lBL, a], sSFT, [rBL]), ([lBL], sSST, [rBL])],
-            [([lBL, a], sSFT, [rBL]), ([lBL, Value "S"], iSST, [rBL])],
-            [([lBL, a], sSFT, [rBL]), ([lBL, a'], iSST, [rBL])],
-            [([lBL], sSFT, [rBL]), ([lBL], iSST, [rBL])],
-            [([lBL], fSFT, [rBL]), ([lBL], fSST, [rBL])]
+            [([LBS, a], sSFT, [RBS]), ([LBS], sSST, [RBS])],
+            [([LBS, a], sSFT, [RBS]), ([LBS, Value "S"], iSST, [RBS])],
+            [([LBS, a], sSFT, [RBS]), ([LBS, a'], iSST, [RBS])],
+            [([LBS], sSFT, [RBS]), ([LBS], iSST, [RBS])],
+            [([LBS], fSFT, [RBS]), ([LBS], fSST, [RBS])]
             ])
     
     assertEqual "config test" expectedConfigs (interpretTM ["a"] $ cfg2tm test1Grammar)
@@ -57,17 +52,17 @@ simpleCfgToTMMapTest = do
                             (Set.fromList [sSST, iSST, fSST])],
             Commands (Set.fromList [
                 [
-                    SingleTapeCommand ((eL, sSFT, rBL), (eL, sSFT, rBL)),
-                    SingleTapeCommand ((eL, sSST, rBL), (letter_S, iSST, rBL))],
+                    SingleTapeCommand ((ES, sSFT, RBS), (ES, sSFT, RBS)),
+                    SingleTapeCommand ((ES, sSST, RBS), (letter_S, iSST, RBS))],
                 [
-                    SingleTapeCommand ((letter_a, sSFT, rBL), (letter_a, sSFT, rBL)),
-                    SingleTapeCommand ((letter_S, iSST, rBL), (getDisjoinSquare letter_a, iSST, rBL))],
+                    SingleTapeCommand ((letter_a, sSFT, RBS), (letter_a, sSFT, RBS)),
+                    SingleTapeCommand ((letter_S, iSST, RBS), (getDisjoinSquare letter_a, iSST, RBS))],
                 [ 
-                    SingleTapeCommand ((letter_a, sSFT, rBL), (eL, sSFT, rBL)),
-                    SingleTapeCommand ((getDisjoinSquare letter_a, iSST, rBL), (eL, iSST, rBL))],
+                    SingleTapeCommand ((letter_a, sSFT, RBS), (ES, sSFT, RBS)),
+                    SingleTapeCommand ((getDisjoinSquare letter_a, iSST, RBS), (ES, iSST, RBS))],
                 [
-                    SingleTapeCommand ((lBL, sSFT, rBL), (lBL, fSFT, rBL)),
-                    SingleTapeCommand ((lBL, iSST, rBL), (lBL, fSST, rBL))]
+                    SingleTapeCommand ((LBS, sSFT, RBS), (LBS, fSFT, RBS)),
+                    SingleTapeCommand ((LBS, iSST, RBS), (LBS, fSST, RBS))]
                 ]),
             StartStates [sSFT, sSST],
             AccessStates [fSFT, fSST]

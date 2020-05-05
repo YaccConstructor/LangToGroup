@@ -8,7 +8,7 @@ module SMPrinter where
     import SMType
     import Lib
     import Tm1Printer
-    import Text.LaTeX.Packages.AMSMath
+    import Text.LaTeX.Packages.AMSMath (alpha, delta, omega)
 
     instance ShowLaTeX Y where 
         doLaTeX Alpha = alpha

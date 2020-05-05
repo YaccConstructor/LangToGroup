@@ -50,7 +50,7 @@ example = execLaTeXM $
             -- doLaTeX $ cfg2tm testGrammar
             -- -- doLaTeX $ interpretTM ["a"] $ cfg2tm testGrammar
             -- newpage
-            -- doLaTeX $ symDetTM $ cfg2tm testGrammar
+            doLaTeX $ symDetTM $ cfg2tm testGrammar
             -- newpage
             -- doLaTeX $ fst3 $ tm2sm $ symDetTM $ cfg2tm testGrammar
             -- doLaTeX epsTestGrammar
@@ -79,14 +79,14 @@ example = execLaTeXM $
             -- -- doLaTeX $ interpretTM ["b", "a", "b", "a"] $ cfg2tm ab3TestGrammar
             -- -- doLaTeX $ fst $ tm2sm tmForTestSm
             --doLaTeX $ threePhaseProcessing simpleTM
-            doLaTeX $ fst3 $ tm2sm $ symDetTM $ fst $ oneruleTM
+            --doLaTeX $ fst3 $ tm2sm $ symDetTM $ fst $ oneruleTM
             -- doLaTeX symSmallMachine
             -- newpage
             --doLaTeX $ fst3 $ tm2sm symSmallMachine
 
--- main :: IO()
--- main = do
---     renderFile "out.tex" example 
+main :: IO()
+main = do
+    renderFile "out.tex" example 
 
 -- main :: IO()
 -- main = do
@@ -108,15 +108,15 @@ example = execLaTeXM $
 --         let startWord = sigmaFunc as $ inputSmb : (replicate (length as - 1) [])
 --         putStrLn $ show $ length $ interpretSM startWord sm w
 
-main :: IO()
-main = do
-        putStrLn $ show $ (foldl (+) 0 $ map snd $ Map.toList m) - length m
-        writeGraph "test.dot" g
-        where 
-            (sm, _, as) = tm2sm $ symDetTM $ cfg2tm testGrammar
-            inputSmb = map (\a -> SMType.SmbY $ SMType.Y a) $ mapValue ["a"]
-            startWord = sigmaFunc as $ inputSmb : (replicate (length as - 1) [])
-            (g, m) = getRestrictedGraph startWord sm 1
+-- main :: IO()
+-- main = do
+--         putStrLn $ show $ (foldl (+) 0 $ map snd $ Map.toList m) - length m
+--         writeGraph "test.dot" g
+--         where 
+--             (sm, _, as) = tm2sm $ symDetTM $ cfg2tm testGrammar
+--             inputSmb = map (\a -> SMType.SmbY $ SMType.Y a) $ mapValue ["a"]
+--             startWord = sigmaFunc as $ inputSmb : (replicate (length as - 1) [])
+--             (g, m) = getRestrictedGraph startWord sm 1
     
 -- main :: IO()
 -- main = do
@@ -231,8 +231,8 @@ symSmallMachine = tm where
     inp = InputAlphabet (Set.fromList [a])
     tapes = [TapeAlphabet (Set.fromList [a])]
     states = MultiTapeStates [Set.fromList [q0, q1]]
-    cmd1 = [SingleTapeCommand ((a, q0, rBL), (eL, q1, rBL))]
-    cmd2 = [SingleTapeCommand ((eL, q1, rBL), (a, q0, rBL))]
+    cmd1 = [SingleTapeCommand ((a, q0, RBS), (ES, q1, RBS))]
+    cmd2 = [SingleTapeCommand ((ES, q1, RBS), (a, q0, RBS))]
     cmds = Commands $ Set.fromList $ renameRightLeftBoundings [cmd1, cmd2]
     start = StartStates [q0]
     access = AccessStates [q1]
@@ -299,7 +299,7 @@ oneruleTM = (tm, w) where
     inp = InputAlphabet (Set.fromList [a])
     tapes = [TapeAlphabet (Set.fromList [a])]
     states = MultiTapeStates [Set.fromList [q0, q1]]
-    cmd = [SingleTapeCommand ((a,  q0, rBL), (eL, q1, rBL))]
+    cmd = [SingleTapeCommand ((a,  q0, RBS), (ES, q1, RBS))]
     cmds = Commands $ Set.fromList [cmd]
     start = StartStates [q0]
     access = AccessStates [q1]
@@ -316,8 +316,8 @@ simpleTM = tm where
     tapes = [TapeAlphabet (Set.fromList [a])]
     states = MultiTapeStates [Set.fromList [q0, q1, q2]]
     cmds = Commands 
-        $ Set.fromList [[SingleTapeCommand ((a,  q0, rBL), (eL, q1, rBL))],
-                        [SingleTapeCommand ((lBL,  q1, rBL), (lBL, q2, rBL))]]
+        $ Set.fromList [[SingleTapeCommand ((a,  q0, RBS), (ES, q1, RBS))],
+                        [SingleTapeCommand ((LBS,  q1, RBS), (LBS, q2, RBS))]]
     start = StartStates [q0]
     access = AccessStates [q2]
     tm = TM (inp, tapes, states, cmds, start, access)    
@@ -332,8 +332,8 @@ tmForTestSm = tm where
     inp = InputAlphabet (Set.fromList [])
     tapes = [TapeAlphabet (Set.fromList [s]), TapeAlphabet (Set.fromList [])]
     states = MultiTapeStates [Set.fromList [q0, q0'], Set.fromList [q1, q1']]
-    cmds = Commands $ Set.fromList [[PreSMCommand ((s, StateOmega q0), (eL, StateOmega q0')), 
-                                    PreSMCommand ((eL, StateOmega q1), (eL, StateOmega q1'))]]
+    cmds = Commands $ Set.fromList [[PreSMCommand ((s, StateOmega q0), (ES, StateOmega q0')), 
+                                    PreSMCommand ((ES, StateOmega q1), (ES, StateOmega q1'))]]
     start = StartStates []
     access = AccessStates []
     tm = TM (inp, tapes, states, cmds, start, access)    

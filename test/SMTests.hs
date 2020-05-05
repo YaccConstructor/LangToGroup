@@ -1,17 +1,10 @@
 module SMTests where
 
-import Test.Framework
-import Test.Framework.Providers.HUnit
-import Data.Monoid
-import Control.Monad
-import Helpers
-import Data.Set (Set, fromList)
 import SMType
-import Data.List
-import Helpers
 import SMInterpreter
 import Test.HUnit hiding (State)
 import qualified TMType
+import Data.Set (fromList)
 
 smInterpretationTest :: Assertion
 smInterpretationTest = do

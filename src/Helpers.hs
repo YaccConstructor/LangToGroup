@@ -7,14 +7,8 @@ module Helpers where
     import qualified Data.Set as Set
     import Text.Regex.TDFA
 
-    getDisjoinLetter :: String -> String
-    getDisjoinLetter letter = letter ++ "'"
-
-    getDisjoinState :: TMType.State -> TMType.State
-    getDisjoinState (TMType.State s) = TMType.State (s ++ "'") 
-
     getDisjoinSquareByStr :: String -> Square -> Square
-    getDisjoinSquareByStr str (Value s) = if (Value s) == eL then (Value s) else Value (s ++ str)
+    getDisjoinSquareByStr str (Value s) = if (Value s) == ES then (Value s) else Value (s ++ str)
     getDisjoinSquareByStr _ (BCommand c) = PCommand c
     getDisjoinSquareByStr _ _ = error "Must be Value or BCommand"
 

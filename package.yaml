@@ -1,7 +1,7 @@
 name:                LangToGroup
 version:             0.1.0.0
 github:              "YaccConstructor/LangToGroup"
-license:             "Apache2"
+license:             "Apache-2.0"
 author:              "Author name here"
 maintainer:          "example@example.com"
 copyright:           "2018 Author name here"
