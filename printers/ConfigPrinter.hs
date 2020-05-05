@@ -16,11 +16,9 @@ instance ShowLaTeX Configs where
         let columnsSpec  = [CenterColumn] ++ halfSpec
         let tapesNames   = map (\num -> "Tape " ++ show num) [1..tapesCount]
         let halfHeader   = foldl1 (&) $ map (\cur -> (multicolumn 3 [CenterColumn] $ fromString cur)) tapesNames
-        
-        let showTripleConfig (u, q, v) = (math $ raw $ fromString $ concat $ mapFromValue u) & 
+        let showTripleConfig (u, q, v) = showSquares u & 
                                                 (math $ doLaTeX q) & 
-                                                (math $ raw $ fromString $ concat $ mapFromValue v)
-
+                                                showSquares v
         let showLine (lineNumber, config) = do
                 foldl1 (&) ([fromString $ show lineNumber] ++ (map showTripleConfig config))
                 tabularnewline

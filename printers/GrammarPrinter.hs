@@ -7,6 +7,7 @@ import Text.LaTeX.Base
 import qualified Data.Set as Set
 import GrammarType
 import Lib
+import Text.LaTeX.Packages.AMSMath (varepsilon)
 
 showNonterminals :: [Nonterminal] -> LaTeXM ()
 showNonterminals = helper where
@@ -27,13 +28,10 @@ instance ShowLaTeX Nonterminal where
 instance ShowLaTeX Terminal where
     doLaTeX (Terminal symbol)    = raw $ fromString symbol
 
-instance ShowLaTeX Epsilon where
-    doLaTeX (Epsilon symbol)    = fromString symbol
-
 instance ShowLaTeX Symbol where
     doLaTeX (T symbol) = doLaTeX symbol 
     doLaTeX (N symbol) = doLaTeX symbol 
-    doLaTeX (E symbol) = doLaTeX symbol
+    doLaTeX Eps = varepsilon
 
 
 instance ShowLaTeX Relation where
@@ -43,7 +41,7 @@ instance ShowLaTeX Relation where
 
 
 instance ShowLaTeX Grammar where
-    doLaTeX (Grammar (nonterminals, terminals, relations, _, _)) = do
+    doLaTeX (Grammar (nonterminals, terminals, relations, _)) = do
         subsection_ "Nonterminals"
        -- math $ mapM_ doLaTeX nonterminals ; lnbk
         math $ showNonterminals $ Set.toList nonterminals ; lnbk

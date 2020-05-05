@@ -8,7 +8,7 @@ import Data.Set (fromList)
 
 smInterpretationTest :: Assertion
 smInterpretationTest = do
-    let y = Y $ TMType.Value "a"
+    let y = Y $ TMType.defValue "a"
     let q0 = SMType.State Q "0" (fromList []) Nothing
     let q1 = SMType.State Q "1" (fromList []) Nothing
     let q0' = SMType.State Q "2" (fromList []) Nothing
@@ -26,7 +26,7 @@ smInterpretationTest = do
 
 smInterpretationTest2 :: Assertion
 smInterpretationTest2 = do
-    let y = Y $ TMType.Value "a"
+    let y = Y $ TMType.defValue "a"
     let q0 = SMType.State Q "0" (fromList []) Nothing
     let q1 = SMType.State Q "1" (fromList []) Nothing
     let q0' = SMType.State Q "2" (fromList []) Nothing

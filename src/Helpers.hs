@@ -7,29 +7,26 @@ module Helpers where
     import qualified Data.Set as Set
     import Text.Regex.TDFA
 
-    getDisjoinSquareByStr :: String -> Square -> Square
-    getDisjoinSquareByStr str (Value s) = if (Value s) == ES then (Value s) else Value (s ++ str)
-    getDisjoinSquareByStr _ (BCommand c) = PCommand c
-    getDisjoinSquareByStr _ _ = error "Must be Value or BCommand"
+    disjoinQuotes :: Int -> Square -> Square
+    disjoinQuotes i (Value s q_cnt) = Value s $ q_cnt + i
+    disjoinQuotes _ (BCommand c) = PCommand c
+    disjoinQuotes _ _ = error "Must be Value or BCommand"
 
     getDisjoinSquare2 :: Square -> Square
-    getDisjoinSquare2 = getDisjoinSquareByStr "''"
+    getDisjoinSquare2 = disjoinQuotes 2
 
     getDisjoinSquare :: Square -> Square
-    getDisjoinSquare = getDisjoinSquareByStr "'"
+    getDisjoinSquare = disjoinQuotes 1
 
-    getDisjoinSymbol :: Symbol -> Square
-    getDisjoinSymbol letter = 
+    disjoinIfTerminal :: Symbol -> Square
+    disjoinIfTerminal letter = 
         case letter of
-            GrammarType.T (Terminal c) -> Value $ c ++ "'"
-            N (Nonterminal c) -> Value c
-            GrammarType.E (Epsilon c) -> Value c
+            GrammarType.T (Terminal c) -> Value c 1
+            N (Nonterminal c) -> Value c 0
+            GrammarType.Eps -> error "Can not disjoin eps"
 
     mapValue :: [String] -> [Square]
-    mapValue = map (\v -> Value v)
-
-    mapFromValue :: [Square] -> [String]
-    mapFromValue = map (\(Value v) -> v)
+    mapValue = map (\v -> Value v 0)
 
     printSmb :: Map.Map A [Char] -> SmbR -> [Char]
     printSmb genmap (SmbA a) = case Map.lookup a genmap of Just s -> s ; Nothing -> error (show a) 

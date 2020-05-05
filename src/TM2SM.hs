@@ -12,13 +12,13 @@ splitPosNegCmds :: [[TMType.TapeCommand]] -> ([[TMType.TapeCommand]], [[TMType.T
 splitPosNegCmds commands = do
     let check21 command = 
             case command of
-                TMType.PreSMCommand((a@(TMType.Value ah), _),_) : t 
-                    | a /= TMType.ES && head ah /= 'E' -> True
-                    | otherwise -> check21 t
+                TMType.PreSMCommand((TMType.Value _ _, _),_) : _ -> True
+                TMType.PreSMCommand((TMType.ES, _),_) : t -> check21 t
+                TMType.PreSMCommand((TMType.E _, _),_) : _ -> False
                 TMType.PreSMCommand((TMType.BCommand _, _),(_, _)) : _ -> True
                 TMType.PreSMCommand((TMType.PCommand _, _),(_, _)) : _ -> True
                 [] -> False
-                _ -> error "Must be PreSMCommand"
+                cmd -> error $ "Must be PreSMCommand: " ++ show cmd
 
     let reverseCommand (TMType.PreSMCommand((a, b),(a1, b1))) =  TMType.PreSMCommand((a1, b1),(a, b))
         reverseCommand _ = error "Must be PreSMCommand"
@@ -459,14 +459,13 @@ sigmaFunc states u =
 renameRightLeftBoundings :: [[TMType.TapeCommand]] -> [[TMType.TapeCommand]]
 renameRightLeftBoundings = map (renameRightLeftBoundingsInternal 1 []) 
     where
-        e i = TMType.Value ("E_{" ++ (show i) ++ "}")
         f q = TMType.StateOmega q
         renameRightLeftBoundingsInternal i acc command =
             case command of
                 TMType.SingleTapeCommand ((l1, s1, _), (l2, s2, _)) : t 
                     | l1 == TMType.LBS -> renameRightLeftBoundingsInternal (i + 1) ((TMType.PreSMCommand ((newRight, newS1), (newRight, newS2))) : acc) t
                     | otherwise -> renameRightLeftBoundingsInternal (i + 1) ((TMType.PreSMCommand ((l1, newS1), (l2, newS2))) : acc) t
-                        where   newRight = e i
+                        where   newRight = TMType.E i
                                 newS1 = f s1
                                 newS2 = f s2
                 [] -> reverse acc

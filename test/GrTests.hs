@@ -9,7 +9,7 @@ import Data.Set (fromList)
 
 sm2grTest :: Assertion
 sm2grTest = do
-    let y = Y $ TMType.Value "a"
+    let y = Y $ TMType.defValue "a"
     let q0 = SMType.State Q "0" (fromList []) Nothing
     let q1 = SMType.State Q "1" (fromList []) Nothing
     let q0' = SMType.State Q "2" (fromList []) Nothing

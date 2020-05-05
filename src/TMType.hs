@@ -28,8 +28,13 @@ instance Show StateOmega where
 -- command of TM for single tape
 data TapeCommand = SingleTapeCommand ((Square, State, Square), (Square, State, Square)) | PreSMCommand ((Square, StateOmega), (Square, StateOmega))
     deriving (Eq, Ord, Show)
-data Square = Value String | RBS | LBS | ES | PCommand [TapeCommand] | BCommand [TapeCommand]
+
+data Square = Value {val_name :: String, val_quote_cnt :: Int} | E Int | RBS | LBS | ES | PCommand [TapeCommand] | BCommand [TapeCommand]
     deriving (Eq, Ord, Show)
+
+defValue :: String -> Square
+defValue s = Value s 0 
+
 -- commands
 newtype Commands = Commands (Set [TapeCommand])
     deriving (Eq, Ord, Show)

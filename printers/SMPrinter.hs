@@ -49,7 +49,7 @@ module SMPrinter where
 
 
     showYs :: [Y] -> LaTeXM ()
-    showYs ys = showAlphabet squares
+    showYs ys = showSquares squares
         where squares = map (\(Y y) -> y) ys
 
     instance ShowLaTeX Smb where

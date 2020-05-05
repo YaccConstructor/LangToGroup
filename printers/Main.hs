@@ -50,7 +50,7 @@ example = execLaTeXM $
             -- doLaTeX $ cfg2tm testGrammar
             -- -- doLaTeX $ interpretTM ["a"] $ cfg2tm testGrammar
             -- newpage
-            doLaTeX $ symDetTM $ cfg2tm testGrammar
+            --doLaTeX $ symDetTM $ cfg2tm testGrammar
             -- newpage
             -- doLaTeX $ fst3 $ tm2sm $ symDetTM $ cfg2tm testGrammar
             -- doLaTeX epsTestGrammar
@@ -79,7 +79,7 @@ example = execLaTeXM $
             -- -- doLaTeX $ interpretTM ["b", "a", "b", "a"] $ cfg2tm ab3TestGrammar
             -- -- doLaTeX $ fst $ tm2sm tmForTestSm
             --doLaTeX $ threePhaseProcessing simpleTM
-            --doLaTeX $ fst3 $ tm2sm $ symDetTM $ fst $ oneruleTM
+            doLaTeX $ fst3 $ tm2sm $ symDetTM $ fst $ oneruleTM
             -- doLaTeX symSmallMachine
             -- newpage
             --doLaTeX $ fst3 $ tm2sm symSmallMachine
@@ -154,7 +154,7 @@ main = do
 
 oneRuleGr :: (GR, [SmbR])
 oneRuleGr = do
-    let y = SMType.Y $ TMType.Value "a"
+    let y = SMType.Y $ TMType.defValue "a"
     let q0 = SMType.State SMType.Q "0" (Set.fromList []) Nothing
     let q1 = SMType.State SMType.Q "1" (Set.fromList []) Nothing
     let q0' = SMType.State SMType.Q "2" (Set.fromList []) Nothing
@@ -176,7 +176,7 @@ oneRuleGr = do
 
 oneRuleSm :: (SMType.SM, SMType.Word, [SmbR])
 oneRuleSm = do
-    let y = SMType.Y $ TMType.Value "a"
+    let y = SMType.Y $ TMType.defValue "a"
     let q0 = SMType.State SMType.Q "0" (Set.fromList []) Nothing
     let q1 = SMType.State SMType.Q "1" (Set.fromList []) Nothing
     let q0' = SMType.State SMType.Q "2" (Set.fromList []) Nothing
@@ -190,7 +190,7 @@ oneRuleSm = do
     (SMType.SM [[y]] [Set.fromList [q0, q0'], Set.fromList [q1, q1']] [r], SMType.Word [SMType.SmbQ q0', SMType.SmbQ q1'], startWord)
 
 printCount :: Grammar -> IO ()
-printCount grammar@(Grammar (n, t, r, _, _)) = do
+printCount grammar@(Grammar (n, t, r, _)) = do
     putStrLn $ "T: " ++ (show $ length t) ++ " N: " ++ (show $ length n) ++ " R: " ++ (show $ length r) 
     
     let tm@(TM (InputAlphabet tmX, tapeAlphabet, MultiTapeStates multiTapeStates, Commands tmCmds, _, _)) = cfg2tm grammar
@@ -225,7 +225,7 @@ printCount grammar@(Grammar (n, t, r, _, _)) = do
 
 symSmallMachine :: TM
 symSmallMachine = tm where
-    a = Value "a"
+    a = defValue "a"
     q0 = State "q_0^1"
     q1 = State "q_1^1"
     inp = InputAlphabet (Set.fromList [a])
@@ -241,9 +241,9 @@ symSmallMachine = tm where
 aStarSMachine :: (SMType.SM, SMType.Word, SMType.Word, [SmbR])
 aStarSMachine = (SMType.SM alphabet states relations, accessWord, startWord, word) 
     where
-    a = SMType.Y $ TMType.Value "a"
-    a1 = SMType.Y $ TMType.Value "a_1"
-    a2 = SMType.Y $ TMType.Value "a_2"
+    a = SMType.Y $ TMType.defValue "a"
+    a1 = SMType.Y $ TMType.defValue "a_1"
+    a2 = SMType.Y $ TMType.defValue "a_2"
     alphabet = [[a, a1], [a2]]
     q0 = SMType.State SMType.Q "0" (Set.fromList []) Nothing
     q1 = SMType.State SMType.Q "1" (Set.fromList []) Nothing
@@ -293,7 +293,7 @@ aStarSMachine = (SMType.SM alphabet states relations, accessWord, startWord, wor
 
 oneruleTM :: (TM, [[SMType.Smb]])
 oneruleTM = (tm, w) where
-    a = Value "a"
+    a = defValue "a"
     q0 = State "q_0^1"
     q1 = State "q_1^1"
     inp = InputAlphabet (Set.fromList [a])
@@ -308,7 +308,7 @@ oneruleTM = (tm, w) where
 
 simpleTM :: TM
 simpleTM = tm where
-    a = Value "a"
+    a = defValue "a"
     q0 = State "q_0^1"
     q1 = State "q_1^1"
     q2 = State "q_2^1"
@@ -324,7 +324,7 @@ simpleTM = tm where
 
 tmForTestSm :: TM
 tmForTestSm = tm where
-    s = Value "S"
+    s = defValue "S"
     q0 = State "q_0"
     q0' = State "q_0'"
     q1 = State "q_1"
@@ -343,14 +343,12 @@ testGrammar :: Grammar
 testGrammar = grammar where
     terminal = Terminal "a"
     nonterminal = Nonterminal "S"
-    eps = Epsilon "ε"
     grammar =
         Grammar(
             (Set.fromList [nonterminal]),
             (Set.fromList [terminal]),
             (Set.fromList [GrammarType.Relation (nonterminal, [GrammarType.T terminal])]),
-            nonterminal,
-            eps
+            nonterminal
         )
 
 epsTestGrammar :: Grammar
@@ -358,18 +356,16 @@ epsTestGrammar = grammar where
     terminal = Terminal "a"
     start = Nonterminal "S"
     nonterminal = Nonterminal "A"
-    eps = Epsilon "ε"
     grammar =
         Grammar(
             (Set.fromList [nonterminal, start]),
             (Set.fromList [terminal]),
             (Set.fromList [
                 GrammarType.Relation (start, [GrammarType.N nonterminal, GrammarType.N start]),
-                GrammarType.Relation (start, [GrammarType.E eps]),
+                GrammarType.Relation (start, [GrammarType.Eps]),
                 GrammarType.Relation (nonterminal, [GrammarType.T terminal])
                 ]),
-            start,
-            eps
+            start
         )
 
 epsTestLeftGrammar :: Grammar
@@ -377,18 +373,16 @@ epsTestLeftGrammar = grammar where
     terminal = Terminal "a"
     start = Nonterminal "S"
     nonterminal = Nonterminal "A"
-    eps = Epsilon "ε"
     grammar =
         Grammar(
             (Set.fromList [nonterminal, start]),
             (Set.fromList [terminal]),
             (Set.fromList [
                 GrammarType.Relation (start, [GrammarType.N start, GrammarType.N nonterminal]),
-                GrammarType.Relation (start, [GrammarType.E eps]),
+                GrammarType.Relation (start, [GrammarType.Eps]),
                 GrammarType.Relation (nonterminal, [GrammarType.T terminal])
                 ]),
-            start,
-            eps
+            start
         )
 
 abTestGrammar :: Grammar
@@ -399,20 +393,18 @@ abTestGrammar = grammar where
     s1 = Nonterminal "C"
     aN = Nonterminal "A"
     bN = Nonterminal "B"
-    eps = Epsilon "ε"
     grammar =
         Grammar(
             (Set.fromList [s, s1, aN, bN]),
             (Set.fromList [a, b]),
             (Set.fromList [
                 GrammarType.Relation (s, [GrammarType.N aN, GrammarType.N s1]),
-                GrammarType.Relation (s, [GrammarType.E eps]),
+                GrammarType.Relation (s, [GrammarType.Eps]),
                 GrammarType.Relation (s1, [GrammarType.N s, GrammarType.N bN]),
                 GrammarType.Relation (aN, [GrammarType.T a]),
                 GrammarType.Relation (bN, [GrammarType.T b])
                 ]),
-            s,
-            eps
+            s
         )
 
 ab2TestGrammar :: Grammar
@@ -424,21 +416,19 @@ ab2TestGrammar = grammar where
     aN = Nonterminal "A"
     bN = Nonterminal "B"
     b1 = Nonterminal "D"
-    eps = Epsilon "ε"
     grammar =
         Grammar(
             (Set.fromList [s, s1, aN, bN]),
             (Set.fromList [a, b]),
             (Set.fromList [
                 GrammarType.Relation (s, [GrammarType.N aN, GrammarType.N s1]),
-                GrammarType.Relation (s, [GrammarType.E eps]),
+                GrammarType.Relation (s, [GrammarType.Eps]),
                 GrammarType.Relation (s1, [GrammarType.N s, GrammarType.N b1]),
                 GrammarType.Relation (aN, [GrammarType.T a]),
                 GrammarType.Relation (bN, [GrammarType.T b]),
                 GrammarType.Relation (b1, [GrammarType.N bN, GrammarType.N s])
                 ]),
-            s,
-            eps
+            s
         )
 
 abNoEpsTestGrammar :: Grammar
@@ -449,7 +439,6 @@ abNoEpsTestGrammar = grammar where
     s1 = Nonterminal "C"
     aN = Nonterminal "A"
     bN = Nonterminal "B"
-    eps = Epsilon "ε"
     grammar =
         Grammar(
             (Set.fromList [s, s1, aN, bN]),
@@ -461,8 +450,7 @@ abNoEpsTestGrammar = grammar where
                 GrammarType.Relation (aN, [GrammarType.T a]),
                 GrammarType.Relation (bN, [GrammarType.T b])
                 ]),
-            s,
-            eps
+            s
         )
 
 ab3TestGrammar :: Grammar
@@ -475,7 +463,6 @@ ab3TestGrammar = grammar where
     c = Nonterminal "C"
     aN = Nonterminal "A"
     bN = Nonterminal "B"
-    eps = Epsilon "ε"
     grammar =
         Grammar(
             (Set.fromList [s0, c, s, s1, aN, bN]),
@@ -483,7 +470,7 @@ ab3TestGrammar = grammar where
             (Set.fromList [
                 GrammarType.Relation (s0, [GrammarType.N s, GrammarType.N s1]),
                 GrammarType.Relation (s0, [GrammarType.N aN, GrammarType.N c]),
-                GrammarType.Relation (s0, [GrammarType.E eps]),
+                GrammarType.Relation (s0, [GrammarType.Eps]),
                 GrammarType.Relation (s1, [GrammarType.N aN, GrammarType.N c]),
                 GrammarType.Relation (s1, [GrammarType.N s, GrammarType.N s1]),
                 GrammarType.Relation (s, [GrammarType.N aN, GrammarType.N c]),
@@ -493,6 +480,5 @@ ab3TestGrammar = grammar where
                 GrammarType.Relation (aN, [GrammarType.T a]),
                 GrammarType.Relation (bN, [GrammarType.T b])
                 ]),
-            s0,
-            eps
+            s0
         )

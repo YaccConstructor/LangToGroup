@@ -13,10 +13,11 @@ import Lib
 
 
 instance ShowLaTeX Square where
-    doLaTeX (Value sq) = raw $ fromString sq
+    doLaTeX (Value sq iq) = raw $ fromString (sq ++ map (\_ -> '\'') [1..iq])
     doLaTeX RBS = omega
     doLaTeX LBS = alpha
     doLaTeX ES = raw $ fromString ""
+    doLaTeX (E i) = raw $ fromString $ "E_{" ++ (show i) ++ "}"
     doLaTeX (BCommand c) = showBCommand c
     doLaTeX (PCommand c) = showPCommand c
 
@@ -52,19 +53,22 @@ showBCommand command =
 showStates :: [State] -> LaTeXM ()
 showStates = foldl1 (\x y -> x <> ", " <> y) . map (math . doLaTeX $)
 
-showAlphabet :: [Square] -> LaTeXM ()
-showAlphabet alphabet = 
-    case map (\x -> math $ case x of Value sq -> raw $ fromString sq ; _ -> doLaTeX x) alphabet of 
-        [] -> ""
-        lst -> foldl1 (\x y -> x <> ", " <> y) lst
+showSquares :: [Square] -> LaTeXM ()
+showSquares = math . foldl1 (\x y -> x <> " " <> y) . map (\s -> doLaTeX s)
+
+-- showAlphabet :: [Square] -> LaTeXM ()
+-- showAlphabet alphabet = 
+--     case map (\x -> math $ case x of Value sq -> raw $ fromString sq ; _ -> doLaTeX x) alphabet of 
+--         [] -> ""
+--         lst -> foldl1 (\x y -> x <> ", " <> y) lst
 
 
 instance ShowLaTeX InputAlphabet where
-    doLaTeX (InputAlphabet alphabet) = showAlphabet $ Set.toList alphabet
+    doLaTeX (InputAlphabet alphabet) = showSquares $ Set.toList alphabet
 
 
 instance ShowLaTeX TapeAlphabet where
-    doLaTeX (TapeAlphabet alphabet) = showAlphabet $ Set.toList alphabet
+    doLaTeX (TapeAlphabet alphabet) = showSquares $ Set.toList alphabet
 
 instance ShowLaTeX MultiTapeStates where
     doLaTeX (MultiTapeStates statesList) =

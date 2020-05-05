@@ -15,24 +15,22 @@ test1Grammar :: Grammar
 test1Grammar = grammar where
     terminal = Terminal "a"
     nonterminal = Nonterminal "S"
-    eps = Epsilon "ε"
     grammar =
         Grammar(
             (Set.fromList [nonterminal]),
             (Set.fromList [terminal]),
             (Set.fromList [GrammarType.Relation (nonterminal,
             [GrammarType.T terminal])]),
-            nonterminal,
-            eps
+            nonterminal
         )
 
 configsTest :: Assertion
 configsTest = do
-    let a = Value "a"
-    let a' = Value "a'"
+    let a = Value "a" 0
+    let a' = Value "a" 1
     let expectedConfigs = Configs ([
             [([LBS, a], sSFT, [RBS]), ([LBS], sSST, [RBS])],
-            [([LBS, a], sSFT, [RBS]), ([LBS, Value "S"], iSST, [RBS])],
+            [([LBS, a], sSFT, [RBS]), ([LBS, defValue "S"], iSST, [RBS])],
             [([LBS, a], sSFT, [RBS]), ([LBS, a'], iSST, [RBS])],
             [([LBS], sSFT, [RBS]), ([LBS], iSST, [RBS])],
             [([LBS], fSFT, [RBS]), ([LBS], fSST, [RBS])]
@@ -42,8 +40,8 @@ configsTest = do
 
 simpleCfgToTMMapTest :: Assertion
 simpleCfgToTMMapTest = do
-    let letter_a = Value "a"
-    let letter_S = Value "S"
+    let letter_a = defValue "a"
+    let letter_S = defValue "S"
     
     let expectedTM = TM (
             InputAlphabet (Set.fromList [letter_a]),
