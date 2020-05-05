@@ -46,15 +46,15 @@ example = execLaTeXM $
     do
         preambula 
         document $ do
-            doLaTeX testGrammar
-            doLaTeX $ cfg2tm testGrammar
+            -- doLaTeX testGrammar
+            -- doLaTeX $ cfg2tm testGrammar
             -- -- doLaTeX $ interpretTM ["a"] $ cfg2tm testGrammar
             -- newpage
             -- doLaTeX $ symDetTM $ cfg2tm testGrammar
             -- newpage
             -- doLaTeX $ fst3 $ tm2sm $ symDetTM $ cfg2tm testGrammar
-            doLaTeX epsTestGrammar
-            doLaTeX $ cfg2tm epsTestGrammar
+            -- doLaTeX epsTestGrammar
+            -- doLaTeX $ cfg2tm epsTestGrammar
             -- -- doLaTeX $ interpretTM ["a"] $ cfg2tm epsTestGrammar
             -- -- newpage
             -- doLaTeX epsTestLeftGrammar
@@ -65,9 +65,9 @@ example = execLaTeXM $
             -- doLaTeX abTestGrammar
             -- doLaTeX $ cfg2tm abTestGrammar
             -- -- doLaTeX $ interpretTM ["b", "b", "a", "a"] $ cfg2tm abTestGrammar
-            -- newpage
-            doLaTeX ab2TestGrammar
-            doLaTeX $ cfg2tm ab2TestGrammar
+            -- -- newpage
+            -- doLaTeX ab2TestGrammar
+            -- doLaTeX $ cfg2tm ab2TestGrammar
             -- -- doLaTeX $ interpretTM ["b", "a", "b", "a"] $ cfg2tm ab2TestGrammar
             -- -- newpage
             -- -- doLaTeX $ tm2sm $ symTM $ cfg2tm ab2TestGrammar
@@ -79,7 +79,7 @@ example = execLaTeXM $
             -- -- doLaTeX $ interpretTM ["b", "a", "b", "a"] $ cfg2tm ab3TestGrammar
             -- -- doLaTeX $ fst $ tm2sm tmForTestSm
             --doLaTeX $ threePhaseProcessing simpleTM
-            --doLaTeX $ fst3 $ tm2sm $ symDetTM $ fst $ oneruleTM
+            doLaTeX $ fst3 $ tm2sm $ symDetTM $ fst $ oneruleTM
             -- doLaTeX symSmallMachine
             -- newpage
             --doLaTeX $ fst3 $ tm2sm symSmallMachine
@@ -111,7 +111,7 @@ example = execLaTeXM $
 main :: IO()
 main = do
         putStrLn $ show $ (foldl (+) 0 $ map snd $ Map.toList m) - length m
-        writeGraph "test.tex" g
+        writeGraph "test.dot" g
         where 
             (sm, _, as) = tm2sm $ symDetTM $ cfg2tm testGrammar
             inputSmb = map (\a -> SMType.SmbY $ SMType.Y a) $ mapValue ["a"]

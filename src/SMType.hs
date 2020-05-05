@@ -43,7 +43,7 @@ instance Show StateName where
 data State = State {s_name :: StateName, s_idx :: String, s_tags :: Set Tag, s_val :: Maybe StateVal}
    deriving (Show, Ord, Eq)
 
-newtype Y = Y Square
+data Y = Y Square | Alpha | Delta | Omega
    deriving (Show, Eq, Ord)
 
 data Smb = SmbY Y | SmbY' Y | SmbQ State

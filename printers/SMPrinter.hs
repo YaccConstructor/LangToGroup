@@ -8,8 +8,12 @@ module SMPrinter where
     import SMType
     import Lib
     import Tm1Printer
+    import Text.LaTeX.Packages.AMSMath
 
     instance ShowLaTeX Y where 
+        doLaTeX Alpha = alpha
+        doLaTeX Delta = delta
+        doLaTeX Omega = omega
         doLaTeX (Y y) = doLaTeX y 
 
     instance ShowLaTeX SMTag where

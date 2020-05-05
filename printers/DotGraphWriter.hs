@@ -14,7 +14,7 @@ import Data.Map (Map)
 import qualified Data.Map as Map
 import Data.Tuple.Utils
 import Data.Graph.Inductive.PatriciaTree (Gr)
-import Data.Text.Lazy
+import Data.Text.Lazy (fromStrict, replace, pack)
 import Data.GraphViz
 import Data.GraphViz.Printing
 import Data.GraphViz.Attributes.Complete
@@ -32,4 +32,4 @@ instance Labellable Word where
         toLabelValue = StrLabel . fromStrict . tex2text . doLaTeX . substCommandsInWord 
 
 writeGraph :: FilePath -> Gr Word Int -> IO ()
-writeGraph f = B.writeFile f . encodeUtf8 . renderDot . toDot . graphToDot quickParams
+writeGraph f = B.writeFile f . encodeUtf8 . replace (pack "\\\\") (pack "\\") . renderDot . toDot . graphToDot quickParams

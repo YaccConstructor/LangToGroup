@@ -6,12 +6,6 @@ import qualified Data.Set as Set
 import qualified TMType
 import Text.LaTeX.Packages.AMSMath
 
-deltaVal :: Y
-deltaVal = Y $ TMType.Value "\\deltaVal" 
-alphaVal :: Y
-alphaVal = Y $ TMType.Value "\\alpha" 
-omegaVal :: Y
-omegaVal = Y $ TMType.Value "\\omega" 
 eTag :: Set Tag
 eTag = Set.fromList []
 standardV :: Int -> Maybe StateVal
