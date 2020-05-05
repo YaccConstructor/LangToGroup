@@ -1,7 +1,6 @@
 module TMType where
 
 import Data.Set (Set)
-import qualified Data.Set as Set
 
 -- input, tape alphabets
 newtype InputAlphabet = InputAlphabet (Set Square)
@@ -29,16 +28,17 @@ instance Show StateOmega where
 -- command of TM for single tape
 data TapeCommand = SingleTapeCommand ((Square, State, Square), (Square, State, Square)) | PreSMCommand ((Square, StateOmega), (Square, StateOmega))
     deriving (Eq, Ord, Show)
-data Square = Value String | PCommand [TapeCommand] | BCommand [TapeCommand]
+
+data Square = Value {val_name :: String, val_quote_cnt :: Int} | E Int | RBS | LBS | ES | PCommand [TapeCommand] | BCommand [TapeCommand]
     deriving (Eq, Ord, Show)
+
+defValue :: String -> Square
+defValue s = Value s 0 
+
 -- commands
 newtype Commands = Commands (Set [TapeCommand])
     deriving (Eq, Ord, Show)
--- leftmost square on every tape
-leftBoundingLetter = Value "α"
--- rightmost square on every tape
-rightBoundingLetter = Value "ω"
-emptySymbol = Value ""
+
 -- TM
 newtype TM = TM (InputAlphabet, [TapeAlphabet], MultiTapeStates, Commands, StartStates, AccessStates)
     deriving (Eq, Ord, Show)

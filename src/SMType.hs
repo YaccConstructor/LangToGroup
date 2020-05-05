@@ -43,7 +43,7 @@ instance Show StateName where
 data State = State {s_name :: StateName, s_idx :: String, s_tags :: Set Tag, s_val :: Maybe StateVal}
    deriving (Show, Ord, Eq)
 
-newtype Y = Y Square
+data Y = Y Square | Alpha | Delta | Omega
    deriving (Show, Eq, Ord)
 
 data Smb = SmbY Y | SmbY' Y | SmbQ State
@@ -61,6 +61,6 @@ newtype SRule = SRule [(Word, Word)]
    deriving (Eq, Ord)
 
 instance Show SRule where
-   show (SRule s) = "[" ++ (foldr (\(w1,w2) acc -> show w1 ++ "->" ++ show w2 ++ ";") "" s) ++ "]\n" 
+   show (SRule s) = "[" ++ (foldr (\(w1,w2) acc -> show w1 ++ "->" ++ show w2 ++ ";" ++ acc) "" s) ++ "]\n" 
 
 data SM =  SM {yn :: [[Y]], qn :: [Set State], srs :: [SRule]} deriving (Show, Eq, Ord)

@@ -3,17 +3,10 @@
 module ConfigPrinter where
 
 import Text.LaTeX.Base
-import Text.LaTeX.Base.Class
-import Text.LaTeX.Base.Commands
-import Text.LaTeX.Packages.AMSMath
-import Text.LaTeX.Packages.Inputenc
-import qualified Data.Set as Set
-
-import TMType
 import ConfigType
 import Lib
-import Tm1Printer
 import Helpers
+import Tm1Printer
 
 instance ShowLaTeX Configs where
     doLaTeX (Configs configs) = do
@@ -23,11 +16,11 @@ instance ShowLaTeX Configs where
         let columnsSpec  = [CenterColumn] ++ halfSpec
         let tapesNames   = map (\num -> "Tape " ++ show num) [1..tapesCount]
         let halfHeader   = foldl1 (&) $ map (\cur -> (multicolumn 3 [CenterColumn] $ fromString cur)) tapesNames
-        
-        let showTriple (u, q, v) = (math $ raw $ fromString $ concat $ mapFromValue u) & (math $ doLaTeX q) & (math $ raw $ fromString $ concat $ mapFromValue v)
-
+        let showTripleConfig (u, q, v) = showSquares u & 
+                                                (math $ doLaTeX q) & 
+                                                showSquares v
         let showLine (lineNumber, config) = do
-                foldl1 (&) ([fromString $ show lineNumber] ++ (map showTriple config))
+                foldl1 (&) ([fromString $ show lineNumber] ++ (map showTripleConfig config))
                 tabularnewline
                 hline
 

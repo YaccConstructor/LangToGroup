@@ -1,14 +1,14 @@
 name:                LangToGroup
 version:             0.1.0.0
-github:              "githubuser/LangToGroup"
-license:             BSD3
+github:              "YaccConstructor/LangToGroup"
+license:             "Apache-2.0"
 author:              "Author name here"
 maintainer:          "example@example.com"
 copyright:           "2018 Author name here"
 
-extra-source-files:
-- README.md
-- ChangeLog.md
+# extra-source-files:
+# - README.md
+# - ChangeLog.md
 
 # Metadata used when publishing your package
 # synopsis:            Short description of your package
@@ -17,16 +17,25 @@ extra-source-files:
 # To avoid duplicated efforts in documentation and dealing with the
 # complications of embedding Haddock markup inside cabal files, it is
 # common to point users to the README.md file.
-description:         Please see the README on GitHub at <https://github.com/githubuser/LangToGroup#readme>
+description:         Please see the README on GitHub at <https://github.com/YaccConstructor/LangToGroup#readme>
 
 dependencies:
 - base >= 4.7 && < 5
 - containers
 - vector
 - HaTeX >= 3.20.0.0
+- regex-tdfa
+- MissingH
+- fgl
+- graphviz
+- text
+- bytestring
 
 library:
   source-dirs: src
+  ghc-options: 
+    -Wall
+    -fno-warn-type-defaults
 
 executables:
   LangToGroup-printer:
@@ -36,19 +45,12 @@ executables:
     - -threaded
     - -rtsopts
     - -with-rtsopts=-N
+    - -Wall
+    - -fno-warn-type-defaults
+    - -fno-warn-orphans
     dependencies:
     - LangToGroup
-    - HaTeX
- 
-  LangToGroup-exe:
-    main:                Main.hs
-    source-dirs:         app
-    ghc-options:
-    - -threaded
-    - -rtsopts
-    - -with-rtsopts=-N
-    dependencies:
-    - LangToGroup
+    - matrix >= 0.3.6.1
 
 tests:
   LangToGroup-test:
@@ -58,6 +60,8 @@ tests:
     - -threaded
     - -rtsopts
     - -with-rtsopts=-N
+    - -Wall
+    - -fno-warn-type-defaults
     dependencies:
     - LangToGroup
     - HUnit

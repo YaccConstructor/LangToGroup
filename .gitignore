@@ -25,3 +25,4 @@ cabal.project.local~
 .vscode/
 .ionide/
 printers/out_log.txt
+*.cabal
