@@ -1,3 +1,5 @@
+{-# LANGUAGE LambdaCase #-}
+
 module TM2SM where
 
 import SMType
@@ -38,7 +40,7 @@ splitPosNegCmds commands = do
 copySMForCommand :: SM -> SMTag -> TMCMD -> SM
 copySMForCommand sm tag cmd =
    let q = map (Set.map (addICmdSmTag cmd tag)) (qn sm)
-       filterWord (Word w) = Word(map (\s -> case s of SmbQ smb -> SmbQ (addICmdSmTag cmd tag smb); _ -> s ) w)
+       filterWord (Word w) = Word(map (\case SmbQ smb -> SmbQ (addICmdSmTag cmd tag smb) ; s -> s) w)
        prog = map (\ (SRule l) -> SRule(map (\(w1, w2) -> (filterWord w1, filterWord w2)) l)) (srs sm)
    in
    SM (yn sm) q prog
