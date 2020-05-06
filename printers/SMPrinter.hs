@@ -49,7 +49,7 @@ module SMPrinter where
 
 
     showYs :: [Y] -> LaTeXM ()
-    showYs ys = showSquares squares
+    showYs ys = doLaTeX squares
         where squares = map (\(Y y) -> y) ys
 
     instance ShowLaTeX Smb where
@@ -109,10 +109,10 @@ module SMPrinter where
         doLaTeX sm = do
             let (rules, commandsName) = substituteCommands $ srs sm
             subsection_ "Alphabet"
-            enumerate $ foldl1 (<>) $ map ((<>) (item Nothing) . showYs $) $ yn sm
+            enumerate $ mconcat $ map ((<>) (item Nothing) . showYs $) $ yn sm
             subsection_ "States"
-            enumerate $ foldl1 (<>) $ map ((<>) (item Nothing) . showSMStates . Set.toList $) $ qn sm
+            enumerate $ mconcat $ map ((<>) (item Nothing) . showSMStates . Set.toList $) $ qn sm
             subsection_ "Commands"
-            enumerate $ foldl1 (<>) $ map (\(name, cmd) -> item Nothing <> (math $ doLaTeX name) <> " = " <> (math $ doLaTeX cmd)) commandsName
+            enumerate $ mconcat $ map (\(name, cmd) -> item Nothing <> (math $ doLaTeX name) <> " = " <> (math $ doLaTeX cmd)) commandsName
             subsection_ "Rules"            
-            enumerate $ foldl1 (<>) $ map ((<>) (item Nothing) . doLaTeX $) rules
+            enumerate $ mconcat $ map ((<>) (item Nothing) . doLaTeX $) rules
