@@ -3,6 +3,7 @@ module SM2GR where
 import SMType 
 import GRType
 import qualified Data.Set as Set 
+import Helpers
 
 smb2As :: Smb -> SmbR
 smb2As smb = case smb of SmbY y -> SmbA $ A_Y y ; SmbY' y -> SmbA' $ A_Y y ; SmbQ q -> SmbA $ A_Q q
@@ -18,19 +19,16 @@ transitionRelations rules states = cmdQs ++ cmdRs
                                 False -> [ Relation (powtau [SmbA $ A_Q q] r, [SmbA $ A_Q q]) | r <- rules, q <- y ] ++ x
                                 ) [] states              
 
-nk :: Int
 nk = 1
-k :: [A]
 k = map (A_K $) [1 .. 2 * nk]
 
 hubRelation :: SMType.Word -> [SmbR]
 hubRelation (Word w0) = posPart ++ negPart
         where 
         word = map smb2As w0
-        negation x = case x of SmbA y -> SmbA' y ; SmbA' y -> SmbA y 
-        negationWord = foldl (\x y -> (negation y) : x) []
+        negationWord = foldl (\x y -> (revertSmb y) : x) []
         posPart = foldl (\x (i, y) -> x ++ (if i `mod` 2 == 0 then word else negationWord word) ++ [SmbA y]) [] $ zip [1..] k 
-        negPart = negationWord . foldl (\x (i, y) -> x ++ [SmbA y] ++ (case i `mod` 2 == 0 of False -> word ; True -> negationWord word)) [] $ reverse $ zip [1..] k
+        negPart = negationWord . foldl (\x (i, y) -> x ++ [SmbA y] ++ (if i `mod` 2 == 0 then negationWord word else word)) [] $ reverse $ zip [1..] k
 
 easyHubRelation :: SMType.Word -> [SmbR]
 easyHubRelation (Word w0) = [SmbA $ (!!) k 0] ++ (map smb2As w0) ++ [SmbA $ (!!) k 1]

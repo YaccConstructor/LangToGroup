@@ -3,29 +3,20 @@ module SMInterpreter where
     import Data.Maybe
     import TM2SM
     import Prelude hiding (Word)
-    import Data.List (isInfixOf, elemIndex)
+    import Data.List (isInfixOf, elemIndex, find)
     import Data.Map (Map)
     import qualified Data.Map as Map
     import Data.Graph.Inductive.Graph (mkGraph)
     import Data.Graph.Inductive.PatriciaTree (Gr)
+    import Data.Tuple (swap)
 
     checkRule :: Word -> SRule -> Bool
     checkRule (Word word) (SRule rule) = do
         let check (Word l, _) = isInfixOf l word
         all check rule
 
-    getApplicableRule :: Word -> [SRule] -> [SRule] -> [SRule]
-    getApplicableRule word rules acc =
-        case rules of
-            [] -> acc
-            c : t   | checkRule word c -> getApplicableRule word t $ c : acc
-                    | otherwise -> getApplicableRule word t acc
-
-    getApplicableRules :: [Word] -> [SRule] -> [[SRule]] -> [[SRule]]
-    getApplicableRules wrds rules acc =
-        case wrds of
-            [] -> reverse acc
-            h : t -> getApplicableRules t rules $ (getApplicableRule h rules []) : acc
+    getApplicableRules :: [SRule] -> [Word] -> [[SRule]]
+    getApplicableRules rules = map (\w -> filter (checkRule w) rules)
 
     reduceY :: [Smb] -> [Smb]
     reduceY word =
@@ -41,11 +32,15 @@ module SMInterpreter where
             reduceInternal word []
 
     replaceSublist :: [Smb] -> (Word, Word) -> [Smb]
-    replaceSublist smbs (Word rulel, Word ruler) = l ++ ruler ++ rr
-        where
-            (l, r) = break (== (head rulel)) smbs
-            i = fromJust $ elemIndex (last rulel) r
-            (_, rr) = splitAt (i + 1) r
+    replaceSublist smbs (Word rulel, Word ruler) = l ++ ruler ++ r
+        where 
+            replaceSublistInternal s rl acc =
+                case (s, rl) of
+                    (hs : ts, hrl : trl)    | hs /= hrl -> replaceSublistInternal ts rl $ hs : acc
+                                            | otherwise -> replaceSublistInternal ts trl acc
+                    (_, []) -> (reverse acc, s)
+                    ([], _ : _) -> error "Substitute length more than substituteble"
+            (l, r) = replaceSublistInternal smbs rulel []
 
     applyRule :: Word -> SRule -> Word
     applyRule (Word smbs) (SRule rule) = 
@@ -69,26 +64,18 @@ module SMInterpreter where
                                         where
                                             (acc_apply, new_m) = applyRules wrds rules m []
             _ -> error "Commandss and configss don't match"
-                                        
-
-    isHereAccessWord :: Word -> [[Word]] -> Maybe [Word]
-    isHereAccessWord accessWord wrds =
-        case wrds of
-            [] -> Nothing
-            h : t   | (last h) == accessWord -> Just h
-                    | otherwise -> isHereAccessWord accessWord t
 
     get_front :: [[Word]] -> [Word]
     get_front wordss = map last wordss
 
     startInterpreting :: Word -> [[Word]] -> [SRule] -> Map Word Int -> ([Word], Map Word Int)
     startInterpreting accessWord wordss rules m =
-        case isHereAccessWord accessWord wordss of
+        case find (\w -> (last w) == accessWord) wordss of
             Just path -> (path, m)
             Nothing | ruless == [[]]    -> error "No rule is applicable"
                     | otherwise         -> startInterpreting accessWord acc_apply rules new_m
         where
-            ruless = getApplicableRules (get_front wordss) rules []
+            ruless = getApplicableRules rules (get_front wordss)
             (acc_apply, new_m) = applyRuless wordss ruless m []
 
     interpretSM :: Word -> SM -> Word -> [Word]
@@ -127,13 +114,12 @@ module SMInterpreter where
                         _ -> error "Commandss and configss don't match"
             let interpret wrds nm i acc = if height > i then interpret new_front new_m (i + 1) acc_apply else (acc, nm)
                     where
-                        (acc_apply, new_m, new_front) = applyRss wrds (getApplicableRules wrds symmSmRules []) nm [] acc
+                        (acc_apply, new_m, new_front) = applyRss wrds (getApplicableRules symmSmRules wrds) nm [] acc
 
             let (acc, nm) = interpret [startWord] m 0 []
-            let a = map fst $ Map.toList nm
-            let m_nodes = Map.fromList $ zip a [1..]
+            let m_nodes = snd $ Map.mapAccum (\a _ -> (a + 1, a)) 1 nm
             let get_node w = fromJust $ Map.lookup w m_nodes
-            let g = mkGraph (zip [1..] a)
+            let g = mkGraph (map swap $ Map.toList m_nodes)
                                 (map (\(from_part, rule_i, to_part) -> (get_node from_part, get_node to_part, rule_i)) acc)
             (g, nm)
             

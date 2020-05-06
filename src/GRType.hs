@@ -25,7 +25,7 @@ data A = A_Y Y| A_K Int | A_R SRule | A_Q State
 -- 'SmbA'' represents invertions of generators.
 data SmbR = SmbA A | SmbA' A
    deriving (Show, Eq, Ord)
-
+   
 -- |This is a data type of 'GR' relations.
 -- 
 -- 'Relation' represents relation beetwen right and left symbols 'SmbR'. 

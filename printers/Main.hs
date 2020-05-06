@@ -84,9 +84,9 @@ example = execLaTeXM $
             -- newpage
             --doLaTeX $ fst3 $ tm2sm symSmallMachine
 
-main :: IO()
-main = do
-    renderFile "out.tex" example 
+-- main :: IO()
+-- main = do
+--     renderFile "out.tex" example 
 
 -- main :: IO()
 -- main = do
@@ -108,15 +108,15 @@ main = do
 --         let startWord = sigmaFunc as $ inputSmb : (replicate (length as - 1) [])
 --         putStrLn $ show $ length $ interpretSM startWord sm w
 
--- main :: IO()
--- main = do
---         putStrLn $ show $ (foldl (+) 0 $ map snd $ Map.toList m) - length m
---         writeGraph "test.dot" g
---         where 
---             (sm, _, as) = tm2sm $ symDetTM $ cfg2tm testGrammar
---             inputSmb = map (\a -> SMType.SmbY $ SMType.Y a) $ mapValue ["a"]
---             startWord = sigmaFunc as $ inputSmb : (replicate (length as - 1) [])
---             (g, m) = getRestrictedGraph startWord sm 1
+main :: IO()
+main = do
+        putStrLn $ show $ (foldl (+) 0 $ map snd $ Map.toList m) - length m
+        writeGraph "test.dot" g
+        where 
+            (sm, _, as) = tm2sm $ symDetTM $ cfg2tm testGrammar
+            inputSmb = map (\a -> SMType.SmbY $ SMType.Y a) $ mapValue ["a"]
+            startWord = sigmaFunc as $ inputSmb : (replicate (length as - 1) [])
+            (g, m) = getRestrictedGraph startWord sm 1
     
 -- main :: IO()
 -- main = do
