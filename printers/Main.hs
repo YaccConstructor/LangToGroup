@@ -71,15 +71,15 @@ example = execLaTeXM $
             -- -- doLaTeX $ interpretTM ["b", "a", "b", "a"] $ cfg2tm ab2TestGrammar
             -- -- newpage
             -- -- doLaTeX $ tm2sm $ symTM $ cfg2tm ab2TestGrammar
-            -- doLaTeX abNoEpsTestGrammar
-            -- doLaTeX $ cfg2tm abNoEpsTestGrammar
+            doLaTeX abNoEpsTestGrammar
+            doLaTeX $ cfg2tm abNoEpsTestGrammar
             -- newpage
             -- doLaTeX ab3TestGrammar
             -- doLaTeX $ cfg2tm ab3TestGrammar
             -- -- doLaTeX $ interpretTM ["b", "a", "b", "a"] $ cfg2tm ab3TestGrammar
             -- -- doLaTeX $ fst $ tm2sm tmForTestSm
             --doLaTeX $ threePhaseProcessing simpleTM
-            doLaTeX $ fst3 $ tm2sm $ symDetTM $ fst $ oneruleTM
+            --doLaTeX $ fst3 $ tm2sm $ symDetTM $ fst $ oneruleTM
             -- doLaTeX symSmallMachine
             -- newpage
             --doLaTeX $ fst3 $ tm2sm symSmallMachine
