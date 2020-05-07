@@ -24,9 +24,9 @@ module SMInterpreter where
                 case smbs of
                     [] -> reverse acc
                     smbh1@(SmbY h1) : smbh2@(SmbY' h2) : t  | h1 == h2 -> reduceInternal t acc
-                                                            | otherwise -> reduceInternal t (smbh2 : smbh1 : acc)
+                                                            | otherwise -> reduceInternal (smbh2 : t) (smbh1 : acc)
                     smbh1@(SmbY' h1) : smbh2@(SmbY h2) : t  | h1 == h2 -> reduceInternal t acc
-                                                            | otherwise -> reduceInternal t (smbh2 : smbh1 : acc)
+                                                            | otherwise -> reduceInternal (smbh2 : t) (smbh1 : acc)
                     h : t ->  reduceInternal t (h : acc)
         in
             reduceInternal word []

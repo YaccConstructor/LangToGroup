@@ -55,3 +55,6 @@ genNextState t = genNextStateList $ Set.toList t
 
 mapTuple :: (a -> b) -> (a, a) -> (b, b)
 mapTuple f (a1, a2) = (f a1, f a2)
+
+defValue :: String -> Square
+defValue s = Value s 0 

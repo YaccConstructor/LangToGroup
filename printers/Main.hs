@@ -154,7 +154,7 @@ main = do
 
 oneRuleGr :: (GR, [SmbR])
 oneRuleGr = do
-    let y = SMType.Y $ TMType.defValue "a"
+    let y = SMType.Y $ defValue "a"
     let q0 = SMType.State SMType.Q "0" (Set.fromList []) Nothing
     let q1 = SMType.State SMType.Q "1" (Set.fromList []) Nothing
     let q0' = SMType.State SMType.Q "2" (Set.fromList []) Nothing
@@ -176,7 +176,7 @@ oneRuleGr = do
 
 oneRuleSm :: (SMType.SM, SMType.Word, [SmbR])
 oneRuleSm = do
-    let y = SMType.Y $ TMType.defValue "a"
+    let y = SMType.Y $ defValue "a"
     let q0 = SMType.State SMType.Q "0" (Set.fromList []) Nothing
     let q1 = SMType.State SMType.Q "1" (Set.fromList []) Nothing
     let q0' = SMType.State SMType.Q "2" (Set.fromList []) Nothing
@@ -241,9 +241,9 @@ symSmallMachine = tm where
 aStarSMachine :: (SMType.SM, SMType.Word, SMType.Word, [SmbR])
 aStarSMachine = (SMType.SM alphabet states relations, accessWord, startWord, word) 
     where
-    a = SMType.Y $ TMType.defValue "a"
-    a1 = SMType.Y $ TMType.defValue "a_1"
-    a2 = SMType.Y $ TMType.defValue "a_2"
+    a = SMType.Y $ defValue "a"
+    a1 = SMType.Y $ defValue "a_1"
+    a2 = SMType.Y $ defValue "a_2"
     alphabet = [[a, a1], [a2]]
     q0 = SMType.State SMType.Q "0" (Set.fromList []) Nothing
     q1 = SMType.State SMType.Q "1" (Set.fromList []) Nothing

@@ -3,6 +3,7 @@ module TMInterpreter where
     import ConfigType
     import qualified Data.Set as Set
     import Helpers
+    import Data.List (find)
 
     checkCommandTapeToTape :: [([Square], State, [Square])] -> [TapeCommand] -> Bool
     checkCommandTapeToTape config command =
@@ -18,19 +19,6 @@ module TMInterpreter where
                                 l1 /= LBS && l1 /= ES && l1 == (head l) && l1 == r2 && r1 == ES && r1 == l2) -> checkCommandTapeToTape t2 t1
                             | otherwise -> False
             _ -> error "Wrong command type"
-
-    getApplicableCommands :: [([Square], State, [Square])] -> [[TapeCommand]] -> [[TapeCommand]] -> [[TapeCommand]] 
-    getApplicableCommands config commands acc =
-        case commands of
-            [] -> acc
-            c : t   | checkCommandTapeToTape config c -> getApplicableCommands config t $ c : acc
-                    | otherwise -> getApplicableCommands config t acc
-
-    getApplicableCommandss :: [[[([Square], State, [Square])]]] -> [[TapeCommand]] -> [[[TapeCommand]]] -> [[[TapeCommand]]]
-    getApplicableCommandss configss commands acc =
-        case configss of
-            [] -> reverse acc
-            h : t -> getApplicableCommandss t commands $ (getApplicableCommands (last h) commands []) : acc
 
     applyCommand :: [([Square], State, [Square])] -> [TapeCommand] -> [[([Square], State, [Square])]] -> [([Square], State, [Square])] -> [[([Square], State, [Square])]]
     applyCommand config command configs acc = 
@@ -52,44 +40,34 @@ module TMInterpreter where
             ([], _) -> configs
             _ -> error "Can not apply command"
 
-    applyCommands :: [[([Square], State, [Square])]] -> [[TapeCommand]] -> [[[([Square], State, [Square])]]] -> [[[([Square], State, [Square])]]]
-    applyCommands configs commands acc =
-        case commands of
-            [] -> acc
-            h : t -> applyCommands configs t $ (applyCommand (last configs) h configs []) : acc
+    applyCommands :: [[([Square], State, [Square])]] -> [[TapeCommand]] -> [[[([Square], State, [Square])]]]
+    applyCommands configs = map (\c -> applyCommand (last configs) c configs [])
     
     applyCommandss :: [[[([Square], State, [Square])]]] -> [[[TapeCommand]]] -> [[[([Square], State, [Square])]]] -> [[[([Square], State, [Square])]]]
     applyCommandss configss commandss acc =
         case (configss, commandss) of
             ([], []) -> acc
-            (configs : t1, commands : t2) -> applyCommandss t1 t2 $ (applyCommands configs commands []) ++ acc
+            (configs : t1, commands : t2) -> applyCommandss t1 t2 $ (applyCommands configs commands) ++ acc
             _ -> error "Commandss and configss don't match"
     
     checkFinalEmptyStates :: [State] -> [([Square], State, [Square])] -> Bool
     checkFinalEmptyStates accessStates config =
         case (accessStates, config) of
             ([], []) -> True
-            (s1 : t1, ([l2], s2, [r2]) : t2) | l2 ==  LBS && r2 == RBS && s1 == s2 -> checkFinalEmptyStates t1 t2
+            (s1 : t1, ([l2], s2, [r2]) : t2) | l2 == LBS && r2 == RBS && s1 == s2 -> checkFinalEmptyStates t1 t2
             _ -> False
-
-    isHereEmptyConfigss :: [State] -> [[[([Square], State, [Square])]]] -> Maybe [[([Square], State, [Square])]]
-    isHereEmptyConfigss accessStates configss =
-        case configss of
-            [] -> Nothing
-            h : t   | checkFinalEmptyStates accessStates (last h) -> Just h
-                    | otherwise -> isHereEmptyConfigss accessStates t
             
     startInterpreting :: [State]
                            -> [[[([Square], State, [Square])]]]
                            -> [[TapeCommand]]
                            -> [[([Square], State, [Square])]]
     startInterpreting accessStates configss commands =
-        case isHereEmptyConfigss accessStates configss of
+        case find (checkFinalEmptyStates accessStates . last) configss of
             Just configs -> configs
             Nothing | rules /= [[]] -> startInterpreting accessStates (applyCommandss configss rules []) commands
                     | otherwise -> error $ "No applicable rule " ++ (show $ map last configss)
                     where
-                        rules = getApplicableCommandss configss commands []
+                        rules = map (\c -> filter (checkCommandTapeToTape (last c)) commands) configss
 
     interpretTM :: [String] -> TM -> Configs
     interpretTM input (TM

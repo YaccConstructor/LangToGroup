@@ -1,5 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
+
 module SMPrinter where
     import Text.LaTeX.Base
     import qualified Data.Set as Set
@@ -9,6 +10,7 @@ module SMPrinter where
     import Lib
     import Tm1Printer
     import Text.LaTeX.Packages.AMSMath (alpha, delta, omega)
+
 
     instance ShowLaTeX Y where 
         doLaTeX Alpha = alpha
