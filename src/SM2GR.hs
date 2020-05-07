@@ -33,6 +33,9 @@ hubRelation (Word w0) = posPart ++ negPart
 easyHubRelation :: SMType.Word -> [SmbR]
 easyHubRelation (Word w0) = [SmbA $ (!!) k 0] ++ (map smb2As w0) ++ [SmbA $ (!!) k 1]
 
+auxiliaryRelations :: [A] -> [A] -> [A] -> [GrRelation]
+auxiliaryRelations s y src = [ Relation ([SmbA t, SmbA x], [SmbA x, SmbA t]) | x <- (s ++ y ++ k), t <- src ]
+
 sm2grInternal :: (SMType.SM, SMType.Word) -> [A] -> GRType.GR
 sm2grInternal (SMType.SM ys
                   qs
@@ -45,7 +48,7 @@ sm2grInternal (SMType.SM ys
         src = map (A_R $) sRules
         a = concat [s, k, y, q, src]
         transition = transitionRelations sRules ql
-        auxiliary = [ Relation ([SmbA t, SmbA x], [SmbA x, SmbA t]) | x <- (s ++ y ++ k), t <- src ]
+        auxiliary = auxiliaryRelations s y src
         hub = Relator $ hubRelation w0
         --hub = Relator $ easyHubRelation w0
         relations = auxiliary ++ transition ++ [hub]

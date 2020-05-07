@@ -11,7 +11,8 @@ import Text.Regex.TDFA
 disjoinQuotes :: Int -> Square -> Square
 disjoinQuotes i (Value s q_cnt) = Value s $ q_cnt + i
 disjoinQuotes _ (BCommand c) = PCommand c
-disjoinQuotes _ _ = error "Must be Value or BCommand"
+disjoinQuotes _ ES = ES
+disjoinQuotes _ s = error $ "Must be Value, BCommand or ES: " ++ (show s)
 
 getDisjoinSquare2 :: Square -> Square
 getDisjoinSquare2 = disjoinQuotes 2
