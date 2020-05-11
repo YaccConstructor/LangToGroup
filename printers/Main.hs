@@ -9,7 +9,7 @@ import Text.LaTeX.Packages.Inputenc
 import qualified Data.Set as Set
 
 import GrammarPrinter
-import Tm1Printer
+import TMPrinter
 import Lib
 import GrammarType
 import CFG2TM 
@@ -46,10 +46,11 @@ example = execLaTeXM $
     do
         preambula 
         document $ do
-            -- doLaTeX testGrammar
-            -- doLaTeX $ cfg2tm testGrammar
-            -- -- doLaTeX $ interpretTM ["a"] $ cfg2tm testGrammar
+            --doLaTeX testGrammar
+            --doLaTeX $ cfg2tm testGrammar
+            --doLaTeX $ interpretTM ["a"] $ cfg2tm testGrammar
             -- newpage
+            --doLaTeX $ symTM $ cfg2tm testGrammar
             --doLaTeX $ symDetTM $ cfg2tm testGrammar
             -- newpage
             -- doLaTeX $ fst3 $ tm2sm $ symDetTM $ cfg2tm testGrammar
@@ -65,9 +66,9 @@ example = execLaTeXM $
             -- doLaTeX abTestGrammar
             -- doLaTeX $ cfg2tm abTestGrammar
             -- -- doLaTeX $ interpretTM ["b", "b", "a", "a"] $ cfg2tm abTestGrammar
-            -- -- newpage
-            -- doLaTeX ab2TestGrammar
-            -- doLaTeX $ cfg2tm ab2TestGrammar
+            --newpage
+            --doLaTeX ab2TestGrammar
+            --doLaTeX $ cfg2tm ab2TestGrammar
             -- -- doLaTeX $ interpretTM ["b", "a", "b", "a"] $ cfg2tm ab2TestGrammar
             -- -- newpage
             -- -- doLaTeX $ tm2sm $ symTM $ cfg2tm ab2TestGrammar
@@ -79,10 +80,13 @@ example = execLaTeXM $
             -- -- doLaTeX $ interpretTM ["b", "a", "b", "a"] $ cfg2tm ab3TestGrammar
             -- -- doLaTeX $ fst $ tm2sm tmForTestSm
             --doLaTeX $ threePhaseProcessing simpleTM
-            doLaTeX $ threePhaseProcessing $ fst $ oneruleTM
-            -- doLaTeX symSmallMachine
+            --doLaTeX $ fst $ oneruleTM
+            --doLaTeX $ threePhaseProcessing $ fst $ oneruleTM
+            --doLaTeX $ symTM $ fst $ oneruleTM
+            --doLaTeX $ symDetTM $ fst $ oneruleTM
+            doLaTeX symSmallMachine
             -- newpage
-            --doLaTeX $ fst3 $ tm2sm symSmallMachine
+            doLaTeX $ fst3 $ tm2sm symSmallMachine
 
 main :: IO()
 main = do
@@ -198,7 +202,7 @@ printCount grammar@(Grammar (n, t, r, _)) = do
     let tmQ = foldl (\acc a -> acc + length a) 0 multiTapeStates
     putStrLn $ "tmX: " ++ (show $ length tmX) ++ " tmG: " ++ (show tmG) ++ " tmQ: " ++ (show tmQ) ++ " tmCmds: " ++ (show $ length tmCmds)
 
-    let tm'@(TM (InputAlphabet tmX', tapeAlphabet', MultiTapeStates multiTapeStates', Commands tmCmds', _, _)) = symTM tm
+    let tm'@(TM (InputAlphabet tmX', tapeAlphabet', MultiTapeStates multiTapeStates', Commands tmCmds', _, _)) = symDetTM tm
     let tmG' = foldl (\acc (TapeAlphabet a) -> acc + length a) 0 tapeAlphabet'
     let tmQ' = foldl (\acc a -> acc + length a) 0 multiTapeStates'
     putStrLn $ "tm'X: " ++ (show $ length tmX') ++ " tm'G: " ++ (show tmG') ++ " tm'Q: " ++ (show tmQ') ++ " tm'Cmds: " ++ (show $ length tmCmds')
@@ -233,7 +237,7 @@ symSmallMachine = tm where
     states = MultiTapeStates [Set.fromList [q0, q1]]
     cmd1 = [SingleTapeCommand ((a, q0, RBS), (ES, q1, RBS))]
     cmd2 = [SingleTapeCommand ((ES, q1, RBS), (a, q0, RBS))]
-    cmds = Commands $ Set.fromList $ renameRightLeftBoundings [cmd1, cmd2]
+    cmds = Commands $ Set.fromList [cmd1, cmd2]
     start = StartStates [q0]
     access = AccessStates [q1]
     tm = TM (inp, tapes, states, cmds, start, access)

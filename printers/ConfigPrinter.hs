@@ -6,7 +6,7 @@ import Text.LaTeX.Base
 import ConfigType
 import Lib
 import Helpers
-import Tm1Printer
+import TMPrinter
 
 instance ShowLaTeX Configs where
     doLaTeX (Configs configs) = do

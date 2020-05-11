@@ -8,7 +8,7 @@ module SMPrinter where
     import Data.List
     import SMType
     import Lib
-    import Tm1Printer
+    import TMPrinter
     import Text.LaTeX.Packages.AMSMath (alpha, delta, omega)
 
 

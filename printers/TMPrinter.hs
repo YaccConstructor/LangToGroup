@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE FlexibleInstances #-}
 
-module Tm1Printer where
+module TMPrinter where
 
 import Text.LaTeX.Base
 import Text.LaTeX.Packages.AMSMath
