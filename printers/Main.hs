@@ -30,6 +30,7 @@ import Helpers
 import DotGraphWriter
 import MapleFuncWriter
 import Data.Tuple.Utils
+import Console.Options
 
 preambula :: LaTeXM ()
 preambula = 
@@ -216,20 +217,34 @@ printCount grammar@(Grammar (n, t, r, _)) is_det = do
     putStrLn $ "A: " ++ (show $ length a) ++ " R: " ++ (show $ length rels)
     putStrLn ""
 
-main :: IO()
-main = do 
-
-    putStrLn $ "One rule"
-    printCount testGrammar is_det
+printExperiments :: Bool -> IO()
+printExperiments is_det = do
+        putStrLn $ "One rule"
+        printCount testGrammar is_det
+        
+        putStrLn $ "A star"
+        printCount epsTestGrammar is_det
     
-    putStrLn $ "A star"
-    printCount epsTestGrammar is_det
+        putStrLn $ "Dyck"
+        printCount ab2TestGrammar is_det
 
-    putStrLn $ "Dyck"
-    printCount ab2TestGrammar is_det
+flagParamBoolParser :: String -> Either String Bool
+flagParamBoolParser s
+    | s == "true"   = Right True
+    | s == "false"  = Right False
+    | otherwise     = Left "Bool expected"
 
-    where
-        is_det = True
+main :: IO()
+main = defaultMain $ do 
+    programName "print-results"
+    programDescription "printing experiments result"
+    flag_param <- flagParam (FlagShort 'd' <> FlagLong "is_det") (FlagRequired flagParamBoolParser)
+    action $ \toParam -> do
+        case toParam flag_param of
+            (Just True) -> printExperiments True
+            (Just False) -> printExperiments False
+            Nothing -> putStrLn "Expected a paramater"
+
 
 symSmallMachine :: TM
 symSmallMachine = tm where

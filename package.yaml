@@ -50,6 +50,7 @@ executables:
     dependencies:
     - LangToGroup
     - matrix >= 0.3.6.1
+    - cli
 
 tests:
   LangToGroup-test:
