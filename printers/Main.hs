@@ -88,9 +88,9 @@ example = execLaTeXM $
             -- newpage
             doLaTeX $ fst3 $ tm2sm symSmallMachine
 
-main :: IO()
-main = do
-    renderFile "out.tex" example 
+-- main :: IO()
+-- main = do
+--     renderFile "out.tex" example 
 
 -- main :: IO()
 -- main = do
@@ -193,8 +193,8 @@ oneRuleSm = do
     let startWord = hubRelation $ SMType.Word [SMType.SmbQ q0, SMType.SmbY y, SMType.SmbQ q1]
     (SMType.SM [[y]] [Set.fromList [q0, q0'], Set.fromList [q1, q1']] [r], SMType.Word [SMType.SmbQ q0', SMType.SmbQ q1'], startWord)
 
-printCount :: Grammar -> IO ()
-printCount grammar@(Grammar (n, t, r, _)) = do
+printCount :: Grammar -> Bool -> IO ()
+printCount grammar@(Grammar (n, t, r, _)) is_det = do
     putStrLn $ "T: " ++ (show $ length t) ++ " N: " ++ (show $ length n) ++ " R: " ++ (show $ length r) 
     
     let tm@(TM (InputAlphabet tmX, tapeAlphabet, MultiTapeStates multiTapeStates, Commands tmCmds, _, _)) = cfg2tm grammar
@@ -202,7 +202,7 @@ printCount grammar@(Grammar (n, t, r, _)) = do
     let tmQ = foldl (\acc a -> acc + length a) 0 multiTapeStates
     putStrLn $ "tmX: " ++ (show $ length tmX) ++ " tmG: " ++ (show tmG) ++ " tmQ: " ++ (show tmQ) ++ " tmCmds: " ++ (show $ length tmCmds)
 
-    let tm'@(TM (InputAlphabet tmX', tapeAlphabet', MultiTapeStates multiTapeStates', Commands tmCmds', _, _)) = symDetTM tm
+    let tm'@(TM (InputAlphabet tmX', tapeAlphabet', MultiTapeStates multiTapeStates', Commands tmCmds', _, _)) = if is_det then symDetTM tm else symTM tm
     let tmG' = foldl (\acc (TapeAlphabet a) -> acc + length a) 0 tapeAlphabet'
     let tmQ' = foldl (\acc a -> acc + length a) 0 multiTapeStates'
     putStrLn $ "tm'X: " ++ (show $ length tmX') ++ " tm'G: " ++ (show tmG') ++ " tm'Q: " ++ (show tmQ') ++ " tm'Cmds: " ++ (show $ length tmCmds')
@@ -216,16 +216,20 @@ printCount grammar@(Grammar (n, t, r, _)) = do
     putStrLn $ "A: " ++ (show $ length a) ++ " R: " ++ (show $ length rels)
     putStrLn ""
 
--- main :: IO()
--- main = do
---     putStrLn $ "One rule"
---     printCount testGrammar
-    
---     putStrLn $ "A star"
---     printCount epsTestGrammar
+main :: IO()
+main = do 
 
---     putStrLn $ "Dyck"
---     printCount ab2TestGrammar
+    putStrLn $ "One rule"
+    printCount testGrammar is_det
+    
+    putStrLn $ "A star"
+    printCount epsTestGrammar is_det
+
+    putStrLn $ "Dyck"
+    printCount ab2TestGrammar is_det
+
+    where
+        is_det = True
 
 symSmallMachine :: TM
 symSmallMachine = tm where
