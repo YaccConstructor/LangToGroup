@@ -1,19 +1,18 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE FlexibleInstances #-}
 
-module Tm1Printer where
+module TMPrinter where
 
 import Text.LaTeX.Base
 import Text.LaTeX.Packages.AMSMath
 import qualified Data.Set as Set
 import Data.Matrix
-
-
 import TMType
 import Lib
 
 
 instance ShowLaTeX Square where
-    doLaTeX (Value sq iq) = raw $ fromString (sq ++ map (\_ -> '\'') [1..iq])
+    doLaTeX (Value sq iq) = raw $ fromString (sq ++ replicate iq '\'')
     doLaTeX RBS = omega
     doLaTeX LBS = alpha
     doLaTeX ES = raw $ fromString ""
@@ -50,36 +49,36 @@ showBCommand :: [TapeCommand] -> LaTeXM ()
 showBCommand command =
     bmatrix (Just HRight) $ fromLists $ map (\c -> [showFrom c, to, showTo c]) command
 
-showStates :: [State] -> LaTeXM ()
-showStates = foldl1 (\x y -> x <> ", " <> y) . map (math . doLaTeX $)
+instance ShowLaTeX [Square] where
+    doLaTeX = math . foldl1 (\x y -> x <> " " <> y) . map doLaTeX
 
-showSquares :: [Square] -> LaTeXM ()
-showSquares = math . foldl1 (\x y -> x <> " " <> y) . map (\s -> doLaTeX s)
+instance ShowLaTeX [State] where
+    doLaTeX = foldl1 (\x y -> x <> ", " <> y) . map (math . doLaTeX $)
 
--- showAlphabet :: [Square] -> LaTeXM ()
--- showAlphabet alphabet = 
---     case map (\x -> math $ case x of Value sq -> raw $ fromString sq ; _ -> doLaTeX x) alphabet of 
---         [] -> ""
---         lst -> foldl1 (\x y -> x <> ", " <> y) lst
+showAlphabet :: [Square] -> LaTeXM ()
+showAlphabet alphabet = 
+    case alphabet of 
+        [] -> ""
+        lst -> math . foldl1 (\x y -> x <> ", " <> y) . map doLaTeX $ lst
 
 
 instance ShowLaTeX InputAlphabet where
-    doLaTeX (InputAlphabet alphabet) = showSquares $ Set.toList alphabet
+    doLaTeX (InputAlphabet alphabet) = showAlphabet $ Set.toList alphabet
 
 
 instance ShowLaTeX TapeAlphabet where
-    doLaTeX (TapeAlphabet alphabet) = showSquares $ Set.toList alphabet
+    doLaTeX (TapeAlphabet alphabet) = showAlphabet $ Set.toList alphabet
 
 instance ShowLaTeX MultiTapeStates where
     doLaTeX (MultiTapeStates statesList) =
-        enumerate $ mapM_ (\states -> do { item Nothing; showStates $ Set.toList $ states}) statesList
+        enumerate $ mapM_ (\states -> do { item Nothing; doLaTeX $ Set.toList $ states}) statesList
 
 
 instance ShowLaTeX StartStates where
-    doLaTeX (StartStates states) = showStates states
+    doLaTeX (StartStates states) = doLaTeX states
 
 instance ShowLaTeX AccessStates where
-    doLaTeX (AccessStates states) = showStates states
+    doLaTeX (AccessStates states) = doLaTeX states
 
 instance ShowLaTeX Commands where
     doLaTeX (Commands commandsSet) = mapM_ (\c -> do { math $ showBCommand c ; "\n" }) $ Set.toList commandsSet

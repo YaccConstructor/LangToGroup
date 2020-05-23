@@ -31,11 +31,12 @@ dependencies:
 - text
 - bytestring
 
-library:
-  source-dirs: src
-  ghc-options: 
+ghc-options: 
     -Wall
     -fno-warn-type-defaults
+
+library:
+  source-dirs: src
 
 executables:
   LangToGroup-printer:
@@ -45,12 +46,11 @@ executables:
     - -threaded
     - -rtsopts
     - -with-rtsopts=-N
-    - -Wall
-    - -fno-warn-type-defaults
     - -fno-warn-orphans
     dependencies:
     - LangToGroup
     - matrix >= 0.3.6.1
+    - cli
 
 tests:
   LangToGroup-test:
@@ -60,8 +60,6 @@ tests:
     - -threaded
     - -rtsopts
     - -with-rtsopts=-N
-    - -Wall
-    - -fno-warn-type-defaults
     dependencies:
     - LangToGroup
     - HUnit

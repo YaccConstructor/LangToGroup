@@ -15,29 +15,29 @@ firstPhase kplus1tapeStates acceptCommand otherCommands startStates multiTapeSta
             case states of
                 [] -> 
                     reverse $ (SingleTapeCommand ((ES, kplus1tapeState, RBS), (BCommand command, kplus1tapeState, RBS))) : acc
-                s : ss  | acc == [] -> 
-                    generateFirstPhaseCommand command ss $ (SingleTapeCommand ((ES, s, RBS), (ES, s, RBS))) : acc 
-                        | otherwise -> 
-                    generateFirstPhaseCommand command ss $ (SingleTapeCommand ((LBS, s, RBS), (LBS, s, RBS))) : acc 
+                s : ss  | acc == [] -> gfpc ES
+                        | otherwise -> gfpc LBS
+                    where 
+                        gfpc r = generateFirstPhaseCommand command ss $ (SingleTapeCommand ((r, s, RBS), (r, s, RBS))) : acc 
     
     let firstPhaseFinalCommand tapeStates states sStates acc =
             case (tapeStates, states, sStates) of
                 ([], [], []) -> 
                     reverse $ (SingleTapeCommand ((ES, kplus1tapeState, RBS), (ES, finalKPlusOneTapeState, RBS))) : acc
-                (_ : tt, s1 : ss1, s2 : ss2)  | acc == [] -> 
-                    firstPhaseFinalCommand tt ss1 ss2 $ (SingleTapeCommand ((ES, s1, RBS), (ES, s2, RBS))) : acc 
-                        | otherwise -> 
-                    firstPhaseFinalCommand tt ss1 ss2 $ (SingleTapeCommand ((LBS, s1, RBS), (LBS, s2, RBS))) : acc 
+                (_ : tt, s1 : ss1, s2 : ss2)    | acc == [] -> fpfc ES
+                                                | otherwise -> fpfc LBS
+                    where
+                        fpfc r = firstPhaseFinalCommand tt ss1 ss2 $ (SingleTapeCommand ((r, s1, RBS), (r, s2, RBS))) : acc
                 _ -> error "States don't match"
     
     let firstPhaseStartCommand states acc =
             case states of
                 [] -> 
                     reverse $ (SingleTapeCommand ((ES, startKPlusOneTapeState, RBS), (BCommand acceptCommand, kplus1tapeState, RBS))) : acc
-                s : ss  | acc == [] -> 
-                    firstPhaseStartCommand ss $ (SingleTapeCommand ((ES, s, RBS), (ES, s, RBS))) : acc 
-                        | otherwise -> 
-                    firstPhaseStartCommand ss $ (SingleTapeCommand ((LBS, s, RBS), (LBS, s, RBS))) : acc     
+                s : ss  | acc == [] -> fpsc ES
+                        | otherwise -> fpsc LBS
+                    where 
+                        fpsc r = firstPhaseStartCommand ss $ (SingleTapeCommand ((r, s, RBS), (r, s, RBS))) : acc 
 
     let firstPhaseInternal commands acc = 
             case commands of

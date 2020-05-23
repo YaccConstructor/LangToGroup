@@ -1,5 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
+
 module SMPrinter where
     import Text.LaTeX.Base
     import qualified Data.Set as Set
@@ -7,8 +8,9 @@ module SMPrinter where
     import Data.List
     import SMType
     import Lib
-    import Tm1Printer
+    import TMPrinter
     import Text.LaTeX.Packages.AMSMath (alpha, delta, omega)
+
 
     instance ShowLaTeX Y where 
         doLaTeX Alpha = alpha
@@ -49,7 +51,7 @@ module SMPrinter where
 
 
     showYs :: [Y] -> LaTeXM ()
-    showYs ys = showSquares squares
+    showYs ys = doLaTeX squares
         where squares = map (\(Y y) -> y) ys
 
     instance ShowLaTeX Smb where
@@ -109,10 +111,10 @@ module SMPrinter where
         doLaTeX sm = do
             let (rules, commandsName) = substituteCommands $ srs sm
             subsection_ "Alphabet"
-            enumerate $ foldl1 (<>) $ map ((<>) (item Nothing) . showYs $) $ yn sm
+            enumerate $ mconcat $ map ((<>) (item Nothing) . showYs $) $ yn sm
             subsection_ "States"
-            enumerate $ foldl1 (<>) $ map ((<>) (item Nothing) . showSMStates . Set.toList $) $ qn sm
+            enumerate $ mconcat $ map ((<>) (item Nothing) . showSMStates . Set.toList $) $ qn sm
             subsection_ "Commands"
-            enumerate $ foldl1 (<>) $ map (\(name, cmd) -> item Nothing <> (math $ doLaTeX name) <> " = " <> (math $ doLaTeX cmd)) commandsName
+            enumerate $ mconcat $ map (\(name, cmd) -> item Nothing <> (math $ doLaTeX name) <> " = " <> (math $ doLaTeX cmd)) commandsName
             subsection_ "Rules"            
-            enumerate $ foldl1 (<>) $ map ((<>) (item Nothing) . doLaTeX $) rules
+            enumerate $ mconcat $ map ((<>) (item Nothing) . doLaTeX $) rules

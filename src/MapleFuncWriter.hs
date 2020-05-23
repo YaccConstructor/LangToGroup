@@ -20,10 +20,8 @@ writeRelations relations genmap handle =
     do
         hPutStr handle $ head mdata
         mapM_ ( \x -> hPutStr handle ", " <> hPutStr handle x) (tail mdata)
-    where   revertSmb smb = case smb of SmbA a -> SmbA' a ; SmbA' a -> SmbA a
-            revert (Relation (from, to)) = foldl (\x y -> (revertSmb y) : x) from to
-            revert (Relator smb) = smb
-            mdata = map (foldl1 (\x y -> x ++ "." ++ y) . (map (printSmb genmap)) . revert) relations
+    where   
+            mdata = map (foldl1 (\x y -> x ++ "." ++ y) . (map (printSmb genmap)) . revertRel) relations
 
 writeMaple :: GR -> Handle -> Map.Map A String -> IO ()
 writeMaple (GR (g, r)) handle genmap =

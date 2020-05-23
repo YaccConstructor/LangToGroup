@@ -9,7 +9,7 @@ import Text.LaTeX.Packages.Inputenc
 import qualified Data.Set as Set
 
 import GrammarPrinter
-import Tm1Printer
+import TMPrinter
 import Lib
 import GrammarType
 import CFG2TM 
@@ -30,6 +30,7 @@ import Helpers
 import DotGraphWriter
 import MapleFuncWriter
 import Data.Tuple.Utils
+import Console.Options
 
 preambula :: LaTeXM ()
 preambula = 
@@ -46,10 +47,11 @@ example = execLaTeXM $
     do
         preambula 
         document $ do
-            -- doLaTeX testGrammar
-            -- doLaTeX $ cfg2tm testGrammar
-            -- -- doLaTeX $ interpretTM ["a"] $ cfg2tm testGrammar
+            --doLaTeX testGrammar
+            --doLaTeX $ cfg2tm testGrammar
+            --doLaTeX $ interpretTM ["a"] $ cfg2tm testGrammar
             -- newpage
+            --doLaTeX $ symTM $ cfg2tm testGrammar
             --doLaTeX $ symDetTM $ cfg2tm testGrammar
             -- newpage
             -- doLaTeX $ fst3 $ tm2sm $ symDetTM $ cfg2tm testGrammar
@@ -65,9 +67,9 @@ example = execLaTeXM $
             -- doLaTeX abTestGrammar
             -- doLaTeX $ cfg2tm abTestGrammar
             -- -- doLaTeX $ interpretTM ["b", "b", "a", "a"] $ cfg2tm abTestGrammar
-            -- -- newpage
-            -- doLaTeX ab2TestGrammar
-            -- doLaTeX $ cfg2tm ab2TestGrammar
+            --newpage
+            --doLaTeX ab2TestGrammar
+            --doLaTeX $ cfg2tm ab2TestGrammar
             -- -- doLaTeX $ interpretTM ["b", "a", "b", "a"] $ cfg2tm ab2TestGrammar
             -- -- newpage
             -- -- doLaTeX $ tm2sm $ symTM $ cfg2tm ab2TestGrammar
@@ -79,14 +81,17 @@ example = execLaTeXM $
             -- -- doLaTeX $ interpretTM ["b", "a", "b", "a"] $ cfg2tm ab3TestGrammar
             -- -- doLaTeX $ fst $ tm2sm tmForTestSm
             --doLaTeX $ threePhaseProcessing simpleTM
-            doLaTeX $ fst3 $ tm2sm $ symDetTM $ fst $ oneruleTM
-            -- doLaTeX symSmallMachine
+            --doLaTeX $ fst $ oneruleTM
+            --doLaTeX $ threePhaseProcessing $ fst $ oneruleTM
+            --doLaTeX $ symTM $ fst $ oneruleTM
+            --doLaTeX $ symDetTM $ fst $ oneruleTM
+            doLaTeX symSmallMachine
             -- newpage
-            --doLaTeX $ fst3 $ tm2sm symSmallMachine
+            doLaTeX $ fst3 $ tm2sm symSmallMachine
 
-main :: IO()
-main = do
-    renderFile "out.tex" example 
+-- main :: IO()
+-- main = do
+--     renderFile "out.tex" example 
 
 -- main :: IO()
 -- main = do
@@ -154,7 +159,7 @@ main = do
 
 oneRuleGr :: (GR, [SmbR])
 oneRuleGr = do
-    let y = SMType.Y $ TMType.defValue "a"
+    let y = SMType.Y $ defValue "a"
     let q0 = SMType.State SMType.Q "0" (Set.fromList []) Nothing
     let q1 = SMType.State SMType.Q "1" (Set.fromList []) Nothing
     let q0' = SMType.State SMType.Q "2" (Set.fromList []) Nothing
@@ -176,7 +181,7 @@ oneRuleGr = do
 
 oneRuleSm :: (SMType.SM, SMType.Word, [SmbR])
 oneRuleSm = do
-    let y = SMType.Y $ TMType.defValue "a"
+    let y = SMType.Y $ defValue "a"
     let q0 = SMType.State SMType.Q "0" (Set.fromList []) Nothing
     let q1 = SMType.State SMType.Q "1" (Set.fromList []) Nothing
     let q0' = SMType.State SMType.Q "2" (Set.fromList []) Nothing
@@ -189,8 +194,8 @@ oneRuleSm = do
     let startWord = hubRelation $ SMType.Word [SMType.SmbQ q0, SMType.SmbY y, SMType.SmbQ q1]
     (SMType.SM [[y]] [Set.fromList [q0, q0'], Set.fromList [q1, q1']] [r], SMType.Word [SMType.SmbQ q0', SMType.SmbQ q1'], startWord)
 
-printCount :: Grammar -> IO ()
-printCount grammar@(Grammar (n, t, r, _)) = do
+printCount :: Grammar -> Bool -> IO ()
+printCount grammar@(Grammar (n, t, r, _)) is_det = do
     putStrLn $ "T: " ++ (show $ length t) ++ " N: " ++ (show $ length n) ++ " R: " ++ (show $ length r) 
     
     let tm@(TM (InputAlphabet tmX, tapeAlphabet, MultiTapeStates multiTapeStates, Commands tmCmds, _, _)) = cfg2tm grammar
@@ -198,7 +203,7 @@ printCount grammar@(Grammar (n, t, r, _)) = do
     let tmQ = foldl (\acc a -> acc + length a) 0 multiTapeStates
     putStrLn $ "tmX: " ++ (show $ length tmX) ++ " tmG: " ++ (show tmG) ++ " tmQ: " ++ (show tmQ) ++ " tmCmds: " ++ (show $ length tmCmds)
 
-    let tm'@(TM (InputAlphabet tmX', tapeAlphabet', MultiTapeStates multiTapeStates', Commands tmCmds', _, _)) = symTM tm
+    let tm'@(TM (InputAlphabet tmX', tapeAlphabet', MultiTapeStates multiTapeStates', Commands tmCmds', _, _)) = if is_det then symDetTM tm else symTM tm
     let tmG' = foldl (\acc (TapeAlphabet a) -> acc + length a) 0 tapeAlphabet'
     let tmQ' = foldl (\acc a -> acc + length a) 0 multiTapeStates'
     putStrLn $ "tm'X: " ++ (show $ length tmX') ++ " tm'G: " ++ (show tmG') ++ " tm'Q: " ++ (show tmQ') ++ " tm'Cmds: " ++ (show $ length tmCmds')
@@ -212,16 +217,34 @@ printCount grammar@(Grammar (n, t, r, _)) = do
     putStrLn $ "A: " ++ (show $ length a) ++ " R: " ++ (show $ length rels)
     putStrLn ""
 
--- main :: IO()
--- main = do
---     putStrLn $ "One rule"
---     printCount testGrammar
+printExperiments :: Bool -> IO()
+printExperiments is_det = do
+        putStrLn $ "One rule"
+        printCount testGrammar is_det
+        
+        putStrLn $ "A star"
+        printCount epsTestGrammar is_det
     
---     putStrLn $ "A star"
---     printCount epsTestGrammar
+        putStrLn $ "Dyck"
+        printCount ab2TestGrammar is_det
 
---     putStrLn $ "Dyck"
---     printCount ab2TestGrammar
+flagParamBoolParser :: String -> Either String Bool
+flagParamBoolParser s
+    | s == "true"   = Right True
+    | s == "false"  = Right False
+    | otherwise     = Left "Bool expected"
+
+main :: IO()
+main = defaultMain $ do 
+    programName "print-results"
+    programDescription "printing experiments result"
+    flag_param <- flagParam (FlagShort 'd' <> FlagLong "is_det") (FlagRequired flagParamBoolParser)
+    action $ \toParam -> do
+        case toParam flag_param of
+            (Just True) -> printExperiments True
+            (Just False) -> printExperiments False
+            Nothing -> putStrLn "Expected a paramater"
+
 
 symSmallMachine :: TM
 symSmallMachine = tm where
@@ -233,7 +256,7 @@ symSmallMachine = tm where
     states = MultiTapeStates [Set.fromList [q0, q1]]
     cmd1 = [SingleTapeCommand ((a, q0, RBS), (ES, q1, RBS))]
     cmd2 = [SingleTapeCommand ((ES, q1, RBS), (a, q0, RBS))]
-    cmds = Commands $ Set.fromList $ renameRightLeftBoundings [cmd1, cmd2]
+    cmds = Commands $ Set.fromList [cmd1, cmd2]
     start = StartStates [q0]
     access = AccessStates [q1]
     tm = TM (inp, tapes, states, cmds, start, access)
@@ -241,9 +264,9 @@ symSmallMachine = tm where
 aStarSMachine :: (SMType.SM, SMType.Word, SMType.Word, [SmbR])
 aStarSMachine = (SMType.SM alphabet states relations, accessWord, startWord, word) 
     where
-    a = SMType.Y $ TMType.defValue "a"
-    a1 = SMType.Y $ TMType.defValue "a_1"
-    a2 = SMType.Y $ TMType.defValue "a_2"
+    a = SMType.Y $ defValue "a"
+    a1 = SMType.Y $ defValue "a_1"
+    a2 = SMType.Y $ defValue "a_2"
     alphabet = [[a, a1], [a2]]
     q0 = SMType.State SMType.Q "0" (Set.fromList []) Nothing
     q1 = SMType.State SMType.Q "1" (Set.fromList []) Nothing

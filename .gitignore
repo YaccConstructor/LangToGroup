@@ -26,3 +26,4 @@ cabal.project.local~
 .ionide/
 printers/out_log.txt
 *.cabal
+stack.yaml.lock
