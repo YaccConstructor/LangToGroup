@@ -5,10 +5,11 @@ import SMInterpreter
 import Test.HUnit hiding (State)
 import qualified TMType
 import Data.Set (fromList)
+import Helpers
 
 smInterpretationTest :: Assertion
 smInterpretationTest = do
-    let y = Y $ TMType.defValue "a"
+    let y = Y $ defValue "a"
     let q0 = SMType.State Q "0" (fromList []) Nothing
     let q1 = SMType.State Q "1" (fromList []) Nothing
     let q0' = SMType.State Q "2" (fromList []) Nothing
@@ -26,7 +27,7 @@ smInterpretationTest = do
 
 smInterpretationTest2 :: Assertion
 smInterpretationTest2 = do
-    let y = Y $ TMType.defValue "a"
+    let y = Y $ defValue "a"
     let q0 = SMType.State Q "0" (fromList []) Nothing
     let q1 = SMType.State Q "1" (fromList []) Nothing
     let q0' = SMType.State Q "2" (fromList []) Nothing
@@ -53,10 +54,10 @@ applyRuleTest = do
     let q4 = SmbQ $ SMType.State Q "4" (fromList []) Nothing
     let p1 = SmbQ $ SMType.State P "1" (fromList []) Nothing
     let p2 = SmbQ $ SMType.State P "2" (fromList []) Nothing
-    let a = SMType.Y $ TMType.defValue "a"
-    let b = SMType.Y $ TMType.defValue "b"
+    let a = SMType.Y $ defValue "a"
+    let b = SMType.Y $ defValue "b"
     let b' = SMType.Y $ TMType.Value "b" 1
-    let c = SMType.Y $ TMType.defValue "c"
+    let c = SMType.Y $ defValue "c"
     let w = Word [q1, SmbY a, SmbY a, q2, SmbY b, q3, SmbY c, SmbY c, q4]
     let r = SRule [(Word [q1], Word [p1, SmbY' a]), (Word [q2, SmbY b, q3], Word [SmbY' a, p2, SmbY b', q3, SmbY c])]
     let resW = Word [p1, p2, SmbY b', q3, SmbY c, SmbY c, SmbY c, q4]
