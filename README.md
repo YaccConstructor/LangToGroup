@@ -7,20 +7,34 @@ Implementation algorithm building the presentation of the group for a formal lan
 [![Build Status](https://travis-ci.org/YaccConstructor/LangToGroup.svg?branch=master)](https://travis-ci.org/YaccConstructor/LangToGroup)
 
 ## Building 
-For build run:
+To build run:
 
 ``stack build``
 
 ## Testing
-For test run:
+For run the tests:
 
 ``stack test``
 
-## Runing experiments
-For run experiments with deterministic symmetrization:
+## Running experiments
+For run experiments and print its numerical results you can use ``is_det <bool>`` flag.
+
+So, for print experiments' results using deterministic symmetrization:
 
 ``stack exec -- LangToGroup-printer --is_det true``
 
-with nondeterministic symmetrization:
+using nondeterministic symmetrization:
 
 ``stack exec -- LangToGroup-printer --is_det false``
+
+## Printing example transformations in LaTeX
+Grammar's transformations also can be printed in LaTeX. For this should be used ``--print_example <grammar>`` flag.
+The following grammars can be used as print examples: "one\" --- one rule grammar, \"a*\" --- grammar for regular language 
+<img src="https://render.githubusercontent.com/render/math?math=L = \{a*\}">
+, \"dyck\" --- Dyck language grammar. 
+
+For example,
+
+``stack exec -- LangToGroup-printer --is_det true --print_example one``
+
+Output filename can be specified by ``-o <filename>`` flag.
