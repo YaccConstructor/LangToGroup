@@ -229,10 +229,9 @@ printExperiments is_det = do
         putStrLn $ "Dyck"
         printCount ab2TestGrammar is_det
 
-printExample :: Bool -> ExampleEnum -> String -> IO()
-printExample is_det exampleEnum outFileName = renderFile outFileName exampleLatex
-    where 
-        grammar = toGrammar exampleEnum
+printExample :: Bool -> Grammar -> String -> IO()
+printExample is_det grammar outFileName = renderFile outFileName exampleLatex
+    where
         symm = toSymm is_det
         exampleLatex = execLaTeXM $ 
             do
@@ -254,22 +253,15 @@ flagParamBoolParser s
     | s == "false" || s == "False"  = Right False
     | otherwise                     = Left "Bool expected"
 
-data ExampleEnum = OneRule | AStar | Dyck
-
-toGrammar :: ExampleEnum -> Grammar
-toGrammar OneRule = testGrammar
-toGrammar AStar = epsTestGrammar
-toGrammar Dyck = ab2TestGrammar
-
 toSymm :: Bool -> TM -> TM
 toSymm True = symDetTM
 toSymm False = symTM
 
-flagParamExampleParser :: String -> Either String ExampleEnum
+flagParamExampleParser :: String -> Either String Grammar
 flagParamExampleParser s
-    | s == "one"    = Right OneRule
-    | s == "a*"     = Right AStar
-    | s == "dyck"   = Right Dyck
+    | s == "one"    = Right testGrammar
+    | s == "a*"     = Right epsTestGrammar
+    | s == "dyck"   = Right ab2TestGrammar
     | otherwise     = Left "Example name expected"
 
 flagParamOutParser :: String -> Either String String
@@ -297,8 +289,8 @@ main = defaultMain $ do
                                     (FlagRequired flagParamOutParser)
     action $ \toParam -> do
         case (toParam is_det_flag_param, toParam print_example_flag_param, toParam out_flag_param) of
-            (Just is_det, Just exampleEnum, Just outFileName) -> printExample is_det exampleEnum outFileName
-            (Just is_det, Just exampleEnum, Nothing) -> printExample is_det exampleEnum "out.tex"
+            (Just is_det, Just grammar, Just outFileName) -> printExample is_det grammar outFileName
+            (Just is_det, Just grammar, Nothing) -> printExample is_det grammar "out.tex"
             (Just is_det, Nothing, _) -> printExperiments is_det
             (Nothing, _, _) -> putStrLn "Expected a \"is_det\" paramater"
 
