@@ -280,10 +280,21 @@ flagParamOutParser s
 main :: IO()
 main = defaultMain $ do 
     programName "print-results"
-    programDescription "printing experiments result"
-    is_det_flag_param <- flagParam (FlagShort 'd' <> FlagLong "is_det") (FlagRequired flagParamBoolParser)
-    print_example_flag_param <- flagParam (FlagShort 'p' <> FlagLong "print_example") (FlagRequired flagParamExampleParser)
-    out_flag_param <- flagParam (FlagShort 'o') (FlagRequired flagParamOutParser)
+    programDescription "Printing experiments result."
+    is_det_flag_param <- flagParam (FlagShort 'd' 
+                                    <> FlagLong "is_det" 
+                                    <> FlagDescription "The flag corresponds to which symmetrization of the Turing machine should be used, deterministic or non-deterministic.\ 
+                                                        \ For deterministic use argument \"true\", for non use \"false\".") 
+                                        (FlagRequired flagParamBoolParser)
+    print_example_flag_param <- flagParam (FlagShort 'p' 
+                                            <> FlagLong "print_example" 
+                                            <> FlagDescription "With this flag you can specify which grammar should be printed in LaTeX on every transformation step. \
+                                            \\"one\" --- one rule grammar, \"a*\" --- grammar for language A with Kleene star, \"dyck\" --- Dyck language grammar. \
+                                            \If this flag is not used, numerical results of experiments will be displayed.") 
+                                                (FlagRequired flagParamExampleParser)
+    out_flag_param <- flagParam (FlagShort 'o' 
+                                <> FlagDescription "With this flag, you can specify an output filename.") 
+                                    (FlagRequired flagParamOutParser)
     action $ \toParam -> do
         case (toParam is_det_flag_param, toParam print_example_flag_param, toParam out_flag_param) of
             (Just is_det, Just exampleEnum, Just outFileName) -> printExample is_det exampleEnum outFileName
