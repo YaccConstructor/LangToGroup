@@ -31,6 +31,7 @@ import DotGraphWriter
 import MapleFuncWriter
 import Data.Tuple.Utils
 import Console.Options
+import Data.List (isSuffixOf)
 
 preambula :: LaTeXM ()
 preambula = 
@@ -47,12 +48,12 @@ example = execLaTeXM $
     do
         preambula 
         document $ do
-            --doLaTeX testGrammar
-            --doLaTeX $ cfg2tm testGrammar
+            doLaTeX testGrammar
+            doLaTeX $ cfg2tm testGrammar
             --doLaTeX $ interpretTM ["a"] $ cfg2tm testGrammar
             -- newpage
-            --doLaTeX $ symTM $ cfg2tm testGrammar
-            --doLaTeX $ symDetTM $ cfg2tm testGrammar
+            doLaTeX $ symTM $ cfg2tm testGrammar
+            doLaTeX $ symDetTM $ cfg2tm testGrammar
             -- newpage
             -- doLaTeX $ fst3 $ tm2sm $ symDetTM $ cfg2tm testGrammar
             -- doLaTeX epsTestGrammar
@@ -85,9 +86,9 @@ example = execLaTeXM $
             --doLaTeX $ threePhaseProcessing $ fst $ oneruleTM
             --doLaTeX $ symTM $ fst $ oneruleTM
             --doLaTeX $ symDetTM $ fst $ oneruleTM
-            doLaTeX symSmallMachine
+            --doLaTeX symSmallMachine
             -- newpage
-            doLaTeX $ fst3 $ tm2sm symSmallMachine
+            --doLaTeX $ fst3 $ tm2sm symSmallMachine
 
 -- main :: IO()
 -- main = do
@@ -203,7 +204,7 @@ printCount grammar@(Grammar (n, t, r, _)) is_det = do
     let tmQ = foldl (\acc a -> acc + length a) 0 multiTapeStates
     putStrLn $ "tmX: " ++ (show $ length tmX) ++ " tmG: " ++ (show tmG) ++ " tmQ: " ++ (show tmQ) ++ " tmCmds: " ++ (show $ length tmCmds)
 
-    let tm'@(TM (InputAlphabet tmX', tapeAlphabet', MultiTapeStates multiTapeStates', Commands tmCmds', _, _)) = if is_det then symDetTM tm else symTM tm
+    let tm'@(TM (InputAlphabet tmX', tapeAlphabet', MultiTapeStates multiTapeStates', Commands tmCmds', _, _)) = toSymm is_det $ tm
     let tmG' = foldl (\acc (TapeAlphabet a) -> acc + length a) 0 tapeAlphabet'
     let tmQ' = foldl (\acc a -> acc + length a) 0 multiTapeStates'
     putStrLn $ "tm'X: " ++ (show $ length tmX') ++ " tm'G: " ++ (show tmG') ++ " tm'Q: " ++ (show tmQ') ++ " tm'Cmds: " ++ (show $ length tmCmds')
@@ -228,22 +229,70 @@ printExperiments is_det = do
         putStrLn $ "Dyck"
         printCount ab2TestGrammar is_det
 
+printExample :: Bool -> Grammar -> String -> IO()
+printExample is_det grammar outFileName = renderFile outFileName exampleLatex
+    where
+        symm = toSymm is_det
+        exampleLatex = execLaTeXM $ 
+            do
+                preambula 
+                document $ do
+                    doLaTeX grammar
+                    newpage
+                    doLaTeX $ cfg2tm grammar
+                    newpage
+                    doLaTeX $ symm $ cfg2tm grammar
+                    newpage
+                    doLaTeX $ fst3 $ tm2sm $ symm $ cfg2tm grammar
+
+
+
 flagParamBoolParser :: String -> Either String Bool
 flagParamBoolParser s
-    | s == "true"   = Right True
-    | s == "false"  = Right False
-    | otherwise     = Left "Bool expected"
+    | s == "true"  || s == "True"   = Right True
+    | s == "false" || s == "False"  = Right False
+    | otherwise                     = Left "Bool expected"
+
+toSymm :: Bool -> TM -> TM
+toSymm True = symDetTM
+toSymm False = symTM
+
+flagParamExampleParser :: String -> Either String Grammar
+flagParamExampleParser s
+    | s == "one"    = Right testGrammar
+    | s == "a*"     = Right epsTestGrammar
+    | s == "dyck"   = Right ab2TestGrammar
+    | otherwise     = Left "Example name expected"
+
+flagParamOutParser :: String -> Either String String
+flagParamOutParser s
+    | isSuffixOf ".tex" s   = Right s
+    | otherwise             = Right $ s ++ ".tex"
 
 main :: IO()
 main = defaultMain $ do 
     programName "print-results"
-    programDescription "printing experiments result"
-    flag_param <- flagParam (FlagShort 'd' <> FlagLong "is_det") (FlagRequired flagParamBoolParser)
+    programDescription "Printing experiments result."
+    is_det_flag_param <- flagParam (FlagShort 'd' 
+                                    <> FlagLong "is_det" 
+                                    <> FlagDescription "The flag corresponds to which symmetrization of the Turing machine should be used, deterministic or non-deterministic.\ 
+                                                        \ For deterministic use argument \"true\", for non use \"false\".") 
+                                        (FlagRequired flagParamBoolParser)
+    print_example_flag_param <- flagParam (FlagShort 'p' 
+                                            <> FlagLong "print_example" 
+                                            <> FlagDescription "With this flag you can specify which grammar should be printed in LaTeX on every transformation step. \
+                                            \\"one\" --- one rule grammar, \"a*\" --- grammar for language A with Kleene star, \"dyck\" --- Dyck language grammar. \
+                                            \If this flag is not used, numerical results of experiments will be displayed.") 
+                                                (FlagRequired flagParamExampleParser)
+    out_flag_param <- flagParam (FlagShort 'o' 
+                                <> FlagDescription "With this flag, you can specify an output filename.") 
+                                    (FlagRequired flagParamOutParser)
     action $ \toParam -> do
-        case toParam flag_param of
-            (Just True) -> printExperiments True
-            (Just False) -> printExperiments False
-            Nothing -> putStrLn "Expected a paramater"
+        case (toParam is_det_flag_param, toParam print_example_flag_param, toParam out_flag_param) of
+            (Just is_det, Just grammar, Just outFileName) -> printExample is_det grammar outFileName
+            (Just is_det, Just grammar, Nothing) -> printExample is_det grammar "out.tex"
+            (Just is_det, Nothing, _) -> printExperiments is_det
+            (Nothing, _, _) -> putStrLn "Expected a \"is_det\" paramater"
 
 
 symSmallMachine :: TM
