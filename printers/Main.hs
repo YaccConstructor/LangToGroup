@@ -229,6 +229,18 @@ printExperiments is_det = do
         putStrLn $ "Dyck"
         printCount ab2TestGrammar is_det
 
+printPresentationGap :: Bool -> Grammar -> String -> IO()
+printPresentationGap is_det grammar outFileName = do
+    let symm = toSymm is_det
+    let (sm, accessWord, _) = tm2sm $ symm $ cfg2tm grammar
+    let gr@(GR (a, _)) = sm2gr (sm, accessWord)
+    let genmap = Map.fromList $ zip (Set.toList a) $ map ((++) "f." . show) [1..]
+    do fhandle <- openFile outFileName WriteMode
+       writeGap gr fhandle genmap
+       hFlush fhandle
+       hClose fhandle
+    
+
 printExample :: Bool -> Grammar -> String -> IO()
 printExample is_det grammar outFileName = renderFile outFileName exampleLatex
     where
@@ -287,12 +299,18 @@ main = defaultMain $ do
     out_flag_param <- flagParam (FlagShort 'o' 
                                 <> FlagDescription "With this flag, you can specify an output filename.") 
                                     (FlagRequired flagParamOutParser)
+    print_gap_flag <- flag (FlagShort 'G' 
+                            <> FlagDescription "The flag corresponds for printing a group presentation to the Gap-format file.")
     action $ \toParam -> do
-        case (toParam is_det_flag_param, toParam print_example_flag_param, toParam out_flag_param) of
-            (Just is_det, Just grammar, Just outFileName) -> printExample is_det grammar outFileName
-            (Just is_det, Just grammar, Nothing) -> printExample is_det grammar "out.tex"
-            (Just is_det, Nothing, _) -> printExperiments is_det
-            (Nothing, _, _) -> putStrLn "Expected a \"is_det\" paramater"
+        case (toParam is_det_flag_param, toParam print_example_flag_param, toParam out_flag_param, toParam print_gap_flag) of
+            (Just is_det, Just grammar, Just outFileName, True) -> printPresentationGap is_det grammar outFileName
+            (Just is_det, Just grammar, Nothing, True) -> printPresentationGap is_det grammar "out.txt"
+            (Just is_det, Just grammar, Just outFileName, False) -> printExample is_det grammar outFileName
+            (Just is_det, Just grammar, Nothing, False) -> printExample is_det grammar "out.tex"
+            (Just is_det, Nothing, Nothing, False) -> printExperiments is_det
+            (Nothing, _, _, _) -> putStrLn "Expected a \"is_det\" paramater"
+            (Just _, Nothing, Nothing, True) -> putStrLn "Expected a \"p\" paramater"
+            (Just _, Nothing, Just _, _) -> putStrLn "Expected a \"p\" paramater"
 
 
 symSmallMachine :: TM
@@ -490,7 +508,7 @@ ab2TestGrammar = grammar where
     b1 = Nonterminal "D"
     grammar =
         Grammar(
-            (Set.fromList [s, s1, aN, bN]),
+            (Set.fromList [s, s1, aN, bN, b1]),
             (Set.fromList [a, b]),
             (Set.fromList [
                 GrammarType.Relation (s, [GrammarType.N aN, GrammarType.N s1]),
