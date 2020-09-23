@@ -38,3 +38,11 @@ For example,
 ``stack exec -- LangToGroup-printer --is_det true --print_example one``
 
 Output filename can be specified by ``-o <filename>`` flag.
+
+## Printing example group presentation in Gap-format file
+For this you can use ``-G`` flag without a parameter, but with ``--is_det <bool>`` and ``--print_example <grammar>`` flags.
+Also, output filename can be specified by ``-o <filename>`` flag, if it does not speccified it been printing with default filename "out.txt".
+
+For example, following prints in "out.txt" a group presentation, which obtained from Dyck language grammar using nondeterministic symmetrization: 
+
+``stack exec -- LangToGroup-printer -G --is_det false --print_example dyck``
