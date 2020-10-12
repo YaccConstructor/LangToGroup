@@ -33,6 +33,7 @@ resolver: lts-12.13
 #  subdirs:
 #  - auto-update
 #  - wai
+
 packages:
 - .
 

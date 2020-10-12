@@ -30,6 +30,7 @@ dependencies:
 - graphviz
 - text
 - bytestring
+- megaparsec
 
 ghc-options: 
     -Wall

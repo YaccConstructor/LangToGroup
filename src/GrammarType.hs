@@ -6,12 +6,16 @@ module GrammarType where
 
 import Data.Set (Set)
 
+-- |'Operand' is a
+data Operand = Conjunction | Negation
+	deriving (Eq, Ord)
+
 -- |'Terminal' is a type that represents terminal in the formal grammar 'Grammar'.
 newtype Terminal = Terminal String
     deriving (Eq, Ord)
 
 -- |'Nonterminal' is a type that represents nonterminal in the formal grammar 'Grammar'.
-newtype Nonterminal = Nonterminal String
+data Nonterminal = Nonterminal String | BooleanNonterminal String Operand
     deriving (Eq, Ord)
 
 -- |'Symbol' represents symbol that can be appear in right part of the 'Relation'.
@@ -36,3 +40,4 @@ newtype Relation = Relation (Nonterminal, [Symbol])
 -- |This type we using to represent a context-free formal grammar. 
 newtype Grammar = Grammar (Set Nonterminal, Set Terminal, Set Relation, StartSymbol)
     deriving (Eq, Ord)
+	
