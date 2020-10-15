@@ -8,15 +8,15 @@ import Data.Set (Set)
 
 -- |'Operand' is a
 data Operand = Conjunction | Negation
-	deriving (Eq, Ord)
+    deriving (Eq, Ord, Show)
 
 -- |'Terminal' is a type that represents terminal in the formal grammar 'Grammar'.
 newtype Terminal = Terminal String
-    deriving (Eq, Ord)
+    deriving (Eq, Ord, Show)
 
 -- |'Nonterminal' is a type that represents nonterminal in the formal grammar 'Grammar'.
 data Nonterminal = Nonterminal String | BooleanNonterminal String Operand
-    deriving (Eq, Ord)
+    deriving (Eq, Ord, Show)
 
 -- |'Symbol' represents symbol that can be appear in right part of the 'Relation'.
 --
@@ -26,7 +26,7 @@ data Nonterminal = Nonterminal String | BooleanNonterminal String Operand
 --
 -- And 'Eps' is for empty symbol, epsilon. 
 data Symbol = T Terminal | N Nonterminal | Eps
-    deriving (Eq, Ord)
+    deriving (Eq, Ord, Show)
 
 -- |This type is synonym 'Nonterminal' and used in order to separate 'StartSymbol' from normal 'Nonterminal'.
 type StartSymbol = Nonterminal
@@ -35,9 +35,9 @@ type StartSymbol = Nonterminal
 --
 -- Notice that rule in context-free form. 
 newtype Relation = Relation (Nonterminal, [Symbol])
-    deriving (Eq, Ord)
+    deriving (Eq, Ord, Show)
 
 -- |This type we using to represent a context-free formal grammar. 
 newtype Grammar = Grammar (Set Nonterminal, Set Terminal, Set Relation, StartSymbol)
-    deriving (Eq, Ord)
-	
+    deriving (Eq, Ord, Show)
+    
