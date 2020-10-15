@@ -6,21 +6,37 @@ import Text.Megaparsec.Char
 import Data.Text (Text)
 import Data.Void
 import Data.Functor
+import Data.Set (Set)
+import qualified Data.Set as Set
 
 import GrammarType
 
 type Parser = Parsec Void Text
 
+pNonterminal :: Parser Nonterminal
+pNonterminal = Nonterminal <$> ((++) <$> ((++) <$> (some upperChar) <*> (many lowerChar)) <*> (many digitChar))
 
-pStartSymbol :: Parser String
-pStartSymbol = (++) <$> (some upperChar) <*> (many lowerChar)
+pTerminal :: Parser Terminal
+pTerminal = Terminal <$> ((++) <$> (some lowerChar) <*> (many digitChar))
 
-pGrammar :: Parser StartSymbol
+pWord :: Parser [Symbol]
+pWord = (:) <$> (T <$> pTerminal) <*> (pure [])
+
+pRelations :: Parser (Set Relation)
+pRelations = do
+	nonterminal <- pNonterminal
+	void ("->")
+	symbols <- pWord
+	relations <- Set.insert <$> (Relation <$>  (pure (nonterminal, symbols))) <*> (pure Set.empty)
+	return relations
+
+pGrammar :: Parser Grammar
 pGrammar = do
-	startSymbol <- pStartSymbol
-	void (char ':')
-	return (Nonterminal startSymbol)
+	startSymbol <- pNonterminal
+	void (char ';')
+	relations <- pRelations
+	grammar <- (Grammar <$> pure (Set.empty, Set.empty, relations, startSymbol))
+	return grammar
 
---temporary added deriving show in Nonterminal in GrammarType module
-main = do parseTest (pGrammar <* eof) "Sba:"
---main = do runParser(pGrammar <* eof) "" "Sba:"
+--temporary added deriving show to all types in GrammarType module
+main = do parseTest (pGrammar <* eof) "Sba;S->a"
