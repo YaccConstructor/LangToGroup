@@ -22,33 +22,30 @@ pNonterminal = Nonterminal <$> ((++) <$> ((++) <$> ((:) <$> upperChar <*> (pure 
 pTerminal :: Parser Terminal
 pTerminal = Terminal <$> ((++) <$> (some lowerChar) <*> (many digitChar))
 
-pword' = (many (void " " >> (T <$> pTerminal <|> N <$> pNonterminal))) <|> ((:) <$> pEpsilon <*> (pure []))
-
-{---pword' = do
-    word <- (++) <$> many (try ((T <$> pTerminal <|> (N <$> pNonterminal)) <* void " ")) <*> (pure [])
-    word <- count' 0 1 pEpsilon
-    return word --}
-    --nonEmptyWord = (++) <$> many ((T <$> pTerminal <|> N <$> pNonterminal) <* void (" ")) <*> (count' 0 1 pEpsilon)
-    --emptyWord = void " " >> (pure []) <$> pEpsilon
+pword' = (many (void " " *> (T <$> pTerminal <|> N <$> pNonterminal))) <|> ((:) <$> pEpsilon <*> (pure []))
 
 pWord :: Parser [Symbol]
 pWord = (++) <$> pword' <*> (pure [])
 
+pRelation :: Parser Relation
+pRelation = do
+     nonterminal <- pNonterminal
+     void ("->")
+     symbols <- pWord
+     relation <- (Relation <$>  (pure (nonterminal, symbols)))
+     return relation
+
 pRelations :: Parser (Set Relation)
 pRelations = do
-    nonterminal <- pNonterminal
-    void ("->")
-    symbols <- pWord
-    relations <- Set.insert <$> (Relation <$>  (pure (nonterminal, symbols))) <*> (pure Set.empty)
-    return relations
+     relations <- Set.fromList <$> many (void (";") *> pRelation) {--<*> (pure Set.empty)-}
+     return relations
 
 pGrammar :: Parser Grammar
 pGrammar = do
     startSymbol <- pNonterminal
-    void (char ';')
     relations <- pRelations
     grammar <- (Grammar <$> pure (Set.empty, Set.empty, relations, startSymbol))
     return grammar
 
 --temporary added deriving show to all types in GrammarType module
-main = do parseTest (pGrammar <* eof) "Sa;S-> Abc bbc"
+main = do parseTest (pGrammar <* eof) "Sa;S-> Abc bbc;A-> Bdc ce12"

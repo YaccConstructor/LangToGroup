@@ -15,7 +15,7 @@ newtype Terminal = Terminal String
     deriving (Eq, Ord, Show)
 
 -- |'Nonterminal' is a type that represents nonterminal in the formal grammar 'Grammar'.
-data Nonterminal = Nonterminal String | BooleanNonterminal String Operand
+data Nonterminal = Nonterminal String
     deriving (Eq, Ord, Show)
 
 -- |'Symbol' represents symbol that can be appear in right part of the 'Relation'.
