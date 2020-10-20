@@ -21,37 +21,37 @@ pNonterminal :: Parser Nonterminal
 pNonterminal = Nonterminal
     <$> (
         (++)
-        <$> ((++) <$> ((:) <$> upperChar <*> (pure [])) <*> (many lowerChar))
-        <*> (many digitChar)
+        <$> ((++) <$> ((:) <$> upperChar <*> (pure [])) <*> many lowerChar)
+        <*> many digitChar
         )
 
 pTerminal :: Parser Terminal
 pTerminal = Terminal
     <$> (
         (++)
-        <$> (some lowerChar)
-        <*> (many digitChar)
+        <$> some lowerChar
+        <*> many digitChar
         )
 
-pword' = (some (void " " *> (T <$> pTerminal <|> N <$> pNonterminal)))
+pword' = some (void " " *> (T <$> pTerminal <|> N <$> pNonterminal))
          <|>
-         ((:) <$> pEpsilon <*> (pure []))
+         (:) <$> pEpsilon <*> (pure [])
 
 pWord :: Parser [Symbol]
 pWord = (++) <$> pword' <*> (pure [])
 
 pConjunction :: Parser Symbol
-pConjunction = void ("&") *> (pure (O Conjunction))
+pConjunction = void ("&") *> pure (O Conjunction)
 
 pNegation :: Parser Symbol
-pNegation = void ("!") *> (pure (O Negation))
+pNegation = void ("!") *> pure (O Negation)
 
 pVeryLongRule :: Parser [Symbol]
 pVeryLongRule = do
     symbols <- pWord
-    symbols <- (++) <$> ((concat) <$> many pPositiveConjunction) <*> (pure symbols)
+    symbols <- (++) <$> pure symbols <*> concat <$> many pPositiveConjunction
     void ("_")
-    symbols <- (++) <$> ((concat) <$> many pNegativeConjunction) <*> (pure symbols)
+    symbols <- (++) <$> pure symbols <*> concat <$> many pNegativeConjunction
     return symbols
 
 pNegativeConjunction :: Parser [Symbol]
@@ -59,34 +59,34 @@ pNegativeConjunction = do
     symbols1 <- pConjunction
     symbols2 <- pNegation
     symbols3 <- pWord
-    symbols <- pure ((++) symbols3 (symbols1 : symbols2 : []))
+    symbols <- pure ((++) (symbols1 : symbols2 : []) symbols3)
     return symbols
 
 pPositiveConjunction :: Parser [Symbol]
 pPositiveConjunction = do
     symbols <- pConjunction
-    symbols <- (++) <$> pWord <*> (pure (symbols : []))
+    symbols <- (++) <$> pure (symbols : []) <*> pWord
     return symbols
 
 pPositiveFormula :: Parser [Symbol]
 pPositiveFormula = do
     symbols <- pWord
-    symbols <- ( (++) <$> ((concat) <$> many pPositiveConjunction) <*> (pure symbols))
+    symbols <- ((++) <$> pure symbols <*> concat <$> many pPositiveConjunction)
     return symbols
 
 pNegativeFormula :: Parser [Symbol]
 pNegativeFormula = do
     symbols <- pNegation
-    symbols <- (++) <$> pWord <*> (pure (symbols : []))
-    symbols <- ( (++) <$> ((concat) <$> many pNegativeConjunction) <*> (pure symbols))
+    symbols <- (++) <$> pWord <*> pure (symbols : [])
+    symbols <- ((++) <$> pure symbols <*> concat <$> many pNegativeConjunction)
     return symbols
 
 pRelation :: Parser Relation
 pRelation = do
      nonterminal <- pNonterminal
      void ("->")
-     symbols <- dbg "rule" ( try (pVeryLongRule) <|> (pPositiveFormula) <|> (pNegativeFormula))
-     relation <- (Relation <$>  (pure (nonterminal, symbols)))
+     symbols <-  try (pVeryLongRule) <|> (pPositiveFormula) <|> (pNegativeFormula)
+     relation <- Relation <$>  pure (nonterminal, symbols)
      return relation
 
 pNonterminals :: Parser (Set Nonterminal)
@@ -112,8 +112,11 @@ pGrammar = do
     void (";")
     terminals <- pTerminals
     relations <- pRelations
-    grammar <- (Grammar <$> pure (nonterminals, terminals, relations, startSymbol))
+    grammar <- Grammar <$> pure (nonterminals, terminals, relations, startSymbol)
     return grammar
 
 --temporary added deriving show to all types in GrammarType module
-main = do parseTest (pGrammar <* eof) "Sa; S; c v b;S-> c_&! v&! b&! Eps"
+main = do
+    parseTest (pGrammar <* eof) "Sa; S; c v b;S-> c_&! v&! b&! Eps"
+    parseTest (pGrammar <* eof) "Sa; S Abc D Cr; c b;S-> c b& d e;Abc-> b;D-> Cr"
+    parseTest (pGrammar <* eof) "Sa; S A D1 Cr; c2 b;S-> c2 b& d e_&! D1;A-> b;D1-> Cr"
