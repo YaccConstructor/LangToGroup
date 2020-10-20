@@ -86,13 +86,18 @@ pRelation = do
      nonterminal <- pNonterminal
      void ("->")
      symbols <- dbg "rule" ( try (pVeryLongRule) <|> (pPositiveFormula) <|> (pNegativeFormula))
-     {---symbols <- pWord
-
-     symbols <- ( (++) <$> ((concat) <$> many pPositiveFormula) <*> (pure symbols))
-     symbols <- ((++) <$> count' 0 1 pConjunction <*> (pure symbols))
-     symbols <- (++) <$> ((concat) <$> many pNegativeFormula) <*> (pure symbols) --}
      relation <- (Relation <$>  (pure (nonterminal, symbols)))
      return relation
+
+pNonterminals :: Parser (Set Nonterminal)
+pNonterminals = do
+    nonterminals <- Set.fromList <$> ((++) <$> many (void " " *> pNonterminal) <*> (pure []))
+    return nonterminals
+
+pTerminals :: Parser (Set Terminal)
+pTerminals = do
+    terminals <- Set.fromList <$> ((++) <$> many (void " " *> pTerminal) <*> (pure []))
+    return terminals
 
 pRelations :: Parser (Set Relation)
 pRelations = do
@@ -102,10 +107,13 @@ pRelations = do
 pGrammar :: Parser Grammar
 pGrammar = do
     startSymbol <- pNonterminal
+    void (";")
+    nonterminals <- pNonterminals
+    void (";")
+    terminals <- pTerminals
     relations <- pRelations
-    grammar <- (Grammar <$> pure (Set.empty, Set.empty, relations, startSymbol))
+    grammar <- (Grammar <$> pure (nonterminals, terminals, relations, startSymbol))
     return grammar
 
 --temporary added deriving show to all types in GrammarType module
-main = do parseTest (pGrammar <* eof) "Sa;S-> c_&! v&! b"
---main = do parseTest (pGrammar <* eof) "Sa;S-> Abc bbc&! b1;S-> Eps"
+main = do parseTest (pGrammar <* eof) "Sa; S; c v b;S-> c_&! v&! b&! Eps"
