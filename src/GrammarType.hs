@@ -25,7 +25,7 @@ data Nonterminal = Nonterminal String
 -- 'N' is for 'Nonterminal'.
 --
 -- And 'Eps' is for empty symbol, epsilon. 
-data Symbol = T Terminal | N Nonterminal | Eps
+data Symbol = T Terminal | N Nonterminal | O Operand | Eps
     deriving (Eq, Ord, Show)
 
 -- |This type is synonym 'Nonterminal' and used in order to separate 'StartSymbol' from normal 'Nonterminal'.
