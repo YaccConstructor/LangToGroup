@@ -11,6 +11,8 @@ import Data.Functor
 import Data.Set (Set)
 import qualified Data.Set as Set
 
+import System.IO
+
 import GrammarType
 
 type Parser = Parsec Void Text
@@ -102,8 +104,8 @@ pTerminals = do
 
 pRelations :: Parser (Set Relation)
 pRelations = do
-     relations <- Set.fromList <$> many (void (";") *> pRelation)
-     return relations
+    relations <- Set.fromList <$> many (void (";") *> pRelation)
+    return relations
 
 pGrammar :: Parser Grammar
 pGrammar = do
@@ -116,14 +118,15 @@ pGrammar = do
     grammar <- Grammar <$> pure (nonterminals, terminals, relations, startSymbol)
     return grammar
 
-parseFromFile p file = runParser p file <$> readFile file
+parseFromFile p errorFile grammarFile = runParser p errorFile <$> ((fromString) <$> readFile grammarFile)
 
 --temporary added deriving show to all types in GrammarType module
 main = do
-      content <- readFile "grammar1.txt"
-      parseTest (pGrammar <* eof) (fromString content)
-      --parseFromFile (pGrammar <* eof) "grammar1.txt"
-      --runParser (pGrammar <* eof) "errors.txt" (fromString content)
-    --parseTest (pGrammar <* eof) "Sa; S; c v b;S-> c_&! v&! b&! Eps"
-    --parseTest (pGrammar <* eof) "Sa; S Abc D Cr; c b;S-> c b& d e;Abc-> b;D-> Cr"
-    --parseTest (pGrammar <* eof) "Sa; S A D1 Cr; c2 b;S-> c2 b& d e_&! D1;A-> b;D1-> Cr"
+    putStrLn "Enter the name of file with grammar. Grammar file should be in working directory."
+    grammarFile <- getLine
+    putStrLn "Enter the name of file for saving errors during the parsing. File with errors will be created in working directory."
+    errorFile <- getLine
+    result <- parseFromFile (pGrammar <* eof) errorFile grammarFile
+    case result of
+      Left err -> hPutStrLn stderr $ "Error: " ++ show err
+      Right cs -> putStrLn (show cs)
