@@ -4,12 +4,15 @@ module GrammarReader (main) where
 import Text.Megaparsec
 import Text.Megaparsec.Char
 import Text.Megaparsec.Debug
+
 import Data.Text (Text)
 import Data.String
 import Data.Void
 import Data.Functor
 import Data.Set (Set)
 import qualified Data.Set as Set
+import Data.List
+import qualified Data.List as List
 
 import System.IO
 
@@ -120,6 +123,17 @@ pGrammar = do
 
 parseFromFile p errorFile grammarFile = runParser p errorFile <$> ((fromString) <$> readFile grammarFile)
 
+checkGrammarType :: Grammar -> GrammarType
+checkGrammarType (Grammar (_, _, setOfRelations, _)) =
+    checkGrammarType' (concat (map (\ (Relation (_, symbols)) -> symbols) (Set.toList setOfRelations)))
+
+checkGrammarType' :: [Symbol] -> GrammarType
+checkGrammarType' symbols
+    | (List.elem (O Conjunction) symbols) && (List.elem (O Negation) symbols) = Boolean
+    | (List.elem (O Conjunction) symbols) && not (List.elem (O Negation) symbols) = Conjunctive
+    | not (List.elem (O Conjunction) symbols) && not (List.elem (O Negation) symbols) = CFG
+
+
 --temporary added deriving show to all types in GrammarType module
 main = do
     putStrLn "Enter the name of file with grammar. Grammar file should be in working directory."
@@ -129,4 +143,8 @@ main = do
     result <- parseFromFile (pGrammar <* eof) errorFile grammarFile
     case result of
       Left err -> hPutStrLn stderr $ "Error: " ++ show err
-      Right cs -> putStrLn (show cs)
+      Right cs -> case (checkGrammarType cs) of
+          Boolean -> putStrLn ("boolean") -- here will be new algorithm
+          Conjunctive -> putStrLn ("conjunctive")
+          CFG -> putStrLn ("cfg")
+

@@ -1,7 +1,7 @@
 
 -- |This module represents types of formal grammar. 
 --
--- In the moment we use it to represent a context-free grammar.
+-- In the moment we use it to represent a context-free grammar, conjunctive grammar, boolean grammar.
 module GrammarType where
 
 import Data.Set (Set)
@@ -37,7 +37,9 @@ type StartSymbol = Nonterminal
 newtype Relation = Relation (Nonterminal, [Symbol])
     deriving (Eq, Ord, Show)
 
+data GrammarType = CFG | Conjunctive | Boolean
+    deriving (Eq, Ord, Show)
+
 -- |This type we using to represent a context-free formal grammar. 
 newtype Grammar = Grammar (Set Nonterminal, Set Terminal, Set Relation, StartSymbol)
     deriving (Eq, Ord, Show)
-    
