@@ -5,6 +5,7 @@ import Text.Megaparsec
 import Text.Megaparsec.Char
 import Text.Megaparsec.Debug
 import Data.Text (Text)
+import Data.String
 import Data.Void
 import Data.Functor
 import Data.Set (Set)
@@ -115,8 +116,14 @@ pGrammar = do
     grammar <- Grammar <$> pure (nonterminals, terminals, relations, startSymbol)
     return grammar
 
+parseFromFile p file = runParser p file <$> readFile file
+
 --temporary added deriving show to all types in GrammarType module
 main = do
-    parseTest (pGrammar <* eof) "Sa; S; c v b;S-> c_&! v&! b&! Eps"
-    parseTest (pGrammar <* eof) "Sa; S Abc D Cr; c b;S-> c b& d e;Abc-> b;D-> Cr"
-    parseTest (pGrammar <* eof) "Sa; S A D1 Cr; c2 b;S-> c2 b& d e_&! D1;A-> b;D1-> Cr"
+      content <- readFile "grammar1.txt"
+      parseTest (pGrammar <* eof) (fromString content)
+      --parseFromFile (pGrammar <* eof) "grammar1.txt"
+      --runParser (pGrammar <* eof) "errors.txt" (fromString content)
+    --parseTest (pGrammar <* eof) "Sa; S; c v b;S-> c_&! v&! b&! Eps"
+    --parseTest (pGrammar <* eof) "Sa; S Abc D Cr; c b;S-> c b& d e;Abc-> b;D-> Cr"
+    --parseTest (pGrammar <* eof) "Sa; S A D1 Cr; c2 b;S-> c2 b& d e_&! D1;A-> b;D1-> Cr"
