@@ -1,1 +1,1 @@
-S; S; a;S-> a
+S; S B; a b;S-> a B;B-> b

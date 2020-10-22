@@ -177,22 +177,23 @@ main = do
       Left err -> hPutStrLn stderr $ "Error: " ++ show err
       Right cs -> case (checkGrammarType cs) of
           Boolean -> putStrLn ("Boolean " ++ show cs) -- here will be new algorithm
-          Conjunctive -> putStrLn ("Conjunctive" ++ show cs)
-          CFG -> putStrLn ("cfg" ++ show cs ++ "\n" ++ show (cfg2tm cs))
+          Conjunctive -> putStrLn ("Conjunctive " ++ show cs)
+          CFG -> putStrLn ("CFG " ++ show cs ++ "\n" ++ show (cfg2tm cs))
 
 
 -- |Valid examples of input
 -- 1) context-free grammar
--- 'S; S A D1 Cr; c2 b r3;S-> c2 D1 r3;A-> b;D1-> Cr'
--- where 'S' - start symbol, 'S A D1 Cr' - set of nonterminals, 'c2 b r3' - set of terminals,
--- 'S-> c2 D1 r3;A-> b;D1-> Cr' - relations.
+-- 'S; S A D1; c2 b e;S-> c2 D1 A;A-> b;D1-> e'
+-- where 'S' - start symbol, 'S A D1' - set of nonterminals, 'c2 b e' - set of terminals,
+-- 'S-> c2 D1 A;A-> b;D1-> e' - relations.
+-- Another valid example: 'S; S B; a b;S-> a B;B-> b'
 -- 2) conjunctive grammar
--- 'S; S Abc D Cr; c b d e;S-> c b& d e;Abc-> b;D-> Cr'
+-- 'S; S Abc D Cr; c b d e;S-> D c& d Abc;Abc-> b;D-> Cr;Cr-> e'
 -- where 'S' - start symbol, 'S Abc D Cr' - set of nonterminals, 'c b d e' - set of terminals,
--- 'S-> c b& d e;Abc-> b;D-> Cr' - relations.
+-- 'S-> D c& d Abc;Abc-> b;D-> Cr;Cr-> e' - relations.
 -- 3) boolean grammar
--- 'S; S; c v b;S-> c_&! v&! b&! Eps'
--- where 'S' - start symbol, 'S' - set of nonterminals, 'c v b' - set of terminals,
--- 'S-> c_&! v&! b&! Eps' - relation, '_' - separator, that marks the end of positive formula.
+-- 'S; S Sa; c v b;S-> c_&! v&! Sa&! Eps;Sa->! b'
+-- where 'S' - start symbol, 'S 'Sa - set of nonterminals, 'c v b' - set of terminals,
+-- 'S-> c_&! v&! Sa&! Eps;Sa->! b' - relation, '_' - separator, that marks the end of positive formula.
 -- Another valid examples for boolean grammar:
--- 'Sa; S; c v b;S->! c&! v&! b&! Eps', 'S; S Sa; c v b;S-> c_&! v&! b&! Eps;Sa->! b'
+-- 'S; S; c v b;S->! c&! v&! b&! Eps', 'S; S Sa; c v b;S-> c_&! v&! Sa&! Eps;Sa->! b'
