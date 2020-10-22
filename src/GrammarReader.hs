@@ -122,7 +122,7 @@ pPositiveFormula = do
 pNegativeFormula :: Parser [Symbol]
 pNegativeFormula = do
     symbols <- pNegation
-    symbols <- (++) <$> pWord <*> pure (symbols : [])
+    symbols <- (++) <$> pure (symbols : []) <*> pWord
     symbols <- ((++) <$> pure symbols <*> concat <$> many pNegativeConjunction)
     return symbols
 
@@ -175,11 +175,9 @@ main = do
     case result of
       Left err -> hPutStrLn stderr $ "Error: " ++ show err
       Right cs -> case (checkGrammarType cs) of
-          Boolean -> putStrLn ("boolean") -- here will be new algorithm
-          Conjunctive -> putStrLn ("conjunctive")
-          CFG -> do
-              putStrLn ("cfg")
-              (putStrLn . show) cs
+          Boolean -> putStrLn ("Boolean " ++ show cs) -- here will be new algorithm
+          Conjunctive -> putStrLn ("Conjunctive" ++ show cs)
+          CFG -> putStrLn ("cfg" ++ show cs)
 
 -- |Valid examples of input
 -- 1) context-free grammar
@@ -194,3 +192,5 @@ main = do
 -- 'S; S; c v b;S-> c_&! v&! b&! Eps'
 -- where 'S' - start symbol, 'S' - set of nonterminals, 'c v b' - set of terminals,
 -- 'S-> c_&! v&! b&! Eps' - relation, '_' - separator, that marks the end of positive formula.
+-- Another valid examples for boolean grammar:
+-- 'Sa; S; c v b;S->! c&! v&! b&! Eps', 'S; S Sa; c v b;S-> c_&! v&! b&! Eps;Sa->! b'
