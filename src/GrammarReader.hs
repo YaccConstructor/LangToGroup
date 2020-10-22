@@ -22,6 +22,7 @@ import qualified Data.List as List
 import System.IO
 
 import GrammarType
+import CFG2TM
 
 -- |Parser part.
 type Parser = Parsec Void Text
@@ -177,7 +178,8 @@ main = do
       Right cs -> case (checkGrammarType cs) of
           Boolean -> putStrLn ("Boolean " ++ show cs) -- here will be new algorithm
           Conjunctive -> putStrLn ("Conjunctive" ++ show cs)
-          CFG -> putStrLn ("cfg" ++ show cs)
+          CFG -> putStrLn ("cfg" ++ show cs ++ "\n" ++ show (cfg2tm cs))
+
 
 -- |Valid examples of input
 -- 1) context-free grammar
