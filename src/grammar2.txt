@@ -1,0 +1,1 @@
+S; S Abc D Cr; c b d e;S-> c b& d e;Abc-> b;D-> Cr

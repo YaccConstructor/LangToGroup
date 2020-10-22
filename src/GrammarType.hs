@@ -6,7 +6,7 @@ module GrammarType where
 
 import Data.Set (Set)
 
--- |'Operand' is a
+-- |'Operand' is a type that represents logical operations in 'Boolean' or 'Conjunctive' grammars.
 data Operand = Conjunction | Negation
     deriving (Eq, Ord, Show)
 
@@ -24,7 +24,9 @@ data Nonterminal = Nonterminal String
 --
 -- 'N' is for 'Nonterminal'.
 --
--- And 'Eps' is for empty symbol, epsilon. 
+-- 'O' is for 'Operand'.
+--
+-- And 'Eps' is for empty symbol, epsilon.
 data Symbol = T Terminal | N Nonterminal | O Operand | Eps
     deriving (Eq, Ord, Show)
 
@@ -37,6 +39,7 @@ type StartSymbol = Nonterminal
 newtype Relation = Relation (Nonterminal, [Symbol])
     deriving (Eq, Ord, Show)
 
+-- |This type we using to classify grammars.
 data GrammarType = CFG | Conjunctive | Boolean
     deriving (Eq, Ord, Show)
 

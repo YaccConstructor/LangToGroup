@@ -1,0 +1,1 @@
+S; S A D1 Cr; c2 b r3;S-> c2 D1 r3;A-> b;D1-> Cr
