@@ -15,7 +15,7 @@ newtype Terminal = Terminal String
     deriving (Eq, Ord, Show)
 
 -- |'Nonterminal' is a type that represents nonterminal in the formal grammar 'Grammar'.
-data Nonterminal = Nonterminal String
+newtype Nonterminal = Nonterminal String
     deriving (Eq, Ord, Show)
 
 -- |'Symbol' represents symbol that can be appear in right part of the 'Relation'.
@@ -35,7 +35,7 @@ type StartSymbol = Nonterminal
 
 -- |'Relation' is a rule of 'Grammar'. 
 --
--- Notice that rule in context-free form. 
+-- Rule might be in context-free, conjunctive or boolean form.
 newtype Relation = Relation (Nonterminal, [Symbol])
     deriving (Eq, Ord, Show)
 
@@ -43,6 +43,6 @@ newtype Relation = Relation (Nonterminal, [Symbol])
 data GrammarType = CFG | Conjunctive | Boolean
     deriving (Eq, Ord, Show)
 
--- |This type we using to represent a context-free formal grammar. 
+-- |This type we using to represent a formal grammar.
 newtype Grammar = Grammar (Set Nonterminal, Set Terminal, Set Relation, StartSymbol)
     deriving (Eq, Ord, Show)
