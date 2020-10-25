@@ -234,9 +234,10 @@ printPresentationGap is_det grammar outFileName = do
     let symm = toSymm is_det
     let (sm, accessWord, _) = tm2sm $ symm $ cfg2tm grammar
     let gr@(GR (a, _)) = sm2gr (sm, accessWord)
+    let hub = hubRelation accessWord
     let genmap = Map.fromList $ zip (Set.toList a) $ map ((++) "f." . show) [1..]
     do fhandle <- openFile outFileName WriteMode
-       writeGap gr fhandle genmap
+       writeGap gr fhandle genmap hub
        hFlush fhandle
        hClose fhandle
     

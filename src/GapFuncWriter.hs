@@ -23,13 +23,15 @@ writeRelations relations genmap handle =
     where   
             mdata = map (foldl1 (\x y -> x ++ "*" ++ y) . (map (printSmb genmap)) . revertRel) relations
 
-writeGap :: GR -> Handle -> Map.Map A String -> IO ()
-writeGap (GR (g, r)) handle genmap =     
+writeGap :: GR -> Handle -> Map.Map A String -> [SmbR] -> IO ()
+writeGap (GR (g, r)) handle genmap hub =     
 --            do  hPutStr handle "local f, g, p;\n"
             do  hPutStr handle "local f, g;\n"
                 hPutStr handle "f := FreeGroup( "
                 writeGenerators generators genmap handle
                 hPutStr handle " );\n"
+                hFlush handle
+                hPutStr handle ("hub := " ++ hubstr ++ ";\n")
                 hFlush handle
                 hPutStr handle "g := f / [ "
                 writeRelations relations genmap handle
@@ -42,6 +44,7 @@ writeGap (GR (g, r)) handle genmap =
                     where 
                         generators = Set.toList g
                         relations = Set.toList r
+                        hubstr = foldl1 (\x y -> x ++ "*" ++ y) $ map (printSmb genmap) hub
 
 writeWord :: [SmbR] -> Handle -> Map.Map A String -> IO()
 writeWord as handle genmap = 
