@@ -97,8 +97,7 @@ pRelation = do
 pVeryLongRule :: Parser [Symbol]
 pVeryLongRule = do
     symbols <- pWord
-    symbols <- (++) <$> pure symbols <*> concat <$> many pPositiveConjunction
-    void ("_")
+    symbols <- (++) <$> pure symbols <*> concat <$> (many (try pPositiveConjunction))
     symbols <- (++) <$> pure symbols <*> concat <$> many pNegativeConjunction
     return symbols
 
@@ -112,7 +111,7 @@ pNegativeConjunction = do
 
 pPositiveConjunction :: Parser [Symbol]
 pPositiveConjunction = do
-    symbols <- pConjunction
+    symbols <- (try pConjunction)
     symbols <- (++) <$> pure (symbols : []) <*> pWord
     return symbols
 
@@ -175,7 +174,8 @@ main = do
     grammarFile <- getLine
     putStrLn "Enter the full path of file for saving errors during the parsing. "
     errorFile <- getLine
-    result <- parseFromFile (pGrammar <* eof) errorFile grammarFile
+    --parseTest (pGrammar <* eof) "S; S Sa; c v b\nS-> c&! v&! Sa&! Eps\nSa->! b\n"
+    result <- (parseFromFile (pGrammar <* eof) errorFile grammarFile)
     case result of
       Left err -> hPutStrLn stderr $ "Error: " ++ show err
       Right cs -> case (checkGrammarType cs) of
@@ -186,17 +186,34 @@ main = do
 
 -- |Valid examples of input
 -- 1) context-free grammar
--- 'S; S A D1; c2 b e;S-> c2 D1 A;A-> b;D1-> e'
+-- S; S A D1; c2 b e
+-- S-> c2 D1 A
+-- A-> b
+-- D1-> e
 -- where 'S' - start symbol, 'S A D1' - set of nonterminals, 'c2 b e' - set of terminals,
--- 'S-> c2 D1 A;A-> b;D1-> e' - relations.
--- Another valid example: 'S; S B; a b;S-> a B;B-> b'
+-- S-> c2 D1 A, A-> b, D1-> e' - relations.
+-- Another valid example: 'S; S B; a b
+-- S-> a B
+-- B-> b
 -- 2) conjunctive grammar
--- 'S; S Abc D Cr; c b d e;S-> D c& d Abc;Abc-> b;D-> Cr;Cr-> e'
+-- S; S Abc D Cr; c b d e
+-- S-> D c& d Abc
+-- Abc-> b
+-- D-> Cr
+-- Cr-> e
 -- where 'S' - start symbol, 'S Abc D Cr' - set of nonterminals, 'c b d e' - set of terminals,
--- 'S-> D c& d Abc;Abc-> b;D-> Cr;Cr-> e' - relations.
+-- S-> D c& d Abc, Abc-> b, D-> Cr, Cr-> e' - relations.
 -- 3) boolean grammar
--- 'S; S Sa; c v b;S-> c_&! v&! Sa&! Eps;Sa->! b'
+-- S; S Sa; c v b
+-- S-> c_&! v&! Sa&! Eps
+-- Sa->! b
 -- where 'S' - start symbol, 'S 'Sa - set of nonterminals, 'c v b' - set of terminals,
 -- 'S-> c_&! v&! Sa&! Eps;Sa->! b' - relation, '_' - separator, that marks the end of positive formula.
 -- Another valid examples for boolean grammar:
--- 'S; S; c v b;S->! c&! v&! b&! Eps', 'S; S Sa; c v b;S-> c_&! v&! Sa&! Eps;Sa->! b'
+-- 1)
+-- S; S; c v b
+-- S->! c&! v&! b&! Eps
+-- 2)
+-- S; S Sa; c v b
+-- S-> c_&! v&! Sa&! Eps
+-- Sa->! b'

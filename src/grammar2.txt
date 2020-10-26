@@ -1,1 +1,5 @@
-S; S Abc D Cr; c b d e;S-> D c& d Abc;Abc-> b;D-> Cr;Cr-> e
+S; S Abc D Cr; c b d e
+S-> D c& d Abc
+Abc-> b
+D-> Cr
+Cr-> e
