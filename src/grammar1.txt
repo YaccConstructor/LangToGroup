@@ -1,1 +1,3 @@
-S; S Sa; c v b;S-> c_&! v&! Sa&! Eps;Sa->! b
+S; S Sa; c v b
+S-> c_&! v&! Sa&! Eps
+Sa->! b

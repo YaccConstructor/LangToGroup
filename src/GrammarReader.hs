@@ -66,7 +66,9 @@ pword' = some (void " " *> (T <$> pTerminal <|> N <$> pNonterminal))
 -- |Parsing relations part.
 pRelations :: Parser (Set Relation)
 pRelations = do
-    relations <- Set.fromList <$> many (void (";") *> pRelation)
+    firstRelation <- pRelation
+    relations <- Set.fromList <$> (many (void ("\n") *> pRelation))
+    relations <- pure (Set.insert firstRelation relations)
     return relations
 
 -- |Parser for one relation. Relation is in such form : Nonterminal -> [Symbol],
@@ -148,6 +150,7 @@ pGrammar = do
     nonterminals <- pNonterminals
     void (";")
     terminals <- pTerminals
+    void ("\n")
     relations <- pRelations
     grammar <- Grammar <$> pure (nonterminals, terminals, relations, startSymbol)
     return grammar
@@ -168,9 +171,9 @@ checkGrammarType' symbols
 
 --temporary added deriving show to all types in GrammarType module
 main = do
-    putStrLn "Enter the name of file with grammar. Grammar file should be in working directory."
+    putStrLn "Enter the full path of file with grammar. "
     grammarFile <- getLine
-    putStrLn "Enter the name of file for saving errors during the parsing. File with errors will be created in working directory."
+    putStrLn "Enter the full path of file for saving errors during the parsing. "
     errorFile <- getLine
     result <- parseFromFile (pGrammar <* eof) errorFile grammarFile
     case result of
