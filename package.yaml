@@ -31,6 +31,7 @@ dependencies:
 - text
 - bytestring
 - megaparsec
+- parseargs
 
 ghc-options: 
     -Wall
@@ -51,7 +52,13 @@ executables:
     dependencies:
     - LangToGroup
     - matrix >= 0.3.6.1
-    - cli
+    - cli  
+   
+   
+  LangToGroup-user:
+    main:                Main.hs
+    source-dirs:         src
+    
 
 tests:
   LangToGroup-test:

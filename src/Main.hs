@@ -1,4 +1,4 @@
-module Executor where
+module Main where
 
 import System.Console.ParseArgs
 
