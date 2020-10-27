@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
--- |This module represents functionality for reading grammar texts from files and determing their type.
+-- |This module represents functionality for reading grammar definitions from given files and determing their type.
 --
 -- Depending on the type of grammar, specific algorithm for building a group will be executed.
 
@@ -187,8 +187,9 @@ convertGrammar2TM grammarFile errorFile = do
 -- A-> b
 -- D1-> e
 -- where 'S' - start symbol, 'S A D1' - set of nonterminals, 'c2 b e' - set of terminals,
--- S-> c2 D1 A, A-> b, D1-> e' - relations.
--- Another valid example: 'S; S B; a b
+-- 'S-> c2 D1 A, A-> b, D1-> e' - relations.
+-- Another valid example:
+-- S; S B; a b
 -- S-> a B
 -- B-> b
 -- 2) conjunctive grammar
@@ -198,18 +199,14 @@ convertGrammar2TM grammarFile errorFile = do
 -- D-> Cr
 -- Cr-> e
 -- where 'S' - start symbol, 'S Abc D Cr' - set of nonterminals, 'c b d e' - set of terminals,
--- S-> D c& d Abc, Abc-> b, D-> Cr, Cr-> e' - relations.
+-- 'S-> D c& d Abc, Abc-> b, D-> Cr, Cr-> e' - relations.
 -- 3) boolean grammar
 -- S; S Sa; c v b
--- S-> c_&! v&! Sa&! Eps
+-- S-> c&! v&! Sa&! Eps
 -- Sa->! b
 -- where 'S' - start symbol, 'S 'Sa - set of nonterminals, 'c v b' - set of terminals,
--- 'S-> c_&! v&! Sa&! Eps;Sa->! b' - relation, '_' - separator, that marks the end of positive formula.
+-- 'S-> c&! v&! Sa&! Eps;Sa->! b' - relation
 -- Another valid examples for boolean grammar:
 -- 1)
 -- S; S; c v b
 -- S->! c&! v&! b&! Eps
--- 2)
--- S; S Sa; c v b
--- S-> c_&! v&! Sa&! Eps
--- Sa->! b'

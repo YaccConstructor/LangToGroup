@@ -1,3 +1,8 @@
+
+-- |This module represents interactive mode of working with program.
+--
+-- The user can run the project on a specified file with a grammar.
+
 module Main where
 
 import System.Console.ParseArgs
@@ -8,6 +13,7 @@ data Options =
     InputFlagString | OutputFlagString
     deriving (Ord, Eq, Show)
 
+-- |List of options, which might be used for executing algorithm.
 argd :: [ Arg Options ]
 argd = [ Arg { argIndex = InputFlagString,
                argName = Just "input",
