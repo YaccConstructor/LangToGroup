@@ -4,7 +4,7 @@
 --
 -- Depending on the type of grammar, specific algorithm for building a group will be executed.
 
-module GrammarReader (main) where
+module GrammarReader (convertGrammar2TM) where
 
 import Text.Megaparsec
 import Text.Megaparsec.Char
@@ -16,10 +16,11 @@ import Data.Void
 import Data.Functor
 import Data.Set (Set)
 import qualified Data.Set as Set
-import Data.List
 import qualified Data.List as List
 
 import System.IO
+import System.Environment
+import qualified System.Environment as SE
 
 import GrammarType
 import CFG2TM
@@ -154,8 +155,6 @@ pGrammar = do
     grammar <- Grammar <$> pure (nonterminals, terminals, relations, startSymbol)
     return grammar
 
-parseFromFile p errorFile grammarFile = runParser p errorFile <$> ((fromString) <$> readFile grammarFile)
-
 -- |Method for classifying type of input grammar.
 checkGrammarType :: Grammar -> GrammarType
 checkGrammarType (Grammar (_, _, setOfRelations, _)) =
@@ -167,14 +166,11 @@ checkGrammarType' symbols
     | (List.elem (O Conjunction) symbols) && not (List.elem (O Negation) symbols) = Conjunctive
     | not (List.elem (O Conjunction) symbols) && not (List.elem (O Negation) symbols) = CFG
 
+parseFromFile p errorFileName grammarFileName = runParser p errorFileName <$> ((fromString) <$> readFile grammarFileName)
 
 --temporary added deriving show to all types in GrammarType module
-main = do
-    putStrLn "Enter the full path of file with grammar. "
-    grammarFile <- getLine
-    putStrLn "Enter the full path of file for saving errors during the parsing. "
-    errorFile <- getLine
-    --parseTest (pGrammar <* eof) "S; S Sa; c v b\nS-> c&! v&! Sa&! Eps\nSa->! b\n"
+convertGrammar2TM :: String -> String -> IO ()
+convertGrammar2TM grammarFile errorFile = do
     result <- (parseFromFile (pGrammar <* eof) errorFile grammarFile)
     case result of
       Left err -> hPutStrLn stderr $ "Error: " ++ show err

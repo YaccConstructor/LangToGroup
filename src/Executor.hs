@@ -2,6 +2,8 @@ module Executor where
 
 import System.Console.ParseArgs
 
+import GrammarReader
+
 data Options =
     InputFlagString | OutputFlagString
     deriving (Ord, Eq, Show)
@@ -23,10 +25,6 @@ main = do
     args <- parseArgsIO
           (ArgsParseControl (ArgsComplete) ArgsSoftDash)
           argd
-    putStrLn "parse successful"
     case (getArg args InputFlagString) of
-        Just s -> putStrLn ("saw input string " ++ s)
-        Nothing -> return ()
-    case (getArg args OutputFlagString) of
-            Just s -> putStrLn ("saw output string " ++ s)
-            Nothing -> return ()
+          Just input -> case (getArg args OutputFlagString) of
+                          Just output -> convertGrammar2TM input output
