@@ -1,0 +1,4 @@
+S; S A D1; c2 b e
+S-> c2 D1 A
+A-> b
+D1-> e
