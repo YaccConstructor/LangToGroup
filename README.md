@@ -52,3 +52,25 @@ For this you should use ``-i <filepath>`` flag for configuring full path to inpu
 So, for printing turing machine from given custom grammar file:
 
 ``stack exec -- stack exec -- LangToGroup-user -i <filepath> -o <filepath>``
+
+Examples of grammar files given below.
+
+**Boolean grammar**
+
+    S; S Sa; c v b
+    S-> c&! v&! Sa&! Eps
+    Sa->! b
+    S-> a& b&! v&! Sa&! Eps
+**Conjunctive grammar**
+
+    S; S Abc D Cr; c b d e
+    S-> D c& d Abc
+    Abc-> b
+    D-> Cr
+    Cr-> e
+**Context-free grammar**
+
+    S; S A D1; c2 b e
+    S-> c2 D1 A
+    A-> b
+    D1-> e
