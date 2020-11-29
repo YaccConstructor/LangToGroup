@@ -10,6 +10,7 @@ import TMInterpreter
 import ConfigType
 import SMTests
 import GrTests
+import ParserTests
 
 test1Grammar :: Grammar
 test1Grammar = grammar where
@@ -74,5 +75,8 @@ main = defaultMainWithOpts
         testCase "simple sm test" smInterpretationTest,
         testCase "sm test 2" smInterpretationTest2,
         testCase "apply rule test" applyRuleTest,
-        testCase "sm2gr test" sm2grTest]
+        testCase "sm2gr test" sm2grTest,
+        testCase "custom CFG to TM" testCustomCFG,
+        testCase "custom conjunctive to TM" testCustomConjunctive,
+        testCase "custom boolean to TM" testCustomBoolean]
        mempty
