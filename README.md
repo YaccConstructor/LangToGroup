@@ -46,3 +46,31 @@ Also, output filename can be specified by ``-o <filename>`` flag, if it does not
 For example, following prints in "out.txt" a group presentation, which obtained from Dyck language grammar using nondeterministic symmetrization: 
 
 ``stack exec -- LangToGroup-printer -G --is_det false --print_example dyck``
+
+## Printing a Turing machine from a custom grammar file
+For this you should use ``-i <filepath>`` flag for configuring full path to input file with grammar and ``-o <filepath>`` for configuring full path to output file for storing possible errors.
+So, for printing turing machine from given custom grammar file:
+
+``stack exec -- stack exec -- LangToGroup-user -i <filepath> -o <filepath>``
+
+Examples of grammar files given below.
+
+**Boolean grammar**
+
+    S; S Sa; c v b
+    S-> c&! v&! Sa&! Eps
+    Sa->! b
+    S-> a& b&! v&! Sa&! Eps
+**Conjunctive grammar**
+
+    S; S Abc D Cr; c b d e
+    S-> D c& d Abc
+    Abc-> b
+    D-> Cr
+    Cr-> e
+**Context-free grammar**
+
+    S; S A D1; c2 b e
+    S-> c2 D1 A
+    A-> b
+    D1-> e

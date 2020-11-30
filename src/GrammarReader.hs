@@ -4,7 +4,7 @@
 --
 -- Depending on the type of grammar, specific algorithm for building a group will be executed.
 
-module GrammarReader (convertGrammar2TM) where
+module GrammarReader (convertGrammar2TM,parser) where
 
 import Text.Megaparsec
 import Text.Megaparsec.Char
@@ -166,12 +166,14 @@ checkGrammarType' symbols
     | (List.elem (O Conjunction) symbols) && not (List.elem (O Negation) symbols) = Conjunctive
     | not (List.elem (O Conjunction) symbols) && not (List.elem (O Negation) symbols) = CFG
 
+parser = (pGrammar <* eof)
+
 parseFromFile p errorFileName grammarFileName = runParser p errorFileName <$> ((fromString) <$> readFile grammarFileName)
 
 --temporary added deriving show to all types in GrammarType module
 convertGrammar2TM :: String -> String -> IO ()
 convertGrammar2TM grammarFile errorFile = do
-    result <- (parseFromFile (pGrammar <* eof) errorFile grammarFile)
+    result <- (parseFromFile parser errorFile grammarFile)
     case result of
       Left err -> hPutStrLn stderr $ "Error: " ++ show err
       Right cs -> case (checkGrammarType cs) of
