@@ -6,7 +6,7 @@ import SPReader
 import SPGens (toString)
 import qualified SPTypes as SP
 import GPTypes
-import Control.Monad ((>=>))
+import Control.Monad ((>=>), (=<<))
 
 element :: Int -> Element
 element = Positive . G
@@ -29,45 +29,39 @@ s_ i = do
     n <- getN
     return $ element (i + n + 2)
 
-h :: SPReader Element
-h = do
-    n <- getN
-    m <- getM
-    return $ element (n + m + 3)
-
 r_ :: Int -> SPReader Element
 r_ i = do
     n <- getN
     m <- getM
-    return $ element (i + n + m + 4)
+    return $ element (i + n + m + 3)
 
 x :: SPReader Element
 x = do
     n <- getN
     m <- getM
     l <- getL
-    return $ element (n + m + l + 5)
+    return $ element (n + m + l + 4)
 
 t :: SPReader Element
 t = do
     n <- getN
     m <- getM
     l <- getL
-    return $ element (n + m + l + 6)
+    return $ element (n + m + l + 5)
 
 k :: SPReader Element
 k = do
     n <- getN
     m <- getM
     l <- getL
-    return $ element (n + m + l + 7)
+    return $ element (n + m + l + 6)
 
 convertG :: SP.Generator -> SPReader Element
 convertG = (fromTMReader . toString) >=> fromString where
     fromString :: String -> SPReader Element
     fromString = \case
         "q"         -> q
-        "h"         -> h
+        "h"         -> s_ =<< getM
         's':'_':num -> s_ (read num)
         'q':'_':num -> q_ (read num)
 
