@@ -24,10 +24,9 @@ import qualified System.Environment as SE
 
 import GrammarType
 import CFG2TM
+import ParsingHelpers
 
 -- |Parser part.
-type Parser = Parsec Void Text
-
 
 -- |Parsers for terminal symbols in given grammar: it might be Epsilon, Nonterminal, Terminal, Conjunction or Negation
 pEpsilon :: Parser Symbol
@@ -166,9 +165,7 @@ checkGrammarType' symbols
     | (List.elem (O Conjunction) symbols) && not (List.elem (O Negation) symbols) = Conjunctive
     | not (List.elem (O Conjunction) symbols) && not (List.elem (O Negation) symbols) = CFG
 
-parser = (pGrammar <* eof)
-
-parseFromFile p errorFileName grammarFileName = runParser p errorFileName <$> ((fromString) <$> readFile grammarFileName)
+parser = makeEofParser pGrammar
 
 --temporary added deriving show to all types in GrammarType module
 convertGrammar2TM :: String -> String -> IO ()
