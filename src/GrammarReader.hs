@@ -25,6 +25,7 @@ import qualified System.Environment as SE
 import GrammarType
 import CFG2TM
 import ParsingHelpers
+import TuringMachineWriter
 
 -- |Parser part.
 
@@ -176,7 +177,7 @@ convertGrammar2TM grammarFile errorFile = do
       Right cs -> case (checkGrammarType cs) of
           Boolean -> putStrLn ("Boolean " ++ show cs) -- here will be new algorithm
           Conjunctive -> putStrLn ("Conjunctive " ++ show cs)
-          CFG -> putStrLn ("CFG " ++ show cs ++ "\n" ++ show (cfg2tm cs))
+          CFG -> putStrLn ("CFG " ++ show cs ++ "\n" ++ toTMSimulator (cfg2tm cs))
 
 
 -- |Valid examples of input
