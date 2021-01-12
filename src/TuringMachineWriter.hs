@@ -65,7 +65,6 @@ instance Show Tms where
             extCommand (alph, (TmsSingleTapeCommand ((iniSt, iniSq), (folSt, folSq, mv)))) =
                 [((iniSt, iniChar), (folSt, folChar, mv)) | iniChar <- tmssq2chars alph iniSq,
                                                             folChar <- tmssq2chars alph folSq]
-            combine :: Foldable t => t [a] -> [[a]]
             combine = foldl (\combs cur -> flip (:) <$> combs <*> cur) [[]]
             showSingleCmd :: [((State, Char), (State, Char, TmsTapeHeadMovement))] -> String
             showSingleCmd cmds = intercalate ", " (iniStateName : iniSquares) ++ "\n" ++
