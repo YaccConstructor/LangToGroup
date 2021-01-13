@@ -17,9 +17,11 @@ import TMType
 --
 -- 'ChangeTo t' is change it from anything to 't'.
 data TmsTapeSquare = Leave | ChangeFromTo Char Char | ChangeTo Char
+    deriving (Eq)
 
 -- |Type of Tms tape head movement
 data TmsTapeHeadMovement = MoveLeft | Stay | MoveRight
+    deriving (Eq)
 
 instance Show TmsTapeHeadMovement where
     show MoveLeft  = "<"
@@ -29,13 +31,16 @@ instance Show TmsTapeHeadMovement where
 -- |Type of Tms command for one tape.
 -- TmsSingleTapeCommand (action, prevState, nextState, movement).
 newtype TmsSingleTapeCommand = TmsSingleTapeCommand (TmsTapeSquare, State, State, TmsTapeHeadMovement)
+    deriving (Eq)
 
 -- |Type of Tms command for entire Turing machine.
 newtype TmsCommand = TmsCommand [TmsSingleTapeCommand]
+    deriving (Eq)
 
 -- |Type of Tms format.
--- Tms (name, initState, acceptStates, commands, tapeAlphabets).
+-- Tms            (name,   init     accept     commands,     tapeAlphabets).
 newtype Tms = Tms (String, [State], [[State]], [TmsCommand], [[Char]])
+    deriving (Eq)
 
 instance Show Tms where
     show
