@@ -27,6 +27,8 @@ import CFG2TM
 import ParsingHelpers
 import TuringMachineWriter
 
+import TMType
+
 -- |Parser part.
 
 -- |Parsers for terminal symbols in given grammar: it might be Epsilon, Nonterminal, Terminal, Conjunction or Negation
@@ -177,7 +179,9 @@ convertGrammar2TM grammarFile errorFile = do
       Right cs -> case (checkGrammarType cs) of
           Boolean -> putStrLn ("Boolean " ++ show cs) -- here will be new algorithm
           Conjunctive -> putStrLn ("Conjunctive " ++ show cs)
-          CFG -> putStrLn ("CFG " ++ show cs ++ "\n" ++ showAsTms (cfg2tm cs))
+          CFG -> putStrLn ("CFG " ++ show cs) >> case tm2tms (cfg2tm cs) of
+            Left err -> hPutStrLn stderr $ "Error: " ++ show err
+            Right tms -> putStrLn ("\n" ++ show tms)
 
 
 -- |Valid examples of input
