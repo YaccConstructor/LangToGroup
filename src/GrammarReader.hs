@@ -27,8 +27,6 @@ import CFG2TM
 import ParsingHelpers
 import TuringMachineWriter
 
-import TMType
-
 -- |Parser part.
 
 -- |Parsers for terminal symbols in given grammar: it might be Epsilon, Nonterminal, Terminal, Conjunction or Negation
@@ -168,6 +166,7 @@ checkGrammarType' symbols
     | (List.elem (O Conjunction) symbols) && not (List.elem (O Negation) symbols) = Conjunctive
     | not (List.elem (O Conjunction) symbols) && not (List.elem (O Negation) symbols) = CFG
 
+parser :: Parser Grammar
 parser = makeEofParser pGrammar
 
 --temporary added deriving show to all types in GrammarType module

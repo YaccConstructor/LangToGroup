@@ -5,9 +5,8 @@ module TuringMachineWriter (tm2tms) where
 import GHC.Unicode (isAlphaNum)
 import Data.List.Utils (replace)
 import Data.List (intercalate, transpose)
-import Data.Set (toList, fromList, Set)
+import Data.Set (toList)
 import Data.Map (fromList, lookup, Map)
-import Data.Char (ord, chr, toTitle)
 import Data.List.NonEmpty (reverse, NonEmpty(..), length)
 
 import TMType
@@ -44,12 +43,12 @@ instance Show Tms where
     show
         (Tms
             (name,
-            init,
+            initial,
             acStates,
             commands,
             tapeAlphabets)
         ) = "name: " ++ name ++ "\n" ++
-        "init: " ++ mergeMultipleTapeStates init ++ "\n" ++
+        "init: " ++ mergeMultipleTapeStates initial ++ "\n" ++
         "accept: " ++ intercalate ", " (map mergeMultipleTapeStates acStates) ++ "\n\n" ++
         intercalate "\n\n" (map showTmsCommand commands)
         where
@@ -58,7 +57,7 @@ instance Show Tms where
             extCommand :: ([Char], TmsSingleTapeCommand) -> [((State, Char), (State, Char, TmsTapeHeadMovement))]
             extCommand (alph, (TmsSingleTapeCommand (Leave, iniSt, folSt, mv))) =
                 [((iniSt, ch), (folSt, ch, mv)) | ch <- '_' : alph]
-            extCommand (alph, (TmsSingleTapeCommand (ChangeFromTo cF cT, iniSt, folSt, mv))) =
+            extCommand (_,    (TmsSingleTapeCommand (ChangeFromTo cF cT, iniSt, folSt, mv))) =
                 [((iniSt, cF), (folSt, cT, mv))]
             extCommand (alph, (TmsSingleTapeCommand (ChangeTo cT, iniSt, folSt, mv))) =
                 [((iniSt, cF), (folSt, cT, mv)) | cF <- '_' : alph]
@@ -76,9 +75,9 @@ instance Show Tms where
 tm2tms :: TM -> Either String Tms
 tm2tms
     (TM
-        (inputAlphabet,
+        (_, -- Input Alphabet
         tapeAlphabets, 
-        MultiTapeStates multiTapeStates, 
+        _, -- Tape States
         Commands commands, 
         StartStates startStates, 
         AccessStates accessStates)
@@ -103,6 +102,8 @@ mergeMultipleTapeStates = ("Q__" ++ ) . intercalate "__" . map filterStateName .
     where
         enum ss = fmap (\(num, (State s)) -> show num ++ "__" ++ s) (zip [0 ..] ss)
 
+-- |Make transitional state.
+-- Being used in 'cmd2tmsTapeCmd' if more than one command is created.
 makeTransSt :: State -> State -> State
 makeTransSt (State from) (State to) = State $ "FROM_" ++ from ++ "_TO_" ++ to
 
@@ -127,9 +128,12 @@ cmd2tmsTapeCmd (
     SingleTapeCommand (
         (ES,                 iniSt, RBS),
         ((Value name nquts), folSt, RBS)
-    )) = return $
-    (TmsSingleTapeCommand  (Leave,                                    iniSt,                     (makeTransSt iniSt folSt), MoveLeft)) :|
-    [(TmsSingleTapeCommand (ChangeFromTo '_' $ name'n'quotes2Char name nquts, (makeTransSt iniSt folSt), folSt,                     Stay))]
+    )) = do
+    ch <- quotName2Char name nquts
+    let transit = makeTransSt iniSt folSt
+    return $
+        (TmsSingleTapeCommand  (Leave,                 iniSt,   transit, MoveLeft)) :|
+        [(TmsSingleTapeCommand (ChangeFromTo '_' $ ch, transit, folSt,   Stay))]
 
 -- 'TM' : Erase symbol to the left from the head.
 -- 'Tms': Erase (put empty symbol) value in head position and move head to right.
@@ -137,9 +141,11 @@ cmd2tmsTapeCmd (
     SingleTapeCommand (
         ((Value name nquts), iniSt, RBS),
         (ES,                 folSt, RBS)
-    )) = return $
-    (TmsSingleTapeCommand (ChangeFromTo (name'n'quotes2Char name nquts) '_', iniSt, folSt, MoveRight)) :|
-    []
+    )) = do
+    ch <- quotName2Char name nquts
+    return $
+        (TmsSingleTapeCommand (ChangeFromTo ch '_', iniSt, folSt, MoveRight)) :|
+        []
 
 -- 'TM' : Replace value to left from the head.
 -- 'Tms': Change value in head position.
@@ -147,13 +153,16 @@ cmd2tmsTapeCmd (
     SingleTapeCommand (
         ((Value iniName iniNquts), iniSt, RBS),
         ((Value folName folNquts), folSt, RBS)
-    )) = return $
-    (TmsSingleTapeCommand
-        (ChangeFromTo (name'n'quotes2Char iniName iniNquts) (name'n'quotes2Char folName folNquts),
-        iniSt,
-        folSt,
-        Stay)) :|
-    []
+    )) = do
+    iniCh <- quotName2Char iniName iniNquts
+    folCh <- quotName2Char folName folNquts
+    return $
+        (TmsSingleTapeCommand
+            (ChangeFromTo iniCh folCh,
+            iniSt,
+            folSt,
+            Stay)) :|
+        []
 
 -- 'TM' : Check if tape is empty.
 -- 'Tms': Check if tape is empty.
@@ -162,8 +171,8 @@ cmd2tmsTapeCmd (
         (LBS, iniSt, RBS),
         (LBS, folSt, RBS)
     )) = return $
-    (TmsSingleTapeCommand (ChangeFromTo '_' '_', iniSt, folSt, Stay)) :|
-    []
+        (TmsSingleTapeCommand (ChangeFromTo '_' '_', iniSt, folSt, Stay)) :|
+        []
 
 -- Command can not be translated to Tms format.
 cmd2tmsTapeCmd cmd = fail $ "Command '" ++ show cmd ++ "' can not be converted to '[TmsSingleTapeCommand]'"
@@ -180,19 +189,23 @@ cmd2tmsTapeCmds cmds = do
         fillSeqWithIdCmds :: Int -> NonEmpty TmsSingleTapeCommand -> [TmsSingleTapeCommand]
         fillSeqWithIdCmds len (x :| xs) = replicate (len - (Prelude.length xs) - 1) (makeIdTapeCommand x) ++ pure x ++ xs
         makeIdTapeCommand :: TmsSingleTapeCommand -> TmsSingleTapeCommand
-        makeIdTapeCommand (TmsSingleTapeCommand (_, _, st, mv)) = TmsSingleTapeCommand (Leave, st, st, Stay)
+        makeIdTapeCommand (TmsSingleTapeCommand (_, _, st, _)) = TmsSingleTapeCommand (Leave, st, st, Stay)
 
 -- |Convert 'Square' to 'Char'.
 toValue :: Square -> Either String Char
-toValue (Value name n) = pure $ name'n'quotes2Char name n
+toValue (Value name n) = do
+    c <- quotName2Char name n
+    return c
 toValue _              = fail "Square is expected to be 'Value' to convert to 'Char'"
 
+-- |Convert 'String' with 'Int' quotes to 'Char'.
 -- Character length is exactly 1, so longer strings can not be supported, so as many quotes.
-name'n'quotes2Char :: String -> Int -> Char
-name'n'quotes2Char (c : "") 0 = c
-name'n'quotes2Char (c : "") 1 = toQuot c
-name'n'quotes2Char name nQuot = error $ "Can not convert name '" ++ name ++ "' with " ++ show nQuot ++ "quotes into 'Char'."
+quotName2Char :: String -> Int -> Either String Char
+quotName2Char (c : "") 0 = return c
+quotName2Char (c : "") 1 = return $ toQuot c
+quotName2Char name nQuot = fail $ "Can not convert string '" ++ name ++ "' with " ++ show nQuot ++ " quotes into 'Char'."
 
+-- |Quoted (or just fancy) version of characters.
 quoted :: Data.Map.Map Char Char
 quoted = Data.Map.fromList [('a', 'à'), ('b', 'ƀ'), ('c', 'ć'), ('d', 'ď'), ('e', 'ė'), ('f', 'ƒ'), ('g', 'ĝ'), ('h', 'ĥ'), ('i', 'ĩ'), ('j', 'ĵ'), ('k', 'ķ'), ('l', 'ĺ'), ('m', 'ɱ'), ('n', 'ń'), ('o', 'ō'), ('p', 'ƥ'), ('q', 'ɋ'), ('r', 'ŕ'), ('s', 'ś'), ('t', 'ť'), ('u', 'ū'), ('v', 'ʌ'), ('w', 'ŵ'), ('x', '×'), ('y', 'ŷ'), ('z', 'ź'), ('A', 'Ã'), ('B', 'Ɓ'), ('C', 'Ć'), ('D', 'Đ'), ('E', 'Ė'), ('F', 'Ƒ'), ('G', 'Ĝ'), ('H', 'Ĥ'), ('I', 'Ĩ'), ('J', 'Ĵ'), ('K', 'Ķ'), ('L', 'Ĺ'), ('M', 'Ɯ'), ('N', 'Ń'), ('O', 'Ō'), ('P', 'Ƥ'), ('Q', 'Ɋ'), ('R', 'Ŕ'), ('S', 'Ś'), ('T', 'Ť'), ('U', 'Ū'), ('V', 'Ʌ'), ('W', 'Ŵ'), ('X', 'χ'), ('Y', 'Ŷ'), ('Z', 'Ź')]
 
