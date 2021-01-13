@@ -13,20 +13,18 @@ showAsTms m = show $ Tms
     ("MyTM", [State "q01", State "q02"], [[State "q22", State "q15"]], [
             TmsCommand
                 [
-                    TmsSingleTapeCommand ((State "q0", Any), (State "q1", Label '0', MoveLeft)),
-                    TmsSingleTapeCommand ((State "q0", Any), (State "q1", Label '0', MoveLeft))
+                    TmsSingleTapeCommand (Leave,                State "q0", State "q1", Stay),
+                    TmsSingleTapeCommand (ChangeFromTo '0' '1', State "q2", State "q4", MoveLeft)
                 ]], ["01", "01"])
 
--- |Type of Tms tape cell.
+-- |Type of Tms tape square action.
 --
--- 'Any' is any type of cell.
+-- 'Leave' is leave any character unchanged.
 --
--- 'Label' is labeled type of cell.
-data TmsTapeSquare = Any | Label Char
-
-tmssq2chars :: [Char] -> TmsTapeSquare -> [Char]
-tmssq2chars alphabet Any       = alphabet
-tmssq2chars alphabet (Label c) = pure c
+-- 'ChangeFromTo f t' is change it from 'f' to 't'.
+--
+-- 'ChangeTo t' is change it from anything to 't'.
+data TmsTapeSquare = Leave | ChangeFromTo Char Char | ChangeTo Char
 
 -- |Type of Tms tape head movement
 data TmsTapeHeadMovement = MoveLeft | Stay | MoveRight
@@ -37,7 +35,8 @@ instance Show TmsTapeHeadMovement where
     show MoveRight = ">"
 
 -- |Type of Tms command for one tape.
-newtype TmsSingleTapeCommand = TmsSingleTapeCommand ((State, TmsTapeSquare), (State, TmsTapeSquare, TmsTapeHeadMovement))
+-- TmsSingleTapeCommand (action, prevState, nextState, movement).
+newtype TmsSingleTapeCommand = TmsSingleTapeCommand (TmsTapeSquare, State, State, TmsTapeHeadMovement)
 
 -- |Type of Tms command for entire Turing machine.
 newtype TmsCommand = TmsCommand [TmsSingleTapeCommand]
@@ -62,10 +61,13 @@ instance Show Tms where
             showTmsCommand :: TmsCommand -> String
             showTmsCommand (TmsCommand tapeCommands) = intercalate "\n" $ map showSingleCmd $ combine $ map extCommand (zip tapeAlphabets tapeCommands)
             extCommand :: ([Char], TmsSingleTapeCommand) -> [((State, Char), (State, Char, TmsTapeHeadMovement))]
-            extCommand (alph, (TmsSingleTapeCommand ((iniSt, iniSq), (folSt, folSq, mv)))) =
-                [((iniSt, iniChar), (folSt, folChar, mv)) | iniChar <- tmssq2chars alph iniSq,
-                                                            folChar <- tmssq2chars alph folSq]
-            combine = foldl (\combs cur -> flip (:) <$> combs <*> cur) [[]]
+            extCommand (alph, (TmsSingleTapeCommand (Leave, iniSt, folSt, mv))) =
+                [((iniSt, ch), (folSt, ch, mv)) | ch <- '_' : alph]
+            extCommand (alph, (TmsSingleTapeCommand (ChangeFromTo cF cT, iniSt, folSt, mv))) =
+                [((iniSt, cF), (folSt, cT, mv))]
+            extCommand (alph, (TmsSingleTapeCommand (ChangeTo cT, iniSt, folSt, mv))) =
+                [((iniSt, cF), (folSt, cT, mv)) | cF <- '_' : alph]
+            combine = map reverse . foldl (\combs cur -> flip (:) <$> combs <*> cur) [[]]
             showSingleCmd :: [((State, Char), (State, Char, TmsTapeHeadMovement))] -> String
             showSingleCmd cmds = intercalate ", " (iniStateName : iniSquares) ++ "\n" ++
                                  intercalate ", " (folStateName : folSquares ++ moves) ++ "\n"
@@ -78,9 +80,11 @@ instance Show Tms where
 
 -- Section of helper functions.
 
+-- |Process string so that it does not contain illegal characters.
 filterStateName :: String -> String
 filterStateName = replace "^" "v" . filter (\c -> isAlphaNum c || elem c ['_', '^'])
 
+-- |Concat and filter list of states.
 mergeMultipleTapeStates :: [State] -> String
 mergeMultipleTapeStates = ("Q__" ++ ) . intercalate "__" . map filterStateName . enum
     where
