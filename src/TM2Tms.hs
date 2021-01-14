@@ -1,5 +1,5 @@
 -- |This module provides functionality for converting the Turing machine 'TMType.TM' to 'Tms'.
-module TM2Tms (tm2tms, tmState2tmsState) where
+module TM2Tms (tm2tms) where
 
 import Data.List (transpose)
 import Data.Set (toList)
@@ -22,7 +22,7 @@ tm2tms
         tmsCmdsBlocks <- traverse cmd2tmsTapeCmds (toList commands)
         let tmsCmds = filter (not . noChangeCommand) $ concat tmsCmdsBlocks
         tmsAlph <- traverse alph2tmsAlph tapeAlphabets
-        return $ Tms ("TM", tmState2tmsState <$> startStates, [tmState2tmsState <$> accessStates], tmsCmds, tmsAlph)
+        return $ Tms ("TMType.TM", tmState2tmsState <$> startStates, [tmState2tmsState <$> accessStates], tmsCmds, tmsAlph)
     where
         alph2tmsAlph :: TapeAlphabet -> Either String [Char]
         alph2tmsAlph (TapeAlphabet squares) = traverse toValue (toList squares)
