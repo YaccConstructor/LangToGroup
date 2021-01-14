@@ -1,5 +1,5 @@
--- |This module provides functionality for converting the Turing machine 'TM' to 'Tms' from module 'TmsType'.
-module TuringMachineWriter (tm2tms) where
+-- |This module provides functionality for converting the Turing machine 'TMType.TM' to 'Tms'.
+module TM2Tms (tm2tms, tmState2tmsState) where
 
 import Data.List (transpose)
 import Data.Set (toList)
@@ -22,10 +22,13 @@ tm2tms
         tmsCmdsBlocks <- traverse cmd2tmsTapeCmds (toList commands)
         let tmsCmds = filter (not . noChangeCommand) $ concat tmsCmdsBlocks
         tmsAlph <- traverse alph2tmsAlph tapeAlphabets
-        return $ Tms ("TuringMachine", startStates, [accessStates], tmsCmds, tmsAlph)
+        return $ Tms ("TM", tmState2tmsState <$> startStates, [tmState2tmsState <$> accessStates], tmsCmds, tmsAlph)
     where
         alph2tmsAlph :: TapeAlphabet -> Either String [Char]
         alph2tmsAlph (TapeAlphabet squares) = traverse toValue (toList squares)
+
+tmState2tmsState :: State -> TmsState
+tmState2tmsState (State s) = TmsState s
  
 -- Section of helper functions.
 
@@ -46,7 +49,7 @@ cmd2tmsTapeCmd (
         (ES, iniSt, RBS),
         (ES, folSt, RBS))
     ) = return $
-    (TmsSingleTapeCommand (Leave, iniSt, folSt, Stay)) :|
+    (TmsSingleTapeCommand (Leave, tmState2tmsState iniSt, tmState2tmsState folSt, Stay)) :|
     []
 
 -- 'TM' : Insert value to the left from head.
@@ -57,10 +60,10 @@ cmd2tmsTapeCmd (
         ((Value name nquts), folSt, RBS)
     )) = do
     ch <- quotName2Char name nquts
-    let transit = makeTransSt iniSt folSt
+    let transit = tmState2tmsState $ makeTransSt iniSt folSt
     return $
-        (TmsSingleTapeCommand  (Leave,                 iniSt,   transit, MoveLeft)) :|
-        [(TmsSingleTapeCommand (ChangeFromTo '_' $ ch, transit, folSt,   Stay))]
+        (TmsSingleTapeCommand  (Leave,                 tmState2tmsState iniSt,           transit, MoveLeft)) :|
+        [(TmsSingleTapeCommand (ChangeFromTo '_' $ ch, transit,         tmState2tmsState folSt,   Stay))]
 
 -- 'TM' : Erase symbol to the left from the head.
 -- 'Tms': Erase (put empty symbol) value in head position and move head to right.
@@ -71,7 +74,7 @@ cmd2tmsTapeCmd (
     )) = do
     ch <- quotName2Char name nquts
     return $
-        (TmsSingleTapeCommand (ChangeFromTo ch '_', iniSt, folSt, MoveRight)) :|
+        (TmsSingleTapeCommand (ChangeFromTo ch '_', tmState2tmsState iniSt, tmState2tmsState folSt, MoveRight)) :|
         []
 
 -- 'TM' : Replace value to left from the head.
@@ -86,8 +89,8 @@ cmd2tmsTapeCmd (
     return $
         (TmsSingleTapeCommand
             (ChangeFromTo iniCh folCh,
-            iniSt,
-            folSt,
+            tmState2tmsState iniSt,
+            tmState2tmsState folSt,
             Stay)) :|
         []
 
@@ -98,7 +101,7 @@ cmd2tmsTapeCmd (
         (LBS, iniSt, RBS),
         (LBS, folSt, RBS)
     )) = return $
-        (TmsSingleTapeCommand (ChangeFromTo '_' '_', iniSt, folSt, Stay)) :|
+        (TmsSingleTapeCommand (ChangeFromTo '_' '_', tmState2tmsState iniSt, tmState2tmsState folSt, Stay)) :|
         []
 
 -- Command can not be translated to Tms format.
