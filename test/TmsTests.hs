@@ -1,4 +1,7 @@
-module TuringMachineWriterTests (testShowOneTapeTms, testShowMultiTapeTms, testOneTapeTM2Tms, testMultiTapeTM2Tms) where
+module TmsTests (testShowOneTapeTms,
+                 testShowMultiTapeTms,
+                 testOneTapeTM2Tms,
+                 testMultiTapeTM2Tms) where
 
 import Test.HUnit
 import Data.Set (fromList)
