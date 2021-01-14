@@ -24,10 +24,10 @@ import qualified System.Environment as SE
 
 import GrammarType
 import CFG2TM
+import ParsingHelpers
+import TuringMachineWriter
 
 -- |Parser part.
-type Parser = Parsec Void Text
-
 
 -- |Parsers for terminal symbols in given grammar: it might be Epsilon, Nonterminal, Terminal, Conjunction or Negation
 pEpsilon :: Parser Symbol
@@ -166,9 +166,8 @@ checkGrammarType' symbols
     | (List.elem (O Conjunction) symbols) && not (List.elem (O Negation) symbols) = Conjunctive
     | not (List.elem (O Conjunction) symbols) && not (List.elem (O Negation) symbols) = CFG
 
-parser = (pGrammar <* eof)
-
-parseFromFile p errorFileName grammarFileName = runParser p errorFileName <$> ((fromString) <$> readFile grammarFileName)
+parser :: Parser Grammar
+parser = makeEofParser pGrammar
 
 --temporary added deriving show to all types in GrammarType module
 convertGrammar2TM :: String -> String -> IO ()
@@ -179,7 +178,9 @@ convertGrammar2TM grammarFile errorFile = do
       Right cs -> case (checkGrammarType cs) of
           Boolean -> putStrLn ("Boolean " ++ show cs) -- here will be new algorithm
           Conjunctive -> putStrLn ("Conjunctive " ++ show cs)
-          CFG -> putStrLn ("CFG " ++ show cs ++ "\n" ++ show (cfg2tm cs))
+          CFG -> putStrLn ("CFG " ++ show cs) >> case tm2tms (cfg2tm cs) of
+            Left err -> hPutStrLn stderr $ "Error: " ++ show err
+            Right tms -> putStrLn ("\n" ++ show tms)
 
 
 -- |Valid examples of input
