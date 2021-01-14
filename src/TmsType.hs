@@ -7,6 +7,9 @@ import Data.List (intercalate)
 import Data.List.Utils (replace)
 import GHC.Unicode (isAlphaNum)
 
+import qualified Data.Text.Lazy as TL
+import Prettyprinter
+
 import TMType
 
 -- |Type of Tms tape square action.
@@ -43,18 +46,25 @@ newtype Tms = Tms (String, [State], [[State]], [TmsCommand], [[Char]])
     deriving (Eq)
 
 instance Show Tms where
-    show
-        (Tms
-            (name,
-            initial,
-            acStates,
-            commands,
-            tapeAlphabets)
-        ) = "name: " ++ name ++ "\n" ++
-        "init: " ++ mergeMultipleTapeStates initial ++ "\n" ++
-        "accept: " ++ intercalate ", " (map mergeMultipleTapeStates acStates) ++ "\n\n" ++
-        intercalate "\n\n" (map showTmsCommand commands)
+  show
+    ( Tms
+        ( name,
+          initial,
+          acStates,
+          commands,
+          tapeAlphabets
+          )
+      ) = show $
+      (printKeyValue
+        [ ["name", name],
+          ["init", mergeMultipleTapeStates initial],
+          ["accept", intercalate ", " (map mergeMultipleTapeStates acStates)]
+        ])
+        <> line
+        <> vcat (punctuate line (map (pretty . showTmsCommand) commands))
         where
+            printKeyValue :: [[String]] -> Doc String
+            printKeyValue = vcat . fmap sep . fmap (punctuate colon) . fmap (fmap pretty)
             showTmsCommand :: TmsCommand -> String
             showTmsCommand (TmsCommand tapeCommands) = intercalate "\n" $ map showSingleCmd $ combine $ map extCommand (zip tapeAlphabets tapeCommands)
             extCommand :: ([Char], TmsSingleTapeCommand) -> [((State, Char), (State, Char, TmsTapeHeadMovement))]
@@ -64,16 +74,17 @@ instance Show Tms where
                 [((iniSt, cF), (folSt, cT, mv))]
             extCommand (alph, (TmsSingleTapeCommand (ChangeTo cT, iniSt, folSt, mv))) =
                 [((iniSt, cF), (folSt, cT, mv)) | cF <- '_' : alph]
-            combine = map Prelude.reverse . foldl (\combs cur -> flip (:) <$> combs <*> cur) [[]]
+            combine = map reverse . foldl (\combs cur -> flip (:) <$> combs <*> cur) [[]]
             showSingleCmd :: [((State, Char), (State, Char, TmsTapeHeadMovement))] -> String
-            showSingleCmd cmds = intercalate ", " (iniStateName : iniSquares) ++ "\n" ++
-                                 intercalate ", " (folStateName : folSquares ++ moves) ++ "\n"
+            showSingleCmd cmds = show $
+                                    sep (punctuate comma (iniStateName : iniSquares)) <> line <>
+                                    sep (punctuate comma (folStateName : folSquares ++ moves))
                 where
-                    iniStateName = mergeMultipleTapeStates $ map (\((ini, _), (_, _, _)) -> ini) cmds
-                    folStateName = mergeMultipleTapeStates $ map (\((_, _), (fol, _, _)) -> fol) cmds
-                    iniSquares = map (\((_, iniSq), (_, _, _)) -> return iniSq) cmds
-                    folSquares = map (\((_, _), (_, folSq, _)) -> return folSq) cmds
-                    moves = map (\((_, _), (_, _, mv)) -> show mv) cmds
+                    iniStateName = pretty $ mergeMultipleTapeStates $ map (\((ini, _), (_, _, _)) -> ini) cmds
+                    folStateName = pretty $ mergeMultipleTapeStates $ map (\((_, _), (fol, _, _)) -> fol) cmds
+                    iniSquares = map (\((_, iniSq), (_, _, _)) -> pretty [iniSq]) cmds
+                    folSquares = map (\((_, _), (_, folSq, _)) -> pretty [folSq]) cmds
+                    moves = map (\((_, _), (_, _, mv)) -> pretty $ show mv) cmds
 
 -- Section of helper functions.
 

@@ -81,19 +81,19 @@ multiTapeTM = TM (
 
 testShowOneTapeTms :: Assertion
 testShowOneTapeTms = testShowTms oneTapeTms "\
-    \name: TuringMachine\n\
-    \init: Q__0__q_1v1\n\
-    \accept: Q__0__q_2v2\n\n\
+    \name: TuringMachine\
+    \init: Q__0__q_1v1\
+    \accept: Q__0__q_2v2\
     \Q__0__q_1v1, a\n\
-    \Q__0__q_1v1, _, >\n"
+    \Q__0__q_1v1, _, >"
 
 testShowMultiTapeTms :: Assertion
 testShowMultiTapeTms = testShowTms multiTapeTms "\
-    \name: TuringMachine\n\
-    \init: Q__0__q_1v1__1__q_2v2__2__q_3v3\n\
-    \accept: Q__0__q_1v1__1__q_2v2__2__q_3v3\n\n\
-    \Q__0__q_1v1__1__q_2v2__2__q_3v3, a, à, à\n\
-    \Q__0__q_1v1__1__q_2v2__2__q_3v3, a, _, à, -, >, -\n"
+    \name: TuringMachine\
+    \init: Q__0__q_1v1__1__q_2v2__2__q_3v3\
+    \accept: Q__0__q_1v1__1__q_2v2__2__q_3v3\
+    \Q__0__q_1v1__1__q_2v2__2__q_3v3, a, à, à\
+    \Q__0__q_1v1__1__q_2v2__2__q_3v3, a, _, à, -, >, -"
 
 testOneTapeTM2Tms :: Assertion
 testOneTapeTM2Tms = testTM2Tms oneTapeTM oneTapeTms
@@ -154,9 +154,10 @@ multiTapeTms = Tms (
     )
 
 testShowTms :: Tms -> String -> Assertion
-testShowTms tms res = assertEqual ("Invalid presentation of Tms.") res' res
+testShowTms tms res = assertEqual ("Invalid presentation of Tms.") (nonEndl res') (nonEndl res)
     where
         res' = show tms
+        nonEndl = filter (/= '\n')
 
 testTM2Tms :: TM -> Tms -> Assertion
 testTM2Tms tm tms = case tm2tms tm of
