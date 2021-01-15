@@ -27,7 +27,7 @@ turingMachineSt2tmsSt :: State -> TmsState
 turingMachineSt2tmsSt (Q ind) = TmsState $ "Q_" ++ show ind
 
 extractAlphabet :: [Quadruple] -> [Char]
-extractAlphabet = Data.Set.toList . Data.Set.fromList . (concatMap extChars)
+extractAlphabet = filter (/= '_') . Data.Set.toList . Data.Set.fromList . (concatMap extChars)
     where
         extChars :: Quadruple -> [Char]
         extChars ((_, f), (C t, _)) = symb2char <$> [f, t]

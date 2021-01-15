@@ -41,7 +41,7 @@ testTuringMachine2Tms = assertEqual "Invalid conversion from TMTypes.TuringMachi
                         TmsSingleTapeCommand (ChangeFromTo 'a' 'a', tmq4, tmq3, MoveRight)
                     ]
                 ],
-                ["_abc"]
+                ["abc"]
             )
 
         (a, b, c) = (S 1, S 2, S 3)
