@@ -17,9 +17,7 @@ import TMType
 -- 'Leave' is leave any character unchanged.
 --
 -- 'ChangeFromTo f t' is change it from 'f' to 't'.
---
--- 'ChangeTo t' is change it from anything to 't'.
-data TmsTapeSquare = Leave | ChangeFromTo Char Char | ChangeTo Char
+data TmsTapeSquare = Leave | ChangeFromTo Char Char
     deriving (Eq)
 
 -- |Type of Tms tape head movement
@@ -33,7 +31,7 @@ instance Show TmsTapeHeadMovement where
 
 -- |Type of Tms State.
 newtype TmsState = TmsState String
-    deriving (Eq)
+    deriving (Eq, Ord)
 
 -- |Type of Tms command for one tape.
 -- TmsSingleTapeCommand (action, prevState, nextState, movement).
@@ -76,8 +74,6 @@ instance Show Tms where
                 [((iniSt, ch), (folSt, ch, mv)) | ch <- '_' : alph]
             extCommand (_,    (TmsSingleTapeCommand (ChangeFromTo cF cT, iniSt, folSt, mv))) =
                 [((iniSt, cF), (folSt, cT, mv))]
-            extCommand (alph, (TmsSingleTapeCommand (ChangeTo cT, iniSt, folSt, mv))) =
-                [((iniSt, cF), (folSt, cT, mv)) | cF <- '_' : alph]
             combine = map reverse . foldl (\combs cur -> flip (:) <$> combs <*> cur) [[]]
             showSingleCmd :: [((TmsState, Char), (TmsState, Char, TmsTapeHeadMovement))] -> String
             showSingleCmd cmds = show $

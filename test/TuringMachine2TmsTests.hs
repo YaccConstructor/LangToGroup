@@ -1,4 +1,4 @@
-module Tms2turingMachineTests where
+module TuringMachine2TmsTests where
 
 import Test.HUnit
 

@@ -29,7 +29,7 @@ type Quadruple = ((State, Symbol), (SymbolMove, State))
 type Quadruples = Map (State, Symbol) (SymbolMove, State)
 
 newtype TuringMachine = TM Quadruples
-    deriving (Show)
+    deriving (Show, Eq)
 
 fromList :: [Quadruple] -> TuringMachine
 fromList = TM . Map.fromList
