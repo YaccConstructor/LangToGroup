@@ -13,9 +13,9 @@ turingMachine2tms :: TuringMachine -> Tms
 turingMachine2tms (TM quads) = 
     Tms (
             "TMTypes.TuringMachine",
-            [turingMachineSt2tmsSt startState],
-            [[turingMachineSt2tmsSt finalState]],
-            quadsList <&> turingMCmd2tms <&> TmsCommand . pure,
+            turingMachineSt2tmsSt startState,
+            [turingMachineSt2tmsSt finalState],
+            quadsList <&> turingMCmd2tms <&> toTmsCommand,
             [extractAlphabet quadsList]
         )
     where
@@ -33,11 +33,11 @@ extractAlphabet = filter (/= '_') . Data.Set.toList . Data.Set.fromList . (conca
         extChars ((_, f), (C t, _)) = symb2char <$> [f, t]
         extChars ((_, f), _)        = symb2char <$> [f]
 
-turingMCmd2tms :: Quadruple -> TmsSingleTapeCommand
-turingMCmd2tms ((iniSt, from), (act, folSt)) =
-    TmsSingleTapeCommand (
-        action, turingMachineSt2tmsSt iniSt, turingMachineSt2tmsSt folSt, move
-        )
+turingMCmd2tms :: Quadruple -> OneTapeTMCommand
+turingMCmd2tms ((iniSt, from), (act, folSt)) = (
+        turingMachineSt2tmsSt iniSt,
+        TmsSingleTapeCommand (action, move),
+        turingMachineSt2tmsSt folSt)
     where
         (move, action) = case act of
             C to -> (Stay,      ChangeFromTo (symb2char from) (symb2char to))

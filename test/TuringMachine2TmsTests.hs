@@ -22,24 +22,14 @@ testTuringMachine2Tms = assertEqual "Invalid conversion from TMTypes.TuringMachi
         tms :: Tms
         tms = Tms (
                 "TMTypes.TuringMachine",
-                [TmsState "Q_1"],
-                [[TmsState "Q_0"]],
+                TmsState "Q_1",
+                [TmsState "Q_0"],
                 [
-                    TmsCommand [
-                        TmsSingleTapeCommand (ChangeFromTo '_' '_', tmq1, tmq0, Stay)
-                    ],
-                    TmsCommand [
-                        TmsSingleTapeCommand (ChangeFromTo 'a' 'b', tmq1, tmq2, Stay)
-                    ],
-                    TmsCommand [
-                        TmsSingleTapeCommand (ChangeFromTo 'b' 'b', tmq2, tmq4, MoveLeft)
-                    ],
-                    TmsCommand [
-                        TmsSingleTapeCommand (ChangeFromTo 'c' 'a', tmq3, tmq2, Stay)
-                    ],
-                    TmsCommand [
-                        TmsSingleTapeCommand (ChangeFromTo 'a' 'a', tmq4, tmq3, MoveRight)
-                    ]
+                    TmsCommand (tmq1, [TmsSingleTapeCommand (ChangeFromTo '_' '_', Stay)],      tmq0),
+                    TmsCommand (tmq1, [TmsSingleTapeCommand (ChangeFromTo 'a' 'b', Stay)],      tmq2),
+                    TmsCommand (tmq2, [TmsSingleTapeCommand (ChangeFromTo 'b' 'b', MoveLeft)],  tmq4),
+                    TmsCommand (tmq3, [TmsSingleTapeCommand (ChangeFromTo 'c' 'a', Stay)],      tmq2),
+                    TmsCommand (tmq4, [TmsSingleTapeCommand (ChangeFromTo 'a' 'a', MoveRight)], tmq3)
                 ],
                 ["abc"]
             )

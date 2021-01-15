@@ -3,6 +3,7 @@
 
 module TmsType where
 
+import Data.Tuple.Utils (fst3, snd3, thd3)
 import Data.List (intercalate)
 import Data.List.Utils (replace)
 import GHC.Unicode (isAlphaNum)
@@ -34,24 +35,30 @@ newtype TmsState = TmsState String
     deriving (Eq, Ord)
 
 -- |Type of Tms command for one tape.
--- TmsSingleTapeCommand (action, prevState, nextState, movement).
-newtype TmsSingleTapeCommand = TmsSingleTapeCommand (TmsTapeSquare, TmsState, TmsState, TmsTapeHeadMovement)
+-- TmsSingleTapeCommand (action, movement).
+newtype TmsSingleTapeCommand = TmsSingleTapeCommand (TmsTapeSquare, TmsTapeHeadMovement)
     deriving (Eq)
 
+-- |Type of Tms single tape command
+type OneTapeTMCommand = (TmsState, TmsSingleTapeCommand, TmsState)
+
+toTmsCommand :: OneTapeTMCommand -> TmsCommand
+toTmsCommand (ini, cmd, fol) = TmsCommand (ini, [cmd], fol)
+
 -- |Type of Tms command for entire Turing machine.
-newtype TmsCommand = TmsCommand [TmsSingleTapeCommand]
+newtype TmsCommand = TmsCommand (TmsState, [TmsSingleTapeCommand], TmsState)
     deriving (Eq)
 
 -- |Type of Tms format.
--- Tms            (name,   init        accept        commands,     tapeAlphabets).
-newtype Tms = Tms (String, [TmsState], [[TmsState]], [TmsCommand], [[Char]])
+-- Tms            (name,   init      accept        commands,     tapeAlphabets).
+newtype Tms = Tms (String, TmsState, [TmsState], [TmsCommand], [[Char]])
     deriving (Eq)
 
 instance Show Tms where
   show
     ( Tms
         ( name,
-          initial,
+          (TmsState initial),
           acStates,
           commands,
           tapeAlphabets
@@ -59,8 +66,8 @@ instance Show Tms where
       ) = show $
       (printKeyValue
         [ ["name", name],
-          ["init", mergeMultipleTapeStates initial],
-          ["accept", intercalate ", " (map mergeMultipleTapeStates acStates)]
+          ["init", filterStateName initial],
+          ["accept", intercalate ", " (fmap (\(TmsState name) -> filterStateName name) acStates)]
         ])
         <> line
         <> vcat (punctuate line (map (pretty . showTmsCommand) commands))
@@ -68,32 +75,22 @@ instance Show Tms where
             printKeyValue :: [[String]] -> Doc String
             printKeyValue = vcat . fmap sep . fmap (punctuate colon) . fmap (fmap pretty)
             showTmsCommand :: TmsCommand -> String
-            showTmsCommand (TmsCommand tapeCommands) = intercalate "\n" $ map showSingleCmd $ combine $ map extCommand (zip tapeAlphabets tapeCommands)
-            extCommand :: ([Char], TmsSingleTapeCommand) -> [((TmsState, Char), (TmsState, Char, TmsTapeHeadMovement))]
-            extCommand (alph, (TmsSingleTapeCommand (Leave, iniSt, folSt, mv))) =
-                [((iniSt, ch), (folSt, ch, mv)) | ch <- '_' : alph]
-            extCommand (_,    (TmsSingleTapeCommand (ChangeFromTo cF cT, iniSt, folSt, mv))) =
-                [((iniSt, cF), (folSt, cT, mv))]
+            showTmsCommand (TmsCommand (ini, tapeCommands, fol)) = intercalate "\n" $ map (showSingleCmd ini fol) $ combine $ map extCommand (zip tapeAlphabets tapeCommands)
+            extCommand :: ([Char], TmsSingleTapeCommand) -> [(Char, TmsTapeHeadMovement, Char)]
+            extCommand (alph, (TmsSingleTapeCommand (Leave, mv))) =
+                [(ch, mv, ch) | ch <- '_' : alph]
+            extCommand (_,    (TmsSingleTapeCommand (ChangeFromTo cF cT, mv))) =
+                [(cF, mv, cT)]
             combine = map reverse . foldl (\combs cur -> flip (:) <$> combs <*> cur) [[]]
-            showSingleCmd :: [((TmsState, Char), (TmsState, Char, TmsTapeHeadMovement))] -> String
-            showSingleCmd cmds = show $
-                                    sep (punctuate comma (iniStateName : iniSquares)) <> line <>
-                                    sep (punctuate comma (folStateName : folSquares ++ moves))
+            showSingleCmd :: TmsState -> TmsState -> [(Char, TmsTapeHeadMovement, Char)] -> String
+            showSingleCmd (TmsState ini) (TmsState fol) cmds = show $
+                                    sep (punctuate comma ((pretty $ filterStateName $ ini) : iniSquares)) <> line <>
+                                    sep (punctuate comma ((pretty $ filterStateName $ fol) : folSquares ++ moves))
                 where
-                    iniStateName = pretty $ mergeMultipleTapeStates $ map (\((ini, _), (_, _, _)) -> ini) cmds
-                    folStateName = pretty $ mergeMultipleTapeStates $ map (\((_, _), (fol, _, _)) -> fol) cmds
-                    iniSquares = map (\((_, iniSq), (_, _, _)) -> pretty [iniSq]) cmds
-                    folSquares = map (\((_, _), (_, folSq, _)) -> pretty [folSq]) cmds
-                    moves = map (\((_, _), (_, _, mv)) -> pretty $ show mv) cmds
-
--- Section of helper functions.
+                    iniSquares = map (pretty . replicate 1 . fst3) cmds
+                    moves      = map (pretty . show . snd3) cmds
+                    folSquares = map (pretty . replicate 1 . thd3) cmds
 
 -- |Process string so that it does not contain illegal characters.
 filterStateName :: String -> String
 filterStateName = replace "^" "v" . filter (\c -> isAlphaNum c || elem c ['_', '^'])
-
--- |Concat and filter list of states.
-mergeMultipleTapeStates :: [TmsState] -> String
-mergeMultipleTapeStates = ("Q__" ++ ) . intercalate "__" . map filterStateName . enum
-    where
-        enum ss = fmap (\(num, (TmsState s)) -> show num ++ "__" ++ s) (zip [0 ..] ss)

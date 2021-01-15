@@ -134,12 +134,10 @@ a' = Value "a" 1
 oneTapeTms :: Tms
 oneTapeTms = Tms (
         "TMType.TM",
-        [q11],
-        [[q22]],
+        TmsState "Q__0__q_1v1",
+        [TmsState "Q__0__q_2v2"],
         [
-            TmsCommand [
-                TmsSingleTapeCommand (ChangeFromTo 'a' '_', q11, q11, MoveRight)
-            ]
+            TmsCommand (TmsState "Q__0__q_1v1", [TmsSingleTapeCommand (ChangeFromTo 'a' '_', MoveRight)], TmsState "Q__0__q_1v1")
         ],
         [
             ['a', 'b']
@@ -149,14 +147,18 @@ oneTapeTms = Tms (
 multiTapeTms :: Tms
 multiTapeTms = Tms (
         "TMType.TM",
-        [q11, q22, q33],
-        [[q11, q22, q33]],
+        TmsState "Q__0__q_1v1__1__q_2v2__2__q_3v3",
+        [TmsState "Q__0__q_1v1__1__q_2v2__2__q_3v3"],
         [
-            TmsCommand [
-                TmsSingleTapeCommand (ChangeFromTo 'a' 'a', q11, q11, Stay),
-                TmsSingleTapeCommand (ChangeFromTo 'à' '_', q22, q22, MoveRight),
-                TmsSingleTapeCommand (ChangeFromTo 'à' 'à', q33, q33, Stay)
-            ]
+            TmsCommand (
+                TmsState "Q__0__q_1v1__1__q_2v2__2__q_3v3",
+                [
+                    TmsSingleTapeCommand (ChangeFromTo 'a' 'a', Stay),
+                    TmsSingleTapeCommand (ChangeFromTo 'à' '_', MoveRight),
+                    TmsSingleTapeCommand (ChangeFromTo 'à' 'à', Stay)
+                ],
+                TmsState "Q__0__q_1v1__1__q_2v2__2__q_3v3"
+            )
         ],
         [
             ['a'],

@@ -29,15 +29,11 @@ testTms2TuringMachineIdMove = testTms2TuringMachine tmsIdMove turingMachineIdMov
 tmsSimple :: Tms
 tmsSimple = Tms (
         "TuringMachine",
-        [TmsState "Q_1"],
-        [[TmsState "Q_0"]],
+        TmsState "Q_1",
+        [TmsState "Q_0"],
         [
-            TmsCommand [
-                TmsSingleTapeCommand (ChangeFromTo 'a' '_', tmq1, tmq0, Stay)
-            ],
-            TmsCommand [
-                TmsSingleTapeCommand (ChangeFromTo 'b' 'b', tmq2, tmq3, MoveLeft)
-            ]
+            TmsCommand (tmq1, [TmsSingleTapeCommand (ChangeFromTo 'a' '_', Stay)],     tmq0),
+            TmsCommand (tmq2, [TmsSingleTapeCommand (ChangeFromTo 'b' 'b', MoveLeft)], tmq3)
         ],
         ["abc"]
     )
@@ -51,12 +47,10 @@ turingMachineSimple = fromList [
 tmsLeaveStay :: Tms
 tmsLeaveStay = Tms (
         "TuringMachine",
-        [TmsState "Q_1"],
-        [[TmsState "Q_0"]],
+        TmsState "Q_1",
+        [TmsState "Q_0"],
         [
-            TmsCommand [
-                TmsSingleTapeCommand (Leave, tmq2, tmq3, Stay)
-            ]
+            TmsCommand (tmq2, [TmsSingleTapeCommand (Leave, Stay)], tmq3)
         ],
         ["abc"]
     )
@@ -72,12 +66,10 @@ turingMachineLeaveStay = fromList [
 tmsLeaveMove :: Tms
 tmsLeaveMove = Tms (
         "TuringMachine",
-        [TmsState "Q_1"],
-        [[TmsState "Q_0"]],
+        TmsState "Q_1",
+        [TmsState "Q_0"],
         [
-            TmsCommand [
-                TmsSingleTapeCommand (Leave, tmq2, tmq3, MoveRight)
-            ]
+            TmsCommand (tmq2, [TmsSingleTapeCommand (Leave, MoveRight)], tmq3)
         ],
         ["abc"]
     )
@@ -93,12 +85,10 @@ turingMachineLeaveMove = fromList [
 tmsChangeMove :: Tms
 tmsChangeMove = Tms (
         "TuringMachine",
-        [TmsState "Q_1"],
-        [[TmsState "Q_0"]],
+        TmsState "Q_1",
+        [TmsState "Q_0"],
         [
-            TmsCommand [
-                TmsSingleTapeCommand (ChangeFromTo 'c' '_', tmq1, tmq0, MoveRight)
-            ]
+            TmsCommand (tmq1, [TmsSingleTapeCommand (ChangeFromTo 'c' '_', MoveRight)], tmq0)
         ],
         ["abc"]
     )
@@ -114,12 +104,10 @@ turingMachineChangeMove = fromList [
 tmsIdMove :: Tms
 tmsIdMove = Tms (
         "TuringMachine",
-        [TmsState "Q_1"],
-        [[TmsState "Q_0"]],
+        TmsState "Q_1",
+        [TmsState "Q_0"],
         [
-            TmsCommand [
-                TmsSingleTapeCommand (ChangeFromTo 'c' 'c', tmq2, tmq3, MoveRight)
-            ]
+            TmsCommand (tmq2, [TmsSingleTapeCommand (ChangeFromTo 'c' 'c', MoveRight)], tmq3)
         ],
         ["abc"]
     )

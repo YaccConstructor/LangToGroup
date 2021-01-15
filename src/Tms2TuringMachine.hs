@@ -15,30 +15,20 @@ tms2turingMachine :: Tms -> Either String TuringMachine
 tms2turingMachine
     ( Tms
         ( _,
-          multiIni,
-          (multiAcc : []),
+          ini,
+          (acc : []),
           commands,
           [alphabet@(x : xs)]
           )
       ) = do
-        oneTapeCmds <- traverse toOneTape commands
-        ini <- multiState2oneTapeState multiIni
-        acc <- multiState2oneTapeState multiAcc
-        let allStates = concatMap toStates oneTapeCmds
-        let otherStates = filter (\s -> s /= ini && s /= acc) allStates
+        oneTapeCmds <- traverse toOneTapeCommand commands -- [(TmsState, TmsSingleTapeCommand, TmsState)]
+        let otherStates = filter (\s -> s /= ini && s /= acc) (concatMap (\(s1, _, s2) -> [s1, s2]) oneTapeCmds)
         let stateToInd = Map.fromList $ zip (acc : ini : otherStates) [0 ..]
         return $ TMTypes.fromList $ concatMap (tmsCmd2tmCmd (x :| xs) stateToInd) (zip [0, Prelude.length alphabet ..] oneTapeCmds)
     where
-        toOneTape :: TmsCommand -> Either String TmsSingleTapeCommand
-        toOneTape (TmsCommand [cmd]) = return cmd
-        toOneTape _                  = fail "Multi tape command found."
-
-        toStates :: TmsSingleTapeCommand -> [TmsState]
-        toStates (TmsSingleTapeCommand (_, ini, fol, _)) = [ini, fol]
-
-        multiState2oneTapeState :: [TmsState] -> Either String TmsState
-        multiState2oneTapeState [s] = return s
-        multiState2oneTapeState _   = fail "Multi tape state found."
+        toOneTapeCommand :: TmsCommand -> Either String OneTapeTMCommand
+        toOneTapeCommand (TmsCommand (ini, [cmd], fol)) = return (ini, cmd, fol)
+        toOneTapeCommand _                              = fail "Multi tape command found."
 
 tms2turingMachine _ = fail "Must have only one tape, one accept state and nonempty alphabet."
 
@@ -49,8 +39,8 @@ hash = foldl (\h c -> 29 * h `xor` ord c) 0
 type Transition = (Symbol, SymbolMove)
 
 -- | Convert TmsSingleTapeCommand to [Quadriple]
-tmsCmd2tmCmd :: NonEmpty.NonEmpty Char -> Map TmsState Int -> (Int, TmsSingleTapeCommand) -> [Quadruple]
-tmsCmd2tmCmd alph stateToInd (transStart, (TmsSingleTapeCommand (action, iniSt, folSt, move))) = concatMap NonEmpty.toList $ do
+tmsCmd2tmCmd :: NonEmpty.NonEmpty Char -> Map TmsState Int -> (Int, OneTapeTMCommand) -> [Quadruple]
+tmsCmd2tmCmd alph stateToInd (transStart, (iniSt, (TmsSingleTapeCommand (action, move)), folSt)) = concatMap NonEmpty.toList $ do
     oneSequence <- translate alph (action, move)
     case oneSequence of
         (step :| [])             -> return . return $ makeQuad step iniSt folSt
