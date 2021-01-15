@@ -2,7 +2,7 @@
 module TuringMachine2Tms (turingMachine2tms, turingMachineSt2tmsSt) where
 
 import Data.Map (toList)
-import Data.Char (chr)
+import Data.Char (chr, ord)
 import Data.Functor ((<&>))
 import Data.Set (fromList, toList)
 
@@ -45,4 +45,5 @@ turingMCmd2tms ((iniSt, from), (act, folSt)) =
             R    -> (MoveRight, ChangeFromTo (symb2char from) (symb2char from))
 
 symb2char :: Symbol -> Char
-symb2char (S c) = chr c
+symb2char (S 0) = '_'
+symb2char (S c)       = chr $ c + (ord 'a' - 1)
