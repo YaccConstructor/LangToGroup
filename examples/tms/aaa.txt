@@ -1,0 +1,10 @@
+name: allALetters
+init: q0
+accept: q1
+
+
+q0, a
+q0, a, >
+
+q0, _
+q1, _, -

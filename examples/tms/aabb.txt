@@ -1,0 +1,15 @@
+name: AsThenBs
+init: q0
+accept: q2
+
+q0, a
+q0, a, >
+
+q0, b
+q1, b, >
+
+q1, b
+q1, b, >
+
+q1, _
+q2, _, -
