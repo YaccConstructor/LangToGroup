@@ -1,16 +1,16 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 -- |This module provides types for parsing 'Tms' Turing machines.
-module TmsParser (parser, parseTms) where
+module TmsParser (parser, parseTms, pTms) where
 
 import Text.Megaparsec hiding (empty)
 import Text.Megaparsec.Char
 import Text.Megaparsec.Byte (string)
-import Data.Text (Text, pack)
-import Data.String
-import Control.Monad (guard)
+import Data.Text (Text)
+import Control.Monad (guard, void)
 
-import TMTypes
+import qualified Data.Set as Set
+
 import TmsType
 import ParsingHelpers
 
@@ -40,16 +40,16 @@ pIdentifier = do
 -- | Comma.
 comma :: Parser ()
 comma = do
-    tok $ char ','
+    void $ tok $ char ','
     return ()
 
 -- | Pair '<key>: <value>\n'.
 pKeyValue :: Tokens Text -> Parser a -> Parser a
 pKeyValue key value = do
-    string key
-    tok $ char ':'
+    void $ string key
+    void $ tok $ char ':'
     x <- value
-    tok $ many newline
+    void $ tok $ many newline
     return x
 
 -- | TmsTapeHeadMovement
@@ -74,7 +74,7 @@ pCommand = do
     comma
     iniChars <- pChar `sepBy1` comma
     let len = length iniChars
-    many newline
+    void $ many newline
     finSt <- pIdentifier
     comma
     finCharsMoves <- (pChar <|> pMove) `sepBy1` comma
@@ -98,7 +98,10 @@ commandAlphabet (TmsCommand (_, cmds, _)) = tapeCmdAlphabet <$> cmds
 
 -- | Get alphabets of all commands.
 alphabet :: [TmsCommand] -> [[Char]]
-alphabet tmsCommands = foldl1 (\x y -> fmap (uncurry (++)) $ zip x y) (commandAlphabet <$> tmsCommands)
+alphabet tmsCommands = fmap (filter (/= '_')) $
+    fmap Set.toList $
+    fmap Set.fromList $
+    foldl1 (\x y -> fmap (uncurry (++)) $ zip x y) (commandAlphabet <$> tmsCommands)
 
 -- | Tms.
 -- Example:
@@ -112,13 +115,13 @@ alphabet tmsCommands = foldl1 (\x y -> fmap (uncurry (++)) $ zip x y) (commandAl
 -- 
 -- q0, _, _
 -- q3, a, _, <, -
---
+-- Note: lines should not end with ' ', also there could not be any newlines after Tms.
 pTms :: Parser Tms
 pTms = do
     name             <- pKeyValue "name"   pIdentifier
     initStateName    <- pKeyValue "init"   pIdentifier
     acceptStateNames <- pKeyValue "accept" (pIdentifier `sepBy1` comma)
-    cmdsLens <- (tok pCommand) `sepBy1` (many newline)
+    cmdsLens <- (tok pCommand) `sepBy1` (some newline)
     let (cmds, lens) = unzip cmdsLens
     True <- case lens of
         (len : others) | len >= 1 -> return $ all (== len) others
@@ -131,6 +134,8 @@ pTms = do
             alphabet cmds
         )
 
+
+parser :: Parser Tms
 parser = makeEofParser pTms
 
 -- | Parse Tms from file.
