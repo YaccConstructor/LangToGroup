@@ -25,7 +25,7 @@ import qualified System.Environment as SE
 import GrammarType
 import CFG2TM
 import ParsingHelpers
-import TuringMachineWriter
+import TM2Tms
 
 -- |Parser part.
 

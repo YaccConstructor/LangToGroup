@@ -1,10 +1,11 @@
--- |This module provides functionality for converting the Turing machine 'TM' to 'Tms' from module 'TmsType'.
-module TuringMachineWriter (tm2tms) where
+-- |This module provides functionality for converting the Turing machine 'TMType.TM' to 'Tms'.
+module TM2Tms (tm2tms) where
 
-import Data.List (transpose)
+import Data.List (transpose, intercalate)
 import Data.Set (toList)
 import Data.Map (fromList, lookup, Map)
 import Data.List.NonEmpty (reverse, NonEmpty(..), length)
+import Data.Tuple.Utils (snd3)
 
 import TMType
 import TmsType
@@ -20,12 +21,20 @@ tm2tms
         AccessStates accessStates)
     ) = do
         tmsCmdsBlocks <- traverse cmd2tmsTapeCmds (toList commands)
-        let tmsCmds = filter (not . noChangeCommand) $ concat tmsCmdsBlocks
+        let tmsCmds = concat tmsCmdsBlocks
         tmsAlph <- traverse alph2tmsAlph tapeAlphabets
-        return $ Tms ("TuringMachine", startStates, [accessStates], tmsCmds, tmsAlph)
+        return $ Tms (
+            "TMType.TM",
+            mergeMultipleNames $ (\(State s) -> s) <$> startStates,
+            pure $ mergeMultipleNames $ (\(State s) -> s) <$> accessStates,
+            tmsCmds,
+            tmsAlph)
     where
         alph2tmsAlph :: TapeAlphabet -> Either String [Char]
         alph2tmsAlph (TapeAlphabet squares) = traverse toValue (toList squares)
+
+tmState2tmsState :: State -> TmsState
+tmState2tmsState (State s) = TmsState s
  
 -- Section of helper functions.
 
@@ -35,7 +44,7 @@ makeTransSt :: State -> State -> State
 makeTransSt (State from) (State to) = State $ "FROM_" ++ from ++ "_TO_" ++ to
 
 -- |Convert 'TapeCommand' to non empty list of 'TmsSingleTapeCommand'.
-cmd2tmsTapeCmd :: TapeCommand -> Either String (NonEmpty TmsSingleTapeCommand)
+cmd2tmsTapeCmd :: TapeCommand -> Either String (NonEmpty OneTapeTMCommand)
 
 -- Command translation cases.
 
@@ -46,7 +55,7 @@ cmd2tmsTapeCmd (
         (ES, iniSt, RBS),
         (ES, folSt, RBS))
     ) = return $
-    (TmsSingleTapeCommand (Leave, iniSt, folSt, Stay)) :|
+    (tmState2tmsState iniSt, TmsSingleTapeCommand (Leave, Stay), tmState2tmsState folSt) :|
     []
 
 -- 'TM' : Insert value to the left from head.
@@ -57,10 +66,10 @@ cmd2tmsTapeCmd (
         ((Value name nquts), folSt, RBS)
     )) = do
     ch <- quotName2Char name nquts
-    let transit = makeTransSt iniSt folSt
+    let transit = tmState2tmsState $ makeTransSt iniSt folSt
     return $
-        (TmsSingleTapeCommand  (Leave,                 iniSt,   transit, MoveLeft)) :|
-        [(TmsSingleTapeCommand (ChangeFromTo '_' $ ch, transit, folSt,   Stay))]
+        (tmState2tmsState iniSt, TmsSingleTapeCommand (Leave,                   MoveLeft), transit) :|
+        [(transit,               TmsSingleTapeCommand (ChangeFromTo '_' $ ch,   Stay),     tmState2tmsState folSt)]
 
 -- 'TM' : Erase symbol to the left from the head.
 -- 'Tms': Erase (put empty symbol) value in head position and move head to right.
@@ -71,7 +80,7 @@ cmd2tmsTapeCmd (
     )) = do
     ch <- quotName2Char name nquts
     return $
-        (TmsSingleTapeCommand (ChangeFromTo ch '_', iniSt, folSt, MoveRight)) :|
+        (tmState2tmsState iniSt, TmsSingleTapeCommand (ChangeFromTo ch '_', MoveRight), tmState2tmsState folSt) :|
         []
 
 -- 'TM' : Replace value to left from the head.
@@ -84,11 +93,7 @@ cmd2tmsTapeCmd (
     iniCh <- quotName2Char iniName iniNquts
     folCh <- quotName2Char folName folNquts
     return $
-        (TmsSingleTapeCommand
-            (ChangeFromTo iniCh folCh,
-            iniSt,
-            folSt,
-            Stay)) :|
+        (tmState2tmsState iniSt, TmsSingleTapeCommand (ChangeFromTo iniCh folCh, Stay), tmState2tmsState folSt) :|
         []
 
 -- 'TM' : Check if tape is empty.
@@ -98,7 +103,7 @@ cmd2tmsTapeCmd (
         (LBS, iniSt, RBS),
         (LBS, folSt, RBS)
     )) = return $
-        (TmsSingleTapeCommand (ChangeFromTo '_' '_', iniSt, folSt, Stay)) :|
+        (tmState2tmsState iniSt, TmsSingleTapeCommand (ChangeFromTo '_' '_', Stay), tmState2tmsState folSt) :|
         []
 
 -- Command can not be translated to Tms format.
@@ -106,17 +111,20 @@ cmd2tmsTapeCmd cmd = fail $ "Command '" ++ show cmd ++ "' can not be converted t
 
 cmd2tmsTapeCmds :: [TapeCommand] -> Either String [TmsCommand]
 cmd2tmsTapeCmds cmds = do
-    tapeCmdSeqs <- traverse cmd2tmsTapeCmd cmds -- :: [NonEmpty TmsSingleTapeCommand]
+    tapeCmdSeqs <- traverse cmd2tmsTapeCmd cmds
     let tapeCmdSeqsRev = Prelude.map Data.List.NonEmpty.reverse tapeCmdSeqs
     let mxLen = foldl (\mx sq -> max mx (Data.List.NonEmpty.length sq)) 0 tapeCmdSeqs
     let sameLenCmds = fmap (fillSeqWithIdCmds mxLen) tapeCmdSeqsRev
-    let sameLenCmdsRev = fmap Prelude.reverse sameLenCmds
-    return $ TmsCommand <$> transpose sameLenCmdsRev
+    let sameLenCmdsRev = transpose $ fmap Prelude.reverse sameLenCmds
+    return $ (\cmds -> TmsCommand (startState cmds, commands cmds, finalState cmds)) <$> sameLenCmdsRev
     where
-        fillSeqWithIdCmds :: Int -> NonEmpty TmsSingleTapeCommand -> [TmsSingleTapeCommand]
+        fillSeqWithIdCmds :: Int -> NonEmpty OneTapeTMCommand -> [OneTapeTMCommand]
         fillSeqWithIdCmds len (x :| xs) = replicate (len - (Prelude.length xs) - 1) (makeIdTapeCommand x) ++ pure x ++ xs
-        makeIdTapeCommand :: TmsSingleTapeCommand -> TmsSingleTapeCommand
-        makeIdTapeCommand (TmsSingleTapeCommand (_, _, st, _)) = TmsSingleTapeCommand (Leave, st, st, Stay)
+        makeIdTapeCommand :: OneTapeTMCommand -> OneTapeTMCommand
+        makeIdTapeCommand (_, _, st) = (st, (TmsSingleTapeCommand (Leave, Stay)), st)
+        startState = mergeMultipleNames . fmap (\((TmsState s), _, _) -> s)
+        finalState = mergeMultipleNames . fmap (\(_, _, (TmsState f)) -> f)
+        commands = fmap snd3
 
 -- |Convert 'Square' to 'Char'.
 toValue :: Square -> Either String Char
@@ -141,11 +149,8 @@ toQuot c = case Data.Map.lookup c quoted of
     Nothing -> error $ "Can not find character with quote for '" ++ pure c ++ "'"
     Just c' -> c'
 
--- |Check if command changes nothing, so it can be paifully removed.
-noChangeCommand :: TmsCommand -> Bool
-noChangeCommand (TmsCommand cmds) = all noChangeTapeCommand cmds
+-- |Concat and filter list of states.
+mergeMultipleNames :: [String] -> TmsState
+mergeMultipleNames = TmsState . ("Q__" ++ ) . intercalate "__" . map filterStateName . enum
     where
-        noChangeTapeCommand :: TmsSingleTapeCommand -> Bool
-        noChangeTapeCommand (TmsSingleTapeCommand (Leave,            ini, fol, Stay)) | ini == fol           = True
-        noChangeTapeCommand (TmsSingleTapeCommand (ChangeFromTo f t, ini, fol, Stay)) | ini == fol && f == t = True
-        noChangeTapeCommand _                                                                                = False
+        enum ss = fmap (\(num, s) -> show num ++ "__" ++ s) (zip [0 ..] ss)

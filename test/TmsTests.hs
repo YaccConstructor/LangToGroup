@@ -1,11 +1,14 @@
-module TuringMachineWriterTests (testShowOneTapeTms, testShowMultiTapeTms, testOneTapeTM2Tms, testMultiTapeTM2Tms) where
+module TmsTests (testShowOneTapeTms,
+                 testShowMultiTapeTms,
+                 testOneTapeTM2Tms,
+                 testMultiTapeTM2Tms) where
 
 import Test.HUnit
 import Data.Set (fromList)
 
 import TmsType
 import TMType
-import TuringMachineWriter
+import TM2Tms
 
 oneTapeTM :: TM
 oneTapeTM = TM (
@@ -21,16 +24,16 @@ oneTapeTM = TM (
     ],
     MultiTapeStates [
         fromList [
-            q11
+            q1
         ]
     ],
     Commands (
         fromList [
-            [SingleTapeCommand ((a,   q11, RBS), (ES,  q11, RBS))]
+            [SingleTapeCommand ((a, q1, RBS), (ES, q1, RBS))]
         ]
     ),
-    StartStates [q11],
-    AccessStates [q22]
+    StartStates [q1],
+    AccessStates [q2]
     )
 
 multiTapeTM :: TM
@@ -57,31 +60,31 @@ multiTapeTM = TM (
     ],
     MultiTapeStates [
         fromList [
-            q11
+            q1
         ],
         fromList [
-            q22
+            q2
         ],
         fromList [
-            q33
+            q3
         ]
     ],
     Commands (
         fromList [
             [
-                SingleTapeCommand ((a,  q11, RBS), (a,   q11, RBS)),
-                SingleTapeCommand ((a', q22, RBS), (ES,  q22, RBS)),
-                SingleTapeCommand ((a', q33, RBS), (a',  q33, RBS))
+                SingleTapeCommand ((a,  q1, RBS), (a,   q1, RBS)),
+                SingleTapeCommand ((a', q2, RBS), (ES,  q2, RBS)),
+                SingleTapeCommand ((a', q3, RBS), (a',  q3, RBS))
             ]
         ]
     ),
-    StartStates [q11, q22, q33],
-    AccessStates [q11, q22, q33]
+    StartStates [q1, q2, q3],
+    AccessStates [q1, q2, q3]
     )
 
 testShowOneTapeTms :: Assertion
 testShowOneTapeTms = testShowTms oneTapeTms "\
-    \name: TuringMachine\
+    \name: TMType.TM\
     \init: Q__0__q_1v1\
     \accept: Q__0__q_2v2\
     \Q__0__q_1v1, a\n\
@@ -89,7 +92,7 @@ testShowOneTapeTms = testShowTms oneTapeTms "\
 
 testShowMultiTapeTms :: Assertion
 testShowMultiTapeTms = testShowTms multiTapeTms "\
-    \name: TuringMachine\
+    \name: TMType.TM\
     \init: Q__0__q_1v1__1__q_2v2__2__q_3v3\
     \accept: Q__0__q_1v1__1__q_2v2__2__q_3v3\
     \Q__0__q_1v1__1__q_2v2__2__q_3v3, a, à, à\
@@ -101,14 +104,23 @@ testOneTapeTM2Tms = testTM2Tms oneTapeTM oneTapeTms
 testMultiTapeTM2Tms :: Assertion
 testMultiTapeTM2Tms = testTM2Tms multiTapeTM multiTapeTms
 
-q11 :: TMType.State
-q11 = TMType.State "q_{1}^{1}"
+q11 :: TmsState
+q11 = TmsState "q_{1}^{1}"
 
-q22 :: TMType.State
-q22 = TMType.State "q_{2}^{2}"
+q22 :: TmsState
+q22 = TmsState "q_{2}^{2}"
 
-q33 :: TMType.State
-q33 = TMType.State "q_{3}^{3}"
+q33 :: TmsState
+q33 = TmsState "q_{3}^{3}"
+
+q1 :: TMType.State
+q1 = TMType.State "q_{1}^{1}"
+
+q2 :: TMType.State
+q2 = TMType.State "q_{2}^{2}"
+
+q3 :: TMType.State
+q3 = TMType.State "q_{3}^{3}"
 
 a :: Square
 a = Value "a" 0
@@ -121,13 +133,11 @@ a' = Value "a" 1
 
 oneTapeTms :: Tms
 oneTapeTms = Tms (
-        "TuringMachine",
-        [q11],
-        [[q22]],
+        "TMType.TM",
+        TmsState "Q__0__q_1v1",
+        [TmsState "Q__0__q_2v2"],
         [
-            TmsCommand [
-                TmsSingleTapeCommand (ChangeFromTo 'a' '_', q11, q11, MoveRight)
-            ]
+            TmsCommand (TmsState "Q__0__q_1v1", [TmsSingleTapeCommand (ChangeFromTo 'a' '_', MoveRight)], TmsState "Q__0__q_1v1")
         ],
         [
             ['a', 'b']
@@ -136,15 +146,19 @@ oneTapeTms = Tms (
 
 multiTapeTms :: Tms
 multiTapeTms = Tms (
-        "TuringMachine",
-        [q11, q22, q33],
-        [[q11, q22, q33]],
+        "TMType.TM",
+        TmsState "Q__0__q_1v1__1__q_2v2__2__q_3v3",
+        [TmsState "Q__0__q_1v1__1__q_2v2__2__q_3v3"],
         [
-            TmsCommand [
-                TmsSingleTapeCommand (ChangeFromTo 'a' 'a', q11, q11, Stay),
-                TmsSingleTapeCommand (ChangeFromTo 'à' '_', q22, q22, MoveRight),
-                TmsSingleTapeCommand (ChangeFromTo 'à' 'à', q33, q33, Stay)
-            ]
+            TmsCommand (
+                TmsState "Q__0__q_1v1__1__q_2v2__2__q_3v3",
+                [
+                    TmsSingleTapeCommand (ChangeFromTo 'a' 'a', Stay),
+                    TmsSingleTapeCommand (ChangeFromTo 'à' '_', MoveRight),
+                    TmsSingleTapeCommand (ChangeFromTo 'à' 'à', Stay)
+                ],
+                TmsState "Q__0__q_1v1__1__q_2v2__2__q_3v3"
+            )
         ],
         [
             ['a'],

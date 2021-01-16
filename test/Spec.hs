@@ -11,7 +11,9 @@ import ConfigType
 import SMTests
 import GrTests
 import ParserTests
-import TuringMachineWriterTests
+import TmsTests
+import TuringMachine2TmsTests
+import Tms2TuringMachineTests
 
 test1Grammar :: Grammar
 test1Grammar = grammar where
@@ -83,5 +85,12 @@ main = defaultMainWithOpts
         testCase "show one tape Tms" testShowOneTapeTms,
         testCase "show multi tape Tms" testShowMultiTapeTms,
         testCase "one tape TM to Tms" testOneTapeTM2Tms,
-        testCase "multi tape TM to Tms" testMultiTapeTM2Tms]
+        testCase "multi tape TM to Tms" testMultiTapeTM2Tms,
+        testCase "TuringMachine to Tms" testTuringMachine2Tms,
+        testCase "Tms to TuringMachine simple" testTms2TuringMachineSimple,
+        testCase "Tms to TuringMachine leave stay" testTms2TuringMachineLeaveStay,
+        testCase "Tms to TuringMachine leave move" testTms2TuringMachineLeaveMove,
+        testCase "Tms to TuringMachine change move" testTms2TuringMachineChangeMove,
+        testCase "Tms to TuringMachine id move" testTms2TuringMachineIdMove
+        ]
        mempty
