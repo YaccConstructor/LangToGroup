@@ -24,7 +24,7 @@ tm2tms
         let tmsCmds = concat tmsCmdsBlocks
         tmsAlph <- traverse alph2tmsAlph tapeAlphabets
         return $ Tms (
-            "TMType.TM",
+            "TMType_TM",
             mergeMultipleNames $ (\(State s) -> s) <$> startStates,
             pure $ mergeMultipleNames $ (\(State s) -> s) <$> accessStates,
             tmsCmds,

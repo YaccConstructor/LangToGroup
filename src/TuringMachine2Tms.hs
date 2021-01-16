@@ -12,7 +12,7 @@ import TMTypes
 turingMachine2tms :: TuringMachine -> Tms
 turingMachine2tms (TM quads) = 
     Tms (
-            "TMTypes.TuringMachine",
+            "TMTypes_TuringMachine",
             turingMachineSt2tmsSt startState,
             [turingMachineSt2tmsSt finalState],
             quadsList <&> turingMCmd2tms <&> toTmsCommand,
