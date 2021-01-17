@@ -44,5 +44,5 @@ mainTms :: String -> String -> IO ()
 mainTms filename errorFile = do
     tms <- parseTms filename errorFile
     case tms of
-        Left err -> hPutStrLn stderr $ "Error: " ++ show err
+        Left err -> hPutStrLn stderr $ show err
         Right tms -> putStrLn $ show tms -- Do whatever you want with tms :: Tms.

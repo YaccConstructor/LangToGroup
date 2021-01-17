@@ -6,6 +6,7 @@ module TmsParser (parser, parseTms, pTms) where
 import Text.Megaparsec hiding (empty)
 import Text.Megaparsec.Char
 import Text.Megaparsec.Byte (string)
+import Text.Megaparsec.Error (errorBundlePretty)
 import Data.Text (Text)
 import Control.Monad (guard, void)
 
@@ -144,6 +145,6 @@ parseTms inputFile errorFile = do
     result <- (parseFromFile TmsParser.parser errorFile inputFile)
     case result of
         Left err -> do
-            return $ fail $ show err
+            return $ fail $ "Parsing error: " ++ errorBundlePretty err
         Right tms -> do
             return $ pure $ tms

@@ -9,6 +9,7 @@ module GrammarReader (convertGrammar2TM,parser) where
 import Text.Megaparsec
 import Text.Megaparsec.Char
 import Text.Megaparsec.Debug
+import Text.Megaparsec.Error (errorBundlePretty)
 
 import Data.Text (Text)
 import Data.String
@@ -174,7 +175,7 @@ convertGrammar2TM :: String -> String -> IO ()
 convertGrammar2TM grammarFile errorFile = do
     result <- (parseFromFile parser errorFile grammarFile)
     case result of
-      Left err -> hPutStrLn stderr $ "Error: " ++ show err
+      Left err -> hPutStrLn stderr $ "Parsing error: " ++ errorBundlePretty err
       Right cs -> case (checkGrammarType cs) of
           Boolean -> putStrLn ("Boolean " ++ show cs) -- here will be new algorithm
           Conjunctive -> putStrLn ("Conjunctive " ++ show cs)
