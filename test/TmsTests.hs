@@ -84,7 +84,7 @@ multiTapeTM = TM (
 
 testShowOneTapeTms :: Assertion
 testShowOneTapeTms = testShowTms oneTapeTms "\
-    \name: TMType.TM\
+    \name: TMType_TM\
     \init: Q__0__q_1v1\
     \accept: Q__0__q_2v2\
     \Q__0__q_1v1, a\n\
@@ -92,7 +92,7 @@ testShowOneTapeTms = testShowTms oneTapeTms "\
 
 testShowMultiTapeTms :: Assertion
 testShowMultiTapeTms = testShowTms multiTapeTms "\
-    \name: TMType.TM\
+    \name: TMType_TM\
     \init: Q__0__q_1v1__1__q_2v2__2__q_3v3\
     \accept: Q__0__q_1v1__1__q_2v2__2__q_3v3\
     \Q__0__q_1v1__1__q_2v2__2__q_3v3, a, à, à\
@@ -133,7 +133,7 @@ a' = Value "a" 1
 
 oneTapeTms :: Tms
 oneTapeTms = Tms (
-        "TMType.TM",
+        "TMType_TM",
         TmsState "Q__0__q_1v1",
         [TmsState "Q__0__q_2v2"],
         [
@@ -146,7 +146,7 @@ oneTapeTms = Tms (
 
 multiTapeTms :: Tms
 multiTapeTms = Tms (
-        "TMType.TM",
+        "TMType_TM",
         TmsState "Q__0__q_1v1__1__q_2v2__2__q_3v3",
         [TmsState "Q__0__q_1v1__1__q_2v2__2__q_3v3"],
         [

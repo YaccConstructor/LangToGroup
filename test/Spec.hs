@@ -14,6 +14,7 @@ import ParserTests
 import TmsTests
 import TuringMachine2TmsTests
 import Tms2TuringMachineTests
+import TmsParserTests
 
 test1Grammar :: Grammar
 test1Grammar = grammar where
@@ -91,6 +92,9 @@ main = defaultMainWithOpts
         testCase "Tms to TuringMachine leave stay" testTms2TuringMachineLeaveStay,
         testCase "Tms to TuringMachine leave move" testTms2TuringMachineLeaveMove,
         testCase "Tms to TuringMachine change move" testTms2TuringMachineChangeMove,
-        testCase "Tms to TuringMachine id move" testTms2TuringMachineIdMove
+        testCase "Tms to TuringMachine id move" testTms2TuringMachineIdMove,
+        testCase "parse Tms: test1tape1cmd" test1tape1cmd,
+        testCase "parse Tms: test1tape3cmd" test1tape3cmd,
+        testCase "parse Tms: test3tape3cmd" test3tape3cmd
         ]
        mempty

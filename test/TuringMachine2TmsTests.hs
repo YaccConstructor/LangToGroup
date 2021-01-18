@@ -21,7 +21,7 @@ testTuringMachine2Tms = assertEqual "Invalid conversion from TMTypes.TuringMachi
 
         tms :: Tms
         tms = Tms (
-                "TMTypes.TuringMachine",
+                "TMTypes_TuringMachine",
                 TmsState "Q_1",
                 [TmsState "Q_0"],
                 [
