@@ -3,6 +3,10 @@ module Boolean2TM where
 import GrammarType
 import TMTypes
 import Data.Char (chr, ord)
+import qualified Data.Set as Set
+import qualified Data.Map as Map
+import Data.List
+import Data.Ord
 
 newtype ConjunctionPair = ConjunctionPair (Integer, Nonterminal, Nonterminal)
 
@@ -44,9 +48,17 @@ convertDebuggingStateToState :: DebuggingState -> State
 convertDebuggingStateToState (DState string) = Q number where
     number = read (concatMap (show . ord) string) :: Int
 
-{--calculateMaxNumberOfRulesForNonterminal :: Grammar -> Integer
+calculateMaxNumberOfRulesForNonterminal :: Grammar -> Int
+calculateMaxNumberOfRulesForNonterminal (Grammar (_, _, relations, _)) = let 
+  listRelations = Set.toList relations
+  groupedRelations = Map.fromListWith (++) [(nonterminal, [symbols]) | Relation (nonterminal, symbols) <- listRelations]
+  in (snd $ maximumBy (comparing snd) (Map.toList $ Map.map length groupedRelations))
 
-calculateNextConjunctionInSameRule :: ConjunctionPair -> ConjunctionPair
+
+
+
+
+{---calculateNextConjunctionInSameRule :: ConjunctionPair -> ConjunctionPair
 
 calculateNextConjunctionInNextRule :: ConjunctionPair -> ConjunctionPair--} 
 
