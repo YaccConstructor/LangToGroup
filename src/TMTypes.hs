@@ -1,7 +1,7 @@
 module TMTypes where
 
 import Data.Map.Lazy (Map)
-import qualified Data.Map.Lazy as Map (fromList)
+import qualified Data.Map.Lazy as Map (fromList, toList)
 
 newtype State = Q Int
     deriving (Eq, Ord, Show)
@@ -33,3 +33,6 @@ newtype TuringMachine = TM Quadruples
 
 fromList :: [Quadruple] -> TuringMachine
 fromList = TM . Map.fromList
+
+toList :: TuringMachine -> [Quadruple]
+toList (TM qs) = Map.toList qs
