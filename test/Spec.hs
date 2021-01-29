@@ -15,6 +15,7 @@ import TmsTests
 import TuringMachine2TmsTests
 import Tms2TuringMachineTests
 import TmsParserTests
+import qualified SPTests (tests)
 
 test1Grammar :: Grammar
 test1Grammar = grammar where
@@ -95,6 +96,7 @@ main = defaultMainWithOpts
         testCase "Tms to TuringMachine id move" testTms2TuringMachineIdMove,
         testCase "parse Tms: test1tape1cmd" test1tape1cmd,
         testCase "parse Tms: test1tape3cmd" test1tape3cmd,
-        testCase "parse Tms: test3tape3cmd" test3tape3cmd
+        testCase "parse Tms: test3tape3cmd" test3tape3cmd,
+        head $ hUnitTestToTests SPTests.tests
         ]
        mempty
