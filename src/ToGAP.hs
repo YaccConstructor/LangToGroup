@@ -1,6 +1,6 @@
 {-# LANGUAGE FlexibleInstances, FlexibleContexts #-}
 
-module InGAP where
+module ToGAP where
 
 import GPTypes (GroupPresentation(GP))
 import qualified GPTypes as GP
