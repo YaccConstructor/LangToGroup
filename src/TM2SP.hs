@@ -27,7 +27,7 @@ relations = do
                         [q_ i, s_ j, s_ beta] === [s_ j, q_ l, s_ beta]
                         | beta <- [0..m]
                     ] ++
-                    [[q_ i, s_ j, h] === [s_ j, q_ i, s_ 0, h]]
+                    [[q_ i, s_ j, h] === [s_ j, q_ l, s_ 0, h]]
 
                 ((Q i, S j), (L,       Q l)) ->
                     [

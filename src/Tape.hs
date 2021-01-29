@@ -1,15 +1,35 @@
 module Tape where
 
 import TMTypes
-import Data.List.NonEmpty (NonEmpty(..), nonEmpty, (<|), toList)
+import Data.List.NonEmpty (NonEmpty(..), nonEmpty, (<|))
+import qualified Data.List.NonEmpty as NonEmpty (toList)
 import qualified Data.List.NonEmpty as NEList (head, tail)
 import Data.Maybe (fromMaybe)
+import Data.List (intercalate)
 
 head' :: NonEmpty a -> a
 head' = NEList.head
 
 tail' :: a -> NonEmpty a -> NonEmpty a
 tail' b = nonEmpty' b . NEList.tail
+
+take' :: Int -> a -> [a] -> NonEmpty a
+take' i b l = nonEmpty' b $
+    if i >= length l
+    then l ++ replicate (i - length l) b
+    else take i l
+
+drop' :: Int -> a -> [a] -> NonEmpty a
+drop' i b l = nonEmpty' b $
+    if i < 0
+    then replicate (-i) b ++ l
+    else drop i l
+
+index' :: Int -> a -> [a] -> a
+index' i b l =
+    if i < 0 || i >= length l
+    then b
+    else l !! i
 
 nonEmpty' :: a -> [a] -> NonEmpty a
 nonEmpty' b as = fromMaybe (b :| []) $ nonEmpty as
@@ -34,9 +54,12 @@ toRight (Tape l t r b) = Tape (l') (head' r) (tail' b r) b where
          else t <| l
 
 fromList :: [a] -> Int -> a -> Tape a
-fromList as ind b = Tape (take' ind as) (as !! ind) (drop' (ind + 1) as) b where
-    take' i = nonEmpty' b . take i
-    drop' i = nonEmpty' b . drop i
+fromList as ind b = Tape (take' ind b as) (index' ind b as) (drop' (ind + 1) b as) b
 
 instance Show a => Show (Tape a) where
-    show (Tape l t r _) = concat ((++ " | ") <$> show <$> reverse (toList l)) ++ "[" ++ show t ++ "]" ++ concat ((" | " ++) <$> show <$> toList r)
+    show (Tape l t r _) =
+        intercalate " " (show <$> reverse (NonEmpty.toList l)) ++
+        "[" ++
+        show t ++
+        "]" ++
+        intercalate " " (show <$> NonEmpty.toList r)

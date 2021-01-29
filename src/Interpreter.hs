@@ -4,30 +4,58 @@ import TMTypes
 import Tape
 import qualified Data.Map.Lazy as Map (lookup)
 import Data.Set (Set)
-import qualified Data.Set as Set (fromList, findIndex)
+import qualified Data.Set as Set (fromList, findIndex, map, elemAt)
+import Data.Function (on)
+
+newtype MetaString = MS {unMS :: String}
+
+instance Show MetaString where
+    show = unMS
+
+instance Eq MetaString where
+    (==) = (==) `on` unMS
+
+newtype MetaChar = MC {unMC :: Char}
+
+instance Show MetaChar where
+    show = return . unMC
+
+instance Eq MetaChar where
+    (==) = (==) `on` unMC
+
+instance Ord MetaChar where
+    (<=) = (<=) `on` unMC
 
 data WorkingState = WS {
         turingMachine :: TuringMachine,
         currentState :: State,
-        tape :: Tape Symbol
+        tape :: Tape MetaString,
+        alphabet :: Set String
     }
 
+blankStr :: String
+blankStr = "."
+
 step :: WorkingState -> Maybe WorkingState
-step (WS tm@(TM qs) q t) = do
-    let s = top t
+step (WS tm@(TM qs) q t a) = do
+    let cs = unMS $ top t
+        s = if cs == blankStr
+            then S 0
+            else S ((Set.findIndex cs a) + 1)
     (sm, q') <- Map.lookup (q, s) qs
     let t' = case sm of
-         C s' -> t {top = s'}
-         L    -> toLeft  t
-         R    -> toRight t
-    return $ WS tm q' t'
+         C (S 0) -> t {top = MS blankStr}
+         C (S i) -> t {top = MS $ Set.elemAt (i - 1) a}
+         L       -> toLeft  t
+         R       -> toRight t
+    return $ WS tm q' t' a
 
-start :: Ord a => TuringMachine -> [a] -> Int -> (Set (Maybe a), WorkingState)
-start tm word ind =
-    let charSet = Set.fromList $ Nothing : (Just <$> word)
-        toSymbol = \char -> S $ Set.findIndex char charSet
-        tape = Tape.fromList (toSymbol <$> Just <$> word) ind emptySymbol
-    in  (charSet, WS tm startState tape)
+start :: (Show a, Ord a) => TuringMachine -> [a] -> Int -> WorkingState
+start tm word ind = startWithAlphabet tm word ind $ Set.fromList word
+
+startWithAlphabet :: Show a => TuringMachine -> [a] -> Int -> Set a -> WorkingState
+startWithAlphabet tm word ind alphabet =
+    WS tm startState (Tape.fromList ((MS . show) <$> word) ind (MS blankStr)) (Set.map show alphabet)
 
 states :: WorkingState -> [WorkingState]
 states ws =
