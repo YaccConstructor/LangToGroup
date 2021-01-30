@@ -1,7 +1,6 @@
 module SPTests where
 
 import Test.HUnit
-import TMTypes
 import TMReader
 import TMTesting
 import SPTypes
@@ -9,10 +8,7 @@ import SPGens
 import TM2SP
 import qualified Set
 import SPSolver (solve)
-import Data.Map.Lazy (Map)
 import qualified Data.Map.Lazy as Map
-import Data.Maybe (fromMaybe)
-import Debug.Trace (trace)
 
 testSet :: [(Int, [(String, Bool)])]
 testSet = [
@@ -21,36 +17,44 @@ testSet = [
         ("a", True),
         ("aa", True),
         ("aaa", True),
-        ("aaaa", True)
+        ("aaaa", True),
+        ("aaaaa", True)
     ]),
     (2, [
         ("", False),
         ("a", True),
         ("aa", True),
         ("aaa", True),
-        ("aaaa", True)
+        ("aaaa", True),
+        ("aaaaa", True)
     ]),
     (3, [
         ("", True),
         ("a", True),
-        ("aa", False)
+        ("aa", False),
+        ("aaa", False)
     ]),
     (4, [
         ("", False),
         ("a", True),
         ("b", True),
         ("ab", False),
-        ("bba", False)
+        ("bb", False),
+        ("baa", False)
     ]),
     (5, [
         ("", False),
         ("ac", False),
         ("bc", False),
         ("aba", False),
-        ("abc", True)
+        ("abc", True),
+        ("abca", False),
+        ("abcc", False)
     ]),
     (6, [
         ("", False),
+        ("a", False),
+        ("b", False),
         ("aba", False),
         ("baba", False),
         ("ababa", True),
@@ -64,9 +68,14 @@ testSet = [
         ("abca", False),
         ("abcb", False),
         ("abcba", True),
-        ("abcbcba", True)
-    ]),
-    (8, [
+        ("abcbcba", True),
+        ("abcbaba", False),
+        ("abcbcbca", False),
+        ("abcbcbcba", True),
+        ("abcbcbcbcba", True)
+    ])
+  ] ++ [
+    (i, [
         ("", True),
         ("a", False),
         ("b", False),
@@ -74,8 +83,32 @@ testSet = [
         ("bab", False),
         ("abab", True),
         ("abba", False),
-        ("aabb", True)
+        ("aabb", True),
+        ("ababa", False),
+        ("ababab", True),
+        ("abbaab", False),
+        ("aabbab", True),
+        ("aaabbb", True),
+        ("aababbab", True),
+        ("aabaababbb", True)
     ])
+    | i <- [8..12]
+  ] ++ [
+    (i, [
+        ("", True),
+        ("a", False),
+        ("aa", True),
+        ("ab", False),
+        ("aba", False),
+        ("abab", False),
+        ("abba", True),
+        ("bbbb", True),
+        ("aaba", False),
+        ("aaaaa", False),
+        ("babbab", True),
+        ("aaaaaa", True)
+    ])
+    | i <- [13,14]
   ]
 
 tests :: Test
@@ -83,7 +116,11 @@ tests = TestLabel "Correctness of constructing semigroup from machine" $
     TestList $ do
         (tmi, testsTM) <- testSet
         let (msg, allChars, Just tm) = testingSet !! (tmi - 1)
-            sp = semigroupGamma tm
+            SP rs = semigroupGamma tm
+            q_0 = runTMReader (q_ 0) tm
+            rules = flip filter (Set.toList rs) $
+                \(gw1 `Equals` gw2) ->
+                    gw1 /= gw2 && q_0 `notElem` gw1
             alphabet = Map.fromList $ zip allChars [1..]
         return $ TestLabel msg $
             TestList $ do
@@ -102,6 +139,6 @@ tests = TestLabel "Correctness of constructing semigroup from machine" $
                                 else (s_ . (Map.!) alphabet) <$> word
                             ) ++
                             [h]
-                        finalWord <- sequence [q]
-                        return $
-                            finalWord `elem` solve depth sp initWord ~?= answer
+                        return $ (~=?) answer $
+                            any (q_0 `elem`) $
+                                solve depth rules initWord

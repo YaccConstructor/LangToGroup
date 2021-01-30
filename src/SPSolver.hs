@@ -17,10 +17,9 @@ revRuleType :: RuleType -> RuleType
 revRuleType (Direct x) = Inverse x
 revRuleType (Inverse x) = Direct x
 
-solve :: Depth -> SemigroupPresentation -> GWord -> [GWord]
-solve d sp gw =
-    let SP rs = sp
-        rules = map fmap [Direct, Inverse] <*> zip (Set.toList rs) [0..]
+solve :: Depth -> [Relation] -> GWord -> [GWord]
+solve d rs gw =
+    let rules = map fmap [Direct, Inverse] <*> zip rs [0..]
     in  fmap fst $
         concat $
         maybe id take d $
