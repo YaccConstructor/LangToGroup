@@ -8,7 +8,7 @@ import qualified Data.Map as Map
 import Data.List
 import Data.Ord
 
-newtype ConjunctionPair = ConjunctionPair (Integer, Nonterminal, Nonterminal)
+newtype ConjunctionPair = ConjunctionPair (Nonterminal, Integer, Maybe Negation, Nonterminal, Nonterminal)
 
 -- firstly generating descriptional states (name of states describes, which activities TM does in this state), 
 -- after convert it to state Q_index from TMTypes module via bijective transformation
@@ -50,19 +50,38 @@ convertDebuggingStateToState (DState string) = Q number where
 
 calculateMaxNumberOfRulesForNonterminal :: Grammar -> Int
 calculateMaxNumberOfRulesForNonterminal (Grammar (_, _, relations, _)) = let 
-  listRelations = Set.toList relations
-  groupedRelations = Map.fromListWith (++) [(nonterminal, [symbols]) | Relation (nonterminal, symbols) <- listRelations]
-  in (snd $ maximumBy (comparing snd) (Map.toList $ Map.map length groupedRelations))
+    listRelations = Set.toList relations
+    groupedRelations = calculateGroupRelationsByNonterminals listRelations
+    in (snd $ maximumBy (comparing snd) (Map.toList $ Map.map length groupedRelations))
 
 
+calculateGroupRelationsByNonterminals :: (Ord k, Num t1, Num k) => List Relation -> Map k [[t1]] 
+calculateGroupRelationsByNonterminals relations = 
+    Map.fromListWith (++) [(nonterminal, [symbols]) | Relation (nonterminal, symbols) <- listRelations] 
 
+calculateNextConjunctionInSameRule :: Grammar -> ConjunctionPair -> Maybe ConjunctionPair
+calculateNextConjunctionInSameRule (Grammar (_, _, relations, _)) 
+                                   (ConjunctionPair (nonterminal, relationNumber, maybeNegation, conjNonterminal1, conjNonterminal2)) = let
+                                   groupedRelations = calculateGroupRelationsByNonterminals relations
+                                   relationsForNonterminal = groupedRelations ! nonterminal
+                                   relation = relationsForNonterminal !! relationNumber
+                                   conjunctionPairs = splitOn (Operand Conjunction) relation
+                                   list = case maybeNegation of
+                                        Just Negation -> Symbol [Operand Negation, conjNonterminal1, conjNonterminal2]
+                                        Nothing -> Symbol [cojNonterminal1, conjNonterminal2]
+                                   case (elemIndex list conjunctionPairs) of
+                                        Just index | (index + 1) == length $ (conjunctionPairs - 1) -> Nothing
+                                                   | otherwise -> convertListToConjunctionPair 
+                                                                        nonterminal 
+                                                                        relationNumber 
+                                                                        (conjunctionPairs !! (index + 1))
+                                        Nothing -> "No such conjunction"     
 
+convertListToConjunctionPair :: Nonterminal -> Int -> [Symbol] -> ConjunctionPair 
+convertListToConjunctionPair nonterminal relationNumber [Negation, conjNonterminal1, conjNonterminal2] =
+    ConjunctionPair (nonterminal, relationNumber, Negation, conjNonterminal1, conjNonterminal2)
+convertListToConjunctionPair nonterminal relationNumber [conjNonterminal1, conjNonterminal2] =
+    ConjunctionPair (nonterminal, relationNumber, conjNonterminal1, conjNonterminal2)
+ 
 
-{---calculateNextConjunctionInSameRule :: ConjunctionPair -> ConjunctionPair
-
-calculateNextConjunctionInNextRule :: ConjunctionPair -> ConjunctionPair--} 
-
-
-
-
-
+{---calculateNextConjunctionInNextRule :: ConjunctionPair -> ConjunctionPair--}
