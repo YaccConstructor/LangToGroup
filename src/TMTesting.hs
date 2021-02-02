@@ -9,9 +9,9 @@ import GPTypes
 import Interpreter
 import qualified Set as MySet
 import qualified Data.Set as Set
-import Data.Function (on)
-import Data.Maybe (fromJust)
-import Data.Tuple.Utils (fst3)
+import qualified Data.Map.Lazy as Map
+import Data.Function (on, (&))
+import Data.Tuple.Utils (thd3)
 
 type MTM = Maybe TuringMachine
 
@@ -69,8 +69,8 @@ acceptOnly s a = foldl (|||) (accept s) [ die (S i) | i <- [0..a] ]
 rewriteOnly :: Symbol -> Symbol -> Int -> MTM
 rewriteOnly s s' a = foldl (|||) (rewrite s s') [ die (S i) | i <- [0..a] ]
 
-printGPfromTM :: String -> MTM -> IO ()
-printGPfromTM msg (Just tm) = do
+printTMInfo :: String -> MTM -> IO ()
+printTMInfo msg (Just tm) = do
     putStrLn msg
     let qs = TMTypes.toList tm
         n  = runTMReader getN tm
@@ -96,29 +96,54 @@ printGPfromTM msg (Just tm) = do
     print $ Set.size gs
     putStrLn ""
 
-testing :: IO ()
-testing = mapM_ (\(msg, _, tm) -> printGPfromTM msg tm) testingSet
+test :: IO ()
+test = mapM_ (\(msg, _, tm) -> printTMInfo msg tm) testingSet
+
+testingTMInfo :: Int -> (String, Map.Map Char Int, TuringMachine)
+testingTMInfo i = testingSet !! (i - 1) &
+    \(msg, allChars, Just tm) ->
+        (show i ++ ") " ++ msg, Map.fromList $ zip allChars [1..], tm)
+
+testingTM :: Int -> TuringMachine
+testingTM = thd3 . testingTMInfo
+
+runTM' :: Int -> String -> Int -> IO ()
+runTM' i w d =
+    mapM_ (
+        \(n, tp, (Q st)) ->
+            putStrLn $ show n ++ ":  (" ++ show st ++ ")  " ++ show tp
+      ) $
+    fmap (\(n, ws) -> (n, Interpreter.tape ws, currentState ws)) $
+    zip [0..] $ take d $ states $
+    (
+        \(_, a, t) ->
+            startWithAlphabet t (MC <$> w) 0 (Set.mapMonotonic MC $ Map.keysSet a)
+      ) $
+    testingTMInfo i
+
+runTM :: Int -> String -> IO ()
+runTM i w = runTM' i w 242
 
 testingSet :: [(String, String, MTM)]
 testingSet = [
-    ("1. a*", "a",
+    ("a*", "a",
         accept (S 0) |||
         moveInf (S 1) ToRight
     ),
-    ("2. a+", "a",
+    ("a+", "a",
         moveOnly (S 1) ToRight 1 +++
         (
             accept (S 0) |||
             moveInf (S 1) ToRight
         )
     ),
-    ("3. a?", "a",
+    ("a?", "a",
         accept (S 0) ||| (
             move (S 1) ToRight +++
             acceptOnly (S 0) 1
         )
     ),
-    ("4. a|b", "ab",
+    ("a|b", "ab",
         (
             (
                 move (S 1) ToRight |||
@@ -127,15 +152,15 @@ testingSet = [
             acceptOnly (S 0) 2
         ) ||| die (S 0)
     ),
-    ("5. abc", "abc",
+    ("abc", "abc",
         foldr (+++) empty [ moveOnly (S i) ToRight 3 | i <- [1,2,3] ] +++
         acceptOnly (S 0) 3
     ),
-    ("6. ababa", "ab",
+    ("ababa", "ab",
         foldr (+++) empty [ moveOnly (S i) ToRight 2 | i <- [1,2,1,2,1] ] +++
         acceptOnly (S 0) 3
     ),
-    ("7. a(bc)*ba", "abc",
+    ("a(bc)*ba", "abc",
         moveOnly (S 1) ToRight 3 +++
         (
             moveOnly (S 2) ToRight 3 @@@ move (S 3) ToRight
@@ -144,7 +169,7 @@ testingSet = [
         ) +++
         acceptOnly (S 0) 3
     ),
-    ("8. Dyck v.1", "abc",
+    ("Dyck v.1", "abc",
         accept (S 0) ||| (
             (
                 (
@@ -164,7 +189,7 @@ testingSet = [
         ) |||
         die (S 3)
     ),
-    ("9. Dyck v.2", "abcd",
+    ("Dyck v.2", "abcd",
         accept (S 0) ||| (
             (
                 rewrite (S 1) (S 0) +++
@@ -201,7 +226,7 @@ testingSet = [
             ) @@@ empty
         )
     ),
-    ("10. Dyck v.3", "abc",
+    ("Dyck v.3", "abc",
         accept (S 0) ||| (
             (
                 (
@@ -242,7 +267,7 @@ testingSet = [
             ) @@@ empty
         )
     ),
-    ("11. Dyck v.4", "abcd",
+    ("Dyck v.4", "abcd",
         accept (S 0) ||| (
             (
                 (
@@ -286,7 +311,7 @@ testingSet = [
             ) @@@ empty
         )
     ),
-    ("12. Dyck v.5", "abc",
+    ("Dyck v.5", "abc",
         let mainModule n = mainModule' n n @@@ empty
             mainModule' 1 n =
                 (
@@ -336,7 +361,7 @@ testingSet = [
                 die (S 2)
             )
     ),
-    ("13. wwR 2s v.1", "ab",
+    ("wwR 2s v.1", "ab",
         accept (S 0) ||| (
             (
                 (
@@ -369,7 +394,7 @@ testingSet = [
             ) @@@ empty
         )
     ),
-    ("14. wwR 2s v.2", "ab",
+    ("wwR 2s v.2", "ab",
         accept (S 0) ||| (
             (
                 (
@@ -393,7 +418,7 @@ testingSet = [
             ) @@@ empty
         )
     ),
-    ("15. wwR 4s", "abcd",
+    ("wwR 4s", "abcd",
         accept (S 0) ||| (
             (
                 foldr1 (|||)
@@ -409,7 +434,7 @@ testingSet = [
             ) @@@ empty
         )
     ),
-    ("16. wwR 8s", "abcdefgh",
+    ("wwR 8s", "abcdefgh",
         accept (S 0) ||| (
             (
                 foldr1 (|||)
@@ -425,7 +450,7 @@ testingSet = [
             ) @@@ empty
         )
     ),
-    ("17. wwR 16s", "abcdefghijklmnop",
+    ("wwR 16s", "abcdefghijklmnop",
         accept (S 0) ||| (
             (
                 foldr1 (|||)
@@ -442,17 +467,3 @@ testingSet = [
         )
     )
   ]
-
-aboutTestingSet :: IO ()
-aboutTestingSet = mapM_ putStrLn $ fst3 <$> testingSet
-
-runTest' :: Int -> String -> Int -> IO ()
-runTest' i w d =
-    mapM_ (\(n, tp, (Q st)) -> putStrLn $ show n ++ ":  (" ++ show st ++ ")  " ++ show tp) $
-    fmap (\(n, ws) -> (n, Interpreter.tape ws, currentState ws)) $
-    zip [0..] $ take d $ states $
-    (\(m, a, Just t) -> startWithAlphabet t (MC <$> w) 0 (Set.fromList $ MC <$> a)) $
-    testingSet !! (i - 1)
-
-runTest :: Int -> String -> IO ()
-runTest i w = runTest' i w 242
