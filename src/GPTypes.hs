@@ -6,7 +6,19 @@ newtype Generator = G Int
     deriving (Eq, Ord, Show)
 
 data Element = Positive Generator | Negative Generator
-    deriving (Eq, Ord, Show)
+    deriving (Eq, Show)
+
+instance Ord Element where
+    (Negative x) <= (Negative y) = x <= y
+    (Negative x) <= (Positive y) =
+        if x == y
+        then False
+        else x <= y
+    (Positive x) <= (Negative y) =
+        if x == y
+        then True
+        else x <= y
+    (Positive x) <= (Positive y) = x <= y
 
 type EWord = [Element]
 

@@ -1,6 +1,5 @@
 module Set where
 
-import Data.List (nub)
 import qualified Data.Set as RealSet
 
 newtype Set a = Set { unSet :: [a] }

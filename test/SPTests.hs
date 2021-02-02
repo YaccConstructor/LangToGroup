@@ -1,7 +1,6 @@
 module SPTests where
 
-import Test.HUnit
-import TMTypes
+import TMTestSet
 import TMReader
 import TMTesting
 import SPTypes
@@ -9,82 +8,19 @@ import SPGens
 import TM2SP
 import qualified Set
 import SPSolver (solve)
-import Data.Map.Lazy (Map)
+import Test.HUnit
 import qualified Data.Map.Lazy as Map
-import Data.Maybe (fromMaybe)
-import Debug.Trace (trace)
-
-testSet :: [(Int, [(String, Bool)])]
-testSet = [
-    (1, [
-        ("", True),
-        ("a", True),
-        ("aa", True),
-        ("aaa", True),
-        ("aaaa", True)
-    ]),
-    (2, [
-        ("", False),
-        ("a", True),
-        ("aa", True),
-        ("aaa", True),
-        ("aaaa", True)
-    ]),
-    (3, [
-        ("", True),
-        ("a", True),
-        ("aa", False)
-    ]),
-    (4, [
-        ("", False),
-        ("a", True),
-        ("b", True),
-        ("ab", False),
-        ("bba", False)
-    ]),
-    (5, [
-        ("", False),
-        ("ac", False),
-        ("bc", False),
-        ("aba", False),
-        ("abc", True)
-    ]),
-    (6, [
-        ("", False),
-        ("aba", False),
-        ("baba", False),
-        ("ababa", True),
-        ("ababaa", False)
-    ]),
-    (7, [
-        ("", False),
-        ("a", False),
-        ("abc", False),
-        ("aba", True),
-        ("abca", False),
-        ("abcb", False),
-        ("abcba", True),
-        ("abcbcba", True)
-    ]),
-    (8, [
-        ("", True),
-        ("a", False),
-        ("b", False),
-        ("ab", True),
-        ("bab", False),
-        ("abab", True),
-        ("abba", False),
-        ("aabb", True)
-    ])
-  ]
 
 tests :: Test
 tests = TestLabel "Correctness of constructing semigroup from machine" $
     TestList $ do
         (tmi, testsTM) <- testSet
-        let (msg, allChars, Just tm) = testingSet !! (tmi - 1)
-            sp = semigroupGamma tm
-            alphabet = Map.fromList $ zip allChars [1..]
+        let (msg, alphabet, tm) = testingTMInfo tmi
+            SP rs = semigroupGamma tm
+            q_0 = runTMReader (q_ 0) tm
+            rules = flip filter (Set.toList rs) $
+                \(gw1 `Equals` gw2) ->
+                    gw1 /= gw2 && q_0 `notElem` gw1
         return $ TestLabel msg $
             TestList $ do
                 (word, answer) <- testsTM
@@ -102,6 +38,6 @@ tests = TestLabel "Correctness of constructing semigroup from machine" $
                                 else (s_ . (Map.!) alphabet) <$> word
                             ) ++
                             [h]
-                        finalWord <- sequence [q]
-                        return $
-                            finalWord `elem` solve depth sp initWord ~?= answer
+                        return $ (~=?) answer $
+                            any (q_0 `elem`) $
+                                solve depth rules initWord

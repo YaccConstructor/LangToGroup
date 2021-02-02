@@ -1,6 +1,5 @@
 module Tape where
 
-import TMTypes
 import Data.List.NonEmpty (NonEmpty(..), nonEmpty, (<|))
 import qualified Data.List.NonEmpty as NonEmpty (toList)
 import qualified Data.List.NonEmpty as NEList (head, tail)

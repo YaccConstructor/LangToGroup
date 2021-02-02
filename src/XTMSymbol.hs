@@ -3,10 +3,8 @@ module XTMSymbol where
 import OTMReader
 import qualified TMType as OTM
 import qualified TMTypes as ITM
-import qualified TMSemigroup as ITMS
 import qualified Data.Set as Set
-import qualified Data.Map.Lazy as Map
-import Control.Monad ((>=>), when)
+import Control.Monad ((>=>))
 
 type ITMSymbol = ITM.Symbol
 
