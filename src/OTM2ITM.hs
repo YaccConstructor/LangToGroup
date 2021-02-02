@@ -3,15 +3,12 @@ module OTM2ITM where
 import OTMReader
 import XTMSymbol
 import Move
-import TMReader
 import qualified TMType as OTM
 import qualified TMTypes as ITM
 import qualified TMSemigroup as ITMS
 import qualified OTMTSet
-import qualified Data.Set as Set
 import qualified Data.Map.Lazy as Map
-import Data.Maybe (fromMaybe, fromJust, maybeToList)
-import Control.Applicative (liftA2)
+import Data.Maybe (fromMaybe, fromJust)
 import Control.Monad (join)
 
 infixl 9 >+>, >|>, >@>
@@ -440,7 +437,6 @@ eosmvTM = do
 emsTM :: TMModule
 emsTM = do
     alpha <- t2iTMS $ Just (Right OTM.LBS)
-    omega <- t2iTMS $ Just (Right OTM.RBS)
     blank <- t2iTMS Nothing
     (
         (

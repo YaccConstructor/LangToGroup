@@ -8,7 +8,6 @@ import Data.Set (Set)
 import qualified Data.Set as Set
 import Data.Map.Lazy (Map)
 import qualified Data.Map.Lazy as Map
-import Data.Maybe (isJust)
 
 type OTMTSet = Map OTM.Square (Map OTM.State (Set OTM.Square))
 
