@@ -1,3 +1,5 @@
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
+
 module Interpreter where
 
 import TMTypes
@@ -5,26 +7,18 @@ import Tape
 import qualified Data.Map.Lazy as Map (lookup)
 import Data.Set (Set)
 import qualified Data.Set as Set (fromList, findIndex, map, elemAt)
-import Data.Function (on)
 
 newtype MetaString = MS {unMS :: String}
+    deriving (Eq)
 
 instance Show MetaString where
     show = unMS
 
-instance Eq MetaString where
-    (==) = (==) `on` unMS
-
 newtype MetaChar = MC {unMC :: Char}
+    deriving (Eq, Ord)
 
 instance Show MetaChar where
     show = return . unMC
-
-instance Eq MetaChar where
-    (==) = (==) `on` unMC
-
-instance Ord MetaChar where
-    (<=) = (<=) `on` unMC
 
 data WorkingState = WS {
         turingMachine :: TuringMachine,
