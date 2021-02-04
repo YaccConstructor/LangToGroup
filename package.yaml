@@ -35,6 +35,9 @@ dependencies:
 - prettyprinter >= 1.7.0
 - hlint
 - HaskellForMaths
+- deepseq
+- rando
+- mtl
 
 ghc-options: 
     -Wall
@@ -61,7 +64,14 @@ executables:
   LangToGroup-user:
     main:                Main.hs
     source-dirs:         src
-    
+
+
+  LangToGroup-constructGP:
+    main:                GPKnuthBendixMain.hs
+    source-dirs:         src
+    ghc-options:
+    - -main-is GPKnuthBendixMain
+
 
 tests:
   LangToGroup-test:

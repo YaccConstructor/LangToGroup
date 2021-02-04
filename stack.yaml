@@ -43,6 +43,7 @@ extra-deps:
 - megaparsec-7.0.0
 - prettyprinter-1.7.0
 - HaskellForMaths-0.4.9
+- rando-0.0.0.4
 # Dependency packages to be pulled from upstream that are not in the resolver
 # using the same syntax as the packages field.
 # (e.g., acme-missiles-0.3)
