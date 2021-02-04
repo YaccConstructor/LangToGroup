@@ -35,7 +35,7 @@ test (TestInfo tmis' tp) =
         let tmis = if null tmis' then [1 .. length testingSet] else tmis'
         tmi <- asList tmis
         let tm = testingTM tmi
-        allOrdersForTM <- liftIO $ shuffle $ orders tm
+        allOrdersForTM <- liftIO $ shuffle $ zip [0..] $ orders tm
         let calcCountOfOrdersForTM =
                 \partOfOrds ->
                     length allOrdersForTM `min` floor (
@@ -56,7 +56,7 @@ test (TestInfo tmis' tp) =
                     PartOfOrdsAndTotalTime   p _ ->
                         calcCountOfOrdersForTM p
             ordersForTM = take countOfOrdersForTM allOrdersForTM
-        (ordi, ord) <- asList $ zip [0..] ordersForTM
+        (ordi, ord) <- asList ordersForTM
         res <- liftIO $ timeout timePerTest $ testTM tm ord
         guard $ res == Just ()
         liftIO $ putStrLn $ show tmi ++ " " ++ show ordi
