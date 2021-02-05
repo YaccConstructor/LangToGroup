@@ -11,11 +11,11 @@ data Operand = Conjunction | Negation
     deriving (Eq, Ord, Show)
 
 -- |'Terminal' is a type that represents terminal in the formal grammar 'Grammar'.
-newtype Terminal = Terminal String
+newtype Terminal = Terminal {terminalValue :: String}
     deriving (Eq, Ord, Show)
 
 -- |'Nonterminal' is a type that represents nonterminal in the formal grammar 'Grammar'.
-newtype Nonterminal = Nonterminal String
+newtype Nonterminal = Nonterminal {nonterminalValue :: String}
     deriving (Eq, Ord, Show)
 
 -- |'Symbol' represents symbol that can be appear in right part of the 'Relation'.
