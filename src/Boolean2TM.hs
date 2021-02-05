@@ -72,8 +72,8 @@ generateBlockForFindingNewSubstitution grammar@(Grammar (nonterminals, terminals
 
   -- BLOCK for qSubstituteOrFold
   symbolsInQSubstituteOrFoldQdrs = [((DState qSubstituteOrFold, DSymbol "("),(TMTypes.R, finalDState))]
-  symbolsToCountWordLength'Qdrs = map 
-    (\t -> ((DState qSubstituteOrFold, DSymbol t),(TMTypes.L, DState qCountWordLength'))) $ map terminalValue terminalsList
+  symbolsToCountWordLength'Qdrs = map
+    ((\t -> ((DState qSubstituteOrFold, DSymbol t),(TMTypes.L, DState qCountWordLength'))) . terminalValue) terminalsList
   symbolsToQFold'Qdrs = map 
     (\t -> ((DState qSubstituteOrFold, DSymbol t),(TMTypes.L, DState qCountWordLength'))) $ map nonterminalValue nonterminalsList ++ negation
 
@@ -85,7 +85,7 @@ generateBlockForFindingNewSubstitution grammar@(Grammar (nonterminals, terminals
 
   -- BLOCK for qSkipCompletedNonterminal
   symbolsToQFindNewSubstitutionQdrs = map 
-    (\t -> ((DState qSkipCompletedNonterminal, DSymbol t),(TMTypes.L, DState qFindNewSubstitution))) $ map nonterminalValue nonterminalsList
+    ((\t -> ((DState qSkipCompletedNonterminal, DSymbol t),(TMTypes.L, DState qFindNewSubstitution))) . nonterminalValue) nonterminalsList
 
   quadruples = symbolsInQFindNewSubstitutionQdrs ++ symbolsFromQFindNewSubstitutionToAcceptQdrs ++ symbolsWhichChangeStateQdrs 
     ++ symbolsToQSubstituteOrFoldQdrs ++ symbolsToQSkipCompletedNonterminalQdrs ++ symbolsFromQCheckIfNotCompletedToAcceptQdrs
