@@ -175,7 +175,7 @@ generateBlockForRefiningConjunctionDetails grammar@(Grammar (nonterminals, termi
 
 
 generateBlockForQKFindNegation :: Grammar -> String -> DebuggingQuadruples
-generateBlockForQKFindNegation grammar@(Grammar (nonterminals, terminals, relations, startSymbol)) k = let
+generateBlockForQKFindNegation grammar@(Grammar (nonterminals, terminals, _, _)) k = let
     -- parts for set of states q1FindNegation, q2FindNegation...qkFindNegation
     q = "q"
     qkFindNegation = q ++ k ++ "FindNegation"
@@ -206,16 +206,42 @@ generateBlockForQKFindNegation grammar@(Grammar (nonterminals, terminals, relati
 
     -- BLOCK for qRulekFindNonterminal
     symbolsToQRulekNonterminalFindFst = map
-        (\t -> 
+        (\t ->
             ((DState qRuleKFindNonterminal, DSymbol t),(TMTypes.R, DState $ q ++ "Rule" ++ k ++ t ++ "findFst"))
             ) nonterminalsList
-    
+
+    -- BLOCK for qRulektFindFst
+    symbolsInQRulektFindFst = map
+        (\t ->
+            ((DState $ q ++ "Rule" ++ k ++ t ++ "findFst", DSymbol t),(TMTypes.R, DState $ q ++ "Rule" ++ k ++ t ++ "findFst"))
+            ) $ rightBracket ++ negation ++ [k]
+    --symbolsToQRulektjFindSnd = map (getFirstNonterminalsInConjunctionsOfGivenRelation grammar t k
+
     quadruples = symbolsInQkFindNegation ++ symbolsToQkMoveToStart ++ symbolsToQkMoveToStartNegation
         ++ symbolsInQkMoveToStart ++ symbolsToQRulekFindNonterminal ++ symbolsToQRulekNonterminalFindFst
 
     in DQuadruples (addCollectionToMap quadruples Map.empty)
 
 
+-- grammar -> string (nonterminal in left part) -> string (number of relation) -> list of first nonterminals
+getFirstNonterminalsInConjunctionsOfGivenRelation :: Grammar -> String -> String -> [String]
+getFirstNonterminalsInConjunctionsOfGivenRelation (Grammar (_, _, relations, _)) nonterminalValue number = do
+    let groupedRelations = calculateGroupRelationsByNonterminals $ Set.toList relations
+    let givenRelation = (groupedRelations Map.! Nonterminal nonterminalValue) !! (read number :: Int)
+    if relationHasOneTerminalInRightPart $ Relation (Nonterminal nonterminalValue, givenRelation)
+        then []
+        else let
+        conjunctions = splitOn [O Conjunction] givenRelation
+        firstSymbolsInConjunctions = map (\t -> if length t == 3 then t !! 1 else head t) conjunctions
+        in map refineFirstSymbolInConjunctionToNonterminal firstSymbolsInConjunctions
+
+relationHasOneTerminalInRightPart :: Relation -> Bool
+relationHasOneTerminalInRightPart (Relation (_, [T (Terminal _)])) = True
+relationHasOneTerminalInRightPart _ = False
+
+refineFirstSymbolInConjunctionToNonterminal :: GrammarType.Symbol -> String
+refineFirstSymbolInConjunctionToNonterminal (N nonterminal) = nonterminalValue nonterminal
+refineFirstSymbolInConjunctionToNonterminal otherwise = error "Not a nonterminal, conjunction pair must be a pair of nonterminals"
 
 addCollectionToMap :: (Ord k) => [(k, a)] -> Map.Map k a -> Map.Map k a
 addCollectionToMap ((a,b) : xs) myMap = addCollectionToMap xs $ Map.insert a b myMap
