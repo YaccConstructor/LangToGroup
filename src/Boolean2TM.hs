@@ -35,6 +35,65 @@ boolean2tm
         setOfRelations,
         Nonterminal startSymbol)) = do --}
 
+-- naming for blocks of TM?
+generateBlockForFindingNewSubstitution :: Grammar -> DebuggingQuadruples
+generateBlockForFindingNewSubstitution grammar@(Grammar (nonterminals, terminals, relations, startSymbol)) = let
+  qFindNewSubstitution = "qFindNewSubstitution"
+  qCheckIfNotCompleted = "qCheckIfNotCompleted"
+  qSubstituteOrFold = "qSubstituteOrFold"
+  qSkipCompletedNonterminal = "qSkipCompletedNonterminal"
+  qCountWordLength' = "qCountWordLength'"
+  qCountWordLength = "qCountWordLength"
+  qMoveToEndToScanResults = "qMoveToEndToScanResults"
+  qFold' = "qFold\'"
+
+  terminalsList = Set.toList terminals
+  nonterminalsList = Set.toList nonterminals
+  signsList = ["+", "-"]
+  negation = ["!"]
+  indices = map show [1..maxNumberOfRules]
+
+  maxNumberOfRules = calculateMaxNumberOfRulesForNonterminal grammar
+
+  -- BLOCK for qFindNewSubstitution
+  list = concat [map show [1..maxNumberOfRules], map terminalValue terminalsList, signsList, negation]
+  -- there is no necessity in insertWithKey, since TM is deterministic
+  symbolsInQFindNewSubstitutionQdrs = map (\t -> ((DState qFindNewSubstitution, DSymbol t),(TMTypes.L, DState qFindNewSubstitution))) list
+  -- in TMTypes EmptySymbol is 0
+  symbolsFromQFindNewSubstitutionToAcceptQdrs = [((DState qFindNewSubstitution, DSymbol " "),(TMTypes.R, finalDState))]
+  symbolsWhichChangeStateQdrs =
+    map ((\t -> ((DState qFindNewSubstitution, DSymbol t), (TMTypes.R, DState qCheckIfNotCompleted))) . nonterminalValue) nonterminalsList
+
+  -- BLOCK for qCheckIfNotCompleted
+  symbolsToQSubstituteOrFoldQdrs = map 
+    ((\t -> ((DState qCheckIfNotCompleted, DSymbol t),(TMTypes.R, DState qSubstituteOrFold))) . show) [1..maxNumberOfRules]
+  symbolsToQSkipCompletedNonterminalQdrs = map 
+    (\t -> ((DState qCheckIfNotCompleted, DSymbol t),(TMTypes.L, DState qSkipCompletedNonterminal))) signsList
+  symbolsFromQCheckIfNotCompletedToAcceptQdrs = [((DState qCheckIfNotCompleted, DSymbol " "),(TMTypes.R, finalDState))]
+
+  -- BLOCK for qSubstituteOrFold
+  symbolsInQSubstituteOrFoldQdrs = [((DState qSubstituteOrFold, DSymbol "("),(TMTypes.R, finalDState))]
+  symbolsToCountWordLength'Qdrs = map
+    ((\t -> ((DState qSubstituteOrFold, DSymbol t),(TMTypes.L, DState qCountWordLength'))) . terminalValue) terminalsList
+  symbolsToQFold'Qdrs = map 
+    (\t -> ((DState qSubstituteOrFold, DSymbol t),(TMTypes.L, DState qCountWordLength'))) $ map nonterminalValue nonterminalsList ++ negation
+
+  -- BLOCK for qCountWordLength'
+  symbolsToCountWordLengthQdrs = [((DState qCountWordLength', DSymbol "("),(TMTypes.L, DState qCountWordLength))]
+
+  -- BLOCK for qFold'
+  symbolsToQMoveToEndToScanResults = [((DState qFold', DSymbol "("),(TMTypes.L, DState qMoveToEndToScanResults))]
+
+  -- BLOCK for qSkipCompletedNonterminal
+  symbolsToQFindNewSubstitutionQdrs = map 
+    ((\t -> ((DState qSkipCompletedNonterminal, DSymbol t),(TMTypes.L, DState qFindNewSubstitution))) . nonterminalValue) nonterminalsList
+
+  quadruples = symbolsInQFindNewSubstitutionQdrs ++ symbolsFromQFindNewSubstitutionToAcceptQdrs ++ symbolsWhichChangeStateQdrs 
+    ++ symbolsToQSubstituteOrFoldQdrs ++ symbolsToQSkipCompletedNonterminalQdrs ++ symbolsFromQCheckIfNotCompletedToAcceptQdrs
+    ++ symbolsInQSubstituteOrFoldQdrs ++ symbolsToCountWordLength'Qdrs ++ symbolsToQFold'Qdrs ++ symbolsToCountWordLengthQdrs 
+    ++ symbolsToQMoveToEndToScanResults ++ symbolsToQFindNewSubstitutionQdrs
+  in DQuadruples (addCollectionToMap quadruples Map.empty)
+
 generateBlockForScanResults :: Grammar -> DebuggingQuadruples
 generateBlockForScanResults grammar@(Grammar (nonterminals, terminals, relations, startSymbol)) = let
     qMoveToEndAndScanResult = "qMoveToEndAndScanResult"
@@ -103,66 +162,59 @@ generateBlockForScanResults grammar@(Grammar (nonterminals, terminals, relations
 
     in DQuadruples (addCollectionToMap quadruples Map.empty)
 
+{---generateBlockForRefiningConjunctionDetails :: Grammar -> Quadruples
+generateBlockForRefiningConjunctionDetails grammar@(Grammar (nonterminals, terminals, relations, startSymbol)) = let
+    terminalsList = map terminalValue $ Set.toList terminals
+    nonterminalsList = map nonterminalValue $ Set.toList nonterminals
+    signs = ["+", "-"]
+    negation = ["!"]
+    leftBracket = ["("]
+    rightBracket = [")"]
+    brackets = leftBracket ++ rightBracket
+    indices = map show [1..maxNumberOfRules] --}
 
 
--- naming for blocks of TM?
-generateBlockForFindingNewSubstitution :: Grammar -> DebuggingQuadruples
-generateBlockForFindingNewSubstitution grammar@(Grammar (nonterminals, terminals, relations, startSymbol)) = let
-  qFindNewSubstitution = "qFindNewSubstitution"
-  qCheckIfNotCompleted = "qCheckIfNotCompleted"
-  qSubstituteOrFold = "qSubstituteOrFold"
-  qSkipCompletedNonterminal = "qSkipCompletedNonterminal"
-  qCountWordLength' = "qCountWordLength'"
-  qCountWordLength = "qCountWordLength"
-  qMoveToEndToScanResults = "qMoveToEndToScanResults"
-  qFold' = "qFold\'"
+generateBlockForQKFindNegation :: Grammar -> String -> DebuggingQuadruples
+generateBlockForQKFindNegation grammar@(Grammar (nonterminals, terminals, relations, startSymbol)) k = let
+    -- parts for set of states q1FindNegation, q2FindNegation...qkFindNegation
+    q = "q"
+    qkFindNegation = q ++ k ++ "FindNegation"
+    qkMoveToStart = q ++ k ++ "MoveToStart"
+    qkMoveToStartNegation = q ++ k ++ "MoveToStartNegation"
+    qRuleKFindNonterminal = q ++ k ++ "RuleKFindNonterminal"
 
-  terminalsList = Set.toList terminals
-  nonterminalsList = Set.toList nonterminals
-  signsList = ["+", "-"]
-  negation = ["!"]
-  indices = map show [1..maxNumberOfRules]
+    maxNumberOfRules = calculateMaxNumberOfRulesForNonterminal grammar
 
-  maxNumberOfRules = calculateMaxNumberOfRulesForNonterminal grammar
+    terminalsList = map terminalValue $ Set.toList terminals
+    nonterminalsList = map nonterminalValue $ Set.toList nonterminals
+    signs = ["+", "-"]
+    negation = ["!"]
+    leftBracket = ["("]
+    rightBracket = [")"]
+    brackets = leftBracket ++ rightBracket
+    indices = map show [1..maxNumberOfRules]
 
-  -- BLOCK for qFindNewSubstitution
-  list = concat [map show [1..maxNumberOfRules], map terminalValue terminalsList, signsList, negation]
-  -- there is no necessity in insertWithKey, since TM is deterministic
-  symbolsInQFindNewSubstitutionQdrs = map (\t -> ((DState qFindNewSubstitution, DSymbol t),(TMTypes.L, DState qFindNewSubstitution))) list
-  -- in TMTypes EmptySymbol is 0
-  symbolsFromQFindNewSubstitutionToAcceptQdrs = [((DState qFindNewSubstitution, DSymbol " "),(TMTypes.R, finalDState))]
-  symbolsWhichChangeStateQdrs =
-    map ((\t -> ((DState qFindNewSubstitution, DSymbol t), (TMTypes.R, DState qCheckIfNotCompleted))) . nonterminalValue) nonterminalsList
+    -- BLOCK for qkFindNegation
+    symbolsInQkFindNegation = [((DState qkFindNegation, DSymbol "("),(TMTypes.R, DState qkFindNegation))]
+    symbolsToQkMoveToStart = map
+        (\t -> ((DState qkFindNegation, DSymbol t),(TMTypes.L, DState qkMoveToStart))) nonterminalsList
+    symbolsToQkMoveToStartNegation = [((DState qkFindNegation, DSymbol "!"),(TMTypes.L, DState qkMoveToStartNegation))]
 
-  -- BLOCK for qCheckIfNotCompleted
-  symbolsToQSubstituteOrFoldQdrs = map 
-    ((\t -> ((DState qCheckIfNotCompleted, DSymbol t),(TMTypes.R, DState qSubstituteOrFold))) . show) [1..maxNumberOfRules]
-  symbolsToQSkipCompletedNonterminalQdrs = map 
-    (\t -> ((DState qCheckIfNotCompleted, DSymbol t),(TMTypes.L, DState qSkipCompletedNonterminal))) signsList
-  symbolsFromQCheckIfNotCompletedToAcceptQdrs = [((DState qCheckIfNotCompleted, DSymbol " "),(TMTypes.R, finalDState))]
+    -- BLOCK for qkMoveToStart
+    symbolsInQkMoveToStart = [((DState qkMoveToStart, DSymbol "("),(TMTypes.L, DState qkMoveToStart))]
+    symbolsToQRulekFindNonterminal = [((DState qkMoveToStart, DSymbol k),(TMTypes.L, DState qRuleKFindNonterminal))]
 
-  -- BLOCK for qSubstituteOrFold
-  symbolsInQSubstituteOrFoldQdrs = [((DState qSubstituteOrFold, DSymbol "("),(TMTypes.R, finalDState))]
-  symbolsToCountWordLength'Qdrs = map
-    ((\t -> ((DState qSubstituteOrFold, DSymbol t),(TMTypes.L, DState qCountWordLength'))) . terminalValue) terminalsList
-  symbolsToQFold'Qdrs = map 
-    (\t -> ((DState qSubstituteOrFold, DSymbol t),(TMTypes.L, DState qCountWordLength'))) $ map nonterminalValue nonterminalsList ++ negation
+    -- BLOCK for qRulekFindNonterminal
+    symbolsToQRulekNonterminalFindFst = map
+        (\t -> 
+            ((DState qRuleKFindNonterminal, DSymbol t),(TMTypes.R, DState $ q ++ "Rule" ++ k ++ t ++ "findFst"))
+            ) nonterminalsList
+    
+    quadruples = symbolsInQkFindNegation ++ symbolsToQkMoveToStart ++ symbolsToQkMoveToStartNegation
+        ++ symbolsInQkMoveToStart ++ symbolsToQRulekFindNonterminal ++ symbolsToQRulekNonterminalFindFst
 
-  -- BLOCK for qCountWordLength'
-  symbolsToCountWordLengthQdrs = [((DState qCountWordLength', DSymbol "("),(TMTypes.L, DState qCountWordLength))]
+    in DQuadruples (addCollectionToMap quadruples Map.empty)
 
-  -- BLOCK for qFold'
-  symbolsToQMoveToEndToScanResults = [((DState qFold', DSymbol "("),(TMTypes.L, DState qMoveToEndToScanResults))]
-
-  -- BLOCK for qSkipCompletedNonterminal
-  symbolsToQFindNewSubstitutionQdrs = map 
-    ((\t -> ((DState qSkipCompletedNonterminal, DSymbol t),(TMTypes.L, DState qFindNewSubstitution))) . nonterminalValue) nonterminalsList
-
-  quadruples = symbolsInQFindNewSubstitutionQdrs ++ symbolsFromQFindNewSubstitutionToAcceptQdrs ++ symbolsWhichChangeStateQdrs 
-    ++ symbolsToQSubstituteOrFoldQdrs ++ symbolsToQSkipCompletedNonterminalQdrs ++ symbolsFromQCheckIfNotCompletedToAcceptQdrs
-    ++ symbolsInQSubstituteOrFoldQdrs ++ symbolsToCountWordLength'Qdrs ++ symbolsToQFold'Qdrs ++ symbolsToCountWordLengthQdrs 
-    ++ symbolsToQMoveToEndToScanResults ++ symbolsToQFindNewSubstitutionQdrs
-  in DQuadruples (addCollectionToMap quadruples Map.empty)
 
 
 addCollectionToMap :: (Ord k) => [(k, a)] -> Map.Map k a -> Map.Map k a
