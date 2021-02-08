@@ -35,9 +35,79 @@ boolean2tm
         setOfRelations,
         Nonterminal startSymbol)) = do --}
 
+generateBlockForScanResults :: Grammar -> DebuggingQuadruples
+generateBlockForScanResults grammar@(Grammar (nonterminals, terminals, relations, startSymbol)) = let
+    qMoveToEndAndScanResult = "qMoveToEndAndScanResult"
+    qStart' = "qStart'"
+    qSecPos = "qSecPos"
+    qSecNeg = "qSecNeg"
+    qBothPos = "qBothPos"
+    qSomeNeg = "qSomeNeg"
+    qWordsChangingMoveToBringSymbol = "qWordsChangingMoveToBringSymbol"
+    -- parts for set of states q1FindNegation, q2FindNegation...qkFindNegation
+    q = "q"
+    findNegation = "FindNegation"
+
+    maxNumberOfRules = calculateMaxNumberOfRulesForNonterminal grammar
+
+    -- BLOCK for qMoveToEndAndScanResults
+    terminalsList = map terminalValue $ Set.toList terminals
+    nonterminalsList = map nonterminalValue $ Set.toList nonterminals
+    signs = ["+", "-"]
+    negation = ["!"]
+    leftBracket = ["("]
+    rightBracket = [")"]
+    brackets = leftBracket ++ rightBracket
+    indices = map show [1..maxNumberOfRules]
+    allSymbols = terminalsList ++ nonterminalsList ++ signs ++ indices ++ brackets ++ negation
+
+    symbolsInQMoveToEndAndScanResultQdrs = map
+        (\t -> ((DState qMoveToEndAndScanResult, DSymbol t),(TMTypes.R, DState qMoveToEndAndScanResult))) allSymbols
+    symbolsToQStart'Qdrs = [((DState qMoveToEndAndScanResult, DSymbol " "),(TMTypes.L, DState qStart'))]
+
+    -- BLOCK for qStart'
+    symbolsInQStart'Qdrs = map
+        (\t -> ((DState qStart', DSymbol t),(TMTypes.L, DState qStart'))) $ brackets ++ terminalsList
+    symbolsToQSecPosQdrs = [((DState qStart', DSymbol "+"),(TMTypes.L, DState qSecPos))]
+    symbolsToQSecNegQdrs = [((DState qStart', DSymbol "-"),(TMTypes.L, DState qSecNeg))]
+
+    -- BLOCK for qSecPos
+    symbolsInQSecPosQdrs = map
+        (\t -> ((DState qSecPos, DSymbol t),(TMTypes.L, DState qSecPos))) $ brackets ++ terminalsList ++ nonterminalsList
+    symbolsToQBothPosQdrs = [((DState qSecPos, DSymbol "+"),(TMTypes.L, DState qBothPos))]
+    symbolsFromQSecPosToQSomeNegQdrs = [((DState qSecPos, DSymbol "-"),(TMTypes.L, DState qSomeNeg))]
+
+    -- BLOCK for qSecNeg: there is possibility to remove this state and move to qSomeNeg state
+    symbolsInQSecNegQdrs = map
+        (\t -> ((DState qSecNeg, DSymbol t),(TMTypes.L, DState qSecNeg))) $ brackets ++ terminalsList ++ nonterminalsList
+    symbolsFromQSecNegToQSomeNegQdrs =
+      [((DState qSecNeg, DSymbol "+"),(TMTypes.L, DState qSomeNeg)),((DState qSecNeg, DSymbol "-"),(TMTypes.L, DState qSomeNeg))]
+
+    -- BLOCK for qBothPos
+    symbolsInQBothPosQdrs = map
+        (\t -> ((DState qBothPos, DSymbol t),(TMTypes.L, DState qBothPos))) $ rightBracket ++ negation ++ nonterminalsList
+    symbolsToQ_ithFindNegationQdrs = map
+        (\t -> ((DState qBothPos, DSymbol t),(TMTypes.L, DState $ q ++ t ++ findNegation))) indices
+
+    -- BLOCK for qSomeNeg
+    symbolsInSomeNegQdrs = map
+        (\t -> ((DState qSomeNeg, DSymbol t),(TMTypes.L, DState qSomeNeg))) $ rightBracket ++ negation ++ nonterminalsList
+    symbolsToQWordsChangingMoveToBringSymbolQdrs = map
+        (\t -> ((DState qSomeNeg, DSymbol t),(TMTypes.R, DState qWordsChangingMoveToBringSymbol))) indices
+
+    quadruples = symbolsInQMoveToEndAndScanResultQdrs ++ symbolsToQStart'Qdrs ++ symbolsInQStart'Qdrs
+        ++ symbolsToQSecPosQdrs ++ symbolsToQSecNegQdrs ++ symbolsInQSecPosQdrs ++ symbolsToQBothPosQdrs
+        ++ symbolsFromQSecPosToQSomeNegQdrs ++ symbolsInQSecNegQdrs ++ symbolsFromQSecNegToQSomeNegQdrs
+        ++ symbolsInQBothPosQdrs ++ symbolsToQ_ithFindNegationQdrs ++ symbolsInSomeNegQdrs
+        ++ symbolsToQWordsChangingMoveToBringSymbolQdrs
+
+    in DQuadruples (addCollectionToMap quadruples Map.empty)
+
+
+
 -- naming for blocks of TM?
 generateBlockForFindingNewSubstitution :: Grammar -> DebuggingQuadruples
-generateBlockForFindingNewSubstitution grammar@(Grammar (nonterminals, terminals, relations, startSymbol))= let
+generateBlockForFindingNewSubstitution grammar@(Grammar (nonterminals, terminals, relations, startSymbol)) = let
   qFindNewSubstitution = "qFindNewSubstitution"
   qCheckIfNotCompleted = "qCheckIfNotCompleted"
   qSubstituteOrFold = "qSubstituteOrFold"
@@ -51,6 +121,7 @@ generateBlockForFindingNewSubstitution grammar@(Grammar (nonterminals, terminals
   nonterminalsList = Set.toList nonterminals
   signsList = ["+", "-"]
   negation = ["!"]
+  indices = map show [1..maxNumberOfRules]
 
   maxNumberOfRules = calculateMaxNumberOfRulesForNonterminal grammar
 
