@@ -173,7 +173,6 @@ generateBlockForRefiningConjunctionDetails grammar@(Grammar (nonterminals, termi
     brackets = leftBracket ++ rightBracket
     indices = map show [1..maxNumberOfRules] --}
 
-
 generateBlockForQKFindNegation :: Grammar -> String -> DebuggingQuadruples
 generateBlockForQKFindNegation grammar@(Grammar (nonterminals, terminals, _, _)) k = let
     -- parts for set of states q1FindNegation, q2FindNegation...qkFindNegation
@@ -205,6 +204,7 @@ generateBlockForQKFindNegation grammar@(Grammar (nonterminals, terminals, _, _))
     symbolsToQRulekFindNonterminal = [((DState qkMoveToStart, DSymbol k),(TMTypes.L, DState qRuleKFindNonterminal))]
 
     -- BLOCK for qRulekFindNonterminal
+    -- TODO it is not nonterminals list must be as argument: only nonterminals, which has enough rules (at least k)
     symbolsToQRulekNonterminalFindFst = map
         (\t ->
             ((DState qRuleKFindNonterminal, DSymbol t),(TMTypes.R, DState $ q ++ "Rule" ++ k ++ t ++ "findFst"))
@@ -215,11 +215,19 @@ generateBlockForQKFindNegation grammar@(Grammar (nonterminals, terminals, _, _))
         (\t ->
             ((DState $ q ++ "Rule" ++ k ++ t ++ "findFst", DSymbol t),(TMTypes.R, DState $ q ++ "Rule" ++ k ++ t ++ "findFst"))
             ) $ rightBracket ++ negation ++ [k]
-    --symbolsToQRulektjFindSnd = map (getFirstNonterminalsInConjunctionsOfGivenRelation grammar t k
+    -- TODO fix to correct list of nonterminals        
+    symbolsToQRulektjFindSnd = concatMap (\t -> let 
+        firstNonterminals = getFirstNonterminalsInConjunctionsOfGivenRelation grammar t k
+        in map 
+            (\j -> (
+                    (DState $ q ++ "Rule" ++ k ++ t ++ "findFst", DSymbol t),
+                    (TMTypes.R, DState $ q ++ "Rule" ++ k ++ t ++ j ++ "findSnd")
+                    )) 
+            firstNonterminals) nonterminalsList
 
     quadruples = symbolsInQkFindNegation ++ symbolsToQkMoveToStart ++ symbolsToQkMoveToStartNegation
         ++ symbolsInQkMoveToStart ++ symbolsToQRulekFindNonterminal ++ symbolsToQRulekNonterminalFindFst
-
+        ++ symbolsInQRulektFindFst ++ symbolsToQRulektjFindSnd
     in DQuadruples (addCollectionToMap quadruples Map.empty)
 
 
