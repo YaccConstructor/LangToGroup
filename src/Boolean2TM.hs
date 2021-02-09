@@ -213,19 +213,32 @@ generateBlockForQKFindNegation grammar@(Grammar (nonterminals, terminals, relati
     symbolsInQRulektFindFst = map (\t ->
             ((DState $ q ++ "Rule" ++ k ++ t ++ "findFst", DSymbol t),(TMTypes.R, DState $ q ++ "Rule" ++ k ++ t ++ "findFst"))
             ) $ [k] ++ rightBracket ++ negation
-           
+
     symbolsToQRulektjFindSnd = concatMap (\t -> let 
         firstNonterminals = getFirstNonterminalsInConjunctionsOfGivenRelation grammar t k
         in map (\j -> (
             (DState $ q ++ "Rule" ++ k ++ t ++ "findFst", DSymbol j),
             (TMTypes.R, DState $ q ++ "Rule" ++ k ++ t ++ j ++ "findSnd")
-            )) 
+            ))
             firstNonterminals) nonterminalsWithKRels
 
     quadruples = symbolsInQkFindNegation ++ symbolsToQkMoveToStart ++ symbolsToQkMoveToStartNegation
         ++ symbolsInQkMoveToStart ++ symbolsToQRulekFindNonterminal ++ symbolsToQRulekNonterminalFindFst
         ++ symbolsInQRulektFindFst ++ symbolsToQRulektjFindSnd
     in DQuadruples (addCollectionToMap quadruples Map.empty)
+
+-- grammar -> string (nonterminal in left part) -> string (number of relation)
+--  -> string (first nonterminal in conjunction) -> list of first nonterminals
+getSecondNonterminalsInConjunctionsOfGivenRelation :: Grammar -> String -> String -> String -> [String]
+getSecondNonterminalsInConjunctionsOfGivenRelation (Grammar (_, _, relations, _)) leftNonterminal number fstNontermInConj = let
+    groupedRelations = calculateGroupRelationsByNonterminals $ Set.toList relations
+    givenRelation = (groupedRelations Map.! Nonterminal leftNonterminal) !! (read number :: Int)
+    conjunctions = splitOn [O Conjunction] givenRelation
+    symbol = N (Nonterminal fstNontermInConj)
+    possibleConjunctions = filter (\t -> length t == 3 && t !! 1 == symbol || length t == 2 && head t == symbol) conjunctions
+    possibleSndNonterminals = map (\t -> if length t == 3 then t !! 2 else t !! 1) possibleConjunctions
+    in map refineSymbolInConjunctionToNonterminal possibleSndNonterminals
+
 
 getNonterminalsWithKRels :: [Relation] -> Int -> [Nonterminal]
 getNonterminalsWithKRels relations k = let
@@ -242,15 +255,15 @@ getFirstNonterminalsInConjunctionsOfGivenRelation (Grammar (_, _, relations, _))
         else let
         conjunctions = splitOn [O Conjunction] givenRelation
         firstSymbolsInConjunctions = map (\t -> if length t == 3 then t !! 1 else head t) conjunctions
-        in map refineFirstSymbolInConjunctionToNonterminal firstSymbolsInConjunctions
+        in map refineSymbolInConjunctionToNonterminal firstSymbolsInConjunctions
 
 relationHasOneTerminalInRightPart :: Relation -> Bool
 relationHasOneTerminalInRightPart (Relation (_, [T (Terminal _)])) = True
 relationHasOneTerminalInRightPart _ = False
 
-refineFirstSymbolInConjunctionToNonterminal :: GrammarType.Symbol -> String
-refineFirstSymbolInConjunctionToNonterminal (N nonterminal) = nonterminalValue nonterminal
-refineFirstSymbolInConjunctionToNonterminal otherwise = error "Not a nonterminal, conjunction pair must be a pair of nonterminals"
+refineSymbolInConjunctionToNonterminal :: GrammarType.Symbol -> String
+refineSymbolInConjunctionToNonterminal (N nonterminal) = nonterminalValue nonterminal
+refineSymbolInConjunctionToNonterminal otherwise = error "Not a nonterminal, conjunction pair must be a pair of nonterminals"
 
 addCollectionToMap :: (Ord k) => [(k, a)] -> Map.Map k a -> Map.Map k a
 addCollectionToMap ((a,b) : xs) myMap = addCollectionToMap xs $ Map.insert a b myMap
