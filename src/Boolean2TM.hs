@@ -1,3 +1,5 @@
+{-# LANGUAGE TupleSections #-}
+
 module Boolean2TM where
 
 import GrammarType
@@ -214,17 +216,27 @@ generateBlockForQKFindNegation grammar@(Grammar (nonterminals, terminals, relati
             ((DState $ q ++ "Rule" ++ k ++ t ++ "findFst", DSymbol t),(TMTypes.R, DState $ q ++ "Rule" ++ k ++ t ++ "findFst"))
             ) $ [k] ++ rightBracket ++ negation
 
-    symbolsToQRulektjFindSnd = concatMap (\t -> let 
-        firstNonterminals = getFirstNonterminalsInConjunctionsOfGivenRelation grammar t k
-        in map (\j -> (
-            (DState $ q ++ "Rule" ++ k ++ t ++ "findFst", DSymbol j),
-            (TMTypes.R, DState $ q ++ "Rule" ++ k ++ t ++ j ++ "findSnd")
-            ))
-            firstNonterminals) nonterminalsWithKRels
+    triplets = concatMap (\t -> let firstNonterminals = getFirstNonterminalsInConjunctionsOfGivenRelation grammar t k
+                       in map (k, t,) firstNonterminals) nonterminalsWithKRels
+
+    symbolsToQRulektjFindSnd = map
+        (\(k, t, j) -> ((DState $ q ++ "Rule" ++ k ++ t ++ "findFst", DSymbol j),
+            (TMTypes.R, DState $ q ++ "Rule" ++ k ++ t ++ j ++ "findSnd"))) triplets
+
+    -- BLOCK for qRulektjFindSnd
+    quads = map (\(k, t, j) -> (k, t, j, getSecondNonterminalsInConjunctionsOfGivenRelation grammar k t j)) triplets
+    symbolsInRulektjFindSnd = concatMap (\s ->
+        map (\(k, t, j) ->
+            ((DState $ q ++ "Rule" ++ k ++ t ++ j ++ "findSnd", DSymbol s),
+             (TMTypes.L, DState $ q ++ "Rule" ++ k ++ t ++ j ++ "findSnd"))
+            ) triplets) $ terminalsList ++ signs ++ brackets
+    symbolsToQRulektjs = concatMap (\(k,t,j,s) -> map (\f -> ((DState $ q ++ "Rule" ++ k ++ t ++ j ++ "findSnd", DSymbol f),
+        (TMTypes.L, DState $ q ++ "Rule" ++ k ++ t ++ j ++ f))) s) quads
 
     quadruples = symbolsInQkFindNegation ++ symbolsToQkMoveToStart ++ symbolsToQkMoveToStartNegation
-        ++ symbolsInQkMoveToStart ++ symbolsToQRulekFindNonterminal ++ symbolsToQRulekNonterminalFindFst
-        ++ symbolsInQRulektFindFst ++ symbolsToQRulektjFindSnd
+            ++ symbolsInQkMoveToStart ++ symbolsToQRulekFindNonterminal ++ symbolsToQRulekNonterminalFindFst
+            ++ symbolsInQRulektFindFst ++ symbolsToQRulektjFindSnd ++ symbolsInRulektjFindSnd ++ symbolsToQRulektjs
+
     in DQuadruples (addCollectionToMap quadruples Map.empty)
 
 -- grammar -> string (nonterminal in left part) -> string (number of relation)
