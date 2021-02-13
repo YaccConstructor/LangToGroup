@@ -181,7 +181,7 @@ generateBlockForQKFindNegation grammar@(Grammar (nonterminals, terminals, relati
     q = "q"
     qkFindNegation = q ++ k ++ "FindNegation"
     qkMoveToStart = q ++ k ++ "MoveToStart"
-    qkMoveToStartNegation = q ++ k ++ "MoveToStartNegation"
+    qkMoveToStartNeg = q ++ k ++ "MoveToStartNegation"
     qRuleKFindNonterminal = q ++ "Rule" ++ k ++ "KFindNonterminal"
 
     maxNumberOfRules = calculateMaxNumberOfRulesForNonterminal grammar
@@ -199,14 +199,14 @@ generateBlockForQKFindNegation grammar@(Grammar (nonterminals, terminals, relati
     symbolsInQkFindNegation = [((DState qkFindNegation, DSymbol "("),(TMTypes.R, DState qkFindNegation))]
     symbolsToQkMoveToStart = map
         (\t -> ((DState qkFindNegation, DSymbol t),(TMTypes.L, DState qkMoveToStart))) nonterminalsList
-    symbolsToQkMoveToStartNegation = [((DState qkFindNegation, DSymbol "!"),(TMTypes.L, DState qkMoveToStartNegation))]
+    symbolsToQkMoveToStartNegation = [((DState qkFindNegation, DSymbol "!"),(TMTypes.L, DState qkMoveToStartNeg))]
 
-    -- BLOCK for qkMoveToStart
+    -- BLOCK for qkMoveToStart/qkMoveToStartNeg
     symbolsInQkMoveToStart = [((DState qkMoveToStart, DSymbol "("),(TMTypes.L, DState qkMoveToStart))]
     symbolsToQRulekFindNonterminal = [((DState qkMoveToStart, DSymbol k),(TMTypes.L, DState qRuleKFindNonterminal))]
 
     -- BLOCK for qRulekFindNonterminal
-    nonterminalsWithKRels = map nonterminalValue (getNonterminalsWithKRels (Set.toList relations) (read k :: Int))
+    nonterminalsWithKRels = map nonterminalValue (getNonterminalsWithKRelsAnyLong (Set.toList relations) (read k :: Int))
     symbolsToQRulekNonterminalFindFst = map (\t ->
             ((DState qRuleKFindNonterminal, DSymbol t),(TMTypes.R, DState $ q ++ "Rule" ++ k ++ t ++ "findFst"))
             ) nonterminalsWithKRels
@@ -233,11 +233,22 @@ generateBlockForQKFindNegation grammar@(Grammar (nonterminals, terminals, relati
     symbolsToQRulektjs = concatMap (\(k,t,j,s) -> map (\f -> ((DState $ q ++ "Rule" ++ k ++ t ++ j ++ "findSnd", DSymbol f),
         (TMTypes.L, DState $ q ++ "Rule" ++ k ++ t ++ j ++ f))) s) quads
 
-    quadruples = symbolsInQkFindNegation ++ symbolsToQkMoveToStart ++ symbolsToQkMoveToStartNegation
-            ++ symbolsInQkMoveToStart ++ symbolsToQRulekFindNonterminal ++ symbolsToQRulekNonterminalFindFst
+    quadruples = symbolsToQRulekFindNonterminal ++ symbolsToQRulekNonterminalFindFst
             ++ symbolsInQRulektFindFst ++ symbolsToQRulektjFindSnd ++ symbolsInRulektjFindSnd ++ symbolsToQRulektjs
+    commonQuadruples = symbolsInQkFindNegation ++ symbolsToQkMoveToStart
+            ++ symbolsToQkMoveToStartNegation ++ symbolsInQkMoveToStart
 
-    in DQuadruples (addCollectionToMap quadruples Map.empty)
+    quadruplesMap = addCollectionToMap quadruples Map.empty
+    quadruplesNegMap = generateCaseForNegConj quadruplesMap
+    commonQuadruplesMap = addCollectionToMap commonQuadruples Map.empty
+
+    in DQuadruples (Map.union commonQuadruplesMap $ Map.union quadruplesMap quadruplesNegMap)
+
+generateCaseForNegConj :: Map.Map (DebuggingState, DebuggingSymbol) (SymbolMove, DebuggingState)
+                       -> Map.Map (DebuggingState, DebuggingSymbol) (SymbolMove, DebuggingState)
+generateCaseForNegConj quadruples = let
+    quadruples' = Map.mapKeys (\(DState state, DSymbol symbol) -> (DState $ state ++ "Negation", DSymbol symbol)) quadruples
+    in Map.map (\(move, DState state) -> (move, DState $ state ++ "Negation")) quadruples'
 
 -- grammar -> string (nonterminal in left part) -> string (number of relation)
 --  -> string (first nonterminal in conjunction) -> list of first nonterminals
@@ -251,11 +262,13 @@ getSecondNonterminalsInConjunctionsOfGivenRelation (Grammar (_, _, relations, _)
     possibleSndNonterminals = map (\t -> if length t == 3 then t !! 2 else t !! 1) possibleConjunctions
     in map refineSymbolInConjunctionToNonterminal possibleSndNonterminals
 
-
-getNonterminalsWithKRels :: [Relation] -> Int -> [Nonterminal]
-getNonterminalsWithKRels relations k = let
-    groupedRelations = calculateGroupRelationsByNonterminals relations
+getNonterminalsWithKRelsAnyLong :: [Relation] -> Int -> [Nonterminal]
+getNonterminalsWithKRelsAnyLong relations k = let
+    groupedRelations = calculateGroupRelationsByNonterminals $ getLongRels relations
     in (Map.keys $ Map.filter (\t -> length t >= k) groupedRelations)
+
+getLongRels :: [Relation] -> [Relation]
+getLongRels = filter (not . relationHasOneTerminalInRightPart)
 
 -- grammar -> string (nonterminal in left part) -> string (number of relation) -> list of first nonterminals
 getFirstNonterminalsInConjunctionsOfGivenRelation :: Grammar -> String -> String -> [String]
@@ -280,10 +293,9 @@ refineSymbolInConjunctionToNonterminal otherwise = error "Not a nonterminal, con
 addCollectionToMap :: (Ord k) => [(k, a)] -> Map.Map k a -> Map.Map k a
 addCollectionToMap ((a,b) : xs) myMap = addCollectionToMap xs $ Map.insert a b myMap
 addCollectionToMap [] myMap = myMap
-  
-{--generateQRefineConjunctionDetails :: Grammar -> Quadruples
 
-generateQFoldConjCallNextConjFromSameRule :: Grammar -> Quadruples
+
+{--generateQFoldConjCallNextConjFromSameRule :: Grammar -> Quadruples
 
 generateQFoldConjCallNextConjFromNextRule :: Grammar -> Quadruples
 
