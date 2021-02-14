@@ -71,6 +71,7 @@ executables:
     source-dirs:         src
     ghc-options:
     - -main-is GPKnuthBendixMain
+    - -O3
 
 
 tests:

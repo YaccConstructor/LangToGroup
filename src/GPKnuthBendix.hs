@@ -10,6 +10,7 @@ import SP2GP
 import qualified Set
 import KnuthBendix (knuthBendixBy, Order)
 import System.Timeout (timeout)
+import System.IO (hSetBuffering, stdin, BufferMode (NoBuffering) )
 import Control.Exception (evaluate)
 import Control.Monad (guard)
 import System.Random.Shuffle.FisherYates (shuffle)
@@ -75,4 +76,7 @@ testTM tm ord =
                 i <- [0..maxGi],
                 a <- [Positive, Negative] <*> [G i]
             ]
-    in  evaluate (knuthBendixBy ord rules) >> return ()
+    in  do
+            hSetBuffering stdin NoBuffering
+            evaluate (knuthBendixBy ord rules)
+            return ()
