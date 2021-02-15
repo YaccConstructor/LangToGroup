@@ -11,13 +11,9 @@ data Element = Positive Generator | Negative Generator
 instance Ord Element where
     (Negative x) <= (Negative y) = x <= y
     (Negative x) <= (Positive y) =
-        if x == y
-        then False
-        else x <= y
+        not $ x == y && x <= y
     (Positive x) <= (Negative y) =
-        if x == y
-        then True
-        else x <= y
+        x == y || x <= y
     (Positive x) <= (Positive y) = x <= y
 
 type EWord = [Element]

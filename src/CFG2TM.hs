@@ -27,8 +27,8 @@ first rels (N n) = concatMap (\(Relation (_, h : _)) -> first rels h) . filter (
 
 follow :: [Relation] -> Symbol -> [String]
 follow rels n = concatMap (first rels)
-                    . concatMap (\(Relation (_, symb)) -> map ((!!) symb) . filter (< length symb) . map (+ 1) $ elemIndices n symb)
-                    . filter (\(Relation (_, symb)) -> elem n symb) $ rels
+                    . concatMap (\(Relation (_, symb)) -> map (symb !!) . filter (< length symb) . map (+ 1) $ elemIndices n symb)
+                    . filter (\(Relation (_, symb)) -> n `elem` symb) $ rels
 
 first2 :: [Symbol] -> [Relation] -> [String] -> [String]
 first2 symb rels acc =

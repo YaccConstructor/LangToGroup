@@ -6,6 +6,7 @@ import qualified Data.Map as Map (Map, lookup, fromList)
 import Data.Char (ord)
 import Data.List.NonEmpty (NonEmpty(..))
 import Data.Bits (xor)
+import Data.Maybe (fromMaybe)
 
 import TMTypes
 import TmsType
@@ -64,9 +65,7 @@ tmsCmd2tmCmd alph stateToInd (transStart, (iniSt, TmsSingleTapeCommand (action, 
         tmsState2state state = Q $ safeLookup state stateToInd
 
         safeLookup :: TmsState -> Map.Map TmsState Int -> Int
-        safeLookup key@(TmsState name) m = case Map.lookup key m of
-            Nothing  -> hash name
-            Just val -> val
+        safeLookup key@(TmsState name) m = fromMaybe (hash name) (Map.lookup key m)
 
         -- | List of equivalent sequences of Transitions.
         translate :: NonEmpty Char -> (TmsTapeSquare, TmsTapeHeadMovement) -> NonEmpty (NonEmpty Transition)

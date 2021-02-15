@@ -131,7 +131,7 @@ threePhaseProcessing
         let newTMStartStates = StartStates (startFirstPhaseStates ++ [startKPlusOneTapeState])
 
         let newTMMultiTapeStates = MultiTapeStates (
-                zipWith (Set.insert) startFirstPhaseStates multiTapeStates
+                zipWith Set.insert startFirstPhaseStates multiTapeStates
                 ++ [Set.fromList [startKPlusOneTapeState, kplus1tapeState, finalKPlusOneTapeState, acceptKPlusOneTapeState]]
                 )
 

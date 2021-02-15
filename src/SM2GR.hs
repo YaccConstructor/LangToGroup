@@ -11,12 +11,11 @@ smb2As smb = case smb of SmbY y -> SmbA $ A_Y y ; SmbY' y -> SmbA' $ A_Y y ; Smb
 transitionRelations :: [SRule] -> [[State]] -> [GrRelation]
 transitionRelations rules states = cmdQs ++ cmdRs
         where
-        powtau x tau = (SmbA' $ A_R tau) : x ++ [SmbA $ A_R tau]
+        powtau x tau = SmbA' (A_R tau) : x ++ [SmbA $ A_R tau]
         cmdRs = concatMap (\r@(SRule x) -> map (\(Word u, Word v) -> Relation (powtau (map smb2As u) r, map smb2As v)) x) rules
         us = map smb2As . concat . concatMap (map ((\(SMType.Word w) -> w) . fst) . (\(SRule x) -> x)) $ rules
-        cmdQs = foldl (\x y -> case any (\q -> elem (SmbA $ A_Q q) us) y of
-                                True -> x
-                                False -> [ Relation (powtau [SmbA $ A_Q q] r, [SmbA $ A_Q q]) | r <- rules, q <- y ] ++ x
+        cmdQs = foldl (\x y ->  if any (\q -> SmbA (A_Q q) `elem` us) y then x else
+                                [ Relation (powtau [SmbA $ A_Q q] r, [SmbA $ A_Q q]) | r <- rules, q <- y ] ++ x
                                 ) [] states
 
 nk :: Int
@@ -29,8 +28,8 @@ hubRelation (Word w0) = posPart ++ negPart
         where
         word = map smb2As w0
         negationWord = foldl (\x y -> revertSmb y : x) []
-        posPart = foldl (\x (i, y) -> x ++ (if i `mod` 2 == 0 then word else negationWord word) ++ [SmbA y]) [] $ zip [1..] k
-        negPart = negationWord . foldl (\x (i, y) -> x ++ [SmbA y] ++ (if i `mod` 2 == 0 then negationWord word else word)) [] $ reverse $ zip [1..] k
+        posPart = foldl (\x (i, y) -> x ++ (if even i then word else negationWord word) ++ [SmbA y]) [] $ zip [1..] k
+        negPart = negationWord . foldl (\x (i, y) -> x ++ [SmbA y] ++ (if even i then negationWord word else word)) [] $ reverse $ zip [1..] k
 
 easyHubRelation :: SMType.Word -> [SmbR]
 easyHubRelation (Word w0) = [SmbA $ (!!) k 0] ++ map smb2As w0 ++ [SmbA $ (!!) k 1]

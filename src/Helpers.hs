@@ -7,6 +7,7 @@ import GRType
 import Data.Set (Set)
 import qualified Data.Set as Set
 import Text.Regex.TDFA
+import Data.Maybe (fromMaybe)
 
 disjoinQuotes :: Int -> Square -> Square
 disjoinQuotes i (Value s q_cnt) = Value s $ q_cnt + i
@@ -31,8 +32,8 @@ disjoinIfTerminal letter =
 mapValue :: [String] -> [Square]
 mapValue = map (`Value` 0)
 
-printSmb :: Map.Map A [Char] -> SmbR -> [Char]
-printSmb genmap (SmbA a) = case Map.lookup a genmap of Just s -> s ; Nothing -> error (show a) 
+printSmb :: Map.Map A String -> SmbR -> String
+printSmb genmap (SmbA a) = fromMaybe (error $ show a) (Map.lookup a genmap)
 printSmb genmap (SmbA' a) = case Map.lookup a genmap of Just s -> "(" ++ s ++ ")^(-1)" ; Nothing -> error (show a)
 
 revertSmb :: SmbR -> SmbR

@@ -13,14 +13,14 @@ instance ShowLaTeX Configs where
         let tapesCount   = length $ head configs
         let tapeSpec     = [DVerticalLine, CenterColumn, VerticalLine, CenterColumn, VerticalLine, CenterColumn]
         let halfSpec     = concat $ replicate tapesCount tapeSpec
-        let columnsSpec  = [CenterColumn] ++ halfSpec
+        let columnsSpec  = CenterColumn : halfSpec
         let tapesNames   = map (\num -> "Tape " ++ show num) [1..tapesCount]
-        let halfHeader   = foldl1 (&) $ map (\cur -> (multicolumn 3 [CenterColumn] $ fromString cur)) tapesNames
-        let showTripleConfig (u, q, v) = doLaTeX u & 
-                                                (math $ doLaTeX q) & 
+        let halfHeader   = foldl1 (&) $ map (multicolumn 3 [CenterColumn] . fromString) tapesNames
+        let showTripleConfig (u, q, v) = doLaTeX u &
+                                                math (doLaTeX q) &
                                                 doLaTeX v
         let showLine (lineNumber, config) = do
-                foldl1 (&) ([fromString $ show lineNumber] ++ (map showTripleConfig config))
+                foldl1 (&) (fromString (show lineNumber) : map showTripleConfig config)
                 tabularnewline
                 hline
 

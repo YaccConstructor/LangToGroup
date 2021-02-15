@@ -66,7 +66,7 @@ test (TestInfo tmis' tp) =
 testTM :: TuringMachine -> Order Element -> IO ()
 testTM tm ord =
     let maxGi =
-            flip runSPReader tm $ ((+ 6) . sum) <$> sequence [getN, getM, getL]
+            flip runSPReader tm $ (+ 6) . sum <$> sequence [getN, getM, getL]
         GP rs = groupBeta tm
         rules =
             map (\(ew1 `Equals` ew2) -> (ew1, ew2)) (Set.unSet rs) ++

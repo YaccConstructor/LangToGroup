@@ -41,7 +41,6 @@ pIdentifier =
 comma :: Parser ()
 comma = do
     void $ tok $ char ','
-    return ()
 
 -- | Pair '<key>: <value>\n'.
 pKeyValue :: Tokens Text -> Parser a -> Parser a
@@ -97,11 +96,9 @@ commandAlphabet (TmsCommand (_, cmds, _)) = tapeCmdAlphabet <$> cmds
         tapeCmdAlphabet _                                            = mempty
 
 -- | Get alphabets of all commands.
-alphabet :: [TmsCommand] -> [[Char]]
-alphabet tmsCommands = fmap (filter (/= '_')) $
-    fmap Set.toList $
-    fmap Set.fromList $
-    foldl1 (\x y -> (uncurry (++)) <$> zip x y) (commandAlphabet <$> tmsCommands)
+alphabet :: [TmsCommand] -> [String]
+alphabet tmsCommands = (filter (/= '_') . Set.toList) . Set.fromList <$>
+    foldl1 (\x y -> uncurry (++) <$> zip x y) (commandAlphabet <$> tmsCommands)
 
 -- | Tms.
 -- Example:

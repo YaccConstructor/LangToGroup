@@ -16,7 +16,7 @@ instance ShowLaTeX Square where
     doLaTeX RBS = omega
     doLaTeX LBS = alpha
     doLaTeX ES = raw $ fromString ""
-    doLaTeX (E i) = raw $ fromString $ "E_{" ++ (show i) ++ "}"
+    doLaTeX (E i) = raw $ fromString $ "E_{" ++ show i ++ "}"
     doLaTeX (BCommand c) = showBCommand c
     doLaTeX (PCommand c) = showPCommand c
 
@@ -53,11 +53,11 @@ instance ShowLaTeX [Square] where
     doLaTeX = math . foldl1 (\x y -> x <> " " <> y) . map doLaTeX
 
 instance ShowLaTeX [State] where
-    doLaTeX = foldl1 (\x y -> x <> ", " <> y) . map (math . doLaTeX $)
+    doLaTeX = foldl1 (\x y -> x <> ", " <> y) . map (math . doLaTeX)
 
 showAlphabet :: [Square] -> LaTeXM ()
-showAlphabet alphabet = 
-    case alphabet of 
+showAlphabet alphabet =
+    case alphabet of
         [] -> ""
         lst -> math . foldl1 (\x y -> x <> ", " <> y) . map doLaTeX $ lst
 
@@ -71,7 +71,7 @@ instance ShowLaTeX TapeAlphabet where
 
 instance ShowLaTeX MultiTapeStates where
     doLaTeX (MultiTapeStates statesList) =
-        enumerate $ mapM_ (\states -> do { item Nothing; doLaTeX $ Set.toList $ states}) statesList
+        enumerate $ mapM_ (\states -> do { item Nothing; doLaTeX $ Set.toList states}) statesList
 
 
 instance ShowLaTeX StartStates where
@@ -95,7 +95,7 @@ instance ShowLaTeX TM where
            subsection_ "Input alphabet"
            doLaTeX inputAlphabet
            subsection_ "Tape alphabets"
-           enumerate $ mapM_ (\alphabet -> do { item Nothing; doLaTeX $ alphabet}) tapeAlphabets
+           enumerate $ mapM_ (\alphabet -> do { item Nothing; doLaTeX alphabet}) tapeAlphabets
            subsection_ "States"
            doLaTeX multiTapeStates
            subsection_ "Start states"

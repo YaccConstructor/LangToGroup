@@ -61,4 +61,4 @@ applyRuleTest = do
     let w = Word [q1, SmbY a, SmbY a, q2, SmbY b, q3, SmbY c, SmbY c, q4]
     let r = SRule [(Word [q1], Word [p1, SmbY' a]), (Word [q2, SmbY b, q3], Word [SmbY' a, p2, SmbY b', q3, SmbY c])]
     let resW = Word [p1, p2, SmbY b', q3, SmbY c, SmbY c, SmbY c, q4]
-    assertEqual "assert right replace" resW (applyRule w r) 
+    assertEqual "assert right replace" resW (applyRule w r)

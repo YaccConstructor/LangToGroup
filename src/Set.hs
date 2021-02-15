@@ -24,4 +24,4 @@ findMax :: Ord a => Set a -> a
 findMax = maximum . unSet
 
 unions :: (Foldable f, Ord a) => f (Set a) -> Set a
-unions = Set . RealSet.toList . RealSet.fromList . foldr ((++) . unSet) []
+unions = Set . RealSet.toList . RealSet.fromList . concatMap unSet

@@ -36,4 +36,4 @@ testTuringMachine2Tms = assertEqual "Invalid conversion from TMTypes.TuringMachi
 
         (a, b, c) = (S 1, S 2, S 3)
         (q2, q3, q4) = (Q 2, Q 3, Q 4)
-        [tmq0, tmq1, tmq2, tmq3, tmq4] = TmsState <$> ("Q_" ++) . show <$> [0 .. 4]
+        [tmq0, tmq1, tmq2, tmq3, tmq4] = TmsState . ("Q_" ++) . show <$> [0 .. 4]

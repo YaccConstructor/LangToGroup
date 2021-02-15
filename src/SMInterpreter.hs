@@ -66,7 +66,7 @@ module SMInterpreter where
             _ -> error "Commandss and configss don't match"
 
     get_front :: [[Word]] -> [Word]
-    get_front wordss = map last wordss
+    get_front = map last
 
     startInterpreting :: Word -> [[Word]] -> [SRule] -> Map Word Int -> ([Word], Map Word Int)
     startInterpreting accessWord wordss rules m =

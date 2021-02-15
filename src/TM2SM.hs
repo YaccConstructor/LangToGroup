@@ -426,7 +426,7 @@ symSM (SRule wordPairs) = do
             case w of
                 smb@(SmbY _) : t -> groupByWord t (smb : left, other)
                 smb@(SmbY' _) : t -> groupByWord t (smb : left, other)
-                smb@_ : t -> (reverse left, smb : t)
+                smb : t -> (reverse left, smb : t)
                 [] -> error "There is no state in word"
     let reverseYs smb = case smb of
                             SmbY y -> SmbY' y
@@ -444,12 +444,11 @@ symSM (SRule wordPairs) = do
 sigmaFunc :: [TMType.State] -> [[Smb]] -> SMType.Word
 sigmaFunc states u =
     Word $
-    (e_e 0) : alphan ++ [e_x 0, e_f "" 0] ++
-    (concat $ 
-    map (\(i, TMType.State q, d, w) -> 
-        (e_e i) : w ++ [e_x i, e_f q i, e_e' i, e_p i] ++ d 
-                    ++ [e_q i, e_r i, e_s i, e_t i, e_u i, e_pd i, e_qd i, e_rd i, e_sd i, e_td i, e_ud i, e_f' q i]) 
-    $ zip4 [1..] states deltan u) ++
+    e_e 0 : alphan ++ [e_x 0, e_f "" 0] ++
+    concatMap
+    (\(i, TMType.State q, d, w) ->
+        e_e i : w ++ [e_x i, e_f q i, e_e' i, e_p i] ++ d
+                  ++ [e_q i, e_r i, e_s i, e_t i, e_u i, e_pd i, e_qd i, e_rd i, e_sd i, e_td i, e_ud i, e_f' q i]) (zip4 [1..] states deltan u) ++
     [e_e' (k + 1), e_x' (k + 1)] ++ omegan ++ [e_f' "" (k + 1)]
     where
             un = map length u

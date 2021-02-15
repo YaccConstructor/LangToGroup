@@ -20,7 +20,7 @@ orders tm = do
     qs <- idOrRev [ q_ i | i <- [0..n] ]
     ss <- idOrRev [ s_ i | i <- [0..m] ]
     rs <- idOrRev [ r_ i | i <- [0..l] ]
-    posElems <- (flip runSPReader tm . sequence . concat) <$> permutations
+    posElems <- flip runSPReader tm . sequence . concat <$> permutations
         [
             [q],
             qs,
