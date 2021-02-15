@@ -3,7 +3,6 @@ module GrTests where
 import SMType
 import Test.HUnit
 import GRType
-import qualified TMType
 import SM2GR
 import Data.Set (fromList)
 import Helpers

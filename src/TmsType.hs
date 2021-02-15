@@ -8,10 +8,7 @@ import Data.List (intercalate)
 import Data.List.Utils (replace)
 import GHC.Unicode (isAlphaNum)
 
-import qualified Data.Text.Lazy as TL
 import Prettyprinter
-
-import TMType
 
 -- |Type of Tms tape square action.
 --
@@ -67,7 +64,7 @@ instance Show Tms where
       (printKeyValue
         [ ["name", name],
           ["init", filterStateName initial],
-          ["accept", intercalate ", " (fmap (\(TmsState name) -> filterStateName name) acStates)]
+          ["accept", intercalate ", " (fmap (\(TmsState tmsName) -> filterStateName tmsName) acStates)]
         ])
         <> line
         <> vcat (punctuate line (map (pretty . showTmsCommand) commands))

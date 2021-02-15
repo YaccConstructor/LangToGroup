@@ -44,16 +44,16 @@ test (TestInfo tmis' tp) =
                       )
             timePerTest =
                 case tp of
-                    TimePerTestAndPartOfOrds t _ -> t * 1000000
-                    TimePerTestAndTotalTime  t _ -> t * 1000000
-                    PartOfOrdsAndTotalTime   p t ->
-                        (t * 1000000 `div` length tmis) `div` calcCountOfOrdersForTM p
+                    TimePerTestAndPartOfOrds time _ -> time * 1000000
+                    TimePerTestAndTotalTime  time _ -> time * 1000000
+                    PartOfOrdsAndTotalTime   p time ->
+                        (time * 1000000 `div` length tmis) `div` calcCountOfOrdersForTM p
             countOfOrdersForTM =
                 case tp of
                     TimePerTestAndPartOfOrds _ p ->
                         calcCountOfOrdersForTM p
-                    TimePerTestAndTotalTime t' t ->
-                        length allOrdersForTM `min` ((t `div` length tmis) `div` t')
+                    TimePerTestAndTotalTime t' time ->
+                        length allOrdersForTM `min` ((time `div` length tmis) `div` t')
                     PartOfOrdsAndTotalTime   p _ ->
                         calcCountOfOrdersForTM p
             ordersForTM = take countOfOrdersForTM allOrdersForTM
@@ -78,5 +78,5 @@ testTM tm ord =
             ]
     in  do
             hSetBuffering stdout NoBuffering
-            evaluate (knuthBendixBy ord rules)
+            _ <- evaluate (knuthBendixBy ord rules)
             return ()

@@ -19,6 +19,7 @@ runOTMReader otmr (TM (_, tapeSymbols, MultiTapeStates tapeStates, Commands tape
     otmr (symbols, states, commands, startState, finalState) where
         unTapeAlphabet (TapeAlphabet ta) = ta
         pair [x, y] = (x, y)
+        pair  _      = error "Unable to build pair from non-two element list"
         symbols = Set.unions $ map (Set.insert LBS . Set.insert RBS . unTapeAlphabet) tapeSymbols
         states = Set.unions tapeStates
         commands = Map.fromListWith (++) $ (\[SingleTapeCommand (f1, t1), SingleTapeCommand (f2, t2)] -> ((f1, f2), [(t1, t2)])) <$> Set.toList tapeCommands

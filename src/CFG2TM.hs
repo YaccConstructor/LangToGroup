@@ -21,6 +21,7 @@ iSST = State "q_{1}^{2}"
 
 first :: [Relation] -> Symbol -> [String]
 first _ (T (Terminal t)) = [t]
+first _ (O _) = error "Can not get first from Operand"
 first rels Eps = concatMap (\(Relation (n, _)) -> follow rels (N n)) . filter (\(Relation (_, e : _)) -> e == Eps) $ rels
 first rels (N n) = concatMap (\(Relation (_, h : _)) -> first rels h) . filter (\(Relation (x, _)) -> x == n) $ rels
 
@@ -37,7 +38,7 @@ first2 symb rels acc =
         (T (Terminal term)) : t | length acc == 1 -> [term]
                                 | otherwise -> first2 t rels (term : acc)
         [] -> []
-
+        (O _) : _ -> error "Can not get first from Operand"
 
 genRelationCommand :: (Relation, State) -> [State] -> [Relation] -> ([State], [[TapeCommand]])
 genRelationCommand (Relation (ns@(Nonterminal start), [Eps]), st) states rels = 

@@ -1,7 +1,9 @@
-module TmsTests (testShowOneTapeTms,
-                 testShowMultiTapeTms,
-                 testOneTapeTM2Tms,
-                 testMultiTapeTM2Tms) where
+module TmsTests (
+    testShowOneTapeTms,
+    testShowMultiTapeTms,
+    testOneTapeTM2Tms,
+    testMultiTapeTM2Tms
+) where
 
 import Test.HUnit
 import Data.Set (fromList)
@@ -103,15 +105,6 @@ testOneTapeTM2Tms = testTM2Tms oneTapeTM oneTapeTms
 
 testMultiTapeTM2Tms :: Assertion
 testMultiTapeTM2Tms = testTM2Tms multiTapeTM multiTapeTms
-
-q11 :: TmsState
-q11 = TmsState "q_{1}^{1}"
-
-q22 :: TmsState
-q22 = TmsState "q_{2}^{2}"
-
-q33 :: TmsState
-q33 = TmsState "q_{3}^{3}"
 
 q1 :: TMType.State
 q1 = TMType.State "q_{1}^{1}"

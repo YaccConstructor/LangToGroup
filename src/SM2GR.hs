@@ -19,7 +19,9 @@ transitionRelations rules states = cmdQs ++ cmdRs
                                 False -> [ Relation (powtau [SmbA $ A_Q q] r, [SmbA $ A_Q q]) | r <- rules, q <- y ] ++ x
                                 ) [] states              
 
+nk :: Int
 nk = 1
+k :: [A]
 k = map (A_K $) [1 .. 2 * nk]
 
 hubRelation :: SMType.Word -> [SmbR]

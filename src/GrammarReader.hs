@@ -8,20 +8,14 @@ module GrammarReader (convertGrammar2TM,parser) where
 
 import Text.Megaparsec
 import Text.Megaparsec.Char
-import Text.Megaparsec.Debug
 import Text.Megaparsec.Error (errorBundlePretty)
 
-import Data.Text (Text)
-import Data.String
-import Data.Void
 import Data.Functor
 import Data.Set (Set)
 import qualified Data.Set as Set
 import qualified Data.List as List
 
 import System.IO
-import System.Environment
-import qualified System.Environment as SE
 
 import GrammarType
 import CFG2TM
@@ -61,6 +55,7 @@ pNegation = void ("!") *> pure (O Negation)
 pWord :: Parser [Symbol]
 pWord = (++) <$> pword' <*> (pure [])
 
+pword' :: Parser [Symbol]
 pword' = some (void " " *> (T <$> pTerminal <|> N <$> pNonterminal))
          <|>
          (:) <$> pEpsilon <*> (pure [])
@@ -70,8 +65,7 @@ pRelations :: Parser (Set Relation)
 pRelations = do
     firstRelation <- pRelation
     relations <- Set.fromList <$> (many (void ("\n") *> pRelation))
-    relations <- pure (Set.insert firstRelation relations)
-    return relations
+    return $ Set.insert firstRelation relations
 
 -- |Parser for one relation. Relation is in such form : Nonterminal -> [Symbol],
 -- 1) in boolean grammar relation has form
@@ -98,36 +92,36 @@ pRelation = do
 -- relation without negative or positive formula (with only one word) is the relation of context-free grammar.
 pVeryLongRule :: Parser [Symbol]
 pVeryLongRule = do
-    symbols <- pWord
-    symbols <- (++) <$> pure symbols <*> concat <$> (many (try pPositiveConjunction))
-    symbols <- (++) <$> pure symbols <*> concat <$> many pNegativeConjunction
+    word <- pWord
+    positiveConj <- (++) <$> pure word <*> concat <$> (many (try pPositiveConjunction))
+    symbols <- (++) <$> pure positiveConj <*> concat <$> many pNegativeConjunction
     return symbols
 
 pNegativeConjunction :: Parser [Symbol]
 pNegativeConjunction = do
-    symbols1 <- pConjunction
-    symbols2 <- pNegation
-    symbols3 <- pWord
-    symbols <- pure ((++) (symbols1 : symbols2 : []) symbols3)
+    conj <- pConjunction
+    negation <- pNegation
+    word <- pWord
+    symbols <- pure ((++) (conj : negation : []) word)
     return symbols
 
 pPositiveConjunction :: Parser [Symbol]
 pPositiveConjunction = do
-    symbols <- (try pConjunction)
-    symbols <- (++) <$> pure (symbols : []) <*> pWord
+    conjunction <- (try pConjunction)
+    symbols <- (++) <$> pure (conjunction : []) <*> pWord
     return symbols
 
 pPositiveFormula :: Parser [Symbol]
 pPositiveFormula = do
-    symbols <- pWord
-    symbols <- ((++) <$> pure symbols <*> concat <$> many pPositiveConjunction)
+    word <- pWord
+    symbols <- ((++) <$> pure word <*> concat <$> many pPositiveConjunction)
     return symbols
 
 pNegativeFormula :: Parser [Symbol]
 pNegativeFormula = do
-    symbols <- pNegation
-    symbols <- (++) <$> pure (symbols : []) <*> pWord
-    symbols <- ((++) <$> pure symbols <*> concat <$> many pNegativeConjunction)
+    negation <- pNegation
+    negationWords <- (++) <$> pure (negation : []) <*> pWord
+    symbols <- ((++) <$> pure negationWords <*> concat <$> many pNegativeConjunction)
     return symbols
 
 -- |Parsers for set of terminals and nonterminals.
@@ -163,9 +157,10 @@ checkGrammarType (Grammar (_, _, setOfRelations, _)) =
 
 checkGrammarType' :: [Symbol] -> GrammarType
 checkGrammarType' symbols
-    | (List.elem (O Conjunction) symbols) && (List.elem (O Negation) symbols) = Boolean
-    | (List.elem (O Conjunction) symbols) && not (List.elem (O Negation) symbols) = Conjunctive
+    | (List.elem (O Conjunction) symbols) && (List.elem (O Negation) symbols)         = Boolean
+    | (List.elem (O Conjunction) symbols) && not (List.elem (O Negation) symbols)     = Conjunctive
     | not (List.elem (O Conjunction) symbols) && not (List.elem (O Negation) symbols) = CFG
+    | otherwise                                                                       = error "Undefined Grammar Type"
 
 parser :: Parser Grammar
 parser = makeEofParser pGrammar

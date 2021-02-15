@@ -95,6 +95,7 @@ printTMInfo msg (Just tm) = do
     putStr "Generators: "
     print $ Set.size gs
     putStrLn ""
+printTMInfo _ Nothing = error "Can not print TuringMachine info when Maybe TuringMachine is Nothing"
 
 test :: IO ()
 test = mapM_ (\(msg, _, tm) -> printTMInfo msg tm) testingSet

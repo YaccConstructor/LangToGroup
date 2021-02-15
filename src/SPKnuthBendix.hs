@@ -1,7 +1,6 @@
 module SPKnuthBendix where
 
 import TMTesting
-import TMReader
 import SPTypes
 import TM2SP
 import qualified Set
@@ -20,8 +19,8 @@ test = fmap catMaybes $ sequence
 testTM :: Int -> IO ()
 testTM tmi =
     let tm = testingTM tmi
-        maxGi =
-            flip runTMReader tm $ ((+ 3) . sum) <$> sequence [getN, getM]
+        -- maxGi =
+        --     flip runTMReader tm $ ((+ 3) . sum) <$> sequence [getN, getM]
         SP rs = semigroupGamma tm
         rules = map (\(gw1 `Equals` gw2) -> (gw1, gw2)) (Set.unSet rs)
     in  evaluate (knuthBendix rules) >> return ()

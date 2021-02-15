@@ -32,6 +32,7 @@ instance ShowLaTeX Symbol where
     doLaTeX (T symbol) = doLaTeX symbol 
     doLaTeX (N symbol) = doLaTeX symbol 
     doLaTeX Eps = varepsilon
+    doLaTeX (O _) = error "Can not doLaTeX from Operand" 
 
 
 instance ShowLaTeX Relation where

@@ -5,8 +5,8 @@ module ConfigPrinter where
 import Text.LaTeX.Base
 import ConfigType
 import Lib
-import Helpers
-import TMPrinter
+import Helpers()
+import TMPrinter()
 
 instance ShowLaTeX Configs where
     doLaTeX (Configs configs) = do

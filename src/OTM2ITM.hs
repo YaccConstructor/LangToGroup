@@ -326,7 +326,7 @@ eosovTM = do
         tripleCaseTM fstTriples (\fstTriple@(sq11, st1, sq21) ->
             (liteMoveTM omega ToRight >|> moveInfTM ToRight) >+>
             moveUntilTM itmsIsState ToRight >+>
-            tripleCaseTM (sndTriples fstTriple) (\sndTriple@(sq12, st2, sq22) ->
+            tripleCaseTM (sndTriples fstTriple) (\(sq12, st2, sq22) ->
                 let possibleCommands = concat [
                      (\x -> (((sq11', st1, sq21'), (sq12', st2, sq22')), x)) <$> fromMaybe [] (Map.lookup ((sq11', st1, sq21'), (sq12', st2, sq22')) commands)
                      | sq11' <- [sq11, OTM.ES],

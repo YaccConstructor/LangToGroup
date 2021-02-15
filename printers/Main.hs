@@ -4,31 +4,30 @@ module Main where
 
 import Text.LaTeX.Base.Render
 import Text.LaTeX.Base
-import Text.LaTeX.Base.Class
 import Text.LaTeX.Packages.Inputenc
 import qualified Data.Set as Set
 
-import GrammarPrinter
-import TMPrinter
+import GrammarPrinter()
+import TMPrinter()
 import Lib
 import GrammarType
 import CFG2TM 
 import TMType
-import TMInterpreter
-import ConfigPrinter
+import TMInterpreter()
+import ConfigPrinter()
 import TM2SymTM
 import TM2SM
-import SMPrinter
+import SMPrinter()
 import SM2GR
 import qualified SMType
 import GRType
 import GapFuncWriter
 import System.IO
 import qualified Data.Map.Strict as Map
-import SMInterpreter
+import SMInterpreter()
 import Helpers
-import DotGraphWriter
-import MapleFuncWriter
+import DotGraphWriter()
+import MapleFuncWriter()
 import Data.Tuple.Utils
 import Console.Options
 import Data.List (isSuffixOf)

@@ -2,11 +2,8 @@
 
 module TmsParserTests where
 
-import Data.Char (isSeparator)
 import Test.HUnit
 import Text.Megaparsec
-import Text.Megaparsec.Char
-import Text.Megaparsec.Byte (string)
 import Data.Text (Text, pack)
 import Control.Monad (guard)
 

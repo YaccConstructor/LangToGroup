@@ -3,13 +3,8 @@
 module ParserTests where
 
 import Text.Megaparsec
-import Text.Megaparsec.Char
-import Text.Megaparsec.Debug
-
 import Test.HUnit
 
-import Data.Text (Text)
-import Data.Set (Set)
 import qualified Data.Set as Set
 
 import GrammarReader

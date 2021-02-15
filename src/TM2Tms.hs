@@ -110,8 +110,8 @@ cmd2tmsTapeCmd (
 cmd2tmsTapeCmd cmd = fail $ "Command '" ++ show cmd ++ "' can not be converted to '[TmsSingleTapeCommand]'"
 
 cmd2tmsTapeCmds :: [TapeCommand] -> Either String [TmsCommand]
-cmd2tmsTapeCmds cmds = do
-    tapeCmdSeqs <- traverse cmd2tmsTapeCmd cmds
+cmd2tmsTapeCmds tapeCmds = do
+    tapeCmdSeqs <- traverse cmd2tmsTapeCmd tapeCmds
     let tapeCmdSeqsRev = Prelude.map Data.List.NonEmpty.reverse tapeCmdSeqs
     let mxLen = foldl (\mx sq -> max mx (Data.List.NonEmpty.length sq)) 0 tapeCmdSeqs
     let sameLenCmds = fmap (fillSeqWithIdCmds mxLen) tapeCmdSeqsRev
