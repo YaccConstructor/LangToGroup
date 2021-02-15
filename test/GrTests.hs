@@ -28,7 +28,7 @@ sm2grTest = do
     let u' = [SmbA' $ A_Q q1', SmbA' $ A_Q q0']
     let relations = [   Relation (powr [smb2As $ SmbQ q0], map smb2As [SmbQ q0', SmbY' y]),
                         Relation (powr [smb2As $ SmbQ q1], [smb2As $ SmbQ q1'])] ++
-                        [Relation ([SmbA $ A_R r, SmbA x], [SmbA x, SmbA $ A_R r]) | x <- [A_Y y] ++ k] ++
+                        [Relation ([SmbA $ A_R r, SmbA x], [SmbA x, SmbA $ A_R r]) | x <- A_Y y : k] ++
                         [Relator (u' ++ [SmbA $ A_K 1] ++ u ++ [SmbA $ A_K 2] ++ u' ++  [SmbA' $ A_K 1] ++ u ++ [SmbA' $ A_K 2])]
     let expectedGr = GR (fromList as, fromList relations)
     assertEqual "assert group" expectedGr gr

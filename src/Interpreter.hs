@@ -1,4 +1,4 @@
-{-# LANGUAGE GeneralizedNewtypeDeriving #-}
+
 
 module Interpreter where
 
@@ -35,7 +35,7 @@ step (WS tm@(TM qs) q t a) = do
     let cs = unMS $ top t
         s = if cs == blankStr
             then S 0
-            else S ((Set.findIndex cs a) + 1)
+            else S (Set.findIndex cs a + 1)
     (sm, q') <- Map.lookup (q, s) qs
     let t' = case sm of
          C (S 0) -> t {top = MS blankStr}

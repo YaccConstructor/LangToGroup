@@ -23,6 +23,6 @@ withoutOrder (WO (x, _)) = x
 
 knuthBendixBy :: Eq a => Order a -> [([a], [a])] -> [([a], [a])]
 knuthBendixBy ord =
-    (map $ mapPair $ map $ withoutOrder) .
+    map (mapPair $ map withoutOrder) .
     knuthBendix .
-    (map $ mapPair $ map $ withOrder ord)
+    map (mapPair $ map $ withOrder ord)

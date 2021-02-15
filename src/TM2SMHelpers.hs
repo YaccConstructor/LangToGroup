@@ -1,5 +1,5 @@
 module TM2SMHelpers where
-    
+
 import SMType
 import Data.Set (Set)
 import qualified Data.Set as Set
@@ -21,13 +21,13 @@ addTags :: [Tag] -> [State] -> [State]
 addTags newTags qs = [addTag newTag p | p <- qs, newTag <- newTags]
 getai :: [TMType.TapeCommand] -> (TMType.Square, Int)
 getai c =
-    let get cmd i =  
+    let get cmd i =
             case cmd of
-                TMType.PreSMCommand ((a, _), _) : t 
+                TMType.PreSMCommand ((a, _), _) : t
                     | a /= TMType.ES -> (a, i)
                     | otherwise -> get t (i + 1)
                 _ -> error "Must be PreSMCommand"
-    in 
+    in
     get c 1
 
 addICmdSmTag :: TMCMD -> SMTag -> State -> State
@@ -40,7 +40,7 @@ addICmdSmTag cmd tag q =
         T9 -> q {s_val = Just $ StateVal j jcmd jsmtag}
         TAlpha -> q {s_val = Just $ StateVal 0 jcmd jsmtag}
         TOmega -> q {s_val = Just $ StateVal (k + 1) jcmd jsmtag}
-            where 
+            where
                 k = length c
     where   jcmd = Just cmd
             jsmtag = Just tag
@@ -61,7 +61,7 @@ e_x j       = SmbQ $ newState X "" eTag j Nothing Nothing
 e_x' :: Int -> Smb
 e_x' j      = SmbQ $ newState X "" quoteTag j Nothing Nothing
 e_f :: String -> Int -> Smb
-e_f idx j   = SmbQ $ newState F idx eTag j Nothing Nothing 
+e_f idx j   = SmbQ $ newState F idx eTag j Nothing Nothing
 e_f' :: String -> Int -> Smb
 e_f' idx j  = SmbQ $ newState F idx quoteTag j Nothing Nothing
 e_e :: Int -> Smb
@@ -69,17 +69,17 @@ e_e j       = SmbQ $ newState E "" eTag j Nothing Nothing
 e_e' :: Int -> Smb
 e_e' j      = SmbQ $ newState E "" quoteTag j Nothing Nothing
 e_p :: Int -> Smb
-e_p j       = SmbQ $ newState P "" eTag j Nothing Nothing 
+e_p j       = SmbQ $ newState P "" eTag j Nothing Nothing
 e_q :: Int -> Smb
-e_q j       = SmbQ $ newState Q "" eTag j Nothing Nothing 
+e_q j       = SmbQ $ newState Q "" eTag j Nothing Nothing
 e_r :: Int -> Smb
-e_r j       = SmbQ $ newState R "" eTag j Nothing Nothing 
+e_r j       = SmbQ $ newState R "" eTag j Nothing Nothing
 e_s :: Int -> Smb
-e_s j       = SmbQ $ newState S "" eTag j Nothing Nothing 
+e_s j       = SmbQ $ newState S "" eTag j Nothing Nothing
 e_t :: Int -> Smb
-e_t j       = SmbQ $ newState T "" eTag j Nothing Nothing 
+e_t j       = SmbQ $ newState T "" eTag j Nothing Nothing
 e_u :: Int -> Smb
-e_u j       = SmbQ $ newState U "" eTag j Nothing Nothing 
+e_u j       = SmbQ $ newState U "" eTag j Nothing Nothing
 e_pd :: Int -> Smb
 e_pd j      = SmbQ $ newState P "" dashTag j Nothing Nothing
 e_qd :: Int -> Smb
@@ -95,9 +95,9 @@ e_ud j      = SmbQ $ newState U "" dashTag j Nothing Nothing
 
 getJIdx :: [TMType.TapeCommand] -> Int -> (String, String)
 getJIdx c j =
-    let internal cmd i =  
+    let internal cmd i =
             case cmd of
-                TMType.PreSMCommand ((_, TMType.StateOmega(TMType.State b)), (_, TMType.StateOmega(TMType.State b1))) : t 
+                TMType.PreSMCommand ((_, TMType.StateOmega(TMType.State b)), (_, TMType.StateOmega(TMType.State b1))) : t
                     | j == i -> (b, b1)
                     | otherwise -> internal t (i + 1)
                 _ -> error "Not found j"

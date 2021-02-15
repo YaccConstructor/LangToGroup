@@ -28,3 +28,4 @@ printers/out_log.txt
 *.cabal
 stack.yaml.lock
 out.txt
+refactor.py

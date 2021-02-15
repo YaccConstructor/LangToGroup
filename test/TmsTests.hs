@@ -161,7 +161,7 @@ multiTapeTms = Tms (
     )
 
 testShowTms :: Tms -> String -> Assertion
-testShowTms tms res = assertEqual ("Invalid presentation of Tms.") (nonEndl res') (nonEndl res)
+testShowTms tms res = assertEqual "Invalid presentation of Tms." (nonEndl res') (nonEndl res)
     where
         res' = show tms
         nonEndl = filter (/= '\n')
@@ -169,4 +169,4 @@ testShowTms tms res = assertEqual ("Invalid presentation of Tms.") (nonEndl res'
 testTM2Tms :: TM -> Tms -> Assertion
 testTM2Tms tm tms = case tm2tms tm of
     Left err -> assertFailure $ "Conversion from TM to Tms has failed: " ++ err
-    Right tm' -> assertEqual ("TM is not correctly converted to Tms.") tm' tms
+    Right tm' -> assertEqual "TM is not correctly converted to Tms." tm' tms

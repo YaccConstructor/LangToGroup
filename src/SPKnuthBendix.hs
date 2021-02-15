@@ -8,9 +8,10 @@ import System.Timeout (timeout)
 import Data.Maybe (catMaybes)
 import Math.Algebra.Group.StringRewriting (knuthBendix)
 import Control.Exception (evaluate)
+import Control.Monad (void)
 
 test :: IO [Int]
-test = fmap catMaybes $ sequence
+test = catMaybes <$> sequence
     [
         timeout 10000000 $ testTM i >> return i
     | i <- [1 .. length testingSet]
@@ -23,4 +24,4 @@ testTM tmi =
         --     flip runTMReader tm $ ((+ 3) . sum) <$> sequence [getN, getM]
         SP rs = semigroupGamma tm
         rules = map (\(gw1 `Equals` gw2) -> (gw1, gw2)) (Set.unSet rs)
-    in  evaluate (knuthBendix rules) >> return ()
+    in  void $ evaluate (knuthBendix rules)

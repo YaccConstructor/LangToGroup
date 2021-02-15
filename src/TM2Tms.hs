@@ -6,6 +6,7 @@ import Data.Set (toList)
 import Data.Map (fromList, lookup, Map)
 import Data.List.NonEmpty (reverse, NonEmpty(..), length)
 import Data.Tuple.Utils (snd3)
+import Data.Maybe (fromMaybe)
 
 import TMType
 import TmsType
@@ -14,10 +15,10 @@ tm2tms :: TM -> Either String Tms
 tm2tms
     (TM
         (_, -- Input Alphabet
-        tapeAlphabets, 
+        tapeAlphabets,
         _, -- Tape States
-        Commands commands, 
-        StartStates startStates, 
+        Commands commands,
+        StartStates startStates,
         AccessStates accessStates)
     ) = do
         tmsCmdsBlocks <- traverse cmd2tmsTapeCmds (toList commands)
@@ -30,12 +31,12 @@ tm2tms
             tmsCmds,
             tmsAlph)
     where
-        alph2tmsAlph :: TapeAlphabet -> Either String [Char]
+        alph2tmsAlph :: TapeAlphabet -> Either String String
         alph2tmsAlph (TapeAlphabet squares) = traverse toValue (toList squares)
 
 tmState2tmsState :: State -> TmsState
 tmState2tmsState (State s) = TmsState s
- 
+
 -- Section of helper functions.
 
 -- |Make transitional state.
@@ -63,19 +64,19 @@ cmd2tmsTapeCmd (
 cmd2tmsTapeCmd (
     SingleTapeCommand (
         (ES,                 iniSt, RBS),
-        ((Value name nquts), folSt, RBS)
+        (Value name nquts, folSt, RBS)
     )) = do
     ch <- quotName2Char name nquts
     let transit = tmState2tmsState $ makeTransSt iniSt folSt
     return $
         (tmState2tmsState iniSt, TmsSingleTapeCommand (Leave,                   MoveLeft), transit) :|
-        [(transit,               TmsSingleTapeCommand (ChangeFromTo '_' $ ch,   Stay),     tmState2tmsState folSt)]
+        [(transit,               TmsSingleTapeCommand (ChangeFromTo '_' ch,   Stay),     tmState2tmsState folSt)]
 
 -- 'TM' : Erase symbol to the left from the head.
 -- 'Tms': Erase (put empty symbol) value in head position and move head to right.
 cmd2tmsTapeCmd (
     SingleTapeCommand (
-        ((Value name nquts), iniSt, RBS),
+        (Value name nquts, iniSt, RBS),
         (ES,                 folSt, RBS)
     )) = do
     ch <- quotName2Char name nquts
@@ -87,8 +88,8 @@ cmd2tmsTapeCmd (
 -- 'Tms': Change value in head position.
 cmd2tmsTapeCmd (
     SingleTapeCommand (
-        ((Value iniName iniNquts), iniSt, RBS),
-        ((Value folName folNquts), folSt, RBS)
+        (Value iniName iniNquts, iniSt, RBS),
+        (Value folName folNquts, folSt, RBS)
     )) = do
     iniCh <- quotName2Char iniName iniNquts
     folCh <- quotName2Char folName folNquts
@@ -119,18 +120,17 @@ cmd2tmsTapeCmds tapeCmds = do
     return $ (\cmds -> TmsCommand (startState cmds, commands cmds, finalState cmds)) <$> sameLenCmdsRev
     where
         fillSeqWithIdCmds :: Int -> NonEmpty OneTapeTMCommand -> [OneTapeTMCommand]
-        fillSeqWithIdCmds len (x :| xs) = replicate (len - (Prelude.length xs) - 1) (makeIdTapeCommand x) ++ pure x ++ xs
+        fillSeqWithIdCmds len (x :| xs) = replicate (len - Prelude.length xs - 1) (makeIdTapeCommand x) ++ pure x ++ xs
         makeIdTapeCommand :: OneTapeTMCommand -> OneTapeTMCommand
-        makeIdTapeCommand (_, _, st) = (st, (TmsSingleTapeCommand (Leave, Stay)), st)
-        startState = mergeMultipleNames . fmap (\((TmsState s), _, _) -> s)
-        finalState = mergeMultipleNames . fmap (\(_, _, (TmsState f)) -> f)
+        makeIdTapeCommand (_, _, st) = (st, TmsSingleTapeCommand (Leave, Stay), st)
+        startState = mergeMultipleNames . fmap (\(TmsState s, _, _) -> s)
+        finalState = mergeMultipleNames . fmap (\(_, _, TmsState f) -> f)
         commands = fmap snd3
 
 -- |Convert 'Square' to 'Char'.
 toValue :: Square -> Either String Char
-toValue (Value name n) = do
-    c <- quotName2Char name n
-    return c
+toValue (Value name n) =
+    quotName2Char name n
 toValue _              = fail "Square is expected to be 'Value' to convert to 'Char'"
 
 -- |Convert 'String' with 'Int' quotes to 'Char'.
@@ -145,9 +145,7 @@ quoted :: Data.Map.Map Char Char
 quoted = Data.Map.fromList [('a', 'à'), ('b', 'ƀ'), ('c', 'ć'), ('d', 'ď'), ('e', 'ė'), ('f', 'ƒ'), ('g', 'ĝ'), ('h', 'ĥ'), ('i', 'ĩ'), ('j', 'ĵ'), ('k', 'ķ'), ('l', 'ĺ'), ('m', 'ɱ'), ('n', 'ń'), ('o', 'ō'), ('p', 'ƥ'), ('q', 'ɋ'), ('r', 'ŕ'), ('s', 'ś'), ('t', 'ť'), ('u', 'ū'), ('v', 'ʌ'), ('w', 'ŵ'), ('x', '×'), ('y', 'ŷ'), ('z', 'ź'), ('A', 'Ã'), ('B', 'Ɓ'), ('C', 'Ć'), ('D', 'Đ'), ('E', 'Ė'), ('F', 'Ƒ'), ('G', 'Ĝ'), ('H', 'Ĥ'), ('I', 'Ĩ'), ('J', 'Ĵ'), ('K', 'Ķ'), ('L', 'Ĺ'), ('M', 'Ɯ'), ('N', 'Ń'), ('O', 'Ō'), ('P', 'Ƥ'), ('Q', 'Ɋ'), ('R', 'Ŕ'), ('S', 'Ś'), ('T', 'Ť'), ('U', 'Ū'), ('V', 'Ʌ'), ('W', 'Ŵ'), ('X', 'χ'), ('Y', 'Ŷ'), ('Z', 'Ź')]
 
 toQuot :: Char -> Char
-toQuot c = case Data.Map.lookup c quoted of
-    Nothing -> error $ "Can not find character with quote for '" ++ pure c ++ "'"
-    Just c' -> c'
+toQuot c = fromMaybe (error $ "Can not find character with quote for '" ++ pure c ++ "'") (Data.Map.lookup c quoted)
 
 -- |Concat and filter list of states.
 mergeMultipleNames :: [String] -> TmsState

@@ -14,7 +14,7 @@ import Control.Applicative (liftA2)
 (^*) w = do
     gNotIsQ <- (not .) <$> fromTMReader isQ
     let (leftSWord, a : rightSWord) = span gNotIsQ w
-    leftSWord' <- (map neg) <$> convertW leftSWord
+    leftSWord' <- map neg <$> convertW leftSWord
     q' : rightSWord' <- convertW (a : rightSWord)
     return $ leftSWord' ++ (q' : rightSWord')
 

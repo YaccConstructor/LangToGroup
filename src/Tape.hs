@@ -4,7 +4,6 @@ import Data.List.NonEmpty (NonEmpty(..), nonEmpty, (<|))
 import qualified Data.List.NonEmpty as NonEmpty (toList)
 import qualified Data.List.NonEmpty as NEList (head, tail)
 import Data.Maybe (fromMaybe)
-import Data.List (intercalate)
 
 head' :: NonEmpty a -> a
 head' = NEList.head
@@ -41,13 +40,13 @@ data Tape a = Tape {
     }
 
 toLeft :: Eq a => Tape a -> Tape a
-toLeft (Tape l t r b) = Tape (tail' b l) (head' l) (r') b where
+toLeft (Tape l t r b) = Tape (tail' b l) (head' l) r' b where
     r' = if r == b :| []
          then t :| []
          else t <| r
 
 toRight :: Eq a => Tape a -> Tape a
-toRight (Tape l t r b) = Tape (l') (head' r) (tail' b r) b where
+toRight (Tape l t r b) = Tape l' (head' r) (tail' b r) b where
     l' = if l == b :| []
          then t :| []
          else t <| l
@@ -57,8 +56,8 @@ fromList as ind b = Tape (take' ind b as) (index' ind b as) (drop' (ind + 1) b a
 
 instance Show a => Show (Tape a) where
     show (Tape l t r _) =
-        intercalate " " (show <$> reverse (NonEmpty.toList l)) ++
+        unwords (show <$> reverse (NonEmpty.toList l)) ++
         "[" ++
         show t ++
         "]" ++
-        intercalate " " (show <$> NonEmpty.toList r)
+        unwords (show <$> NonEmpty.toList r)

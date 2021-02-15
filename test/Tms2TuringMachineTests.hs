@@ -137,4 +137,4 @@ tmq0 :: TmsState
 tmq1 :: TmsState
 tmq2 :: TmsState
 tmq3 :: TmsState
-[tmq0, tmq1, tmq2, tmq3] = TmsState <$> ("Q_" ++) . show <$> [0 .. 3]
+[tmq0, tmq1, tmq2, tmq3] = TmsState . ("Q_" ++) . show <$> [0 .. 3]

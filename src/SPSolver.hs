@@ -22,7 +22,7 @@ solve d rs gw =
     in  fmap fst $
         concat $
         maybe id take d $
-        iterate (solveStep rules) $
+        iterate (solveStep rules)
         [(gw, Nothing)]
 
 solveStep ::

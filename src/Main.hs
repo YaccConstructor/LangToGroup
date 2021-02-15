@@ -31,10 +31,10 @@ argd = [ Arg { argIndex = InputFlagString,
 main :: IO ()
 main = do
     args <- parseArgsIO
-          (ArgsParseControl (ArgsComplete) ArgsSoftDash)
+          (ArgsParseControl ArgsComplete ArgsSoftDash)
           argd
-    case (getArg args InputFlagString) of
-          Just input -> case (getArg args OutputFlagString) of
+    case getArg args InputFlagString of
+          Just input -> case getArg args OutputFlagString of
                           Just output -> convertGrammar2TM input output
                           Nothing     -> error "OutputFlagString parsing error"
           Nothing    -> error "InputFlagString parsing error"
@@ -43,5 +43,5 @@ mainTms :: String -> String -> IO ()
 mainTms filename errorFile = do
     tmsParsingResult <- parseTms filename errorFile
     case tmsParsingResult of
-        Left err -> hPutStrLn stderr $ show err
-        Right tms -> putStrLn $ show tms -- Do whatever you want with tms :: Tms.
+        Left err -> hPrint stderr err
+        Right tms -> print tms -- Do whatever you want with tms :: Tms.

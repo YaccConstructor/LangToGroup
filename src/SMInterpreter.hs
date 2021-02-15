@@ -12,7 +12,7 @@ module SMInterpreter where
 
     checkRule :: Word -> SRule -> Bool
     checkRule (Word word) (SRule rule) = do
-        let check (Word l, _) = isInfixOf l word
+        let check (Word l, _) = l `isInfixOf` word
         all check rule
 
     getApplicableRules :: [SRule] -> [Word] -> [[SRule]]
@@ -33,7 +33,7 @@ module SMInterpreter where
 
     replaceSublist :: [Smb] -> (Word, Word) -> [Smb]
     replaceSublist smbs (Word rulel, Word ruler) = l ++ ruler ++ r
-        where 
+        where
             replaceSublistInternal s rl acc =
                 case (s, rl) of
                     (hs : ts, hrl : trl)    | hs /= hrl -> replaceSublistInternal ts rl $ hs : acc
@@ -43,19 +43,19 @@ module SMInterpreter where
             (l, r) = replaceSublistInternal smbs rulel []
 
     applyRule :: Word -> SRule -> Word
-    applyRule (Word smbs) (SRule rule) = 
+    applyRule (Word smbs) (SRule rule) =
         Word $ reduceY $ foldl replaceSublist smbs rule
 
     applyRules :: [Word] -> [SRule] -> Map Word Int -> [[Word]] -> ([[Word]], Map Word Int)
     applyRules wrds rules m acc =
         case rules of
             [] -> (acc, m)
-            h : t   | Map.member new_word m -> applyRules wrds t new_m $ acc
+            h : t   | Map.member new_word m -> applyRules wrds t new_m acc
                     | otherwise             -> applyRules wrds t new_m $ (wrds ++ [new_word]) : acc
                                                 where
                                                     new_word = applyRule (last wrds) h
                                                     new_m = Map.insertWith (+) new_word 1 m
-    
+
     applyRuless :: [[Word]] -> [[SRule]] -> Map Word Int -> [[Word]] -> ([[Word]], Map Word Int)
     applyRuless wordss ruless m acc =
         case (wordss, ruless) of
@@ -70,7 +70,7 @@ module SMInterpreter where
 
     startInterpreting :: Word -> [[Word]] -> [SRule] -> Map Word Int -> ([Word], Map Word Int)
     startInterpreting accessWord wordss rules m =
-        case find (\w -> (last w) == accessWord) wordss of
+        case find (\w -> last w == accessWord) wordss of
             Just path -> (path, m)
             Nothing | ruless == [[]]    -> error "No rule is applicable"
                     | otherwise         -> startInterpreting accessWord acc_apply rules new_m
@@ -82,17 +82,17 @@ module SMInterpreter where
     interpretSM startWord sm accessWord = do
             let m = Map.fromList [(startWord, 1)]
             let symmSmRules = (++) (srs sm) $ map symSM (srs sm)
-            let (path, _) = startInterpreting accessWord [[startWord]] (symmSmRules) m
+            let (path, _) = startInterpreting accessWord [[startWord]] symmSmRules m
             path
 
     getRestrictedGraph :: Word -> SM -> Int -> (Gr Word Int, Map Word Int)
     getRestrictedGraph startWord sm height = do
             let m = Map.fromList [(startWord, 1)]
             let symmSmRules = srs sm ++ map symSM (srs sm)
-            let getRuleNumber rule = 
+            let getRuleNumber rule =
                     case elemIndex rule $ reverse symmSmRules of
                         Nothing -> error "Can't found the rule in set"
-                        Just i  -> (i `mod` l) + 1 
+                        Just i  -> (i `mod` l) + 1
                     where
                         l = length $ srs sm
             let applyRs old_word rules nm front_acc acc =
@@ -122,4 +122,4 @@ module SMInterpreter where
             let g = mkGraph (map swap $ Map.toList m_nodes)
                                 (map (\(from_part, rule_i, to_part) -> (get_node from_part, get_node to_part, rule_i)) acc)
             (g, nm)
-            
+

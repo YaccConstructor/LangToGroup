@@ -23,10 +23,10 @@ test1Grammar = grammar where
     nonterminal = Nonterminal "S"
     grammar =
         Grammar(
-            (Set.fromList [nonterminal]),
-            (Set.fromList [terminal]),
-            (Set.fromList [GrammarType.Relation (nonterminal,
-            [GrammarType.T terminal])]),
+            Set.fromList [nonterminal],
+            Set.fromList [terminal],
+            Set.fromList [GrammarType.Relation (nonterminal,
+            [GrammarType.T terminal])],
             nonterminal
         )
 
@@ -34,13 +34,13 @@ configsTest :: Assertion
 configsTest = do
     let a = Value "a" 0
     let a' = Value "a" 1
-    let expectedConfigs = Configs ([
+    let expectedConfigs = Configs [
             [([LBS, a], sSFT, [RBS]), ([LBS], sSST, [RBS])],
             [([LBS, a], sSFT, [RBS]), ([LBS, defValue "S"], iSST, [RBS])],
             [([LBS, a], sSFT, [RBS]), ([LBS, a'], iSST, [RBS])],
             [([LBS], sSFT, [RBS]), ([LBS], iSST, [RBS])],
             [([LBS], fSFT, [RBS]), ([LBS], fSST, [RBS])]
-            ])
+            ]
     
     assertEqual "config test" expectedConfigs (interpretTM ["a"] $ cfg2tm test1Grammar)
 
@@ -52,8 +52,8 @@ simpleCfgToTMMapTest = do
     let expectedTM = TM (
             InputAlphabet (Set.fromList [letter_a]),
             [TapeAlphabet (Set.fromList [letter_a]), TapeAlphabet (Set.fromList [getDisjoinSquare letter_a, letter_S])],
-            MultiTapeStates [(Set.fromList [sSFT, fSFT]), 
-                            (Set.fromList [sSST, iSST, fSST])],
+            MultiTapeStates [Set.fromList [sSFT, fSFT], 
+                             Set.fromList [sSST, iSST, fSST]],
             Commands (Set.fromList [
                 [
                     SingleTapeCommand ((ES, sSFT, RBS), (ES, sSFT, RBS)),

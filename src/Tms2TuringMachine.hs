@@ -15,7 +15,7 @@ tms2turingMachine
     ( Tms
         ( _,
           startSt,
-          (acc : []),
+          [acc],
           commands,
           [alphabet@(x : xs)]
           )
@@ -39,15 +39,15 @@ type Transition = (Symbol, SymbolMove)
 
 -- | Convert TmsSingleTapeCommand to [Quadriple]
 tmsCmd2tmCmd :: NonEmpty.NonEmpty Char -> Map.Map TmsState Int -> (Int, OneTapeTMCommand) -> [Quadruple]
-tmsCmd2tmCmd alph stateToInd (transStart, (iniSt, (TmsSingleTapeCommand (action, move)), folSt)) = concatMap NonEmpty.toList $ do
+tmsCmd2tmCmd alph stateToInd (transStart, (iniSt, TmsSingleTapeCommand (action, move), folSt)) = concatMap NonEmpty.toList $ do
     oneSequence <- translate alph (action, move)
     case oneSequence of
         (step :| [])             -> return . return $ makeQuad step iniSt folSt
         (step :| extras@(_ : _)) -> return $
-            (makeQuad' step iniSt (addIndex transStart iniSt)) :|
+            makeQuad' step iniSt (addIndex transStart iniSt) :|
             (
                 (makeTransition iniSt <$> zip [transStart ..] (Prelude.init extras)) ++
-                [makeQuad'' (Prelude.last extras) (addIndex (transStart + (Prelude.length extras) - 1) iniSt) folSt]
+                [makeQuad'' (Prelude.last extras) (addIndex (transStart + Prelude.length extras - 1) iniSt) folSt]
             )
     where
         makeQuad (s, m) startSt fol   = ((tmsState2state startSt, s), (m, tmsState2state fol))
@@ -70,11 +70,11 @@ tmsCmd2tmCmd alph stateToInd (transStart, (iniSt, (TmsSingleTapeCommand (action,
 
         -- | List of equivalent sequences of Transitions.
         translate :: NonEmpty Char -> (TmsTapeSquare, TmsTapeHeadMovement) -> NonEmpty (NonEmpty Transition)
-        translate _ ((ChangeFromTo f t), MoveLeft)  | f == t    = return $ (smb f, L)     :| []
+        translate _ (ChangeFromTo f t, MoveLeft)  | f == t    = return $ (smb f, L)     :| []
                                                     | otherwise = return $ (smb f, chg t) :| [(smb t, L)]
-        translate _ ((ChangeFromTo f t), MoveRight) | f == t    = return $ (smb f, R)     :| []
+        translate _ (ChangeFromTo f t, MoveRight) | f == t    = return $ (smb f, R)     :| []
                                                     | otherwise = return $ (smb f, chg t) :| [(smb t, R)]
-        translate _ ((ChangeFromTo f t), Stay)                  = return $ (smb f, chg t) :| []
+        translate _ (ChangeFromTo f t, Stay)                  = return $ (smb f, chg t) :| []
 
         translate abc (Leave, Stay) = do
             ch <- NonEmpty.cons '_' abc

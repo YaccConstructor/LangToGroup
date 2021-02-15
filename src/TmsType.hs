@@ -48,41 +48,41 @@ newtype TmsCommand = TmsCommand (TmsState, [TmsSingleTapeCommand], TmsState)
 
 -- |Type of Tms format.
 -- Tms            (name,   init      accept        commands,     tapeAlphabets).
-newtype Tms = Tms (String, TmsState, [TmsState], [TmsCommand], [[Char]])
+newtype Tms = Tms (String, TmsState, [TmsState], [TmsCommand], [String])
     deriving (Eq)
 
 instance Show Tms where
   show
     ( Tms
         ( name,
-          (TmsState initial),
+          TmsState initial,
           acStates,
           commands,
           tapeAlphabets
           )
       ) = show $
-      (printKeyValue
+      printKeyValue
         [ ["name", name],
           ["init", filterStateName initial],
           ["accept", intercalate ", " (fmap (\(TmsState tmsName) -> filterStateName tmsName) acStates)]
-        ])
+        ]
         <> line
         <> vcat (punctuate line (map (pretty . showTmsCommand) commands))
         where
             printKeyValue :: [[String]] -> Doc String
-            printKeyValue = vcat . fmap sep . fmap (punctuate colon) . fmap (fmap pretty)
+            printKeyValue = vcat . fmap ((sep . punctuate colon) . fmap pretty)
             showTmsCommand :: TmsCommand -> String
-            showTmsCommand (TmsCommand (ini, tapeCommands, fol)) = intercalate "\n" $ map (showSingleCmd ini fol) $ combine $ map extCommand (zip tapeAlphabets tapeCommands)
-            extCommand :: ([Char], TmsSingleTapeCommand) -> [(Char, TmsTapeHeadMovement, Char)]
-            extCommand (alph, (TmsSingleTapeCommand (Leave, mv))) =
+            showTmsCommand (TmsCommand (ini, tapeCommands, fol)) = intercalate "\n" $ map (showSingleCmd ini fol) $ combine $ zipWith (curry extCommand) tapeAlphabets tapeCommands
+            extCommand :: (String, TmsSingleTapeCommand) -> [(Char, TmsTapeHeadMovement, Char)]
+            extCommand (alph, TmsSingleTapeCommand (Leave, mv)) =
                 [(ch, mv, ch) | ch <- '_' : alph]
-            extCommand (_,    (TmsSingleTapeCommand (ChangeFromTo cF cT, mv))) =
+            extCommand (_,    TmsSingleTapeCommand (ChangeFromTo cF cT, mv)) =
                 [(cF, mv, cT)]
             combine = map reverse . foldl (\combs cur -> flip (:) <$> combs <*> cur) [[]]
             showSingleCmd :: TmsState -> TmsState -> [(Char, TmsTapeHeadMovement, Char)] -> String
             showSingleCmd (TmsState ini) (TmsState fol) cmds = show $
-                                    sep (punctuate comma ((pretty $ filterStateName $ ini) : iniSquares)) <> line <>
-                                    sep (punctuate comma ((pretty $ filterStateName $ fol) : folSquares ++ moves))
+                                    sep (punctuate comma (pretty (filterStateName ini) : iniSquares)) <> line <>
+                                    sep (punctuate comma (pretty (filterStateName fol) : folSquares ++ moves))
                 where
                     iniSquares = map (pretty . replicate 1 . fst3) cmds
                     moves      = map (pretty . show . snd3) cmds

@@ -67,4 +67,4 @@ convertG = (fromTMReader . toString) >=> fromString where
         other       -> error $ "Can not convert '" ++ other ++ "' to Element"
 
 convertW :: SP.GWord -> SPReader EWord
-convertW = sequence . map convertG
+convertW = mapM convertG

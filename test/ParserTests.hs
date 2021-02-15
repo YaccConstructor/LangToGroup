@@ -20,7 +20,7 @@ testCustomCFG = do
                                                 Relation (Nonterminal "S",[T (Terminal "a"),N (Nonterminal "B")])
                                              ],
                                 Nonterminal "S")
-    let result =  parseMaybe (GrammarReader.parser) input
+    let result =  parseMaybe GrammarReader.parser input
     case result of
         Nothing -> assertFailure "Error occured during parsing custom grammar."
         Just grammar -> assertEqual "assert grammar representation" expectedGr grammar
@@ -38,7 +38,7 @@ testCustomConjunctive = do
                                                 Relation (Nonterminal "S",[N (Nonterminal "D"),T (Terminal "c"),O Conjunction,T (Terminal "d"),N (Nonterminal "Abc")])
                                              ],
                                 Nonterminal "S")
-    let result =  parseMaybe (GrammarReader.parser) input
+    let result =  parseMaybe GrammarReader.parser input
     case result of
         Nothing -> assertFailure "Error occured during parsing custom grammar."
         Just grammar -> assertEqual "assert grammar representation" expectedGr grammar
@@ -55,7 +55,7 @@ testCustomBoolean = do
                                                 Relation (Nonterminal "Sa",[O Negation,T (Terminal "b")])
                                               ],
                                 Nonterminal "S")
-    let result =  parseMaybe (GrammarReader.parser) input
+    let result =  parseMaybe GrammarReader.parser input
     case result of
         Nothing -> assertFailure "Error occured during parsing custom grammar."
         Just grammar -> assertEqual "assert grammar representation" expectedGr grammar

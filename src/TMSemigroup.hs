@@ -66,7 +66,7 @@ instance Semigroup TMUnion where
 Nothing  <@> _        = Nothing
 Just tm1 <@> Nothing  = Just $ flip runTMReader tm1 $ do
     TM rs <- getT
-    return $ TM $ Map.fromList $
+    return $ TM $ Map.fromList
         ( do
             ((q1, s), (sm, q2)) <- Map.toList rs
             let newQ = \case

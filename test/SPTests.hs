@@ -27,7 +27,7 @@ tests = TestLabel "Correctness of constructing semigroup from machine" $
                 return $ TestLabel word $
                     flip runTMReader tm $ do
                         let depth =
-                                if answer == True
+                                if answer
                                 then Nothing
                                 else Just 242
                         initWord <- sequence $
@@ -35,7 +35,7 @@ tests = TestLabel "Correctness of constructing semigroup from machine" $
                             (
                                 if null word
                                 then [s_ 0]
-                                else (s_ . (Map.!) alphabet) <$> word
+                                else s_ . (Map.!) alphabet <$> word
                             ) ++
                             [h]
                         return $ (~=?) answer $

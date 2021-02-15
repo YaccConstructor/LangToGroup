@@ -13,7 +13,7 @@ import TmsType
 testParse :: Text -> Tms -> Assertion
 testParse asStr actualTms = do
     parsedTms <- case parseMaybe parser asStr of
-        Nothing   -> fail $ "Tms parsing failure."
+        Nothing   -> fail "Tms parsing failure."
         Just t    -> return t
     guard $ parsedTms == actualTms
 
