@@ -152,18 +152,11 @@ generateBlockForScanResults grammar@(Grammar (nonterminals, terminals, _, _)) = 
     in DQuadruples (addCollectionToMap quadruples Map.empty)
 
 generateBlockForRefiningConjunctionDetails :: Grammar -> DebuggingQuadruples
-generateBlockForRefiningConjunctionDetails grammar@(Grammar (nonterminals, terminals, relations, startSymbol)) = let
-    terminalsList = map terminalValue $ Set.toList terminals
-    nonterminalsList = map nonterminalValue $ Set.toList nonterminals
-    signs = ["+", "-"]
-    negation = ["!"]
-    leftBracket = ["("]
-    rightBracket = [")"]
-    brackets = leftBracket ++ rightBracket
+generateBlockForRefiningConjunctionDetails grammar = let
     maxNumberOfRules = calculateMaxNumberOfRulesForNonterminal grammar
     indices = map show [1..maxNumberOfRules]
-    quadruplesList = map (\k -> generateBlockForQKFindNegation grammar k) indices
-    in (unionQuadruples quadruplesList)
+    quadruplesList = map (generateBlockForQKFindNegation grammar) indices
+    in unionQuadruples quadruplesList
 
 unionQuadruples :: [DebuggingQuadruples] -> DebuggingQuadruples
 unionQuadruples [quadruple] = quadruple
@@ -310,7 +303,7 @@ convertDebuggingStateToState (DState string) = Q number where
 
 --BLOCK for moving from conjunction results to next blocks
 generateTransitionFromConjunctionResult :: Grammar -> DebuggingQuadruples
-generateTransitionFromConjunctionResult grammar@(Grammar (nonterminals, terminals, relations, _)) = let
+generateTransitionFromConjunctionResult grammar@(Grammar (_, terminals, relations, _)) = let
     q = "q"
     rewrite = "Rewrite"
     plus = "+"
@@ -319,7 +312,6 @@ generateTransitionFromConjunctionResult grammar@(Grammar (nonterminals, terminal
     skipParentNonterminal = "skipParentNonterminal"
     rule = "Rule"
     terminalsList = map terminalValue $ Set.toList terminals
-    nonterminalsList = map nonterminalValue $ Set.toList nonterminals
     signs = [plus, minus]
     negation = ["!"]
     leftBracket = ["("]
@@ -370,7 +362,7 @@ generateTransitionFromConjunctionResult grammar@(Grammar (nonterminals, terminal
         qSkipParentNonterminalTransition = q ++ skipParentNonterminal ++ transition
         in [((DState $ q ++ rule ++ k ++ t ++ j ++ s, DSymbol k), (D inc, DState qSkipParentNonterminalTransition)),
         ((DState qSkipParentNonterminalTransition, inc),(DebuggingTypes.R, DState $ q ++ rewrite ++ plus))])
-        conjsInLastRuleWithNeg
+        conjsInMidRuleWithNeg
 
     -- fold and put -
     conjsInLastRuleWithNeg = filter (\t -> let
@@ -380,25 +372,25 @@ generateTransitionFromConjunctionResult grammar@(Grammar (nonterminals, terminal
     quadruplesToRewriteMinus = map (\(k,t,j,s) -> ((DState $ q ++ rule ++ k ++ t ++ j ++ s, DSymbol k),
         (DebuggingTypes.L, DState $ q ++ rewrite ++ minus))) conjsInLastRuleWithNeg
 
-    quadruples = quadruplesInRulektjs ++ quadruplesToRewritePlus ++ quadruplesToRewritePlus
+    quadruples = quadruplesInRulektjs ++ quadruplesToRewritePlus ++ quadruplesToRewriteMinus
         ++ quadruplesToNextConj ++ quadruplesToNextRel 
 
-    in (DQuadruples (addCollectionToMap quadruples Map.empty))
+    in (DQuadruples $ addCollectionToMap quadruples Map.empty)
 
 constructSymbolsPairByQuad :: (String, String, String, String) -> Bool -> SymbolsPair
 constructSymbolsPairByQuad (number, leftN, fstN, sndN) hasNeg =
     SymbolsPair (Nonterminal leftN, read number :: Int, hasNeg, N $ Nonterminal fstN, N $ Nonterminal sndN)
 
 checkIfConjHasNeg :: Grammar -> (String, String, String, String) -> Bool
-checkIfConjHasNeg grammar@(Grammar(_, _, relations, _)) (number, leftN, fstN, sndN) = do
+checkIfConjHasNeg (Grammar(_, _, relations, _)) (number, leftN, fstN, sndN) = do
     let listRelations = Set.toList relations
     let groupedRelations = calculateGroupRelationsByNonterminals listRelations
-    let relationsForNonterminal = groupedRelations Map.! (Nonterminal leftN)
+    let relationsForNonterminal = groupedRelations Map.! Nonterminal leftN
     let relation = relationsForNonterminal !! (read number :: Int)
     let conjunctionsPair = splitOn [O Conjunction] relation
     let index = elemIndex [O Negation, N (Nonterminal fstN), N (Nonterminal sndN)] conjunctionsPair
     case index of
-        Just a -> True
+        Just _ -> True
         Nothing -> False
 
 calculateMaxNumberOfRulesForNonterminal :: Grammar -> Int
