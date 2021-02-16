@@ -10,7 +10,7 @@ import TmsType
 import TMTypes
 
 turingMachine2tms :: TuringMachine -> Tms
-turingMachine2tms (TM quads) = 
+turingMachine2tms (TM quads) =
     Tms (
             "TMTypes_TuringMachine",
             turingMachineSt2tmsSt startState,
@@ -26,10 +26,10 @@ turingMachine2tms (TM quads) =
 turingMachineSt2tmsSt :: State -> TmsState
 turingMachineSt2tmsSt (Q ind) = TmsState $ "Q_" ++ show ind
 
-extractAlphabet :: [Quadruple] -> [Char]
-extractAlphabet = filter (/= '_') . Data.Set.toList . Data.Set.fromList . (concatMap extChars)
+extractAlphabet :: [Quadruple] -> String
+extractAlphabet = filter (/= '_') . Data.Set.toList . Data.Set.fromList . concatMap extChars
     where
-        extChars :: Quadruple -> [Char]
+        extChars :: Quadruple -> String
         extChars ((_, f), (C t, _)) = symb2char <$> [f, t]
         extChars ((_, f), _)        = symb2char <$> [f]
 

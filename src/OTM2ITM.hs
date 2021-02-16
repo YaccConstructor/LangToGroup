@@ -9,7 +9,6 @@ import qualified TMSemigroup as ITMS
 import qualified OTMTSet
 import qualified Data.Map.Lazy as Map
 import Data.Maybe (fromMaybe, fromJust)
-import Control.Monad (join)
 
 infixl 9 >+>, >|>, >@>
 
@@ -116,11 +115,8 @@ shiftTM m =
             let qT1 = ITM.Q (mtmsV * 2)
             let qT2 = ITM.Q (mtmsV * 2 + 1)
             return $
-                ((qF, itmsV), (ITM.C itmsS, qT1)) : (
-                    if qT1 /= ITM.finalState
-                    then [((qT1, itmsS), (toSymbolMove m, qT2))]
-                    else []
-                  )
+                ((qF, itmsV), (ITM.C itmsS, qT1)) :
+                    [((qT1, itmsS), (toSymbolMove m, qT2)) | qT1 /= ITM.finalState]
           )
       )
 
@@ -133,15 +129,16 @@ fillInfTM itmsF m =
 
 caseTM :: (ITMSymbol -> TMModule) -> TMModule
 caseTM f =
-    join $
-        foldr (>|>) emptyTM <$>
-            forAllPossibleITMS (\itms -> do
-                let tmm = f itms
-                mtm <- tmm
-                return $ case mtm of
-                     Nothing -> []
-                     Just _  -> [tmm]
-              )
+  foldr (>|>) emptyTM
+    =<<
+      forAllPossibleITMS
+        (\ itms
+           -> do let tmm = f itms
+                 mtm <- tmm
+                 return
+                   $ case mtm of
+                       Nothing -> []
+                       Just _ -> [tmm])
 
 liteSomeShiftTM :: ITMSymbol -> Move -> TMModule
 liteSomeShiftTM itms m = do
@@ -191,8 +188,7 @@ tripleCaseTM otmts f =
 highlightForCopyTM :: TMModule -> TMModule -> TMModule
 highlightForCopyTM tmRB tmLB = do
     blank <- t2iTMS Nothing
-    (
-        tmRB >+>
+    tmRB >+>
         shiftTM ToRight >+>
         (liteMoveTM blank ToLeft >|> moveInfTM ToLeft) >+>
         tmLB >+>
@@ -202,43 +198,39 @@ highlightForCopyTM tmRB tmLB = do
         (liteMoveTM blank ToRight >|> moveInfTM ToRight) >+>
         liteMoveTM blank ToRight >+>
         (liteMoveTM blank ToLeft >|> moveInfTM ToRight)
-      )
 
 copyTM :: Int -> TMModule
 copyTM n | n > 0 = do
     blank <- t2iTMS Nothing
     (
         (
+            caseTM (\itms ->
+                if itms == blank then emptyTM else
+                    liteRewriteTM itms blank >+>
+                    liteMoveTM blank ToRight >+>
+                    liteRewriteTM blank itms >+>
+                    liteMoveTM itms ToLeft >+>
+                    liteMoveTM blank ToLeft >+>
+                    (liteMoveTM blank ToLeft >|> moveInfTM ToLeft) >+>
+                    (liteRewriteTM blank itms >|> moveInfTM ToLeft) >+>
+                    liteMoveTM itms ToLeft
+                ) >@>
             (
-                caseTM (\itms ->
-                    if itms == blank then emptyTM else (
-                        liteRewriteTM itms blank >+>
-                        liteMoveTM blank ToRight >+>
-                        liteRewriteTM blank itms >+>
-                        liteMoveTM itms ToLeft >+>
-                        liteMoveTM blank ToLeft >+>
-                        (liteMoveTM blank ToLeft >|> moveInfTM ToLeft) >+>
-                        (liteRewriteTM blank itms >|> moveInfTM ToLeft) >+>
-                        liteMoveTM itms ToLeft
-                      )
-                  ) >@>
-                (
-                    shiftTM ToLeft >+>
-                    (liteMoveTM blank ToRight >|> moveInfTM ToRight) >+>
-                    (liteMoveTM blank ToRight >|> moveInfTM ToRight) >+>
-                    (liteMoveTM blank ToLeft >|> moveInfTM ToRight)
-                  )
-              ) >+> brokenTM
-          ) >|>
+                shiftTM ToLeft >+>
+                (liteMoveTM blank ToRight >|> moveInfTM ToRight) >+>
+                (liteMoveTM blank ToRight >|> moveInfTM ToRight) >+>
+                (liteMoveTM blank ToLeft >|> moveInfTM ToRight)
+                )
+            ) >+> brokenTM
+        ) >|>
         (
             if n > 1
-            then (
+            then
                 liteMoveTM blank ToLeft >+>
                 (liteMoveTM blank ToRight >|> moveInfTM ToLeft) >+>
                 shiftTM ToRight >+>
                 copyTM (n - 1)
-              )
-            else (
+            else
                 liteMoveTM blank ToRight >+>
                 liteMoveTM blank ToRight >+>
                 (liteMoveTM blank ToLeft >|> moveInfTM ToRight) >+>
@@ -249,9 +241,7 @@ copyTM n | n > 0 = do
                 (liteMoveTM blank ToRight >|> moveInfTM ToLeft) >+>
                 shiftTM ToRight >+>
                 moveTM ToRight
-              )
-          )
-      )
+            )
 copyTM _ = emptyTM
 
 updateOTMSquareTM :: Move -> OTM.Square -> OTM.Square -> TMModule
@@ -263,18 +253,14 @@ updateOTMSquareTM m oldotms newotms = do
         case (oldotms, newotms) of
              (OTM.ES, _) -> do
                 newitms <- t2iTMS $ Just $ Right newotms
-                (
-                    shiftTM m >+>
+                shiftTM m >+>
                     (liteRewriteTM blank newitms >|> moveInfTM (versa m))
-                  )
              (_, OTM.ES) -> do
                 olditms <- t2iTMS $ Just $ Right oldotms
-                (
-                    liteRewriteTM olditms blank >+>
+                liteRewriteTM olditms blank >+>
                     liteMoveTM blank m >+>
                     (liteMoveTM blank (versa m) >|> moveInfTM m) >+>
                     shiftTM (versa m)
-                  )
              _ -> do
                 newitms <- t2iTMS $ Just $ Right newotms
                 olditms <- t2iTMS $ Just $ Right oldotms
@@ -321,107 +307,104 @@ eosovTM = do
     let fstTriples = OTMTSet.fromList $ (fst <$>) $ Map.keys commands
     let sndTriples = \fstTriple ->
          OTMTSet.fromList $ (snd <$>) $ filter ((~= fstTriple) . fst) $ Map.keys commands
-    (
+    moveUntilTM itmsIsState ToRight >+>
+     tripleCaseTM fstTriples (\fstTriple@(sq11, st1, sq21) ->
+        (liteMoveTM omega ToRight >|> moveInfTM ToRight) >+>
         moveUntilTM itmsIsState ToRight >+>
-        tripleCaseTM fstTriples (\fstTriple@(sq11, st1, sq21) ->
-            (liteMoveTM omega ToRight >|> moveInfTM ToRight) >+>
-            moveUntilTM itmsIsState ToRight >+>
-            tripleCaseTM (sndTriples fstTriple) (\sndTriple@(sq12, st2, sq22) ->
-                let possibleCommands = concat [
-                     (\x -> (((sq11', st1, sq21'), (sq12', st2, sq22')), x)) <$> fromMaybe [] (Map.lookup ((sq11', st1, sq21'), (sq12', st2, sq22')) commands)
-                     | sq11' <- [sq11, OTM.ES],
-                       sq21' <- [sq21, OTM.ES],
-                       sq12' <- [sq12, OTM.ES],
-                       sq22' <- [sq22, OTM.ES]]
-                in  case length possibleCommands of
-                         0 -> error "possibleCommands can't be empty here"
-                         1 ->
-                            let [((oldFstT, oldSndT), (newFstT, newSndT))] = possibleCommands
-                                (_, newSt1, _) = newFstT
-                                (_, newSt2, _) = newSndT
-                            in
-                                updateOTMTripleTM ToLeft oldSndT newSndT >+>
-                                moveUntilTM itmsIsState ToLeft >+>
-                                updateOTMTripleTM ToLeft oldFstT newFstT >+>
-                                (liteMoveTM omega ToRight >|> moveInfTM ToRight) >+>
-                                (liteAllowTM omega >|> moveInfTM ToRight) >+>
-                                (
-                                    if newSt1 == finalSt1 && newSt2 == finalSt2
-                                    then liteRewriteTM omega alpha
-                                    else emptyTM
-                                  )
-                         n ->
-                            (
-                                highlightForCopyTM
-                                    (liteMoveTM omega ToRight >|> moveInfTM ToRight)
-                                    (
-                                        (liteMoveTM alpha ToLeft >|> moveInfTM ToLeft) >+>
-                                        (liteMoveTM alpha ToLeft >|> moveInfTM ToLeft)
-                                      )
-                              ) >+>
-                            copyTM (n - 1) >+>
-                            (
-                                let helperTM [] = liteMoveTM alpha ToLeft >|> liteMoveTM blank ToLeft
-                                    helperTM (((oldFstT, oldSndT), (newFstT, newSndT)) : otherCommands) =
-                                        let (_, newSt1, _) = newFstT
-                                            (_, newSt2, _) = newSndT
-                                        in
-                                            moveUntilTM itmsIsState ToRight >+>
-                                            updateOTMTripleTM ToRight oldFstT newFstT >+>
-                                            moveUntilTM itmsIsState ToRight >+>
-                                            updateOTMTripleTM ToRight oldSndT newSndT >+>
-                                            (liteAllowTM alpha >|> liteAllowTM blank >|> moveInfTM ToRight) >+>
-                                            (
-                                                if newSt1 == finalSt1 && newSt2 == finalSt2
-                                                then (liteAllowTM alpha >|> liteRewriteTM blank alpha)
-                                                else helperTM otherCommands
-                                              )
-                                in  helperTM possibleCommands
+        tripleCaseTM (sndTriples fstTriple) (\(sq12, st2, sq22) ->
+            let possibleCommands = concat [
+                    (\x -> (((sq11', st1, sq21'), (sq12', st2, sq22')), x)) <$> fromMaybe [] (Map.lookup ((sq11', st1, sq21'), (sq12', st2, sq22')) commands)
+                    | sq11' <- [sq11, OTM.ES],
+                    sq21' <- [sq21, OTM.ES],
+                    sq12' <- [sq12, OTM.ES],
+                    sq22' <- [sq22, OTM.ES]]
+            in  case length possibleCommands of
+                        0 -> error "possibleCommands can't be empty here"
+                        1 ->
+                         let [((oldFstT, oldSndT), (newFstT, newSndT))] = possibleCommands
+                             (_, newSt1, _) = newFstT
+                             (_, newSt2, _) = newSndT
+                         in
+                             updateOTMTripleTM ToLeft oldSndT newSndT >+>
+                             moveUntilTM itmsIsState ToLeft >+>
+                             updateOTMTripleTM ToLeft oldFstT newFstT >+>
+                             (liteMoveTM omega ToRight >|> moveInfTM ToRight) >+>
+                             (liteAllowTM omega >|> moveInfTM ToRight) >+>
+                             (
+                                if newSt1 == finalSt1 && newSt2 == finalSt2
+                                then liteRewriteTM omega alpha
+                                else emptyTM
                               )
-              ) >#> ((liteMoveTM alpha ToLeft >|> moveInfTM ToLeft) >+> liteErrorTM omega)
-          ) >#> (
-            (liteMoveTM alpha ToLeft >|> moveInfTM ToLeft) >+>
+                        n ->
+
+                            highlightForCopyTM
+                                (liteMoveTM omega ToRight >|> moveInfTM ToRight)
+                                (
+                                    (liteMoveTM alpha ToLeft >|> moveInfTM ToLeft) >+>
+                                    (liteMoveTM alpha ToLeft >|> moveInfTM ToLeft)
+                                    ) >+>
+                            copyTM (n - 1) >+>
+                                (
+                            let helperTM [] = liteMoveTM alpha ToLeft >|> liteMoveTM blank ToLeft
+                                helperTM (((oldFstT, oldSndT), (newFstT, newSndT)) : otherCommands) =
+                                    let (_, newSt1, _) = newFstT
+                                        (_, newSt2, _) = newSndT
+                                    in
+                                        moveUntilTM itmsIsState ToRight >+>
+                                        updateOTMTripleTM ToRight oldFstT newFstT >+>
+                                        moveUntilTM itmsIsState ToRight >+>
+                                        updateOTMTripleTM ToRight oldSndT newSndT >+>
+                                        (liteAllowTM alpha >|> liteAllowTM blank >|> moveInfTM ToRight) >+>
+                                        (
+                                            if newSt1 == finalSt1 && newSt2 == finalSt2
+                                            then liteAllowTM alpha >|> liteRewriteTM blank alpha
+                                            else helperTM otherCommands
+                                            )
+                            in  helperTM possibleCommands
+                            )
+            ) >#> ((liteMoveTM alpha ToLeft >|> moveInfTM ToLeft) >+> liteErrorTM omega)
+        ) >#> (
+        (liteMoveTM alpha ToLeft >|> moveInfTM ToLeft) >+>
+        (
             (
+                liteMoveTM blank ToRight >+>
                 (
-                    liteMoveTM blank ToRight >+>
+                    liteRewriteTM omega blank >|>
+                    fillInfTM blank ToRight
+                    ) >+>
+                liteMoveTM blank ToRight >+>
+                (
+                    liteRewriteTM omega blank >|>
+                    fillInfTM blank ToRight
+                    ) >+>
+                liteMoveTM blank ToRight >+>
+                (
+                    liteMoveTM alpha ToLeft >|>
+                    liteDeadTM blank
+                    )
+                ) >|> (
+                liteMoveTM omega ToRight >+>
+                (
+                    liteRewriteTM omega blank >|>
+                    fillInfTM blank ToRight
+                    ) >+>
+                liteMoveTM blank ToRight >+>
+                (
+                    liteRewriteTM omega blank >|>
+                    fillInfTM blank ToRight
+                    ) >+>
+                liteMoveTM blank ToRight >+>
+                (
                     (
-                        liteRewriteTM omega blank >|>
-                        fillInfTM blank ToRight
-                      ) >+>
-                    liteMoveTM blank ToRight >+>
-                    (
-                        liteRewriteTM omega blank >|>
-                        fillInfTM blank ToRight
-                      ) >+>
-                    liteMoveTM blank ToRight >+>
-                    (
-                        liteMoveTM alpha ToLeft >|>
-                        liteDeadTM blank
-                      )
-                  ) >|> (
-                    liteMoveTM omega ToRight >+>
-                    (
-                        liteRewriteTM omega blank >|>
-                        fillInfTM blank ToRight
-                      ) >+>
-                    liteMoveTM blank ToRight >+>
-                    (
-                        liteRewriteTM omega blank >|>
-                        fillInfTM blank ToRight
-                      ) >+>
-                    liteMoveTM blank ToRight >+>
-                    (
-                        (
-                            liteSomeShiftTM alpha ToLeft >+>
-                            liteAllowTM omega
-                          ) >|> (
-                            liteMoveInfTM blank ToLeft >|>
-                            liteAllowTM omega
-                          )
-                      )
-                  )
-              )
-          )
+                        liteSomeShiftTM alpha ToLeft >+>
+                        liteAllowTM omega
+                        ) >|> (
+                        liteMoveInfTM blank ToLeft >|>
+                        liteAllowTM omega
+                        )
+                    )
+                )
+            )
       )
 
 eosmvTM :: TMModule

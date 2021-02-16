@@ -1,7 +1,9 @@
-module TmsTests (testShowOneTapeTms,
-                 testShowMultiTapeTms,
-                 testOneTapeTM2Tms,
-                 testMultiTapeTM2Tms) where
+module TmsTests (
+    testShowOneTapeTms,
+    testShowMultiTapeTms,
+    testOneTapeTM2Tms,
+    testMultiTapeTM2Tms
+) where
 
 import Test.HUnit
 import Data.Set (fromList)
@@ -104,15 +106,6 @@ testOneTapeTM2Tms = testTM2Tms oneTapeTM oneTapeTms
 testMultiTapeTM2Tms :: Assertion
 testMultiTapeTM2Tms = testTM2Tms multiTapeTM multiTapeTms
 
-q11 :: TmsState
-q11 = TmsState "q_{1}^{1}"
-
-q22 :: TmsState
-q22 = TmsState "q_{2}^{2}"
-
-q33 :: TmsState
-q33 = TmsState "q_{3}^{3}"
-
 q1 :: TMType.State
 q1 = TMType.State "q_{1}^{1}"
 
@@ -168,7 +161,7 @@ multiTapeTms = Tms (
     )
 
 testShowTms :: Tms -> String -> Assertion
-testShowTms tms res = assertEqual ("Invalid presentation of Tms.") (nonEndl res') (nonEndl res)
+testShowTms tms res = assertEqual "Invalid presentation of Tms." (nonEndl res') (nonEndl res)
     where
         res' = show tms
         nonEndl = filter (/= '\n')
@@ -176,4 +169,4 @@ testShowTms tms res = assertEqual ("Invalid presentation of Tms.") (nonEndl res'
 testTM2Tms :: TM -> Tms -> Assertion
 testTM2Tms tm tms = case tm2tms tm of
     Left err -> assertFailure $ "Conversion from TM to Tms has failed: " ++ err
-    Right tm' -> assertEqual ("TM is not correctly converted to Tms.") tm' tms
+    Right tm' -> assertEqual "TM is not correctly converted to Tms." tm' tms

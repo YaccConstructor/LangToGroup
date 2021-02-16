@@ -1,4 +1,9 @@
-module Tms2TuringMachineTests where
+module Tms2TuringMachineTests (
+    testTms2TuringMachineSimple,
+    testTms2TuringMachineLeaveStay,
+    testTms2TuringMachineLeaveMove,
+    testTms2TuringMachineChangeMove,
+    testTms2TuringMachineIdMove) where
 
 import Test.HUnit
 
@@ -117,6 +122,19 @@ turingMachineIdMove = fromList [
         ((q2, c), (R, q3))
     ]
 
+a :: Symbol
+b :: Symbol
+c :: Symbol
 (a, b, c) = (S 97, S 98, S 99)
-(q0, q1, q2, q3, q4) = (finalState, startState, Q 2, Q 3, Q 4)
-[tmq0, tmq1, tmq2, tmq3, tmq4] = TmsState <$> ("Q_" ++) . show <$> [0 .. 4]
+
+q0 :: TMTypes.State
+q1 :: TMTypes.State
+q2 :: TMTypes.State
+q3 :: TMTypes.State
+(q0, q1, q2, q3) = (finalState, startState, Q 2, Q 3)
+
+tmq0 :: TmsState
+tmq1 :: TmsState
+tmq2 :: TmsState
+tmq3 :: TmsState
+[tmq0, tmq1, tmq2, tmq3] = TmsState . ("Q_" ++) . show <$> [0 .. 3]

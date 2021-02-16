@@ -9,10 +9,7 @@ import System.Console.ParseArgs
 
 import GrammarReader
 import TmsParser
-import Tms2TuringMachine
-import ParsingHelpers
 import System.IO
-import System.Environment
 
 data Options =
     InputFlagString | OutputFlagString
@@ -34,15 +31,17 @@ argd = [ Arg { argIndex = InputFlagString,
 main :: IO ()
 main = do
     args <- parseArgsIO
-          (ArgsParseControl (ArgsComplete) ArgsSoftDash)
+          (ArgsParseControl ArgsComplete ArgsSoftDash)
           argd
-    case (getArg args InputFlagString) of
-          Just input -> case (getArg args OutputFlagString) of
+    case getArg args InputFlagString of
+          Just input -> case getArg args OutputFlagString of
                           Just output -> convertGrammar2TM input output
+                          Nothing     -> error "OutputFlagString parsing error"
+          Nothing    -> error "InputFlagString parsing error"
 
 mainTms :: String -> String -> IO ()
 mainTms filename errorFile = do
-    tms <- parseTms filename errorFile
-    case tms of
-        Left err -> hPutStrLn stderr $ show err
-        Right tms -> putStrLn $ show tms -- Do whatever you want with tms :: Tms.
+    tmsParsingResult <- parseTms filename errorFile
+    case tmsParsingResult of
+        Left err -> hPrint stderr err
+        Right tms -> print tms -- Do whatever you want with tms :: Tms.

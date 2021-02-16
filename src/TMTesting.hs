@@ -95,6 +95,7 @@ printTMInfo msg (Just tm) = do
     putStr "Generators: "
     print $ Set.size gs
     putStrLn ""
+printTMInfo _ Nothing = error "Can not print TuringMachine info when Maybe TuringMachine is Nothing"
 
 test :: IO ()
 test = mapM_ (\(msg, _, tm) -> printTMInfo msg tm) testingSet
@@ -110,7 +111,7 @@ testingTM = thd3 . testingTMInfo
 runTM' :: Int -> String -> Int -> IO ()
 runTM' i w d =
     mapM_ (
-        \(n, tp, (Q st)) ->
+        \(n, tp, Q st) ->
             putStrLn $ show n ++ ":  (" ++ show st ++ ")  " ++ show tp
       ) $
     fmap (\(n, ws) -> (n, Interpreter.tape ws, currentState ws)) $
@@ -397,7 +398,7 @@ testingSet = [
     ("wwR 2s v.2", "ab",
         accept (S 0) ||| (
             (
-                (
+                
                     foldr1 (|||)
                     [
                         rewrite (S i) (S 0) +++
@@ -408,8 +409,7 @@ testingSet = [
                         ) +++
                         rewriteOnly (S i) (S 0) 2
                     |   i <- [1,2]
-                    ]
-                ) +++
+                    ] +++
                 move (S 0) ToLeft +++ (
                     move (S 0) ToRight |||
                     moveInf (S 1) ToLeft |||

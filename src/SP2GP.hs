@@ -13,9 +13,9 @@ import Control.Applicative (liftA2)
 (^*) :: SP.GWord -> SPReader EWord
 (^*) w = do
     gNotIsQ <- (not .) <$> fromTMReader isQ
-    let (leftSWord, q : rightSWord) = span gNotIsQ w
-    leftSWord' <- (map neg) <$> convertW leftSWord
-    q' : rightSWord' <- convertW (q : rightSWord)
+    let (leftSWord, a : rightSWord) = span gNotIsQ w
+    leftSWord' <- map neg <$> convertW leftSWord
+    q' : rightSWord' <- convertW (a : rightSWord)
     return $ leftSWord' ++ (q' : rightSWord')
 
 (===) :: [SPReader Element] -> [SPReader Element] -> SPReader Relation

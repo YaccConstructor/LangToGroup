@@ -11,11 +11,11 @@ import TMType (TapeCommand, Square)
 -- |This is state name data type of 'State'.
 --
 -- Every constructor here represents name of the 'State'.
-data StateName = E | X | F | P | Q | R | S | T | U 
+data StateName = E | X | F | P | Q | R | S | T | U
    deriving (Eq, Ord)
 
 instance Show StateName where
-   show st = 
+   show st =
       case st of
          E -> "E"
          X -> "x"
@@ -34,7 +34,7 @@ instance Show StateName where
 -- 'Quote' is a '.
 --
 -- 'Dash' is a overline.
-data Tag = Hat | Quote | Dash 
+data Tag = Hat | Quote | Dash
    deriving (Eq, Ord, Show)
 
 -- |'SMTag' is a tag for S-machines and shows what kind is it.
@@ -49,7 +49,7 @@ data Tag = Hat | Quote | Dash
 data SMTag = T4 | T9 | TAlpha | TOmega
    deriving (Eq, Ord)
 
-instance Show SMTag where 
+instance Show SMTag where
    show tag =
       case tag of
          T4 -> "T_{4}"
@@ -58,13 +58,13 @@ instance Show SMTag where
          TOmega -> "T_{\\omega}"
 
 -- |This is data type of Turing machine commands and has uses in 'StateVal' in order to define for which command belongs to 'StatevVal'.
-data TMCMD = Command [TapeCommand] | CommandAlias String 
+data TMCMD = Command [TapeCommand] | CommandAlias String
    deriving (Show, Eq, Ord)
 
 -- |'StateVal' represents belongnes of 'State' to tape, Turing machine commands and S-machine 'SM'.
-data StateVal = StateVal {tape :: Int, tmCommand :: Maybe TMCMD, smTag :: Maybe SMTag} 
+data StateVal = StateVal {tape :: Int, tmCommand :: Maybe TMCMD, smTag :: Maybe SMTag}
    deriving (Show, Eq, Ord)
-   
+
 -- |This data type represents state of S-machine 'SM'. 
 --
 -- 's_name' represents a name of 'State'.
@@ -90,10 +90,10 @@ data Smb = SmbY Y | SmbY' Y | SmbQ State
 instance Show Smb where
    show (SmbY y) = show y
    show (SmbY' y) = show y ++ "^{-1}"
-   show (SmbQ q) = show q      
+   show (SmbQ q) = show q
 
 -- |This is a admissible word of the S-machine 'SM', which consist of the 'Smb'.
-newtype Word = Word [Smb] 
+newtype Word = Word [Smb]
    deriving (Show, Eq, Ord)
 
 -- |This is a rule of the S-machine 'SM'. 
@@ -105,7 +105,7 @@ newtype SRule = SRule [(Word, Word)]
    deriving (Eq, Ord)
 
 instance Show SRule where
-   show (SRule s) = "[" ++ (foldr (\(w1,w2) acc -> show w1 ++ "->" ++ show w2 ++ ";" ++ acc) "" s) ++ "]\n" 
+   show (SRule s) = "[" ++ foldr (\(w1,w2) acc -> show w1 ++ "->" ++ show w2 ++ ";" ++ acc) "" s ++ "]\n"
 
 -- |This is data type of S-machine.
 --

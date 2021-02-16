@@ -3,16 +3,17 @@ module MapleFuncWriter where
 import GRType
 import qualified Data.Map.Strict as Map
 import System.IO
-import qualified Data.Set as Set 
+import qualified Data.Set as Set
 import Helpers
+import Data.Maybe (fromMaybe)
 
 
 writeGenerators :: [A] -> Map.Map A String -> Handle -> IO ()
-writeGenerators generators amap handle = 
-    do 
+writeGenerators generators amap handle =
+    do
         hPutStr handle $ head mdata
         mapM_ ( \x -> hPutStr handle ", " <> hPutStr handle x) (tail mdata)
-        where   toStr a =   case Map.lookup a amap of Just s -> s ; Nothing -> error $ show a                
+        where   toStr a = fromMaybe (error $ show a) (Map.lookup a amap)
                 mdata = map toStr generators
 
 writeRelations :: [GrRelation] -> Map.Map A String -> Handle -> IO()
@@ -20,8 +21,8 @@ writeRelations relations genmap handle =
     do
         hPutStr handle $ head mdata
         mapM_ ( \x -> hPutStr handle ", " <> hPutStr handle x) (tail mdata)
-    where   
-            mdata = map (foldl1 (\x y -> x ++ "." ++ y) . (map (printSmb genmap)) . revertRel) relations
+    where
+            mdata = map (foldl1 (\x y -> x ++ "." ++ y) . map (printSmb genmap) . revertRel) relations
 
 writeMaple :: GR -> Handle -> Map.Map A String -> IO ()
 writeMaple (GR (g, r)) handle genmap =
@@ -34,6 +35,6 @@ writeMaple (GR (g, r)) handle genmap =
                 hPutStr handle " = 1 >;\n"
                 hFlush handle
 
-                    where 
+                    where
                         generators = Set.toList g
                         relations = Set.toList r

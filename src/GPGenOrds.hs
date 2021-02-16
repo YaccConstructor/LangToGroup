@@ -20,7 +20,7 @@ orders tm = do
     qs <- idOrRev [ q_ i | i <- [0..n] ]
     ss <- idOrRev [ s_ i | i <- [0..m] ]
     rs <- idOrRev [ r_ i | i <- [0..l] ]
-    posElems <- (flip runSPReader tm . sequence . concat) <$> permutations
+    posElems <- flip runSPReader tm . sequence . concat <$> permutations
         [
             [q],
             qs,
@@ -35,4 +35,4 @@ orders tm = do
     return $ toOrder $ Map.fromList $ zip allElems [0..]
 
 toOrder :: Ord a => Map.Map a Int -> Order a
-toOrder m x y = compare (Map.lookup x m) (Map.lookup y m)
+toOrder m el y = compare (Map.lookup el m) (Map.lookup y m)

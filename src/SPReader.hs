@@ -12,7 +12,7 @@ type SPInfo = (SemigroupPresentation, Int, Int, Int)
 type SPReader a = SPInfo -> a
 
 runSPReader :: SPReader a -> TuringMachine -> a
-runSPReader spr = spr . (runTMReader $ do
+runSPReader spr = spr . runTMReader (do
     rs <- relations
     n <- TMReader.getN
     m <- TMReader.getM

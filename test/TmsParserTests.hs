@@ -2,11 +2,8 @@
 
 module TmsParserTests where
 
-import Data.Char (isSeparator)
 import Test.HUnit
 import Text.Megaparsec
-import Text.Megaparsec.Char
-import Text.Megaparsec.Byte (string)
 import Data.Text (Text, pack)
 import Control.Monad (guard)
 
@@ -16,7 +13,7 @@ import TmsType
 testParse :: Text -> Tms -> Assertion
 testParse asStr actualTms = do
     parsedTms <- case parseMaybe parser asStr of
-        Nothing   -> fail $ "Tms parsing failure."
+        Nothing   -> fail "Tms parsing failure."
         Just t    -> return t
     guard $ parsedTms == actualTms
 

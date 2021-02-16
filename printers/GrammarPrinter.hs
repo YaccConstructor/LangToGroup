@@ -29,15 +29,16 @@ instance ShowLaTeX Terminal where
     doLaTeX (Terminal symbol)    = raw $ fromString symbol
 
 instance ShowLaTeX Symbol where
-    doLaTeX (T symbol) = doLaTeX symbol 
-    doLaTeX (N symbol) = doLaTeX symbol 
+    doLaTeX (T symbol) = doLaTeX symbol
+    doLaTeX (N symbol) = doLaTeX symbol
     doLaTeX Eps = varepsilon
+    doLaTeX (O _) = error "Can not doLaTeX from Operand"
 
 
 instance ShowLaTeX Relation where
-    doLaTeX (Relation (nonterminal, symbols)) = do 
-        math $ do 
-            doLaTeX (N nonterminal) ; rightarrow ; mapM_ doLaTeX symbols ; lnbk
+    doLaTeX (Relation (nonterminal, symbols)) =
+        math $ do
+        doLaTeX (N nonterminal) ; rightarrow ; mapM_ doLaTeX symbols ; lnbk
 
 
 instance ShowLaTeX Grammar where

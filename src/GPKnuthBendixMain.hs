@@ -12,6 +12,7 @@ data Options = Options {
     optTotalTime :: Maybe Int
   }
 
+defaultOptions :: Options
 defaultOptions = Options {
     optTMIndices = [],
     optTimePerTest = Nothing,
@@ -52,7 +53,7 @@ argsToOpts argv =
     case getOpt Permute options argv of
         (o, [], [])  -> Right $ foldl (flip id) defaultOptions o
         (_, _, e)    -> Left  $ concat e ++ usageInfo "" options
-        (_, n:ns, _) -> Left  $ "Non-option: " ++ n ++ usageInfo "" options
+        -- (_, n:ns, _) -> Left  $ "Non-option: " ++ n ++ usageInfo "" options
 
 optsToTestInfo :: Options -> Either String TestInfo
 optsToTestInfo opts =
@@ -73,5 +74,5 @@ main = do
     args <- getArgs
     testInfo <- either fail return $
         argsToTestInfo args
-    test testInfo
+    _ <- test testInfo
     return ()

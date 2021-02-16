@@ -17,7 +17,7 @@ import ParsingHelpers
 
 -- | Empty space.
 empty :: Parser ()
-empty = many separatorChar >> return ()
+empty = void $ many separatorChar
 
 -- | Token.
 tok :: Parser a -> Parser a
@@ -29,9 +29,8 @@ tok p = do
 
 -- | Identifier.
 pIdentifier :: Parser String
-pIdentifier = do
-    letters <- tok pLetters
-    return letters
+pIdentifier =
+    tok pLetters
     where
         pLetters = do
             first <- letterChar
@@ -42,7 +41,6 @@ pIdentifier = do
 comma :: Parser ()
 comma = do
     void $ tok $ char ','
-    return ()
 
 -- | Pair '<key>: <value>\n'.
 pKeyValue :: Tokens Text -> Parser a -> Parser a
@@ -84,25 +82,23 @@ pCommand = do
     moves <- case traverse mvChar2TmsHeadMove moveChars of
         Just m  -> return m
         Nothing -> fail "Non move character found."
-    return $ (TmsCommand (TmsState iniSt, zipWith3 makeSTC iniChars finChars moves, TmsState finSt), len)
+    return (TmsCommand (TmsState iniSt, zipWith3 makeSTC iniChars finChars moves, TmsState finSt), len)
     where
         makeSTC :: Char -> Char -> TmsTapeHeadMovement -> TmsSingleTapeCommand
         makeSTC f t m = TmsSingleTapeCommand (ChangeFromTo f t, m)
 
 -- | Extract command tape alphabets.
-commandAlphabet :: TmsCommand -> [[Char]]
+commandAlphabet :: TmsCommand -> [String]
 commandAlphabet (TmsCommand (_, cmds, _)) = tapeCmdAlphabet <$> cmds
     where
-        tapeCmdAlphabet :: TmsSingleTapeCommand -> [Char]
+        tapeCmdAlphabet :: TmsSingleTapeCommand -> String
         tapeCmdAlphabet (TmsSingleTapeCommand (ChangeFromTo f t, _)) = [f, t]
         tapeCmdAlphabet _                                            = mempty
 
 -- | Get alphabets of all commands.
-alphabet :: [TmsCommand] -> [[Char]]
-alphabet tmsCommands = fmap (filter (/= '_')) $
-    fmap Set.toList $
-    fmap Set.fromList $
-    foldl1 (\x y -> fmap (uncurry (++)) $ zip x y) (commandAlphabet <$> tmsCommands)
+alphabet :: [TmsCommand] -> [String]
+alphabet tmsCommands = (filter (/= '_') . Set.toList) . Set.fromList <$>
+    foldl1 (\x y -> uncurry (++) <$> zip x y) (commandAlphabet <$> tmsCommands)
 
 -- | Tms.
 -- Example:
@@ -122,7 +118,7 @@ pTms = do
     name             <- pKeyValue "name"   pIdentifier
     initStateName    <- pKeyValue "init"   pIdentifier
     acceptStateNames <- pKeyValue "accept" (pIdentifier `sepBy1` comma)
-    cmdsLens <- (tok pCommand) `sepBy1` (some newline)
+    cmdsLens <- tok pCommand `sepBy1` some newline
     let (cmds, lens) = unzip cmdsLens
     True <- case lens of
         (len : others) | len >= 1 -> return $ all (== len) others
@@ -142,9 +138,9 @@ parser = makeEofParser pTms
 -- | Parse Tms from file.
 parseTms :: String -> String -> IO (Either String Tms)
 parseTms inputFile errorFile = do
-    result <- (parseFromFile TmsParser.parser errorFile inputFile)
+    result <- parseFromFile TmsParser.parser errorFile inputFile
     case result of
-        Left err -> do
+        Left err ->
             return $ fail $ "Parsing error: " ++ errorBundlePretty err
-        Right tms -> do
-            return $ pure $ tms
+        Right tms ->
+            return $ pure tms

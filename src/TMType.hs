@@ -26,7 +26,7 @@ newtype AccessStates = AccessStates [State]
 newtype StateOmega = StateOmega {state :: State}
     deriving (Eq, Ord)
 instance Show StateOmega where
-    show s = "F_{" ++ q ++ "}" 
+    show s = "F_{" ++ q ++ "}"
         where (State q) = state s
 
 -- |Type of a command of the Turing machine 'TM', which applicable on a single tape.
