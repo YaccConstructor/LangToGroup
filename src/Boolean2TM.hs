@@ -306,12 +306,12 @@ generateTransitionFromConjunctionResult :: Grammar -> DebuggingQuadruples
 generateTransitionFromConjunctionResult grammar@(Grammar (_, terminals, relations, _)) = let
     q = "q"
     rewrite = "Rewrite"
-    plus = "+"
-    minus = "-"
     transition = "Transition"
     skipParentNonterminal = "skipParentNonterminal"
     rule = "Rule"
     terminalsList = map terminalValue $ Set.toList terminals
+    plus = "+"
+    minus = "-"
     signs = [plus, minus]
     negation = ["!"]
     leftBracket = ["("]
@@ -374,6 +374,64 @@ generateTransitionFromConjunctionResult grammar@(Grammar (_, terminals, relation
 
     quadruples = quadruplesInRulektjs ++ quadruplesToRewritePlus ++ quadruplesToRewriteMinus
         ++ quadruplesToNextConj ++ quadruplesToNextRel 
+
+    in (DQuadruples $ addCollectionToMap quadruples Map.empty)
+
+-- Block for states when conjunction has one of nonterminals with "-" sign and
+-- it is possible to split a word into two in a different way for the same conjunction
+generateBlockForWordsChanging :: Grammar -> DebuggingQuadruples
+generateBlockForWordsChanging grammar@(Grammar (nonterminals, terminals, relations, _)) = let
+    qWordsChanging = "qWordsChanging"
+    moveToBringSymbol = qWordsChanging ++ "moveToBringSymbol"
+    metFstNonterminal = qWordsChanging ++ "metFstNonterminal"
+    metSndNonterminal = qWordsChanging ++ "metSndNonterminal"
+    checkIfSndIsWord = qWordsChanging ++ "checkIfSndIsWord"
+    sndIsWord = qWordsChanging ++ "sndIsWord"
+    returnToParentNonterminal = qWordsChanging ++ "returnToParentNonterminal"
+    bringSymbol = qWordsChanging ++ "bringSymbol"
+
+    terminalsList = map terminalValue $ Set.toList terminals
+    nonterminalsList = map nonterminalValue $ Set.toList nonterminals
+    plus = "+"
+    minus = "-"
+    signs = [plus, minus]
+    negation = ["!"]
+    leftBracket = ["("]
+    rightBracket = [")"]
+    brackets = leftBracket ++ rightBracket
+
+    --BLOCK for qWordsChangingMoveToBringSymbol
+    symbolsInMoveToBringSymbol = map
+        (\t -> ((DState moveToBringSymbol, DSymbol t), (DebuggingTypes.R, DState moveToBringSymbol))) $ brackets ++ negation
+    symbolsToMetFstNonterminalQdrs = map
+        (\t -> ((DState moveToBringSymbol, DSymbol t), (DebuggingTypes.R, DState metFstNonterminal))) nonterminalsList
+
+    --BLOCK for qWordsChangingMetFstNonterminal
+    symbolsInMetFstNonterminal = map
+        (\t -> ((DState metFstNonterminal, DSymbol t), (DebuggingTypes.R, DState metFstNonterminal)))
+        $ brackets ++ signs ++ terminalsList
+    symbolsToMetSndNonterminal = map
+        (\t -> ((DState metFstNonterminal, DSymbol t), (DebuggingTypes.R, DState metSndNonterminal))) nonterminalsList
+
+    --BLOCK for qWordsChangingMetSndNonterminal
+    symbolsInMetSndNonterminal = map
+        (\t -> ((DState metSndNonterminal, DSymbol t), (DebuggingTypes.R, DState metSndNonterminal))) signs
+    symbolsToCheckIfSndIsWord = map
+        (\t -> ((DState metSndNonterminal, DSymbol t), (DebuggingTypes.R, DState checkIfSndIsWord))) leftBracket
+
+    --BLOCK for qWordsChangingCheckIfSndIsWord
+    symbolsToSndIsWord = map
+        (\t -> ((DState checkIfSndIsWord, DSymbol t), (DebuggingTypes.R, DState sndIsWord))) terminalsList
+
+    --BLOCK for qWordsChangingSndIsWord
+    symbolsToReturnToParentNonterminal = map
+        (\t -> ((DState sndIsWord, DSymbol t), (DebuggingTypes.L, DState returnToParentNonterminal))) rightBracket
+    symbolsToBringSymbol = map
+        (\t -> ((DState sndIsWord, DSymbol t), (DebuggingTypes.L, DState bringSymbol))) terminalsList
+
+    quadruples = symbolsInMoveToBringSymbol ++ symbolsToMetFstNonterminalQdrs ++ symbolsInMetFstNonterminal
+        ++ symbolsToMetSndNonterminal ++ symbolsInMetSndNonterminal ++ symbolsToCheckIfSndIsWord ++ symbolsToSndIsWord
+        ++ symbolsToReturnToParentNonterminal ++ symbolsToBringSymbol
 
     in (DQuadruples $ addCollectionToMap quadruples Map.empty)
 
