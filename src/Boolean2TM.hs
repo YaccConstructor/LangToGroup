@@ -377,18 +377,24 @@ generateTransitionFromConjunctionResult grammar@(Grammar (_, terminals, relation
 
     in (DQuadruples $ addCollectionToMap quadruples Map.empty)
 
--- Block for states when conjunction has one of nonterminals with "-" sign and
+-- Block for figuring if conjunction has one of nonterminals with "-" sign and
 -- it is possible to split a word into two in a different way for the same conjunction
-generateBlockForWordsChanging :: Grammar -> DebuggingQuadruples
-generateBlockForWordsChanging grammar@(Grammar (nonterminals, terminals, relations, _)) = let
+generateBlockCheckIfWordsSplitCanBeChanged :: Grammar -> DebuggingQuadruples
+generateBlockCheckIfWordsSplitCanBeChanged grammar@(Grammar (nonterminals, terminals, relations, _)) = let
     qWordsChanging = "qWordsChanging"
-    moveToBringSymbol = qWordsChanging ++ "moveToBringSymbol"
-    metFstNonterminal = qWordsChanging ++ "metFstNonterminal"
-    metSndNonterminal = qWordsChanging ++ "metSndNonterminal"
-    checkIfSndIsWord = qWordsChanging ++ "checkIfSndIsWord"
-    sndIsWord = qWordsChanging ++ "sndIsWord"
-    returnToParentNonterminal = qWordsChanging ++ "returnToParentNonterminal"
-    bringSymbol = qWordsChanging ++ "bringSymbol"
+    moveToBringSymbol = qWordsChanging ++ "MoveToBringSymbol"
+    metFstNonterminal = qWordsChanging ++ "MetFstNonterminal"
+    metSndNonterminal = qWordsChanging ++ "MetSndNonterminal"
+    checkIfSndIsWord = qWordsChanging ++ "CheckIfSndIsWord"
+    sndIsWord = qWordsChanging ++ "SndIsWord"
+    returnToParentNonterminal = qWordsChanging ++ "ReturnToParentNonterminal"
+    bringSymbol = qWordsChanging ++ "BringSymbol"
+    failedPrefix = "Failed"
+    negationWord = "Negation"
+    failedCheckNegation = qWordsChanging ++ failedPrefix ++ "Check" ++ negationWord
+    failedNegation = qWordsChanging ++ failedPrefix ++ negationWord
+    failed = qWordsChanging ++ failedPrefix
+    moveToStart = "MoveToStart"
 
     terminalsList = map terminalValue $ Set.toList terminals
     nonterminalsList = map nonterminalValue $ Set.toList nonterminals
@@ -399,6 +405,8 @@ generateBlockForWordsChanging grammar@(Grammar (nonterminals, terminals, relatio
     leftBracket = ["("]
     rightBracket = [")"]
     brackets = leftBracket ++ rightBracket
+    maxNumberOfRules = calculateMaxNumberOfRulesForNonterminal grammar
+    indices = map show [1..maxNumberOfRules]
 
     --BLOCK for qWordsChangingMoveToBringSymbol
     symbolsInMoveToBringSymbol = map
@@ -429,10 +437,48 @@ generateBlockForWordsChanging grammar@(Grammar (nonterminals, terminals, relatio
     symbolsToBringSymbol = map
         (\t -> ((DState sndIsWord, DSymbol t), (DebuggingTypes.L, DState bringSymbol))) terminalsList
 
+    --BLOCK for qWordsChangingReturnToParentNonterminal
+    notCounters = nonterminalsList ++ terminalsList ++ brackets ++ signs ++ negation
+    symbolsInReturnToParentNonterminal = map
+        (\t -> ((DState returnToParentNonterminal, DSymbol t),
+        (DebuggingTypes.L, DState returnToParentNonterminal))) notCounters
+    symbolsToWordsChangingFailed = map
+        (\counter ->  ((DState returnToParentNonterminal, DSymbol counter),
+        (DebuggingTypes.R, DState $ failedCheckNegation ++ counter))) indices
+
+    --BLOCK for qWordsChangingFailedCheckNegationK
+    symbolsInWordsChangingFailed = map
+        (\counter -> ((DState $ failedCheckNegation ++ counter, DSymbol "("),
+        (DebuggingTypes.R, DState $ failedCheckNegation ++ counter))) indices
+    symbolsToWordsChangingFailedNegationK = map
+        (\counter -> ((DState $ failedCheckNegation ++ counter, DSymbol "!"),
+        (DebuggingTypes.L, DState $ failedNegation ++ counter))) indices
+    symbolsToWordsChangingFailedK = concatMap
+        (\counter -> map (\nonterm -> ((DState $ failedCheckNegation ++ counter, DSymbol nonterm),
+        (DebuggingTypes.L, DState $ failed ++ counter))) nonterminalsList) indices
+
+    --BLOCK for qWordsChangingFailedK
+    symbolsToQkMoveToStart = map
+        (\counter -> ((DState $ failed ++ counter, DSymbol "("),
+        (DebuggingTypes.L, DState $ "q" ++ counter ++ moveToStart))) indices
+
+    --BLOCK for qWordsChangingFailedNegationK
+    symbolsToQkMoveToStartNegation = map
+        (\counter -> ((DState $ failedNegation ++ counter, DSymbol "("),
+        (DebuggingTypes.L, DState $ "q" ++ counter ++ moveToStart ++ negationWord))) indices
+
     quadruples = symbolsInMoveToBringSymbol ++ symbolsToMetFstNonterminalQdrs ++ symbolsInMetFstNonterminal
         ++ symbolsToMetSndNonterminal ++ symbolsInMetSndNonterminal ++ symbolsToCheckIfSndIsWord ++ symbolsToSndIsWord
-        ++ symbolsToReturnToParentNonterminal ++ symbolsToBringSymbol
+        ++ symbolsToReturnToParentNonterminal ++ symbolsToBringSymbol ++ symbolsInReturnToParentNonterminal
+        ++ symbolsToWordsChangingFailed ++ symbolsInWordsChangingFailed ++ symbolsToWordsChangingFailedNegationK
+        ++ symbolsToWordsChangingFailedK ++ symbolsToQkMoveToStart ++ symbolsToQkMoveToStartNegation
 
+    in (DQuadruples $ addCollectionToMap quadruples Map.empty)
+
+generateBlockForChangingWord :: Grammar -> DebuggingQuadruples
+generateBlockForChangingWord grammar = let
+    --BLOCK for qWordsChangingBringSymbol
+    quadruples = []
     in (DQuadruples $ addCollectionToMap quadruples Map.empty)
 
 constructSymbolsPairByQuad :: (String, String, String, String) -> Bool -> SymbolsPair
