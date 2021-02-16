@@ -476,8 +476,19 @@ generateBlockCheckIfWordsSplitCanBeChanged grammar@(Grammar (nonterminals, termi
     in (DQuadruples $ addCollectionToMap quadruples Map.empty)
 
 generateBlockForChangingWord :: Grammar -> DebuggingQuadruples
-generateBlockForChangingWord grammar = let
+generateBlockForChangingWord grammar@(Grammar (nonterminals, terminals, _, _)) = let
+    qWordsChanging = "qWordsChanging"
+    bringSymbol = qWordsChanging ++ "bringSymbol"
+    broughtSymbol = qWordsChanging ++ "broughtSymbol"
+    transition = "transition"
+    terminalsList = map terminalValue $ Set.toList terminals
+    nonterminalsList = map nonterminalValue $ Set.toList nonterminals
     --BLOCK for qWordsChangingBringSymbol
+    symbolsBringSymbol = concatMap (\t -> [
+        ((DState $ bringSymbol, DSymbol t),(D $ DSymbol " ", DState $ bringSymbol ++ t ++ transition)),
+        ((DState $ bringSymbol ++ t ++ transition, DSymbol t),(DebuggingTypes.L, DState $ broughtSymbol ++ t))
+        ]) terminalsList
+
     quadruples = []
     in (DQuadruples $ addCollectionToMap quadruples Map.empty)
 
