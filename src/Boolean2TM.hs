@@ -480,16 +480,36 @@ generateBlockForChangingWord grammar@(Grammar (nonterminals, terminals, _, _)) =
     qWordsChanging = "qWordsChanging"
     bringSymbol = qWordsChanging ++ "bringSymbol"
     broughtSymbol = qWordsChanging ++ "broughtSymbol"
+    write = qWordsChanging ++ "Write"
     transition = "transition"
     terminalsList = map terminalValue $ Set.toList terminals
     nonterminalsList = map nonterminalValue $ Set.toList nonterminals
+    plus = "+"
+    minus = "-"
+    signs = [plus, minus]
+    leftBracket = ["("]
+    rightBracket = [")"]
+    brackets = leftBracket ++ rightBracket
     --BLOCK for qWordsChangingBringSymbol
-    symbolsBringSymbol = concatMap (\t -> [
-        ((DState $ bringSymbol, DSymbol t),(D $ DSymbol " ", DState $ bringSymbol ++ t ++ transition)),
+    symbolsToBroughtSymbolt = concatMap (\t -> [
+        ((DState bringSymbol, DSymbol t),(D $ DSymbol " ", DState $ bringSymbol ++ t ++ transition)),
         ((DState $ bringSymbol ++ t ++ transition, DSymbol t),(DebuggingTypes.L, DState $ broughtSymbol ++ t))
         ]) terminalsList
+    --BLOCK for qWordsChangingBringSymbolt (list of states generated for each terminal t)
+    symbolsInBroughtSymbolt = map (\t ->
+        ((DState $ broughtSymbol ++ t, DSymbol " "),(DebuggingTypes.L, DState $ broughtSymbol ++ t))) terminalsList
+    remembered = signs ++ nonterminalsList ++ brackets
+    pairs = concatMap (\t -> map (t,) remembered) terminalsList
+    symbolsToWritetk = concatMap (\(t, k) ->
+        [((DState $ broughtSymbol ++ t, DSymbol k),(D $ DSymbol " ", DState $ write ++ t ++ k ++ transition)),
+        ((DState $ write ++ t ++ k ++ transition, DSymbol " "),(DebuggingTypes.R, DState $ write ++ t ++ k))]) pairs
+    --BLOCK for qWordsChangingWritetk
+    symbolsToBroughtSymbolt' = concatMap (\(t, k) ->
+        [((DState $ write ++ t ++ k, DSymbol " "),(D $ DSymbol k, DState $ broughtSymbol ++ t ++ k ++ transition)),
+        ((DState $ broughtSymbol ++ t ++ k ++ transition, DSymbol k),(DebuggingTypes.R, DState $ broughtSymbol ++ t))
+        ]) pairs
 
-    quadruples = []
+    quadruples = symbolsToBroughtSymbolt ++ symbolsInBroughtSymbolt ++ symbolsToWritetk ++ symbolsToBroughtSymbolt'
     in (DQuadruples $ addCollectionToMap quadruples Map.empty)
 
 constructSymbolsPairByQuad :: (String, String, String, String) -> Bool -> SymbolsPair
