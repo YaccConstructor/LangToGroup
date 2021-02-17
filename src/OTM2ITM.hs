@@ -1,3 +1,5 @@
+{-# LANGUAGE TupleSections #-}
+
 module OTM2ITM where
 
 import OTMReader
@@ -313,7 +315,7 @@ eosovTM = do
         moveUntilTM itmsIsState ToRight >+>
         tripleCaseTM (sndTriples fstTriple) (\(sq12, st2, sq22) ->
             let possibleCommands = concat [
-                    (\x -> (((sq11', st1, sq21'), (sq12', st2, sq22')), x)) <$> fromMaybe [] (Map.lookup ((sq11', st1, sq21'), (sq12', st2, sq22')) commands)
+                    (((sq11', st1, sq21'), (sq12', st2, sq22')),) <$> fromMaybe [] (Map.lookup ((sq11', st1, sq21'), (sq12', st2, sq22')) commands)
                     | sq11' <- [sq11, OTM.ES],
                     sq21' <- [sq21, OTM.ES],
                     sq12' <- [sq12, OTM.ES],

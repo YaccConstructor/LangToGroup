@@ -1,3 +1,5 @@
+{-# LANGUAGE TupleSections #-}
+
 module SPSolver where
 
 import SPTypes
@@ -36,7 +38,7 @@ solveStep rules gws = do
             case rule of
                 (from `Equals` to, Direct _)  -> (from, to)
                 (from `Equals` to, Inverse _) -> (to ,from)
-    (\x -> (x, Just $ snd rule)) <$> allRewrites gwFrom gwTo gw
+    (, Just $ snd rule) <$> allRewrites gwFrom gwTo gw
 
 allRewrites :: Eq a => [a] -> [a] -> [a] -> [[a]]
 allRewrites from to ini =

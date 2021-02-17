@@ -241,8 +241,8 @@ genConnectingRules cmd = do
     let (Command command) = cmd
     let k = length command
 
-    let e_f0        = e_f "" 0
-    let e_fl'       = e_f' "" (k + 1)
+    let eF0        = eF "" 0
+    let eFl'       = eF' "" (k + 1)
 
     let x j sm        = SmbQ $ newState X "" eTag j (Just cmd) (Just sm)
     let x' j sm       = SmbQ $ newState X "" quoteTag j (Just cmd) (Just sm)
@@ -265,47 +265,47 @@ genConnectingRules cmd = do
     let td j sm       = SmbQ $ newState T "" dashTag j (Just cmd) (Just sm)
     let ud j sm       = SmbQ $ newState U "" dashTag j (Just cmd) (Just sm)
 
-    let p_index index j sm        = SmbQ $ newState P index eTag j (Just cmd) (Just sm)
-    let q_index index j sm        = SmbQ $ newState Q index eTag j (Just cmd) (Just sm)
-    let r_index index j sm        = SmbQ $ newState R index eTag j (Just cmd) (Just sm)
-    let s_index index j sm        = SmbQ $ newState S index eTag j (Just cmd) (Just sm)
-    let t_index index j sm        = SmbQ $ newState T index eTag j (Just cmd) (Just sm)
-    let u_index index j sm        = SmbQ $ newState U index eTag j (Just cmd) (Just sm)
-    let x_index index j sm        = SmbQ $ newState X index eTag j (Just cmd) (Just sm)
+    let pIndex index j sm        = SmbQ $ newState P index eTag j (Just cmd) (Just sm)
+    let qIndex index j sm        = SmbQ $ newState Q index eTag j (Just cmd) (Just sm)
+    let rIndex index j sm        = SmbQ $ newState R index eTag j (Just cmd) (Just sm)
+    let sIndex index j sm        = SmbQ $ newState S index eTag j (Just cmd) (Just sm)
+    let tIndex index j sm        = SmbQ $ newState T index eTag j (Just cmd) (Just sm)
+    let uIndex index j sm        = SmbQ $ newState U index eTag j (Just cmd) (Just sm)
+    let xIndex index j sm        = SmbQ $ newState X index eTag j (Just cmd) (Just sm)
 
-    let p_index' index j sm        = SmbQ $ newState P index quoteTag j (Just cmd) (Just sm)
-    let q_index' index j sm        = SmbQ $ newState Q index quoteTag j (Just cmd) (Just sm)
-    let r_index' index j sm        = SmbQ $ newState R index quoteTag j (Just cmd) (Just sm)
-    let s_index' index j sm        = SmbQ $ newState S index quoteTag j (Just cmd) (Just sm)
-    let t_index' index j sm        = SmbQ $ newState T index quoteTag j (Just cmd) (Just sm)
-    let u_index' index j sm        = SmbQ $ newState U index quoteTag j (Just cmd) (Just sm)
-    let x_index' index j sm        = SmbQ $ newState X index quoteTag j (Just cmd) (Just sm)
+    let pIndex' index j sm        = SmbQ $ newState P index quoteTag j (Just cmd) (Just sm)
+    let qIndex' index j sm        = SmbQ $ newState Q index quoteTag j (Just cmd) (Just sm)
+    let rIndex' index j sm        = SmbQ $ newState R index quoteTag j (Just cmd) (Just sm)
+    let sIndex' index j sm        = SmbQ $ newState S index quoteTag j (Just cmd) (Just sm)
+    let tIndex' index j sm        = SmbQ $ newState T index quoteTag j (Just cmd) (Just sm)
+    let uIndex' index j sm        = SmbQ $ newState U index quoteTag j (Just cmd) (Just sm)
+    let xIndex' index j sm        = SmbQ $ newState X index quoteTag j (Just cmd) (Just sm)
 
-    let ph_index index j sm        = SmbQ $ newState P index hatTag j (Just cmd) (Just sm)
-    let qh_index index j sm        = SmbQ $ newState Q index hatTag j (Just cmd) (Just sm)
-    let rh_index index j sm        = SmbQ $ newState R index hatTag j (Just cmd) (Just sm)
-    let sh_index index j sm        = SmbQ $ newState S index hatTag j (Just cmd) (Just sm)
-    let th_index index j sm        = SmbQ $ newState T index hatTag j (Just cmd) (Just sm)
-    let uh_index index j sm        = SmbQ $ newState U index hatTag j (Just cmd) (Just sm)
+    let phIndex index j sm        = SmbQ $ newState P index hatTag j (Just cmd) (Just sm)
+    let qhIndex index j sm        = SmbQ $ newState Q index hatTag j (Just cmd) (Just sm)
+    let rhIndex index j sm        = SmbQ $ newState R index hatTag j (Just cmd) (Just sm)
+    let shIndex index j sm        = SmbQ $ newState S index hatTag j (Just cmd) (Just sm)
+    let thIndex index j sm        = SmbQ $ newState T index hatTag j (Just cmd) (Just sm)
+    let uhIndex index j sm        = SmbQ $ newState U index hatTag j (Just cmd) (Just sm)
     let xh j sm                = SmbQ $ newState X "" hatTag j (Just cmd) (Just sm)
 
-    let phd_index index j sm        = SmbQ $ newState P index hatdashTag j (Just cmd) (Just sm)
-    let qhd_index index j sm        = SmbQ $ newState Q index hatdashTag j (Just cmd) (Just sm)
-    let rhd_index index j sm        = SmbQ $ newState R index hatdashTag j (Just cmd) (Just sm)
-    let shd_index index j sm        = SmbQ $ newState S index hatdashTag j (Just cmd) (Just sm)
-    let thd_index index j sm        = SmbQ $ newState T index hatdashTag j (Just cmd) (Just sm)
-    let uhd_index index j sm        = SmbQ $ newState U index hatdashTag j (Just cmd) (Just sm)
+    let phdIndex index j sm        = SmbQ $ newState P index hatdashTag j (Just cmd) (Just sm)
+    let qhdIndex index j sm        = SmbQ $ newState Q index hatdashTag j (Just cmd) (Just sm)
+    let rhdIndex index j sm        = SmbQ $ newState R index hatdashTag j (Just cmd) (Just sm)
+    let shdIndex index j sm        = SmbQ $ newState S index hatdashTag j (Just cmd) (Just sm)
+    let thdIndex index j sm        = SmbQ $ newState T index hatdashTag j (Just cmd) (Just sm)
+    let uhdIndex index j sm        = SmbQ $ newState U index hatdashTag j (Just cmd) (Just sm)
 
     let (a, i) = getai command
     let getFromJ j = state where (state, _) = getJIdx command j
     let getToJ j = state where (_, state) = getJIdx command j
 
-    let p4         = p_index "1" i
-    let q4         = q_index "1" i
-    let r4         = r_index "1" i
-    let s4         = s_index "1" i
-    let t4         = t_index "1" i
-    let u4         = u_index "1" i
+    let p4         = pIndex "1" i
+    let q4         = qIndex "1" i
+    let r4         = rIndex "1" i
+    let s4         = sIndex "1" i
+    let t4         = tIndex "1" i
+    let u4         = uIndex "1" i
     let pd4 sm     = SmbQ $ newState P "0" dashTag i (Just cmd) (Just sm)
     let qd4 sm     = SmbQ $ newState Q "0" dashTag i (Just cmd) (Just sm)
     let rd4 sm     = SmbQ $ newState R "0" dashTag i (Just cmd) (Just sm)
@@ -315,20 +315,20 @@ genConnectingRules cmd = do
 
     let rule4 =
             SRule $ (++)
-            [(Word [e_e 0], Word [e 0 T4]),
-            (Word [e_fl'], Word [fl' T4]),
-            (Word [e_x 0, e_f0], Word [x 0 T4, f0 T4]),
-            (Word [e_e' (k + 1), e_x' (k + 1)], Word [e' (k + 1) T4, x' (k + 1) T4]),
-            (Word [e_e i], Word [e i T4]),
-            (Word [e_x i, e_f (getFromJ i) i, e_e' i, e_p i],
+            [(Word [eE 0], Word [e 0 T4]),
+            (Word [eFl'], Word [fl' T4]),
+            (Word [eX 0, eF0], Word [x 0 T4, f0 T4]),
+            (Word [eE' (k + 1), eX' (k + 1)], Word [e' (k + 1) T4, x' (k + 1) T4]),
+            (Word [eE i], Word [e i T4]),
+            (Word [eX i, eF (getFromJ i) i, eE' i, eP i],
             Word [x i T4, f (getFromJ i) i T4, e' i T4, p4 T4]),
-            (Word [e_q i, e_r i, e_s i, e_t i, e_u i, e_pd i, e_qd i, e_rd i, e_sd i, e_td i, e_ud i, e_f' (getFromJ i) i],
+            (Word [eQ i, eR i, eS i, eT i, eU i, ePd i, eQd i, eRd i, eSd i, eTd i, eUd i, eF' (getFromJ i) i],
             Word [q4 T4, r4 T4, s4 T4, t4 T4, u4 T4, pd4 T4, qd4 T4, rd4 T4, sd4 T4, td4 T4, ud4 T4, f' (getFromJ i) i T4])]
             $ concat
-            [[(Word [e_e j], Word [e j T4]),
-            (Word [e_x j, e_f (getFromJ j) j, e_e' j, e_p j],
+            [[(Word [eE j], Word [e j T4]),
+            (Word [eX j, eF (getFromJ j) j, eE' j, eP j],
             Word [x j T4, f (getFromJ j) j T4, e' j T4, p j T4]),
-            (Word [e_q j, e_r j, e_s j, e_t j, e_u j, e_pd j, e_qd j, e_rd j, e_sd j, e_td j, e_ud j, e_f' (getFromJ j) j],
+            (Word [eQ j, eR j, eS j, eT j, eU j, ePd j, eQd j, eRd j, eSd j, eTd j, eUd j, eF' (getFromJ j) j],
             Word [q j T4, r j T4, s j T4, t j T4, u j T4, pd j T4, qd j T4, rd j T4, sd j T4, td j T4, ud j T4, f' (getFromJ j) j T4])]
             | j <- [1 .. i - 1] ++ [i + 1 .. k]]
 
@@ -337,9 +337,9 @@ genConnectingRules cmd = do
             [(Word [x 0 T4, f0 T4], Word [SmbY' Alpha, x 0 TAlpha, f0 TAlpha]),
             (Word [e' (k + 1) T4, x' (k + 1) T4], Word [e' (k + 1) TAlpha, x' (k + 1) TAlpha, SmbY' Omega]),
             (Word [e i T4], Word [e i TAlpha]),
-            (Word [x i T4, f (getFromJ i) i T4, e' i T4, p_index' "1" i T4],
+            (Word [x i T4, f (getFromJ i) i T4, e' i T4, pIndex' "1" i T4],
             Word [SmbY' $ Y a, x i TAlpha, f (getToJ i) i TAlpha, e' i TAlpha, p4 TAlpha, SmbY' Delta]),
-            (Word [q_index' "1" i T4, r_index' "1" i T4, s_index' "1" i T4, t_index' "1" i T4, u_index' "1" i T4],
+            (Word [qIndex' "1" i T4, rIndex' "1" i T4, sIndex' "1" i T4, tIndex' "1" i T4, uIndex' "1" i T4],
             Word [q4 TAlpha, r4 TAlpha, s4 TAlpha, t4 TAlpha, u4 TAlpha]),
             (Word [e 0 T4], Word [e 0 TAlpha]),
             (Word [fl' T4], Word [fl' TAlpha]),
@@ -371,7 +371,7 @@ genConnectingRules cmd = do
     let rulealphaomega =
             SRule $ (++)
             [(Word [e 0 TAlpha], Word [e 0 TOmega]),
-            (Word [x_index "2" 0 TAlpha, f0 TAlpha], Word [x 0 TOmega, f0 TOmega]),
+            (Word [xIndex "2" 0 TAlpha, f0 TAlpha], Word [x 0 TOmega, f0 TOmega]),
             (Word [e' (k + 1) TAlpha, x' (k + 1) TAlpha], Word [e' (k + 1) TOmega, x' (k + 1) TOmega]),
             (Word [fl' TAlpha], Word [fl' TOmega])]
             $ changeMachine TAlpha TOmega
@@ -380,27 +380,27 @@ genConnectingRules cmd = do
             SRule $ (++)
             [(Word [e 0 TOmega], Word [e 0 T9]),
             (Word [x 0 TOmega, f0 TOmega], Word [x 0 T9, f0 T9]),
-            (Word [e' (k + 1) TOmega, x_index' "2" (k + 1) TOmega], Word [e' (k + 1) T9, x' (k + 1) T9]),
+            (Word [e' (k + 1) TOmega, xIndex' "2" (k + 1) TOmega], Word [e' (k + 1) T9, x' (k + 1) T9]),
             (Word [fl' TOmega], Word [fl' T9])]
             $ changeMachine TOmega T9
 
     let rule9 =
             SRule $ (++)
-            [(Word [e 0 T9], Word [e_e 0]),
-            (Word [x 0 T9, f0 T9], Word [e_x 0,  e_f0]),
-            (Word [e' (k + 1) T9, x' (k + 1) T9], Word [e_e' (k + 1), e_x' (k + 1)]),
-            (Word [fl' T9], Word [ e_fl']),
-            (Word [e i T9], Word [e_e i]),
-            (Word [xh i T9, f (getToJ i) i T9, e' i T9, ph_index "1" i T9],
-            Word [e_x i, e_f (getToJ i) i, e_e' i, e_p i]),
-            (Word [qh_index "1" i T9, rh_index "1" i T9, sh_index "1" i T9, th_index "1" i T9, uh_index "1" i T9, phd_index "0" i T9, qhd_index "0" i T9, rhd_index "0" i T9, shd_index "0" i T9, thd_index "0" i T9, uhd_index "0" i T9, f' (getToJ i) i T9],
-            Word [e_q i, e_r i, e_s i, e_t i, e_u i, e_pd i, e_qd i, e_rd i, e_sd i, e_td i, e_ud i, e_f' (getToJ i) i])]
+            [(Word [e 0 T9], Word [eE 0]),
+            (Word [x 0 T9, f0 T9], Word [eX 0,  eF0]),
+            (Word [e' (k + 1) T9, x' (k + 1) T9], Word [eE' (k + 1), eX' (k + 1)]),
+            (Word [fl' T9], Word [ eFl']),
+            (Word [e i T9], Word [eE i]),
+            (Word [xh i T9, f (getToJ i) i T9, e' i T9, phIndex "1" i T9],
+            Word [eX i, eF (getToJ i) i, eE' i, eP i]),
+            (Word [qhIndex "1" i T9, rhIndex "1" i T9, shIndex "1" i T9, thIndex "1" i T9, uhIndex "1" i T9, phdIndex "0" i T9, qhdIndex "0" i T9, rhdIndex "0" i T9, shdIndex "0" i T9, thdIndex "0" i T9, uhdIndex "0" i T9, f' (getToJ i) i T9],
+            Word [eQ i, eR i, eS i, eT i, eU i, ePd i, eQd i, eRd i, eSd i, eTd i, eUd i, eF' (getToJ i) i])]
             $ concat
-            [[(Word [e j T9], Word [e_e j]),
+            [[(Word [e j T9], Word [eE j]),
             (Word [x j T9, f (getToJ j) j T9, e' j T9, p j T9],
-            Word [e_x j, e_f (getToJ j) j, e_e' j, e_p j]),
+            Word [eX j, eF (getToJ j) j, eE' j, eP j]),
             (Word [q j T9, r j T9, s j T9, t j T9, u j T9, pd j T9, qd j T9, rd j T9, sd j T9, td j T9, ud j T9, f' (getToJ j) j T9],
-            Word [e_q j, e_r j, e_s j, e_t j, e_u j, e_pd j, e_qd j, e_rd j, e_sd j, e_td j, e_ud j, e_f' (getToJ j) j])]
+            Word [eQ j, eR j, eS j, eT j, eU j, ePd j, eQd j, eRd j, eSd j, eTd j, eUd j, eF' (getToJ j) j])]
             | j <- [1 .. i - 1] ++ [i + 1 .. k] ]
 
     [rule4, rule4alpha, rulealphaomega, ruleomega9, rule9]
@@ -413,11 +413,11 @@ genPos22Rule cmd = do
     let getFromJ j = a where (a, _) = getJIdx command j
     let getToJ j = a where (_, a) = getJIdx command j
     SRule $ (++)
-        [(Word [e_e i, e_x i, e_f (getFromJ i) i, e_e' i, e_p i, e_q i, e_r i, e_s i, e_t i, e_u i, e_pd i, e_qd i, e_rd i, e_sd i, e_td i, e_ud i, e_f' (getFromJ i) i],
-        Word [e_e i, e_x i, e_f (getToJ i) i, e_e' i, e_p i, e_q i, e_r i, e_s i, e_t i, e_u i, e_pd i, e_qd i, e_rd i, e_sd i, e_td i, e_ud i, e_f' (getToJ i) i])]
+        [(Word [eE i, eX i, eF (getFromJ i) i, eE' i, eP i, eQ i, eR i, eS i, eT i, eU i, ePd i, eQd i, eRd i, eSd i, eTd i, eUd i, eF' (getFromJ i) i],
+        Word [eE i, eX i, eF (getToJ i) i, eE' i, eP i, eQ i, eR i, eS i, eT i, eU i, ePd i, eQd i, eRd i, eSd i, eTd i, eUd i, eF' (getToJ i) i])]
         $ concat
-        [[(Word [e_f (getFromJ j) j], Word [e_f (getToJ j) j]),
-        (Word [e_f' (getFromJ j) j], Word [e_f' (getToJ j) j])]
+        [[(Word [eF (getFromJ j) j], Word [eF (getToJ j) j]),
+        (Word [eF' (getFromJ j) j], Word [eF' (getToJ j) j])]
         | j <- [1 .. i - 1] ++ [i + 1 .. k]]
 
 symSM :: SRule -> SRule
@@ -444,12 +444,12 @@ symSM (SRule wordPairs) = do
 sigmaFunc :: [TMType.State] -> [[Smb]] -> SMType.Word
 sigmaFunc states u =
     Word $
-    e_e 0 : alphan ++ [e_x 0, e_f "" 0] ++
+    eE 0 : alphan ++ [eX 0, eF "" 0] ++
     concatMap
     (\(i, TMType.State q, d, w) ->
-        e_e i : w ++ [e_x i, e_f q i, e_e' i, e_p i] ++ d
-                  ++ [e_q i, e_r i, e_s i, e_t i, e_u i, e_pd i, e_qd i, e_rd i, e_sd i, e_td i, e_ud i, e_f' q i]) (zip4 [1..] states deltan u) ++
-    [e_e' (k + 1), e_x' (k + 1)] ++ omegan ++ [e_f' "" (k + 1)]
+        eE i : w ++ [eX i, eF q i, eE' i, eP i] ++ d
+                  ++ [eQ i, eR i, eS i, eT i, eU i, ePd i, eQd i, eRd i, eSd i, eTd i, eUd i, eF' q i]) (zip4 [1..] states deltan u) ++
+    [eE' (k + 1), eX' (k + 1)] ++ omegan ++ [eF' "" (k + 1)]
     where
             un = map length u
             k = length states

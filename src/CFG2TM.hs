@@ -1,3 +1,5 @@
+{-# LANGUAGE TupleSections #-}
+
 module CFG2TM where
 
 import GrammarType
@@ -86,7 +88,7 @@ genEraseCommand (Terminal terminal) =  [SingleTapeCommand ((x, sSFT, RBS), (ES, 
                     x = defValue terminal
 
 genPreviewCommand :: [Relation] -> [State] -> ([State], [[TapeCommand]], [(Relation, State)])
-genPreviewCommand rels states = if all checkDeterm groups then foldl func (states, [], []) groups else (states, [], map (\r -> (r, sSFT)) rels)
+genPreviewCommand rels states = if all checkDeterm groups then foldl func (states, [], []) groups else (states, [], map (, sSFT) rels)
     where
         groups = groupBy (\(Relation (n1, h1 : _)) (Relation (n2, h2 : _)) -> n1 == n2 && first rels h1 == first rels h2) .
                     sortBy (\(Relation (n1, h1 : _)) (Relation (n2, h2 : _)) -> compare (n1, first rels h1) (n2, first rels h2) ) $ rels

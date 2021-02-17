@@ -65,8 +65,8 @@ module SMInterpreter where
                                             (acc_apply, new_m) = applyRules wrds rules m []
             _ -> error "Commandss and configss don't match"
 
-    get_front :: [[Word]] -> [Word]
-    get_front = map last
+    getFront :: [[Word]] -> [Word]
+    getFront = map last
 
     startInterpreting :: Word -> [[Word]] -> [SRule] -> Map Word Int -> ([Word], Map Word Int)
     startInterpreting accessWord wordss rules m =
@@ -75,7 +75,7 @@ module SMInterpreter where
             Nothing | ruless == [[]]    -> error "No rule is applicable"
                     | otherwise         -> startInterpreting accessWord acc_apply rules new_m
         where
-            ruless = getApplicableRules rules (get_front wordss)
+            ruless = getApplicableRules rules (getFront wordss)
             (acc_apply, new_m) = applyRuless wordss ruless m []
 
     interpretSM :: Word -> SM -> Word -> [Word]

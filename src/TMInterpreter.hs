@@ -1,3 +1,5 @@
+{-# LANGUAGE TupleSections #-}
+
 module TMInterpreter where
     import TMType
     import ConfigType
@@ -81,6 +83,6 @@ module TMInterpreter where
             let inputSquare = mapValue input
             let isInputCorrect = Set.isSubsetOf (Set.fromList inputSquare) inputAlphabet
             let startConfigss = [[(LBS : inputSquare, head startStates, [RBS]) :
-                                    map (\s -> ([LBS], s, [RBS])) (tail startStates)]]
+                                    map ([LBS],, [RBS]) (tail startStates)]]
             if isInputCorrect then Configs (startInterpreting accessStates startConfigss (Set.toList commands)) else error "Incorrect input"
 
