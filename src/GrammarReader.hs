@@ -91,8 +91,8 @@ pRelation = do
 pVeryLongRule :: Parser [Symbol]
 pVeryLongRule = do
     word <- pWord
-    positiveConj <- pure ((++) word) <*> concat <$> many (try pPositiveConjunction)
-    pure ((++) positiveConj) <*> concat <$> many pNegativeConjunction
+    positiveConj <- (++) word . concat <$> many (try pPositiveConjunction)
+    (positiveConj ++) . concat <$> many pNegativeConjunction
 
 pNegativeConjunction :: Parser [Symbol]
 pNegativeConjunction = do
@@ -103,18 +103,18 @@ pNegativeConjunction = do
 pPositiveConjunction :: Parser [Symbol]
 pPositiveConjunction = do
     conjunction <- try pConjunction
-    pure ((++) [conjunction]) <*> pWord
+    (++) [conjunction] <$> pWord
 
 pPositiveFormula :: Parser [Symbol]
 pPositiveFormula = do
     word <- pWord
-    pure ((++) word) <*> concat <$> many pPositiveConjunction
+    (++) word . concat <$> many pPositiveConjunction
 
 pNegativeFormula :: Parser [Symbol]
 pNegativeFormula = do
     negation <- pNegation
-    negationWords <- pure ((++) [negation]) <*> pWord
-    pure ((++) negationWords) <*> concat <$> many pNegativeConjunction
+    negationWords <- (++) [negation] <$> pWord
+    (++) negationWords . concat <$> many pNegativeConjunction
 
 -- |Parsers for set of terminals and nonterminals.
 pNonterminals :: Parser (Set Nonterminal)

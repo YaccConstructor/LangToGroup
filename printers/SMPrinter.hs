@@ -66,8 +66,8 @@ module SMPrinter where
     instance ShowLaTeX SRule where
         doLaTeX (SRule s) = foldl1 (\x y -> x <> lnbk <> y) $ map (\(w1,w2) -> doLaTeX w1 <> math to <> " " <> doLaTeX w2) s
 
-    tau_alias :: Show a => a -> String
-    tau_alias i = "\\tau_{" ++ show i ++ "}"
+    tauAlias :: Show a => a -> String
+    tauAlias i = "\\tau_{" ++ show i ++ "}"
 
     substituteWord :: Int
                         -> [Smb]
@@ -86,7 +86,7 @@ module SMPrinter where
                         cmd = tmCommand sval
                         (Just command) = cmd
                         cmdInAcc = find (\(_, c1) -> command == c1) accNames
-                        name = CommandAlias $ tau_alias i
+                        name = CommandAlias $ tauAlias i
                         newSmbQ = case cmdInAcc of
                                     Nothing -> SmbQ $ s {s_val = Just $ sval {tmCommand = Just name}}
                                     (Just (n, _)) -> SmbQ $ s {s_val = Just $ sval {tmCommand = Just n}}
