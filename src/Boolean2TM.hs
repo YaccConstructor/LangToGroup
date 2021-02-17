@@ -380,7 +380,7 @@ generateTransitionFromConjunctionResult grammar@(Grammar (_, terminals, relation
 -- Block for figuring if conjunction has one of nonterminals with "-" sign and
 -- it is possible to split a word into two in a different way for the same conjunction
 generateBlockCheckIfWordsSplitCanBeChanged :: Grammar -> DebuggingQuadruples
-generateBlockCheckIfWordsSplitCanBeChanged grammar@(Grammar (nonterminals, terminals, relations, _)) = let
+generateBlockCheckIfWordsSplitCanBeChanged grammar@(Grammar (nonterminals, terminals, _, _)) = let
     qWordsChanging = "qWordsChanging"
     moveToBringSymbol = qWordsChanging ++ "MoveToBringSymbol"
     metFstNonterminal = qWordsChanging ++ "MetFstNonterminal"
@@ -476,20 +476,26 @@ generateBlockCheckIfWordsSplitCanBeChanged grammar@(Grammar (nonterminals, termi
     in (DQuadruples $ addCollectionToMap quadruples Map.empty)
 
 generateBlockForChangingWord :: Grammar -> DebuggingQuadruples
-generateBlockForChangingWord grammar@(Grammar (nonterminals, terminals, _, _)) = let
+generateBlockForChangingWord (Grammar (nonterminals, terminals, _, _)) = let
     qWordsChanging = "qWordsChanging"
-    bringSymbol = qWordsChanging ++ "bringSymbol"
-    broughtSymbol = qWordsChanging ++ "broughtSymbol"
+    bringSymbol = qWordsChanging ++ "BringSymbol"
+    broughtSymbol = qWordsChanging ++ "BroughtSymbol"
     write = qWordsChanging ++ "Write"
     transition = "transition"
+    writeBroughtSymbolt = qWordsChanging ++ "WriteBroughtSymbol"
+    createCounterForFstNonterminal = qWordsChanging ++ "CreateCounterForFstNonterminal"
+    moveToEnd = qWordsChanging ++ "moveToEnd"
+    qFindNewSubstitution = "qFindNewSubstitution"
+    fstCounter = "1"
+
     terminalsList = map terminalValue $ Set.toList terminals
     nonterminalsList = map nonterminalValue $ Set.toList nonterminals
     plus = "+"
     minus = "-"
     signs = [plus, minus]
-    leftBracket = ["("]
-    rightBracket = [")"]
-    brackets = leftBracket ++ rightBracket
+    leftBracket = "("
+    rightBracket = ")"
+    brackets = [leftBracket, rightBracket]
     --BLOCK for qWordsChangingBringSymbol
     symbolsToBroughtSymbolt = concatMap (\t -> [
         ((DState bringSymbol, DSymbol t),(D $ DSymbol " ", DState $ bringSymbol ++ t ++ transition)),
@@ -504,12 +510,47 @@ generateBlockForChangingWord grammar@(Grammar (nonterminals, terminals, _, _)) =
         [((DState $ broughtSymbol ++ t, DSymbol k),(D $ DSymbol " ", DState $ write ++ t ++ k ++ transition)),
         ((DState $ write ++ t ++ k ++ transition, DSymbol " "),(DebuggingTypes.R, DState $ write ++ t ++ k))]) pairs
     --BLOCK for qWordsChangingWritetk
+    remembered' = signs ++ nonterminalsList ++ [leftBracket]
+    pairs' = concatMap (\t -> map (t,) remembered') terminalsList
     symbolsToBroughtSymbolt' = concatMap (\(t, k) ->
         [((DState $ write ++ t ++ k, DSymbol " "),(D $ DSymbol k, DState $ broughtSymbol ++ t ++ k ++ transition)),
-        ((DState $ broughtSymbol ++ t ++ k ++ transition, DSymbol k),(DebuggingTypes.R, DState $ broughtSymbol ++ t))
-        ]) pairs
+        ((DState $ broughtSymbol ++ t ++ k ++ transition, DSymbol k),(DebuggingTypes.L, DState $ broughtSymbol ++ t))
+        ]) pairs'
+    -- special case for )
+    symbolsToWriteBroughtSymbolt = concatMap (\t -> let
+        oldState = write ++ t ++ rightBracket
+        oldStateTransition = oldState ++ transition
+        in
+        [((DState oldState, DSymbol " "),(D $ DSymbol rightBracket, DState oldStateTransition)),
+        ((DState oldStateTransition, DSymbol rightBracket),(DebuggingTypes.R, DState writeBroughtSymbolt))]) terminalsList
 
-    quadruples = symbolsToBroughtSymbolt ++ symbolsInBroughtSymbolt ++ symbolsToWritetk ++ symbolsToBroughtSymbolt'
+    --BLOCK for qWordsChangingWriteBroughtSymbolt
+    symbolsToCreateCounterForFstNonterminal = concatMap (\t ->
+        let transitionState = writeBroughtSymbolt ++ transition in
+        [((DState writeBroughtSymbolt, DSymbol " "),(D $ DSymbol t, DState transitionState)),
+        ((DState transitionState, DSymbol t),(DebuggingTypes.L, DState createCounterForFstNonterminal))]) terminalsList
+
+    --BLOCK for qWordsChangingCreateCounterForFstNonterminal
+    symbolsInCreateCounterForFstNonterminal = map (\t ->
+        ((DState createCounterForFstNonterminal, DSymbol t),(DebuggingTypes.L, DState createCounterForFstNonterminal)))
+        $ leftBracket : terminalsList
+    symbolsToMoveToEnd = concatMap (\t -> let
+        transitionState = createCounterForFstNonterminal ++ transition in
+        [((DState createCounterForFstNonterminal, DSymbol t),(D $ DSymbol fstCounter, DState transitionState)),
+        ((DState transitionState, DSymbol fstCounter),(DebuggingTypes.R, DState moveToEnd))
+        ]) signs
+
+    --BLOCK for qWordsChangingMoveToEnd
+    symbols = fstCounter  : brackets ++ terminalsList ++ nonterminalsList 
+    symbolsInMoveToEnd = map (\t -> ((DState moveToEnd, DSymbol t),(DebuggingTypes.R, DState moveToEnd))) symbols
+    symbolsToQFindNewSubstitution = map (\t -> 
+        ((DState moveToEnd, DSymbol t),(DebuggingTypes.L, DState qFindNewSubstitution))) $ " " : signs 
+
+    quadruples = symbolsToBroughtSymbolt ++ symbolsInBroughtSymbolt ++ symbolsToWritetk
+        ++ symbolsToBroughtSymbolt' ++ symbolsToWriteBroughtSymbolt ++ symbolsToCreateCounterForFstNonterminal
+        ++ symbolsInCreateCounterForFstNonterminal ++ symbolsToMoveToEnd ++ symbolsInMoveToEnd
+        ++ symbolsToQFindNewSubstitution
+
     in (DQuadruples $ addCollectionToMap quadruples Map.empty)
 
 constructSymbolsPairByQuad :: (String, String, String, String) -> Bool -> SymbolsPair
