@@ -556,27 +556,76 @@ generateBlockForChangingWord (Grammar (nonterminals, terminals, _, _)) = let
 generateBlockForFolding :: Grammar -> DebuggingQuadruples
 generateBlockForFolding grammar@(Grammar (nonterminals, terminals, relations,_)) = let
     qRewrite = "qRewrite"
-    terminalsList = map show $ Set.toList terminals
-  --nonterminalsList = map show $ Set.toList nonterminals
+    withMinus = "withMinus"
+    qFindNewSubstitution = "qFindNewSubstitution"
+    transition = "transition"
+    qSkipParentNonterminal = "qSkipParentNonterminal"
+    qRemoveSymbols = "qRemoveSymbols"
+    qRemoveBracketsAroundFstWord = "qRemoveBracketsAroundFstWord"
+    minus = "-"
+    plus = "+"
+    signs = [minus, plus]
+    negation = "!"
+    leftBracket = "("
+    nonterminalsList = map show $ Set.toList nonterminals
+
+  --BLOCK for qRewriteNWithWord (N - nonterminal)
   -- case, when current rule has one terminal in right part: applying this rule to word with more
   -- than 1 symbol is impossible
-   
-  --symbolsToRewriteNWithMinus = nonterminalsList
+    nonterminalsWithIndices = Map.toList $ getNumbersOfShortRelations grammar
+    symbolsToQFindNewSubstitution = concatMap (\(Nonterminal nonterm, indices) -> concatMap (\i -> let
+        state = qRewrite ++ nonterm ++ withMinus
+        stateTransition = state ++ transition
+        in
+        [((DState state, DSymbol i),(D $ DSymbol minus, DState stateTransition)),
+         ((DState stateTransition, DSymbol i),(DebuggingTypes.L, DState qFindNewSubstitution))]) indices) nonterminalsWithIndices
 
-    quadruples = []
+    --BLOCK for qRewriteMinus or qRewritePlus
+    pairs = concatMap (\sign -> map (sign,) nonterminalsList) signs
+    symbolsToQRewriteNSign = map (\(sign, nonterm) -> let
+        newState =  qRewrite ++ nonterm ++ sign in
+        ((DState $ qRewrite ++ sign, DSymbol nonterm),(DebuggingTypes.R, DState newState))) pairs
+
+    --BLOCK for qRewriteNSign
+    maxNumber = calculateMaxNumberOfRulesForNonterminal grammar
+    possibleIndices = map show [1..maxNumber]
+    symbolsToQSkipParentNonterminal = concatMap (\(sign, nonterm) -> let
+        state = qRewrite ++ nonterm ++ sign
+        stateTransition = state ++ transition in
+        concatMap (\index ->
+            [((DState state, DSymbol index),(D $ DSymbol sign, DState stateTransition)),
+             ((DState stateTransition, DSymbol index),(DebuggingTypes.R, DState qSkipParentNonterminal))]) possibleIndices) pairs
+
+    --BLOCK for qSkipParentNonterminal
+    symbolsToQRemoveSymbols = [((DState qSkipParentNonterminal, DSymbol leftBracket),(DebuggingTypes.R, DState qRemoveSymbols))]
+
+    --BLOCK for qRemoveSymbols
+    symbolsInQRemoveSymbols = concatMap (\t -> let
+        stateTransition = qRemoveSymbols ++ transition in
+        [((DState qRemoveSymbols, DSymbol t),(D $ DSymbol " ", DState stateTransition)),
+        ((DState stateTransition, DSymbol " "),(DebuggingTypes.R, DState qRemoveSymbols))]) $ nonterminalsList ++ [negation]
+    symbolsToQRemoveBracketAroundFstWord = concatMap (\sign -> let
+        stateTransition = qRemoveBracketsAroundFstWord ++ transition in
+        [((DState qRemoveSymbols, DSymbol sign),(D $ DSymbol " ", DState stateTransition)),
+        ((DState stateTransition, DSymbol " "),(DebuggingTypes.R, DState qRemoveBracketsAroundFstWord))]) signs
+
+    --BLOCK for qRemoveBracketsAroundFstWord
+
+    quadruples = symbolsToQFindNewSubstitution ++ symbolsToQRewriteNSign ++ symbolsToQSkipParentNonterminal
+        ++ symbolsInQRemoveSymbols ++ symbolsToQRemoveSymbols ++ symbolsToQRemoveBracketAroundFstWord
     in (DQuadruples $ addCollectionToMap quadruples Map.empty)
 
 -- short relation is relation with one terminal in right part
-getNumbersOfShortRelations :: Grammar -> Map.Map Nonterminal [Int]
-getNumbersOfShortRelations grammar@(Grammar (nonterminals, terminals, relations, _)) =
+getNumbersOfShortRelations :: Grammar -> Map.Map Nonterminal [String]
+getNumbersOfShortRelations (Grammar (_, _, relations, _)) =
     Map.mapWithKey f $ calculateGroupRelationsByNonterminals $ Set.toList relations
 
-f :: Nonterminal -> [[GrammarType.Symbol]] -> [Int]
+f :: Nonterminal -> [[GrammarType.Symbol]] -> [String]
 f nonterminal rightParts = let
     shortOrNotRels = map (\t -> relationHasOneTerminalInRightPart (Relation (nonterminal, t))) rightParts
     indices'' = map (\t -> if t then elemIndex t shortOrNotRels else Nothing) shortOrNotRels
     indices' = filter (/= Nothing) indices''
-    indices = map (\(Just t) -> t) indices'
+    indices = map (\(Just t) -> show t) indices'
     in indices
 
 constructSymbolsPairByQuad :: (String, String, String, String) -> Bool -> SymbolsPair
