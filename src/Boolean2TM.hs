@@ -553,6 +553,32 @@ generateBlockForChangingWord (Grammar (nonterminals, terminals, _, _)) = let
 
     in (DQuadruples $ addCollectionToMap quadruples Map.empty)
 
+generateBlockForFolding :: Grammar -> DebuggingQuadruples
+generateBlockForFolding grammar@(Grammar (nonterminals, terminals, relations,_)) = let
+    qRewrite = "qRewrite"
+    terminalsList = map show $ Set.toList terminals
+  --nonterminalsList = map show $ Set.toList nonterminals
+  -- case, when current rule has one terminal in right part: applying this rule to word with more
+  -- than 1 symbol is impossible
+   
+  --symbolsToRewriteNWithMinus = nonterminalsList
+
+    quadruples = []
+    in (DQuadruples $ addCollectionToMap quadruples Map.empty)
+
+-- short relation is relation with one terminal in right part
+getNumbersOfShortRelations :: Grammar -> Map.Map Nonterminal [Int]
+getNumbersOfShortRelations grammar@(Grammar (nonterminals, terminals, relations, _)) =
+    Map.mapWithKey f $ calculateGroupRelationsByNonterminals $ Set.toList relations
+
+f :: Nonterminal -> [[GrammarType.Symbol]] -> [Int]
+f nonterminal rightParts = let
+    shortOrNotRels = map (\t -> relationHasOneTerminalInRightPart (Relation (nonterminal, t))) rightParts
+    indices'' = map (\t -> if t then elemIndex t shortOrNotRels else Nothing) shortOrNotRels
+    indices' = filter (/= Nothing) indices''
+    indices = map (\(Just t) -> t) indices'
+    in indices
+
 constructSymbolsPairByQuad :: (String, String, String, String) -> Bool -> SymbolsPair
 constructSymbolsPairByQuad (number, leftN, fstN, sndN) hasNeg =
     SymbolsPair (Nonterminal leftN, read number :: Int, hasNeg, N $ Nonterminal fstN, N $ Nonterminal sndN)
