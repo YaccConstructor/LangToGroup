@@ -579,8 +579,8 @@ generateBlockForFolding grammar@(Grammar (nonterminals, terminals, _,_)) = let
     leftBracket = "("
     rightBracket = ")"
     brackets = [leftBracket, rightBracket]
-    nonterminalsList = map show $ Set.toList nonterminals
-    terminalsList = map show $ Set.toList terminals
+    nonterminalsList = map nonterminalValue $ Set.toList nonterminals
+    terminalsList = map terminalValue $ Set.toList terminals
 
   --BLOCK for qRewriteNWithWord (N - nonterminal)
   -- case, when current rule has one terminal in right part: applying this rule to word with more
@@ -757,6 +757,80 @@ f nonterminal rightParts = let
     indices' = map (\t -> if t then elemIndex t shortOrNotRels else Nothing) shortOrNotRels
     indices = map (\t -> show t) $ catMaybes indices'
     in indices
+
+generateBlockForCountWordLength :: Grammar -> DebuggingQuadruples
+generateBlockForCountWordLength grammar@(Grammar (nonterminals, terminals, relations, _)) = let
+    qWriteStartCounter = "qWriteStartCounter"
+    qCountWordLength = "qCountWordLength"
+    qCheckSymbol = "qCheckSymbol"
+    qSymbol = "qSymbol"
+    qWord = "qWord"
+    qStart ="qStart"
+    qChooseRelation = "qChooseRelation"
+    transition = "transition"
+    one = "1"
+    leftBracket = "("
+    rightBracket = ")"
+    maxNumber = calculateMaxNumberOfRulesForNonterminal grammar
+    indices = map show [1..maxNumber]
+    nonterminalsList = map nonterminalValue $ Set.toList nonterminals
+    terminalsList = map terminalValue $ Set.toList terminals
+
+    symbolsToQWriteStartCounterK = concatMap (\t -> let
+        stateTransition = qWriteStartCounter ++ transition ++ qWriteStartCounter ++ t in
+        [((DState qWriteStartCounter, DSymbol t),(D $ DSymbol one, DState stateTransition)),
+        ((DState stateTransition, DSymbol one),(DebuggingTypes.L, DState $ qWriteStartCounter ++ t))
+        ]) nonterminalsList
+
+    --BLOCK for qWriteStartCounterK
+    symbolsToQCountWordLength = concatMap (\t -> let
+        stateTransition = qWriteStartCounter ++ transition ++ qCountWordLength in
+        [((DState $ qWriteStartCounter ++ t, DSymbol " "),(D $ DSymbol t, DState stateTransition)),
+        ((DState stateTransition, DSymbol t),(DebuggingTypes.R, DState qCountWordLength))
+        ]) nonterminalsList
+
+    --BLOCK for qCountWordLength
+    symbolsInQCountWordLength = map (\t ->
+        ((DState qCountWordLength, DSymbol t),(DebuggingTypes.R, DState qCountWordLength)))
+        $ indices ++ nonterminalsList ++ [leftBracket]
+    symbolsToQCheckSymbol = map (\t ->
+        ((DState qCountWordLength, DSymbol t),(DebuggingTypes.R, DState qCheckSymbol))) terminalsList
+
+    --BLOCK for qCheckSymbol
+    symbolsToQSymbol = map (\t ->
+        ((DState qCheckSymbol, DSymbol t),(DebuggingTypes.L, DState qSymbol))) [rightBracket]
+    symbolsToQWord = map (\t ->
+            ((DState qCheckSymbol, DSymbol t),(DebuggingTypes.L, DState qWord))) terminalsList
+
+    --BLOCK for qSymbol
+    symbolsInQSymbol = map (\t ->
+        ((DState qSymbol, DSymbol t),(DebuggingTypes.L, DState qSymbol))) $ terminalsList ++ [leftBracket]
+    symbolsToQStart = map (\t ->
+        ((DState qSymbol, DSymbol t),(DebuggingTypes.L, DState qStart))) indices
+    
+    --BLOCK for qStart
+    -- necessary to implement boolean function for figuring if current symbol is accepted by current nonterminal
+    -- (if there is relation N -> t for N - nonterminal, t - nonterminal)
+       
+    --BLOCK for qWord
+    symbolsInQWord = map (\t ->
+        ((DState qWord, DSymbol t),(DebuggingTypes.L, DState qWord))) $ terminalsList ++ [leftBracket]
+    symbolsToQChooseRelationI = map (\t ->
+        ((DState qWord, DSymbol t),(DebuggingTypes.L, DState $ qChooseRelation ++ t))) indices
+    
+    --BLOCK for qChooseRelationI
+    pairs = map (\k -> 
+        (k, (Map.keys $ Map.filter (\t -> length t >= (read k :: Int)) $ calculateGroupRelationsByNonterminals $ Set.toList relations))) indices
+    
+        --in (Map.keys $ Map.filter (\t -> length t >= k) groupedRelations)
+    {---symbolsToQChooseRelationI = map (\t ->
+        ((DState qWord, DSymbol t),(DebuggingTypes.L, DState $ qChooseRelation ++ t))) indices--}
+            
+
+    quadruples = symbolsToQWriteStartCounterK ++ symbolsToQCountWordLength ++ symbolsInQCountWordLength
+        ++ symbolsToQCheckSymbol ++ symbolsToQSymbol ++ symbolsToQWord ++ symbolsInQSymbol
+        ++ symbolsToQStart ++ symbolsInQWord ++ symbolsToQChooseRelationI
+    in (DQuadruples $ addCollectionToMap quadruples Map.empty)
 
 constructSymbolsPairByQuad :: (String, String, String, String) -> Bool -> SymbolsPair
 constructSymbolsPairByQuad (number, leftN, fstN, sndN) hasNeg =
