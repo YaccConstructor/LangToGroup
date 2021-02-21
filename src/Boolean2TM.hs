@@ -838,7 +838,7 @@ generateBlockForCountWordLength grammar@(Grammar (nonterminals, terminals, relat
     symbolsInQNonterminalSign = concatMap (\t -> map (\sign ->
         ((DState $ q ++ t ++ sign, DSymbol leftBracket),(DebuggingTypes.L, DState $ q ++ t ++ sign))) 
         signs) nonterminalsList 
-    symbolsToQFindNewSubstitution = concatMap (\t -> map (\sign -> let
+    symbolsToQFindNewSubstitution = concatMap (\t -> concatMap (\sign -> let
         stateTransition = q ++ t ++ sign ++ transition ++ qFindNewSubstitution in
         [((DState $ q ++ t ++ sign, DSymbol t),(D $ DSymbol sign, DState stateTransition)),
         ((DState stateTransition, DSymbol sign),(DebuggingTypes.L, DState qFindNewSubstitution))]
