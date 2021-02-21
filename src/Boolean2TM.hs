@@ -769,10 +769,15 @@ generateBlockForCountWordLength grammar@(Grammar (nonterminals, terminals, relat
     qChooseRelation = "qChooseRelation"
     qRememberStart = "qRememberStart"
     qRewriteWithWord = "qRewriteWithWord"
+    qFindNewSubstitution = "qFindNewSubstitution"
+    q = "q"
     transition = "transition"
     one = "1"
     leftBracket = "("
     rightBracket = ")"
+    minus = "-"
+    plus = "+"
+    signs = [plus, minus]
     maxNumber = calculateMaxNumberOfRulesForNonterminal grammar
     indices = map show [1..maxNumber]
     nonterminalsList = map nonterminalValue $ Set.toList nonterminals
@@ -812,8 +817,32 @@ generateBlockForCountWordLength grammar@(Grammar (nonterminals, terminals, relat
         ((DState qSymbol, DSymbol t),(DebuggingTypes.L, DState qStart))) indices
     
     --BLOCK for qStart
-    -- necessary to implement boolean function for figuring if current symbol is accepted by current nonterminal
-    -- (if there is relation N -> t for N - nonterminal, t - nonterminal)
+    symbolsToQNonterminal = map (\t ->
+        ((DState qStart, DSymbol t),(DebuggingTypes.L, DState $ q ++ t))) nonterminalsList
+
+    --BLOCK for qNonterminal
+    symbolsInQNonterminal = concatMap (\t -> let
+        symbols = indices ++ [leftBracket]
+        in map (\s ->
+            ((DState $ q ++ t, DSymbol s),(DebuggingTypes.R, DState $ q ++ t)))
+            symbols) nonterminalsList
+    symbolsToQNonterminalSign = concatMap (\t -> map (\s ->
+        if symbolAcceptedByNonterminal grammar t s 
+            then ((DState $ q ++ t, DSymbol s),(DebuggingTypes.L, DState $ q ++ t ++ plus))
+            else ((DState $ q ++ t, DSymbol s),(DebuggingTypes.L, DState $ q ++ t ++ minus))
+        ) terminalsList) nonterminalsList
+    
+    --BLOCK for qNonterminal
+    -- if there is no terminals, which is accepted by given nonterminal, there will be unreachable 
+    -- state qNonterminal+
+    symbolsInQNonterminalSign = concatMap (\t -> map (\sign ->
+        ((DState $ q ++ t ++ sign, DSymbol leftBracket),(DebuggingTypes.L, DState $ q ++ t ++ sign))) 
+        signs) nonterminalsList 
+    symbolsToQFindNewSubstitution = concatMap (\t -> map (\sign -> let
+        stateTransition = q ++ t ++ sign ++ transition ++ qFindNewSubstitution in
+        [((DState $ q ++ t ++ sign, DSymbol t),(D $ DSymbol sign, DState stateTransition)),
+        ((DState stateTransition, DSymbol sign),(DebuggingTypes.L, DState qFindNewSubstitution))]
+        ) signs) indices
        
     --BLOCK for qWord
     symbolsInQWord = map (\t ->
@@ -834,22 +863,34 @@ generateBlockForCountWordLength grammar@(Grammar (nonterminals, terminals, relat
         nonterminals'Value = map nonterminalValue nonterminals'
         rest = nonterminalsList \\ nonterminals'Value
         oldState = qChooseRelation ++ k
-        in map (\t -> 
-            ((DState oldState, DSymbol t),(DebuggingTypes.R, DState $ qRewriteWithWord ++ t))) 
+        in map (\t ->
+            ((DState oldState, DSymbol t),(DebuggingTypes.R, DState $ qRewriteWithWord ++ t)))
             rest) indices
 
 
     quadruples = symbolsToQWriteStartCounterK ++ symbolsToQCountWordLength ++ symbolsInQCountWordLength
         ++ symbolsToQCheckSymbol ++ symbolsToQSymbol ++ symbolsToQWord ++ symbolsInQSymbol
         ++ symbolsToQStart ++ symbolsInQWord ++ symbolsToQChooseRelationI ++ symbolsToQRemember
-        ++ symbolsToQRewriteWithWordNonterminal
+        ++ symbolsToQRewriteWithWordNonterminal ++ symbolsToQNonterminal ++ symbolsInQNonterminal
+        ++ symbolsToQNonterminalSign ++ symbolsInQNonterminalSign ++ symbolsToQFindNewSubstitution
     in (DQuadruples $ addCollectionToMap quadruples Map.empty)
 
-{---getIndicesWithNonterminals :: [String] -> [Relation] -> [(String, [Nonterminal])]
-getIndicesWithNonterminals indices relations = map (\k -> let
-    groupedNonterminals = calculateGroupRelationsByNonterminals $ relations
-    t = (Map.keys $ Map.filter (\t -> length t >= (read k :: Int)) groupedNonterminals)
-    in (k, t)) indices --}
+symbolAcceptedByNonterminal :: Grammar -> String -> String -> Bool
+symbolAcceptedByNonterminal (Grammar (_, _, relations, _)) nontermValue symbol = let
+    groupedRelations = calculateGroupRelationsByNonterminals $ Set.toList relations
+    nonterminal = Nonterminal nontermValue
+    nontermRels = groupedRelations Map.! nonterminal
+    terminalsInRightPart' = map (\symbols ->
+        if relationHasOneTerminalInRightPart (Relation (nonterminal, symbols))
+            then Just $ head symbols
+            else Nothing) nontermRels
+    terminalsInRightPart = catMaybes terminalsInRightPart'
+    terminalsValues = map refineSymbolToTerminalValue terminalsInRightPart
+    in elem symbol terminalsValues
+
+refineSymbolToTerminalValue :: GrammarType.Symbol -> String
+refineSymbolToTerminalValue (T t) = terminalValue t
+refineSymbolToTerminalValue _ = error "Given symbol is not terminal"
 
 constructSymbolsPairByQuad :: (String, String, String, String) -> Bool -> SymbolsPair
 constructSymbolsPairByQuad (number, leftN, fstN, sndN) hasNeg =
