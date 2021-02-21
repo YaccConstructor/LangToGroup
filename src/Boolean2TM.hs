@@ -767,6 +767,8 @@ generateBlockForCountWordLength grammar@(Grammar (nonterminals, terminals, relat
     qWord = "qWord"
     qStart ="qStart"
     qChooseRelation = "qChooseRelation"
+    qRememberStart = "qRememberStart"
+    qRewriteWithWord = "qRewriteWithWord"
     transition = "transition"
     one = "1"
     leftBracket = "("
@@ -775,6 +777,7 @@ generateBlockForCountWordLength grammar@(Grammar (nonterminals, terminals, relat
     indices = map show [1..maxNumber]
     nonterminalsList = map nonterminalValue $ Set.toList nonterminals
     terminalsList = map terminalValue $ Set.toList terminals
+    relationsList = Set.toList relations
 
     symbolsToQWriteStartCounterK = concatMap (\t -> let
         stateTransition = qWriteStartCounter ++ transition ++ qWriteStartCounter ++ t in
@@ -819,18 +822,34 @@ generateBlockForCountWordLength grammar@(Grammar (nonterminals, terminals, relat
         ((DState qWord, DSymbol t),(DebuggingTypes.L, DState $ qChooseRelation ++ t))) indices
     
     --BLOCK for qChooseRelationI
-    pairs = map (\k -> 
-        (k, (Map.keys $ Map.filter (\t -> length t >= (read k :: Int)) $ calculateGroupRelationsByNonterminals $ Set.toList relations))) indices
-    
-        --in (Map.keys $ Map.filter (\t -> length t >= k) groupedRelations)
-    {---symbolsToQChooseRelationI = map (\t ->
-        ((DState qWord, DSymbol t),(DebuggingTypes.L, DState $ qChooseRelation ++ t))) indices--}
-            
+    symbolsToQRemember = concatMap (\k -> let
+        nonterminals' = getNonterminalsWithKRelsAnyLong relationsList (read k :: Int)
+        nonterminals'Values = map nonterminalValue nonterminals'
+        oldState = qChooseRelation ++ k
+        in map (\t ->
+            ((DState oldState, DSymbol t),(DebuggingTypes.R, DState qRememberStart)))
+            nonterminals'Values) indices
+    symbolsToQRewriteWithWordNonterminal = concatMap (\k -> let
+        nonterminals' = getNonterminalsWithKRelsAnyLong relationsList (read k :: Int)
+        nonterminals'Value = map nonterminalValue nonterminals'
+        rest = nonterminalsList \\ nonterminals'Value
+        oldState = qChooseRelation ++ k
+        in map (\t -> 
+            ((DState oldState, DSymbol t),(DebuggingTypes.R, DState $ qRewriteWithWord ++ t))) 
+            rest) indices
+
 
     quadruples = symbolsToQWriteStartCounterK ++ symbolsToQCountWordLength ++ symbolsInQCountWordLength
         ++ symbolsToQCheckSymbol ++ symbolsToQSymbol ++ symbolsToQWord ++ symbolsInQSymbol
-        ++ symbolsToQStart ++ symbolsInQWord ++ symbolsToQChooseRelationI
+        ++ symbolsToQStart ++ symbolsInQWord ++ symbolsToQChooseRelationI ++ symbolsToQRemember
+        ++ symbolsToQRewriteWithWordNonterminal
     in (DQuadruples $ addCollectionToMap quadruples Map.empty)
+
+{---getIndicesWithNonterminals :: [String] -> [Relation] -> [(String, [Nonterminal])]
+getIndicesWithNonterminals indices relations = map (\k -> let
+    groupedNonterminals = calculateGroupRelationsByNonterminals $ relations
+    t = (Map.keys $ Map.filter (\t -> length t >= (read k :: Int)) groupedNonterminals)
+    in (k, t)) indices --}
 
 constructSymbolsPairByQuad :: (String, String, String, String) -> Bool -> SymbolsPair
 constructSymbolsPairByQuad (number, leftN, fstN, sndN) hasNeg =
