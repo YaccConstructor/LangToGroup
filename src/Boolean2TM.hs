@@ -925,6 +925,9 @@ generateBlockForSubstitution grammar@(Grammar (nonterminals, terminals, rels, _)
     qRemember = "qRemember"
     markEnd = "MarkEnd"
     qShiftWord = "qShiftWord"
+    qWriteSymbol = "qWriteSymbol"
+    qWriteRemembered = "qWriteRemembered"
+    qWriteCounter = "qWriteCounter"
 
     transition = "transition"
     nonterminalsList = map nonterminalValue $ Set.toList nonterminals
@@ -983,10 +986,45 @@ generateBlockForSubstitution grammar@(Grammar (nonterminals, terminals, rels, _)
         ((DState stateTransition, DSymbol hash), (DebuggingTypes.R, DState newState))]) quintets
 
     --BLOCK for qShiftWordSymbolKTJF
-    --symbols
+    symbolsInQShiftWordSymbolKTJF = concatMap (\(k, t, j, f, s) -> let
+        state = qShiftWord ++ s ++ k ++ t ++ j ++ f in
+        [((DState state, DSymbol space), (DebuggingTypes.L, DState state))]) quintets
+    -- it is const, which is not dependent on conjunction or grammar
+    shift = 7
+    shifts = map show [1..shift]
+
+
+    symbolsWithSimilarStatesForTerms = nonterminalsList ++ signs ++
+        terminalsList ++ brackets ++ [hash]
+
+    tuple6 = concatMap (\(k, t, j, f, s) -> map (\s' -> (k, t, j, f, s, s'))
+        symbolsWithSimilarStatesForTerms) quintets
+    symbolsToQWriteSymbolKTJFsymbol = concatMap (\(k, t, j, f, s, s') -> let
+        oldState = qShiftWord ++ s ++ k ++ t ++ j ++ f
+        newState = qWriteSymbol ++ s ++ k ++ t ++ j ++ f ++ s'
+        stateTransition = oldState ++ transition ++ newState
+        in [((DState oldState, DSymbol s'), (D $ DSymbol space, DState stateTransition)),
+            ((DState stateTransition, DSymbol space), (DebuggingTypes.R, DState newState))]
+        ) tuple6
+
+    -- case for star for terminals and bracket
+    symbolsToQWriteSymbolKTJFStar = map (\(k, t, j, f, s) -> let
+        oldState = qShiftWord ++ s ++ k ++ t ++ j ++ f
+        newState = qWriteRemembered ++ s ++ k ++ t ++ j ++ f in
+        ((DState oldState, DSymbol star), (DebuggingTypes.R, DState newState))) quintets
+
+    -- case for shifts for terminals
+    terminalQuintets = concatMap (\(k, t, j, f) ->
+        map (\symbol -> (k, t, j, f, symbol)) terminalsList) quads
+    symbolsToQWriteSymbolKTJFshift = concatMap (\(k, t, j, f, s) -> map (\i -> let
+        oldState = qShiftWord ++ s ++ k ++ t ++ j ++ f
+        newState = qWriteCounter ++ s ++ k ++ t ++ j ++ f in
+        ((DState oldState, DSymbol i), (DebuggingTypes.R, DState newState))) shifts) terminalQuintets
 
     quadruples = symbolsInQRememberStartKTJF ++ symbolsToQRememberSymbolMarkEndKTJF
         ++ symbolsInQRememberSymbolMarkEndKTJF ++ symbolsToQShiftWordSymbolKTJF
+        ++ symbolsInQShiftWordSymbolKTJF ++ symbolsToQWriteSymbolKTJFsymbol
+        ++ symbolsToQWriteSymbolKTJFStar ++ symbolsToQWriteSymbolKTJFshift
     in (DQuadruples $ addCollectionToMap quadruples Map.empty)
 
 constructSymbolsPairByQuad :: (String, String, String, String) -> Bool -> SymbolsPair
