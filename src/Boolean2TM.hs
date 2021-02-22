@@ -1020,11 +1020,24 @@ generateBlockForSubstitution grammar@(Grammar (nonterminals, terminals, rels, _)
         oldState = qShiftWord ++ s ++ k ++ t ++ j ++ f
         newState = qWriteCounter ++ s ++ k ++ t ++ j ++ f in
         ((DState oldState, DSymbol i), (DebuggingTypes.R, DState newState))) shifts) terminalQuintets
+    
+    --BLOCK for qWriteSymbolKTJFs'
+    symbolsFromQWriteSymbolKTJFs'ToQShiftWordSymbolKTJF = concatMap (\(k, t, j, f, s, s') -> let
+        oldState = qWriteSymbol ++ s ++ k ++ t ++ j ++ f ++ s'
+        newState = qShiftWord ++ s ++ k ++ t ++ j ++ f 
+        stateTransition = oldState ++ transition ++ newState in
+        [((DState oldState, DSymbol space), (D $ DSymbol s', DState stateTransition)),
+        ((DState stateTransition, DSymbol s'), (DebuggingTypes.L, DState newState))]) tuple6
+    
+    -- BLOCK for qWriteCounterSymbolKTJF (terminals)
+    -- BLOCK for star (terminals)
+    -- BLOCK for star (bracket - special case)
 
     quadruples = symbolsInQRememberStartKTJF ++ symbolsToQRememberSymbolMarkEndKTJF
         ++ symbolsInQRememberSymbolMarkEndKTJF ++ symbolsToQShiftWordSymbolKTJF
         ++ symbolsInQShiftWordSymbolKTJF ++ symbolsToQWriteSymbolKTJFsymbol
         ++ symbolsToQWriteSymbolKTJFStar ++ symbolsToQWriteSymbolKTJFshift
+        ++ symbolsFromQWriteSymbolKTJFs'ToQShiftWordSymbolKTJF
     in (DQuadruples $ addCollectionToMap quadruples Map.empty)
 
 constructSymbolsPairByQuad :: (String, String, String, String) -> Bool -> SymbolsPair
