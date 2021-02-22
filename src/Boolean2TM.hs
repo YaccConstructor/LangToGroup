@@ -40,7 +40,7 @@ generateBlockForFindingNewSubstitution grammar@(Grammar (nonterminals, terminals
   nonterminalsList = Set.toList nonterminals
   signsList = ["+", "-"]
   negation = ["!"]
-  indices= map show [1..maxNumberOfRules]
+  indices= map show [0..maxNumberOfRules - 1]
 
   maxNumberOfRules = calculateMaxNumberOfRulesForNonterminal grammar
 
@@ -106,7 +106,7 @@ generateBlockForScanResults grammar@(Grammar (nonterminals, terminals, _, _)) = 
     leftBracket = ["("]
     rightBracket = [")"]
     brackets = leftBracket ++ rightBracket
-    indices = map show [1..maxNumberOfRules]
+    indices = map show [0..maxNumberOfRules - 1]
     allSymbols = terminalsList ++ nonterminalsList ++ signs ++ indices ++ brackets ++ negation
 
     symbolsInQMoveToEndAndScanResultQdrs = map
@@ -154,7 +154,7 @@ generateBlockForScanResults grammar@(Grammar (nonterminals, terminals, _, _)) = 
 generateBlockForRefiningConjunctionDetails :: Grammar -> DebuggingQuadruples
 generateBlockForRefiningConjunctionDetails grammar = let
     maxNumberOfRules = calculateMaxNumberOfRulesForNonterminal grammar
-    indices = map show [1..maxNumberOfRules]
+    indices = map show [0..maxNumberOfRules - 1]
     quadruplesList = map (generateBlockForQKFindNegation grammar) indices
     in unionQuadruples quadruplesList
 
@@ -246,15 +246,15 @@ calculateTriplets grammar number
                     grammar t number
             in map (number, t,) firstNonterminals)
 
-calculateQuads' :: Grammar -> [([Char], [Char], [Char])] -> [([Char], [Char], [Char], [[Char]])]
+calculateQuads' :: Grammar -> [([Char], [Char], [Char])] -> [(String, String, String, [String])]
 calculateQuads' grammar = map (\ (k, t, j) -> (k, t, j, getSecondNonterminalsInConjunctionsOfGivenRelation grammar k t j))
 
-calculateQuads :: Grammar -> String -> [String] -> [([Char], [Char], [Char], [Char])]
+calculateQuads :: Grammar -> String -> [String] -> [(String, String, String, String)]
 calculateQuads grammar k nonterminalsWithKRels = let
     triplets = calculateTriplets grammar k nonterminalsWithKRels
-    quads' = calculateQuads' grammar triplets 
+    quads' = calculateQuads' grammar triplets
     in concatMap (\ (k, t, j, s) -> map (k, t, j,) s) quads'
-  
+
 -- grammar -> string (nonterminal in left part) -> string (number of relation)
 --  -> string (first nonterminal in conjunction) -> list of first nonterminals
 getSecondNonterminalsInConjunctionsOfGivenRelation :: Grammar -> String -> String -> String -> [String]
@@ -325,8 +325,7 @@ generateTransitionFromConjunctionResult grammar@(Grammar (_, terminals, relation
     maxNumberOfRules = calculateMaxNumberOfRulesForNonterminal grammar
     nonterminalsWithKRules = getNonterminalsWithKRelsAnyLong (Set.toList relations) maxNumberOfRules
     nonterminalsWithKRulesList = map show nonterminalsWithKRules
-    triplets = calculateTriplets grammar (show maxNumberOfRules) nonterminalsWithKRulesList
-    quads = calculateQuads grammar (show maxNumberOfRules) nonterminalsWithKRulesList 
+    quads = calculateQuads grammar (show maxNumberOfRules) nonterminalsWithKRulesList
 
     -- BLOCK FOR qRulektjs
     quadruplesInRulektjs' = concatMap (\s ->
@@ -410,7 +409,7 @@ generateBlockCheckIfWordsSplitCanBeChanged grammar@(Grammar (nonterminals, termi
     rightBracket = [")"]
     brackets = leftBracket ++ rightBracket
     maxNumberOfRules = calculateMaxNumberOfRulesForNonterminal grammar
-    indices = map show [1..maxNumberOfRules]
+    indices = map show [0..maxNumberOfRules - 1]
 
     --BLOCK for qWordsChangingMoveToBringSymbol
     symbolsInMoveToBringSymbol = map
@@ -753,13 +752,13 @@ generateBlockForFolding grammar@(Grammar (nonterminals, terminals, _,_)) = let
 -- short relation is relation with one terminal in right part
 getNumbersOfShortRelations :: Grammar -> Map.Map Nonterminal [String]
 getNumbersOfShortRelations (Grammar (_, _, relations, _)) =
-    Map.mapWithKey f $ calculateGroupRelationsByNonterminals $ Set.toList relations
+    Map.mapWithKey getShortRightParts $ calculateGroupRelationsByNonterminals $ Set.toList relations
 
-f :: Nonterminal -> [[GrammarType.Symbol]] -> [String]
-f nonterminal rightParts = let
+getShortRightParts :: Nonterminal -> [[GrammarType.Symbol]] -> [String]
+getShortRightParts nonterminal rightParts = let
     shortOrNotRels = map (\t -> relationHasOneTerminalInRightPart (Relation (nonterminal, t))) rightParts
     indices' = map (\t -> if t then elemIndex t shortOrNotRels else Nothing) shortOrNotRels
-    indices = map (\t -> show t) $ catMaybes indices'
+    indices = map show $ catMaybes indices'
     in indices
 
 generateBlockForCountWordLength :: Grammar -> DebuggingQuadruples
@@ -783,7 +782,7 @@ generateBlockForCountWordLength grammar@(Grammar (nonterminals, terminals, relat
     plus = "+"
     signs = [plus, minus]
     maxNumber = calculateMaxNumberOfRulesForNonterminal grammar
-    indices = map show [1..maxNumber]
+    indices = map show [0..maxNumber - 1]
     nonterminalsList = map nonterminalValue $ Set.toList nonterminals
     terminalsList = map terminalValue $ Set.toList terminals
     relationsList = Set.toList relations
@@ -831,46 +830,45 @@ generateBlockForCountWordLength grammar@(Grammar (nonterminals, terminals, relat
             ((DState $ q ++ t, DSymbol s),(DebuggingTypes.R, DState $ q ++ t)))
             symbols) nonterminalsList
     symbolsToQNonterminalSign = concatMap (\t -> map (\s ->
-        if symbolAcceptedByNonterminal grammar t s 
+        if symbolAcceptedByNonterminal grammar t s
             then ((DState $ q ++ t, DSymbol s),(DebuggingTypes.L, DState $ q ++ t ++ plus))
             else ((DState $ q ++ t, DSymbol s),(DebuggingTypes.L, DState $ q ++ t ++ minus))
         ) terminalsList) nonterminalsList
-    
+
     --BLOCK for qNonterminal
-    -- if there is no terminals, which is accepted by given nonterminal, there will be unreachable 
+    -- if there is no terminals, which is accepted by given nonterminal, there will be unreachable
     -- state qNonterminal+
     symbolsInQNonterminalSign = concatMap (\t -> map (\sign ->
-        ((DState $ q ++ t ++ sign, DSymbol leftBracket),(DebuggingTypes.L, DState $ q ++ t ++ sign))) 
-        signs) nonterminalsList 
+        ((DState $ q ++ t ++ sign, DSymbol leftBracket),(DebuggingTypes.L, DState $ q ++ t ++ sign)))
+        signs) nonterminalsList
     symbolsToQFindNewSubstitution = concatMap (\t -> concatMap (\sign -> let
         stateTransition = q ++ t ++ sign ++ transition ++ qFindNewSubstitution in
         [((DState $ q ++ t ++ sign, DSymbol t),(D $ DSymbol sign, DState stateTransition)),
         ((DState stateTransition, DSymbol sign),(DebuggingTypes.L, DState qFindNewSubstitution))]
         ) signs) indices
-       
+
     --BLOCK for qWord
     symbolsInQWord = map (\t ->
         ((DState qWord, DSymbol t),(DebuggingTypes.L, DState qWord))) $ terminalsList ++ [leftBracket]
     symbolsToQChooseRelationI = map (\t ->
         ((DState qWord, DSymbol t),(DebuggingTypes.L, DState $ qChooseRelation ++ t))) indices
-    
+
     --BLOCK for qChooseRelationI
     symbolsToQRemember = concatMap (\k -> let
-        nonterminals' = getNonterminalsWithKRelsAnyLong relationsList (read k :: Int)
-        nonterminals'Values = map nonterminalValue nonterminals'
+        nonterminals' = filter (\n -> kthRelForNonterminalLong relationsList n k) nonterminalsList
         oldState = qChooseRelation ++ k
         in map (\t -> let
-            (SymbolsPair (_, number, _, nonterm1, nonterm2)) = getFstConjInFstRel grammar t
+            (SymbolsPair (_, number, _, nonterm1, nonterm2)) = getFstConjInKthRel grammar t k
             nonterm1Val = refineSymbolInConjunctionToNonterminal nonterm1
             nonterm2Val = refineSymbolInConjunctionToNonterminal nonterm2
             newState = qRememberStart ++ show number ++ t ++ nonterm1Val ++ nonterm2Val
             in
             ((DState oldState, DSymbol t),(DebuggingTypes.R, DState newState)))
-            nonterminals'Values) indices
+            nonterminals') indices
+
     symbolsToQRewriteWithWordNonterminal = concatMap (\k -> let
-        nonterminals' = getNonterminalsWithKRelsAnyLong relationsList (read k :: Int)
-        nonterminals'Value = map nonterminalValue nonterminals'
-        rest = nonterminalsList \\ nonterminals'Value
+        nonterminals' = filter (\n -> kthRelForNonterminalLong relationsList n k) nonterminalsList
+        rest = nonterminalsList \\ nonterminals'
         oldState = qChooseRelation ++ k
         in map (\t ->
             ((DState oldState, DSymbol t),(DebuggingTypes.R, DState $ qRewriteWithWord ++ t)))
@@ -884,16 +882,25 @@ generateBlockForCountWordLength grammar@(Grammar (nonterminals, terminals, relat
         ++ symbolsToQNonterminalSign ++ symbolsInQNonterminalSign ++ symbolsToQFindNewSubstitution
     in (DQuadruples $ addCollectionToMap quadruples Map.empty)
 
-getFstConjInFstRel :: Grammar -> String -> SymbolsPair
-getFstConjInFstRel (Grammar (_, _, relations, _)) nontermVal = let
-    number = 0
+kthRelForNonterminalLong :: [Relation] -> String -> String -> Bool
+kthRelForNonterminalLong relations nontermVal k = do
+  let k' = read k :: Int
+  let groupedRelations = calculateGroupRelationsByNonterminals relations
+  let nonterminal = Nonterminal nontermVal
+  let relationsForNonterm = groupedRelations Map.! nonterminal
+  length relationsForNonterm >= k' &&
+    not (relationHasOneTerminalInRightPart $ Relation (nonterminal, relationsForNonterm !! k'))
+
+getFstConjInKthRel :: Grammar -> String -> String -> SymbolsPair
+getFstConjInKthRel (Grammar (_, _, relations, _)) nontermVal number = let
+    number' = read number :: Int
     nonterminal = Nonterminal nontermVal
     groupedRelations = calculateGroupRelationsByNonterminals $ Set.toList relations
     relationsForNonterminal = groupedRelations Map.! nonterminal
-    relation = relationsForNonterminal !! number
+    relation = relationsForNonterminal !! number'
     conjunctionPairs = splitOn [O Conjunction] relation
-    in convertListToConjunctionPair nonterminal 0 $ head conjunctionPairs
-                               
+    in convertListToConjunctionPair nonterminal number' $ head conjunctionPairs
+
 
 symbolAcceptedByNonterminal :: Grammar -> String -> String -> Bool
 symbolAcceptedByNonterminal (Grammar (_, _, relations, _)) nontermValue symbol = let
@@ -912,8 +919,75 @@ refineSymbolToTerminalValue :: GrammarType.Symbol -> String
 refineSymbolToTerminalValue (T t) = terminalValue t
 refineSymbolToTerminalValue _ = error "Given symbol is not terminal"
 
-{---generateBlockForSubstitution :: Grammar -> DebuggingQuadruples
-generateBlockForSubstitution grammar@(Grammar (nonterminals, terminals, relations, _)) = --}
+generateBlockForSubstitution :: Grammar -> DebuggingQuadruples
+generateBlockForSubstitution grammar@(Grammar (nonterminals, terminals, rels, _)) = let
+    qRememberStart = "qRememberStart"
+    qRemember = "qRemember"
+    markEnd = "MarkEnd"
+    qShiftWord = "qShiftWord"
+
+    transition = "transition"
+    nonterminalsList = map nonterminalValue $ Set.toList nonterminals
+    terminalsList = map terminalValue $ Set.toList terminals
+    maxNumberOfRels = calculateMaxNumberOfRulesForNonterminal grammar
+    relsList = Set.toList rels
+    indices = map show [0..maxNumberOfRels - 1]
+    space = " "
+    leftBracket = "("
+    rightBracket = ")"
+    star = "*"
+    plus = "+"
+    minus = "-"
+    hash = "#"
+    signs = [plus, minus]
+    brackets = [leftBracket, rightBracket]
+
+    --helper calculations
+    indicesWithNonterms = map (\i ->
+        (i, filter (\t -> kthRelForNonterminalLong relsList t i) nonterminalsList)) indices
+    -- quads have same form, as other quads in this module, only difference is
+    -- they are quads for first conjunctions in kth relations
+    quads = concatMap (\(i, nonterms) -> map (\nonterm -> let
+        (SymbolsPair (_, number, _, nonterm1, nonterm2)) = getFstConjInKthRel grammar nonterm i
+        nonterm1Val = refineSymbolInConjunctionToNonterminal nonterm1
+        nonterm2Val = refineSymbolInConjunctionToNonterminal nonterm2
+        in (show number, nonterm, nonterm1Val, nonterm2Val)
+        ) nonterms) indicesWithNonterms
+    --BLOCK for qRememberStartCounterNonterm1Nonterm2Nonterm3
+    rememberedSymbols = terminalsList ++ [rightBracket]
+    quintets = concatMap (\(k, t, j, f) -> map (\symbol -> (k, t, j, f, symbol)) rememberedSymbols) quads
+
+    symbolsInQRememberStartKTJF = concatMap (\(k, t, j, f) -> map (\symbol ->
+        ((DState $ qRememberStart  ++ k ++ t ++ j ++ f, DSymbol symbol),
+        (DebuggingTypes.R, DState $ qRememberStart  ++ k ++ t ++ j ++ f))) $ indices ++ [leftBracket])
+        quads
+    symbolsToQRememberSymbolMarkEndKTJF = concatMap (\(k, t, j, f, symbol) -> let
+        stateTransition = qRememberStart  ++ k ++ t ++ j ++ f ++
+            transition ++ qRemember ++ symbol ++ markEnd ++ k ++ t ++ j ++ f
+        oldState = qRememberStart  ++ k ++ t ++ j ++ f
+        newState = qRemember ++ symbol ++ markEnd ++ k ++ t ++ j ++ f
+        in
+        [((DState oldState, DSymbol symbol),(D $ DSymbol star, DState stateTransition)),
+        ((DState stateTransition, DSymbol star),(DebuggingTypes.R, DState newState))]) quintets
+
+    --BLOCK for qRememberSymbolMarkEndKTJF
+    symbolsInQRememberSymbolMarkEndKTJF = concatMap (\(k, t, j, f, s) -> map (\symbol -> let
+        state = qRemember ++ s ++ markEnd ++ k ++ t ++ j ++ f in
+        ((DState state, DSymbol symbol), (DebuggingTypes.R, DState state)))
+         $ nonterminalsList ++ signs ++ brackets ++ terminalsList) quintets
+    symbolsToQShiftWordSymbolKTJF = concatMap (\(k, t, j, f, s) -> let
+        oldState = qRemember ++ s ++ markEnd ++ k ++ t ++ j ++ f
+        newState = qShiftWord ++ s ++ k ++ t ++ j ++ f
+        stateTransition = oldState ++ transition ++ newState in
+        [((DState oldState, DSymbol space), (D $ DSymbol hash, DState stateTransition)),
+        ((DState stateTransition, DSymbol hash), (DebuggingTypes.R, DState newState))]) quintets
+
+    --BLOCK for qShiftWordSymbolKTJF
+    --symbols
+
+    quadruples = symbolsInQRememberStartKTJF ++ symbolsToQRememberSymbolMarkEndKTJF
+        ++ symbolsInQRememberSymbolMarkEndKTJF ++ symbolsToQShiftWordSymbolKTJF
+    in (DQuadruples $ addCollectionToMap quadruples Map.empty)
 
 constructSymbolsPairByQuad :: (String, String, String, String) -> Bool -> SymbolsPair
 constructSymbolsPairByQuad (number, leftN, fstN, sndN) hasNeg =
