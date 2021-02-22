@@ -207,7 +207,7 @@ generateBlockForQKFindNegation grammar@(Grammar (nonterminals, terminals, relati
             (DebuggingTypes.R, DState $ q ++ "Rule" ++ k ++ t ++ j ++ "findSnd"))) triplets
 
     -- BLOCK for qRulektjFindSnd
-    quads = calculateQuads $ calculateQuads' grammar triplets
+    quads = calculateQuads grammar k nonterminalsWithKRels
     symbolsInRulektjFindSnd = concatMap (\s ->
         map (\(k, t, j) ->
             ((DState $ q ++ "Rule" ++ k ++ t ++ j ++ "findSnd", DSymbol s),
@@ -246,11 +246,15 @@ calculateTriplets grammar number
                     grammar t number
             in map (number, t,) firstNonterminals)
 
-calculateQuads' :: Grammar -> [([Char], [Char], [Char])] -> [([Char], [Char], [Char], [String])]
+calculateQuads' :: Grammar -> [([Char], [Char], [Char])] -> [([Char], [Char], [Char], [[Char]])]
 calculateQuads' grammar = map (\ (k, t, j) -> (k, t, j, getSecondNonterminalsInConjunctionsOfGivenRelation grammar k t j))
 
-calculateQuads :: Foldable t => t (a, b, c, [d]) -> [(a, b, c, d)]
-calculateQuads = concatMap (\ (k, t, j, s) -> map (k, t, j,) s)
+calculateQuads :: Grammar -> String -> [String] -> [([Char], [Char], [Char], [Char])]
+calculateQuads grammar k nonterminalsWithKRels = let
+    triplets = calculateTriplets grammar k nonterminalsWithKRels
+    quads' = calculateQuads' grammar triplets 
+    in concatMap (\ (k, t, j, s) -> map (k, t, j,) s) quads'
+  
 -- grammar -> string (nonterminal in left part) -> string (number of relation)
 --  -> string (first nonterminal in conjunction) -> list of first nonterminals
 getSecondNonterminalsInConjunctionsOfGivenRelation :: Grammar -> String -> String -> String -> [String]
@@ -322,7 +326,7 @@ generateTransitionFromConjunctionResult grammar@(Grammar (_, terminals, relation
     nonterminalsWithKRules = getNonterminalsWithKRelsAnyLong (Set.toList relations) maxNumberOfRules
     nonterminalsWithKRulesList = map show nonterminalsWithKRules
     triplets = calculateTriplets grammar (show maxNumberOfRules) nonterminalsWithKRulesList
-    quads = calculateQuads $ calculateQuads' grammar triplets
+    quads = calculateQuads grammar (show maxNumberOfRules) nonterminalsWithKRulesList 
 
     -- BLOCK FOR qRulektjs
     quadruplesInRulektjs' = concatMap (\s ->
@@ -855,8 +859,13 @@ generateBlockForCountWordLength grammar@(Grammar (nonterminals, terminals, relat
         nonterminals' = getNonterminalsWithKRelsAnyLong relationsList (read k :: Int)
         nonterminals'Values = map nonterminalValue nonterminals'
         oldState = qChooseRelation ++ k
-        in map (\t ->
-            ((DState oldState, DSymbol t),(DebuggingTypes.R, DState qRememberStart)))
+        in map (\t -> let
+            (SymbolsPair (_, number, _, nonterm1, nonterm2)) = getFstConjInFstRel grammar t
+            nonterm1Val = refineSymbolInConjunctionToNonterminal nonterm1
+            nonterm2Val = refineSymbolInConjunctionToNonterminal nonterm2
+            newState = qRememberStart ++ show number ++ t ++ nonterm1Val ++ nonterm2Val
+            in
+            ((DState oldState, DSymbol t),(DebuggingTypes.R, DState newState)))
             nonterminals'Values) indices
     symbolsToQRewriteWithWordNonterminal = concatMap (\k -> let
         nonterminals' = getNonterminalsWithKRelsAnyLong relationsList (read k :: Int)
@@ -875,6 +884,17 @@ generateBlockForCountWordLength grammar@(Grammar (nonterminals, terminals, relat
         ++ symbolsToQNonterminalSign ++ symbolsInQNonterminalSign ++ symbolsToQFindNewSubstitution
     in (DQuadruples $ addCollectionToMap quadruples Map.empty)
 
+getFstConjInFstRel :: Grammar -> String -> SymbolsPair
+getFstConjInFstRel (Grammar (_, _, relations, _)) nontermVal = let
+    number = 0
+    nonterminal = Nonterminal nontermVal
+    groupedRelations = calculateGroupRelationsByNonterminals $ Set.toList relations
+    relationsForNonterminal = groupedRelations Map.! nonterminal
+    relation = relationsForNonterminal !! number
+    conjunctionPairs = splitOn [O Conjunction] relation
+    in convertListToConjunctionPair nonterminal 0 $ head conjunctionPairs
+                               
+
 symbolAcceptedByNonterminal :: Grammar -> String -> String -> Bool
 symbolAcceptedByNonterminal (Grammar (_, _, relations, _)) nontermValue symbol = let
     groupedRelations = calculateGroupRelationsByNonterminals $ Set.toList relations
@@ -892,9 +912,14 @@ refineSymbolToTerminalValue :: GrammarType.Symbol -> String
 refineSymbolToTerminalValue (T t) = terminalValue t
 refineSymbolToTerminalValue _ = error "Given symbol is not terminal"
 
+{---generateBlockForSubstitution :: Grammar -> DebuggingQuadruples
+generateBlockForSubstitution grammar@(Grammar (nonterminals, terminals, relations, _)) = --}
+
 constructSymbolsPairByQuad :: (String, String, String, String) -> Bool -> SymbolsPair
 constructSymbolsPairByQuad (number, leftN, fstN, sndN) hasNeg =
     SymbolsPair (Nonterminal leftN, read number :: Int, hasNeg, N $ Nonterminal fstN, N $ Nonterminal sndN)
+
+
 
 checkIfConjHasNeg :: Grammar -> (String, String, String, String) -> Bool
 checkIfConjHasNeg (Grammar(_, _, relations, _)) (number, leftN, fstN, sndN) = do
