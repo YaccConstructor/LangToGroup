@@ -928,6 +928,9 @@ generateBlockForSubstitution grammar@(Grammar (nonterminals, terminals, rels, _)
     qWriteSymbol = "qWriteSymbol"
     qWriteRemembered = "qWriteRemembered"
     qWriteCounter = "qWriteCounter"
+    qMoveToEnd = "qMoveToEnd"
+    qUnmarkEnd = "qUnmarkEnd"
+    qWritingRelation = "qWritingRelation"
 
     transition = "transition"
     nonterminalsList = map nonterminalValue $ Set.toList nonterminals
@@ -990,7 +993,7 @@ generateBlockForSubstitution grammar@(Grammar (nonterminals, terminals, rels, _)
         state = qShiftWord ++ s ++ k ++ t ++ j ++ f in
         [((DState state, DSymbol space), (DebuggingTypes.L, DState state))]) quintets
     -- it is const, which is not dependent on conjunction or grammar
-    shift = 7
+    shift = 6
     shifts = map show [1..shift]
 
 
@@ -1020,31 +1023,112 @@ generateBlockForSubstitution grammar@(Grammar (nonterminals, terminals, rels, _)
         oldState = qShiftWord ++ s ++ k ++ t ++ j ++ f
         newState = qWriteCounter ++ s ++ k ++ t ++ j ++ f in
         ((DState oldState, DSymbol i), (DebuggingTypes.R, DState newState))) shifts) terminalQuintets
-    
+
     --BLOCK for qWriteSymbolKTJFs'
     symbolsFromQWriteSymbolKTJFs'ToQShiftWordSymbolKTJF = concatMap (\(k, t, j, f, s, s') -> let
         oldState = qWriteSymbol ++ s ++ k ++ t ++ j ++ f ++ s'
-        newState = qShiftWord ++ s ++ k ++ t ++ j ++ f 
+        newState = qShiftWord ++ s ++ k ++ t ++ j ++ f
         stateTransition = oldState ++ transition ++ newState in
         [((DState oldState, DSymbol space), (D $ DSymbol s', DState stateTransition)),
         ((DState stateTransition, DSymbol s'), (DebuggingTypes.L, DState newState))]) tuple6
-    
+
+    --BLOCK for qWriteRememberedsKTJF
+    shiftsPairs = getShiftsDecrements shift star
+    symbolsToQWriteCountersKTJFterminals = concatMap (\(k, t, j, f, s) -> let
+                oldState = qWriteRemembered ++ s ++ k ++ t ++ j ++ f
+                newState = qWriteCounter ++ s ++ k ++ t ++ j ++ f
+                stateTransition = oldState ++ transition ++ newState
+                in
+                [((DState oldState, DSymbol space), (D $ DSymbol s, DState stateTransition)),
+                ((DState stateTransition, DSymbol s), (DebuggingTypes.L, DState newState))]) terminalQuintets
     -- BLOCK for qWriteCounterSymbolKTJF (terminals)
-    -- BLOCK for star (terminals)
+    symbolsInQWriteCountersKTJF = map (\(k, t, j, f, s) -> let
+        oldState = qWriteCounter ++ s ++ k ++ t ++ j ++ f in
+        ((DState oldState, DSymbol space), (DebuggingTypes.L, DState oldState))) terminalQuintets
+
+    -- pair ("1", "*") = pair of end of shifting, there is special transition, this pair called endShift
+    -- rest of pairs called midPairs
+    endShift = head $ filter (\t -> snd t == star) shiftsPairs
+    midShifts = shiftsPairs \\ [endShift]
+
+    symbolsToQUnmarkEndKTJF = concatMap (\(k, t, j, f, s) -> let
+        oldState =  qWriteCounter ++ s ++ k ++ t ++ j ++ f
+        newState = qUnmarkEnd ++ k ++ t ++ j ++ f
+        stateTransition = oldState ++ transition ++ newState
+        oldSymbol = fst endShift
+        newSymbol = snd endShift in
+        [((DState oldState, DSymbol oldSymbol), (D $ DSymbol newSymbol, DState stateTransition)),
+        ((DState stateTransition, DSymbol newSymbol), (DebuggingTypes.R, DState newState))]
+        ) terminalQuintets
+    symbolsToQMoveToEndsKTJF = concatMap (\(k, t, j, f, s) -> concatMap (\ (i, iDecr) -> let
+        oldState =  qWriteCounter ++ s ++ k ++ t ++ j ++ f
+        newState = qMoveToEnd ++ s ++ k ++ t ++ j ++ f
+        stateTransition = oldState ++ transition ++ newState in
+        [((DState oldState, DSymbol i), (D $ DSymbol iDecr, DState stateTransition)),
+        ((DState stateTransition, DSymbol iDecr), (DebuggingTypes.L, DState newState))]
+        ) midShifts) terminalQuintets
+
+    --BLOCK for qMoveToEndsKTJF
+    symbolsInQMoveToEndKTJF = concatMap (\(k, t, j, f, s) -> map (\symbol -> let
+        state = qMoveToEnd ++ s ++ k ++ t ++ j ++ f in
+        ((DState state, DSymbol symbol), (DebuggingTypes.R, DState state)))
+        $ nonterminalsList ++ signs ++ brackets ++ terminalsList ++ [space]) terminalQuintets
+    symbolsFromQMoveToEndToQShiftWordSymbolKTJF = map (\(k, t, j, f, s) -> let
+        oldState = qMoveToEnd ++ s ++ k ++ t ++ j ++ f
+        newState = qShiftWord ++ s ++ k ++ t ++ j ++ f in
+        ((DState oldState, DSymbol hash), (DebuggingTypes.R, DState newState))) terminalQuintets
+
     -- BLOCK for star (bracket - special case)
+    symbolsInQWriteRememberedBracket = concatMap (\(k, t, j, f) -> let
+        oldState = qWriteRemembered ++ rightBracket ++ k ++ t ++ j ++ f
+        newState = oldState
+        stateTransition = oldState ++ transition ++ newState in
+        [((DState oldState, DSymbol space), (D $ DSymbol rightBracket, DState stateTransition)),
+        ((DState stateTransition, DSymbol rightBracket), (DebuggingTypes.L, DState newState))]) quads
+    symbolsToQUnmarkEndKTJFBracket = concatMap (\(k, t, j, f) -> let
+        oldState = qWriteRemembered ++ rightBracket ++ k ++ t ++ j ++ f
+        newState = qUnmarkEnd ++ rightBracket
+        stateTransition = oldState ++ transition ++ newState in
+        [((DState oldState, DSymbol star), (D $ DSymbol rightBracket, DState stateTransition)),
+        ((DState stateTransition, DSymbol rightBracket), (DebuggingTypes.R, DState newState))]
+        ) quads
+
+    symbolsInQUnmarkEnd = concatMap (\(k, t, j, f) -> map (\s -> let
+        state = qUnmarkEnd ++ k ++ t ++ j ++ f in
+        ((DState state, DSymbol s), (DebuggingTypes.R, DState state)))
+        $ nonterminalsList ++ signs ++ brackets ++ terminalsList) quads
+    symbolsToQWritingRelationKTJF = concatMap (\(k, t, j, f) -> let
+        oldState = qUnmarkEnd
+        newState = qWritingRelation ++ k ++ t ++ j ++ f
+        stateTransition = oldState ++ transition ++ newState in
+        [((DState oldState, DSymbol hash), (D $ DSymbol space, DState stateTransition)),
+        ((DState stateTransition, DSymbol space), (DebuggingTypes.R, DState newState))]) quads
 
     quadruples = symbolsInQRememberStartKTJF ++ symbolsToQRememberSymbolMarkEndKTJF
         ++ symbolsInQRememberSymbolMarkEndKTJF ++ symbolsToQShiftWordSymbolKTJF
         ++ symbolsInQShiftWordSymbolKTJF ++ symbolsToQWriteSymbolKTJFsymbol
         ++ symbolsToQWriteSymbolKTJFStar ++ symbolsToQWriteSymbolKTJFshift
         ++ symbolsFromQWriteSymbolKTJFs'ToQShiftWordSymbolKTJF
+        ++ symbolsInQWriteCountersKTJF ++ symbolsToQMoveToEndsKTJF
+        ++ symbolsToQWriteCountersKTJFterminals  ++ symbolsInQWriteRememberedBracket
+        ++ symbolsToQUnmarkEndKTJFBracket ++ symbolsInQUnmarkEnd
+        ++ symbolsToQWritingRelationKTJF ++ symbolsInQMoveToEndKTJF
+        ++ symbolsFromQMoveToEndToQShiftWordSymbolKTJF ++ symbolsToQUnmarkEndKTJF
     in (DQuadruples $ addCollectionToMap quadruples Map.empty)
+
+getShiftsDecrements :: Int -> String -> [(String, String)]
+getShiftsDecrements shiftSize symbol = let
+    fstPair = [(symbol, (show shiftSize))]
+    indices = [1..shiftSize]
+    midPairs = map (\i -> if
+        i == 1 then (show i, symbol)
+        else (show i, show (i - 1))
+        ) indices
+    in (fstPair ++ midPairs)
 
 constructSymbolsPairByQuad :: (String, String, String, String) -> Bool -> SymbolsPair
 constructSymbolsPairByQuad (number, leftN, fstN, sndN) hasNeg =
     SymbolsPair (Nonterminal leftN, read number :: Int, hasNeg, N $ Nonterminal fstN, N $ Nonterminal sndN)
-
-
 
 checkIfConjHasNeg :: Grammar -> (String, String, String, String) -> Bool
 checkIfConjHasNeg (Grammar(_, _, relations, _)) (number, leftN, fstN, sndN) = do
