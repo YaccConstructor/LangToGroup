@@ -173,6 +173,7 @@ generateBlockForQKFindNegation grammar@(Grammar (nonterminals, terminals, relati
 
     terminalsList = map terminalValue $ Set.toList terminals
     nonterminalsList = map nonterminalValue $ Set.toList nonterminals
+    relsList = Set.toList relations
     signs = ["+", "-"]
     negation = ["!"]
     leftBracket = ["("]
@@ -190,24 +191,26 @@ generateBlockForQKFindNegation grammar@(Grammar (nonterminals, terminals, relati
     symbolsToQRulekFindNonterminal = [((DState qkMoveToStart, DSymbol k),(DebuggingTypes.L, DState qRuleKFindNonterminal))]
 
     -- BLOCK for qRulekFindNonterminal
-    nonterminalsWithKRels = map nonterminalValue (getNonterminalsWithKRelsAnyLong (Set.toList relations) (read k :: Int))
+
+    --nonterminalsWithKRels = map nonterminalValue (getNonterminalsWithKRelsAnyLong (Set.toList relations) (read k :: Int))
+    nonterminalsWithKthRel = filter (\t -> (kthRelForNonterminalLong relsList t k)) nonterminalsList
     symbolsToQRulekNonterminalFindFst = map (\t ->
             ((DState qRuleKFindNonterminal, DSymbol t),(DebuggingTypes.R, DState $ q ++ "Rule" ++ k ++ t ++ "findFst"))
-            ) nonterminalsWithKRels
+            ) nonterminalsWithKthRel
 
     -- BLOCK for qRulektFindFst
     symbolsInQRulektFindFst = map (\t ->
             ((DState $ q ++ "Rule" ++ k ++ t ++ "findFst", DSymbol t),(DebuggingTypes.R, DState $ q ++ "Rule" ++ k ++ t ++ "findFst"))
             ) $ [k] ++ rightBracket ++ negation
 
-    triplets = calculateTriplets grammar k nonterminalsWithKRels
+    triplets = calculateTriplets grammar k nonterminalsWithKthRel
 
     symbolsToQRulektjFindSnd = map
         (\(k, t, j) -> ((DState $ q ++ "Rule" ++ k ++ t ++ "findFst", DSymbol j),
             (DebuggingTypes.R, DState $ q ++ "Rule" ++ k ++ t ++ j ++ "findSnd"))) triplets
 
     -- BLOCK for qRulektjFindSnd
-    quads = calculateQuads grammar k nonterminalsWithKRels
+    quads = calculateQuads grammar k nonterminalsWithKthRel
     symbolsInRulektjFindSnd = concatMap (\s ->
         map (\(k, t, j) ->
             ((DState $ q ++ "Rule" ++ k ++ t ++ j ++ "findSnd", DSymbol s),
@@ -250,8 +253,8 @@ calculateQuads' :: Grammar -> [([Char], [Char], [Char])] -> [(String, String, St
 calculateQuads' grammar = map (\ (k, t, j) -> (k, t, j, getSecondNonterminalsInConjunctionsOfGivenRelation grammar k t j))
 
 calculateQuads :: Grammar -> String -> [String] -> [(String, String, String, String)]
-calculateQuads grammar k nonterminalsWithKRels = let
-    triplets = calculateTriplets grammar k nonterminalsWithKRels
+calculateQuads grammar k nonterminalsWithKthRel = let
+    triplets = calculateTriplets grammar k nonterminalsWithKthRel
     quads' = calculateQuads' grammar triplets
     in concatMap (\ (k, t, j, s) -> map (k, t, j,) s) quads'
 
@@ -266,11 +269,6 @@ getSecondNonterminalsInConjunctionsOfGivenRelation (Grammar (_, _, relations, _)
     possibleConjunctions = filter (\t -> length t == 3 && t !! 1 == symbol || length t == 2 && head t == symbol) conjunctions
     possibleSndNonterminals = map (\t -> if length t == 3 then t !! 2 else t !! 1) possibleConjunctions
     in map refineSymbolInConjunctionToNonterminal possibleSndNonterminals
-
-getNonterminalsWithKRelsAnyLong :: [Relation] -> Int -> [Nonterminal]
-getNonterminalsWithKRelsAnyLong relations k = let
-    groupedRelations = calculateGroupRelationsByNonterminals $ getLongRels relations
-    in (Map.keys $ Map.filter (\t -> length t >= k) groupedRelations)
 
 getLongRels :: [Relation] -> [Relation]
 getLongRels = filter (not . relationHasOneTerminalInRightPart)
@@ -307,7 +305,7 @@ convertDebuggingStateToState (DState string) = Q number where
 
 --BLOCK for moving from conjunction results to next blocks
 generateTransitionFromConjunctionResult :: Grammar -> DebuggingQuadruples
-generateTransitionFromConjunctionResult grammar@(Grammar (_, terminals, relations, _)) = let
+generateTransitionFromConjunctionResult grammar@(Grammar (nonterminals, terminals, relations, _)) = let
     q = "q"
     rewrite = "Rewrite"
     transition = "Transition"
@@ -321,11 +319,15 @@ generateTransitionFromConjunctionResult grammar@(Grammar (_, terminals, relation
     leftBracket = ["("]
     rightBracket = [")"]
     brackets = leftBracket ++ rightBracket
+    nonterminalsList = map nonterminalValue $ Set.toList nonterminals
+    relsList = Set.toList relations
 
     maxNumberOfRules = calculateMaxNumberOfRulesForNonterminal grammar
-    nonterminalsWithKRules = getNonterminalsWithKRelsAnyLong (Set.toList relations) maxNumberOfRules
-    nonterminalsWithKRulesList = map show nonterminalsWithKRules
-    quads = calculateQuads grammar (show maxNumberOfRules) nonterminalsWithKRulesList
+    indices = map show [0..maxNumberOfRules - 1]
+
+    indicesWithNonterms = map (\i ->
+            (i, filter (\t -> kthRelForNonterminalLong relsList t i) nonterminalsList)) indices
+    quads = concatMap (\(i, nonterms) -> calculateQuads grammar i nonterms) indicesWithNonterms
 
     -- BLOCK FOR qRulektjs
     quadruplesInRulektjs' = concatMap (\s ->
@@ -1116,19 +1118,31 @@ generateBlockForPreparingForSubstitution grammar@(Grammar (nonterminals, termina
         ((DState stateTransition, DSymbol rightBracket), (DebuggingTypes.L, DState newState))]) quads
     symbolsToQUnmarkEndKTJFBracket = concatMap (\(k, t, j, f) -> let
         oldState = qWriteRemembered ++ rightBracket ++ k ++ t ++ j ++ f
-        newState = qUnmarkEnd ++ rightBracket
+        newState = qUnmarkEnd ++ k ++ t ++ j ++ f ++ rightBracket
         stateTransition = oldState ++ transition ++ newState in
         [((DState oldState, DSymbol star), (D $ DSymbol rightBracket, DState stateTransition)),
         ((DState stateTransition, DSymbol rightBracket), (DebuggingTypes.R, DState newState))]
         ) quads
 
-    symbolsInQUnmarkEnd = concatMap (\(k, t, j, f) -> map (\s -> let
+    symbolsInQUnmarkEndKTJF = concatMap (\(k, t, j, f) -> map (\s -> let
         state = qUnmarkEnd ++ k ++ t ++ j ++ f in
         ((DState state, DSymbol s), (DebuggingTypes.R, DState state)))
         $ nonterminalsList ++ signs ++ brackets ++ terminalsList) quads
     symbolsToQWritingRelationKTJF = concatMap (\(k, t, j, f) -> let
-        oldState = qUnmarkEnd
-        newState = qWritingRelation ++ k ++ t ++ j ++ f
+            oldState = qUnmarkEnd ++ k ++ t ++ j ++ f
+            newState = qWritingRelation ++ k ++ t ++ j ++ f
+            stateTransition = oldState ++ transition ++ newState in
+            [((DState oldState, DSymbol hash), (D $ DSymbol space, DState stateTransition)),
+            ((DState stateTransition, DSymbol space), (DebuggingTypes.R, DState newState))]) quads
+
+    symbolsInQUnmarkEndKTJFBracket = concatMap (\(k, t, j, f) -> map (\s -> let
+        state = qUnmarkEnd ++ k ++ t ++ j ++ f ++rightBracket in
+        ((DState state, DSymbol s), (DebuggingTypes.R, DState state)))
+        $ nonterminalsList ++ signs ++ brackets ++ terminalsList) quads
+    qFindNewSubstitution = "qFindNewSubstitution"
+    symbolsToQFindNewSubstitution = concatMap (\(k, t, j, f) -> let
+        oldState = qUnmarkEnd ++ k ++ t ++ j ++ f ++rightBracket
+        newState = qFindNewSubstitution
         stateTransition = oldState ++ transition ++ newState in
         [((DState oldState, DSymbol hash), (D $ DSymbol space, DState stateTransition)),
         ((DState stateTransition, DSymbol space), (DebuggingTypes.R, DState newState))]) quads
@@ -1140,9 +1154,10 @@ generateBlockForPreparingForSubstitution grammar@(Grammar (nonterminals, termina
         ++ symbolsFromQWriteSymbolKTJFs'ToQShiftWordSymbolKTJF
         ++ symbolsInQWriteCountersKTJF ++ symbolsToQMoveToEndsKTJF
         ++ symbolsToQWriteCountersKTJFterminals  ++ symbolsInQWriteRememberedBracket
-        ++ symbolsToQUnmarkEndKTJFBracket ++ symbolsInQUnmarkEnd
+        ++ symbolsToQUnmarkEndKTJFBracket ++ symbolsInQUnmarkEndKTJF
         ++ symbolsToQWritingRelationKTJF ++ symbolsInQMoveToEndKTJF
         ++ symbolsFromQMoveToEndToQShiftWordSymbolKTJF ++ symbolsToQUnmarkEndKTJF
+        ++ symbolsInQUnmarkEndKTJFBracket ++ symbolsToQFindNewSubstitution
     in (DQuadruples $ addCollectionToMap quadruples Map.empty)
 
 generateBlockForSubstitution :: Grammar -> DebuggingQuadruples
@@ -1320,7 +1335,6 @@ generateBlockForSubstitution grammar@(Grammar (nonterminals, terminals, relation
         newState = qRememberStart ++ k ++ t ++ j ++ f in
         ((DState oldState, DSymbol s), (DebuggingTypes.R, DState newState))) quintets
 
-
     quadruples = symbolsInQWritingRelationKTJF ++ symbolsFromQWritingRelationToQWriteKTJFT
         ++ symbolsFromQWriteKTJFJtoQWriteCounterKTJFJ
         ++ symbolsFromQWritingRelationToQWriteCounterKTJFT
@@ -1332,6 +1346,18 @@ generateBlockForSubstitution grammar@(Grammar (nonterminals, terminals, relation
         ++ symbolsToQWriteKTJFFleftBracket ++ symbolsToQWriteKTJFFRightBracketPreparation
         ++ symbolsInQWriteKTJFFRightBracketPreparation ++ symbolsToQKTJFFRightBracketShiftWord
         ++ symbolsToQKTJFShiftWord
+    in (DQuadruples $ addCollectionToMap quadruples Map.empty)
+
+generateBlockForMovingToNextConjunction :: Grammar -> DebuggingQuadruples
+generateBlockForMovingToNextConjunction grammar@(Grammar (nonterminals, terminals, relations, _)) = let
+    nonterminalsList = map nonterminalValue $ Set.toList nonterminals
+    maxNumber = calculateMaxNumberOfRulesForNonterminal grammar
+    indices = map show [0..maxNumber - 1]
+    --qauds in this block - all conjs, which has next conj
+    --nonterminalsWithKRels = map nonterminalValue (getNonterminalsWithKRelsAnyLong (Set.toList relations) (read k :: Int))
+    --quads' = concatMap (\k -> calculateQuads grammar k nonterminalsWithKRels) indices
+    --quads =
+    quadruples = []
     in (DQuadruples $ addCollectionToMap quadruples Map.empty)
 
 getShiftsDecrements :: Int -> String -> [(String, String)]
