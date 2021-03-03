@@ -16,13 +16,21 @@ import Data.Maybe
 newtype SymbolsPair = SymbolsPair (Nonterminal, Int, Bool, GrammarType.Symbol, GrammarType.Symbol)
     deriving (Eq, Show)
 
-{---boolean2tm :: Grammar -> TuringMachine
-boolean2tm
-    (Grammar
-        (setOfNonterminals,
-        setOfTerminals,
-        setOfRelations,
-        Nonterminal startSymbol)) = do --}
+boolean2tm :: Grammar -> DebuggingTuringMachine
+boolean2tm grammar = let
+        quadruples1 = generateBlockForFolding grammar
+        quadruples2 = generateBlockForMovingToNextConjunction grammar
+        quadruples3 = generateBlockForSubstitution grammar
+        quadruples4 = generateBlockForCountWordLength grammar
+        quadruples5 = generateBlockForWritingSigns grammar
+        quadruples7 = generateBlockForScanResults grammar
+        quadruples8 = generateBlockForPreparingForSubstitution grammar
+        quadruples9 = generateBlockForFolding grammar
+        quadruples10 = generateBlockForFindingNewSubstitution grammar
+        quadruples11 = generateBlockForRefiningConjunctionDetails grammar in
+        (DTM $ unionQuadruples [quadruples1, quadruples2,
+        quadruples3,quadruples4,quadruples5, quadruples7,quadruples8,
+        quadruples9,quadruples10,quadruples11])
 
 -- naming for blocks of TM?
 generateBlockForFindingNewSubstitution :: Grammar -> DebuggingQuadruples
@@ -34,7 +42,7 @@ generateBlockForFindingNewSubstitution grammar@(Grammar (nonterminals, terminals
   qCountWordLength' = "qCountWordLength'"
   qCountWordLength = "qCountWordLength"
   qMoveToEndToScanResults = "qMoveToEndToScanResults"
-  qFold' = "qFold\'"
+  qFold' = "qFold'"
 
   terminalsList = Set.toList terminals
   nonterminalsList = Set.toList nonterminals
@@ -309,7 +317,7 @@ generateTransitionFromConjunctionResult grammar@(Grammar (nonterminals, terminal
     q = "q"
     rewrite = "Rewrite"
     transition = "Transition"
-    skipParentNonterminal = "skipParentNonterminal"
+    skipParentNonterminal = "SkipParentNonterminal"
     rule = "Rule"
     terminalsList = map terminalValue $ Set.toList terminals
     plus = "+"
@@ -558,34 +566,17 @@ generateBlockForChangingWord (Grammar (nonterminals, terminals, _, _)) = let
 
     in (DQuadruples $ addCollectionToMap quadruples Map.empty)
 
-generateBlockForFolding :: Grammar -> DebuggingQuadruples
-generateBlockForFolding grammar@(Grammar (nonterminals, terminals, _,_)) = let
+generateBlockForWritingSigns :: Grammar -> DebuggingQuadruples
+generateBlockForWritingSigns grammar@(Grammar (nonterminals, _, _,_)) = let
     qRewrite = "qRewrite"
     withMinus = "withMinus"
     qFindNewSubstitution = "qFindNewSubstitution"
     transition = "transition"
     qSkipParentNonterminal = "qSkipParentNonterminal"
-    qRemoveSymbols = "qRemoveSymbols"
-    qRemoveBracketsAroundFstWord = "qRemoveBracketsAroundFstWord"
-    qRemoveBracketsAroundSndWord = "qRemoveBracketsAroundSndWord"
-    qMoveToStart = "qMoveToStart"
-    qFold = "qFold"
-    qCheckLast = "qCheckLastRightBracket"
-    lookForNewPlace = "LookForNewPlace"
-    qFoldRightBracketLast' = "qFoldRightBracketLast'"
-    qFoldRightBracketLast = "qFoldRightBracketLast"
-    qFoldRightBracket = "qFoldRightBracket"
-    qFoldRightBracket' = "qFoldRightBracket'"
-    write = "write"
     minus = "-"
     plus = "+"
     signs = [minus, plus]
-    negation = "!"
-    leftBracket = "("
-    rightBracket = ")"
-    brackets = [leftBracket, rightBracket]
     nonterminalsList = map nonterminalValue $ Set.toList nonterminals
-    terminalsList = map terminalValue $ Set.toList terminals
 
   --BLOCK for qRewriteNWithWord (N - nonterminal)
   -- case, when current rule has one terminal in right part: applying this rule to word with more
@@ -613,6 +604,37 @@ generateBlockForFolding grammar@(Grammar (nonterminals, terminals, _,_)) = let
         concatMap (\index ->
             [((DState state, DSymbol index),(D $ DSymbol sign, DState stateTransition)),
              ((DState stateTransition, DSymbol index),(DebuggingTypes.R, DState qSkipParentNonterminal))]) possibleIndices) pairs
+
+    quadruples = symbolsToQFindNewSubstitution ++ symbolsToQRewriteNSign ++ symbolsToQSkipParentNonterminal
+    in (DQuadruples $ addCollectionToMap quadruples Map.empty)
+
+generateBlockForFolding :: Grammar -> DebuggingQuadruples
+generateBlockForFolding (Grammar (nonterminals, terminals, _, _)) = let
+    transition = "transition"
+    qSkipParentNonterminal = "qSkipParentNonterminal"
+    qRemoveSymbols = "qRemoveSymbols"
+    qRemoveBracketsAroundFstWord = "qRemoveBracketsAroundFstWord"
+    qRemoveBracketsAroundSndWord = "qRemoveBracketsAroundSndWord"
+    qMoveToStart = "qMoveToStart"
+    qFold = "qFold"
+    qCheckLast = "qCheckLastRightBracket"
+    lookForNewPlace = "LookForNewPlace"
+    qFoldRightBracketLast' = "qFoldRightBracketLast'"
+    qFoldRightBracketLast = "qFoldRightBracketLast"
+    qFoldRightBracket = "qFoldRightBracket"
+    qFoldRightBracket' = "qFoldRightBracket'"
+    qFindNewSubstitution = "qFindNewSubstitution"
+
+    write = "write"
+    minus = "-"
+    plus = "+"
+    signs = [minus, plus]
+    negation = "!"
+    leftBracket = "("
+    rightBracket = ")"
+    brackets = [leftBracket, rightBracket]
+    nonterminalsList = map nonterminalValue $ Set.toList nonterminals
+    terminalsList = map terminalValue $ Set.toList terminals
 
     --BLOCK for qSkipParentNonterminal
     symbolsToQRemoveSymbols = [((DState qSkipParentNonterminal, DSymbol leftBracket),(DebuggingTypes.R, DState qRemoveSymbols))]
@@ -735,20 +757,22 @@ generateBlockForFolding grammar@(Grammar (nonterminals, terminals, _,_)) = let
     symbolsToQFoldRightBracketLast = map (\t ->
         ((DState qFoldRightBracketLast', DSymbol t),(DebuggingTypes.R, DState qFoldRightBracketLast)))
         $ terminalsList ++ [rightBracket]
-    symbolsFromRightBracketLastToQFold = let
+    symbolsFromRightBracketLastToQFindNewSubstitution = let
             stateTransition = qFoldRightBracketLast ++ transition ++ qFindNewSubstitution in
             [((DState qFoldRightBracketLast, DSymbol " "),(D $ DSymbol rightBracket, DState stateTransition)),
             ((DState stateTransition, DSymbol rightBracket),(DebuggingTypes.R, DState qFindNewSubstitution))]
 
-    quadruples = symbolsToQFindNewSubstitution ++ symbolsToQRewriteNSign ++ symbolsToQSkipParentNonterminal
-        ++ symbolsInQRemoveSymbols ++ symbolsToQRemoveSymbols ++ symbolsToQRemoveBracketAroundFstWord
-        ++ symbolsInQRemoveBracketsAroundFstWord ++ symbolsToQRemoveBracketsAroundSndWord ++ symbolsInQRemoveBracketsAroundSndWord
-        ++ symbolsToQMoveToStart ++ symbolsInQMoveToStart ++ symbolsToQFold ++ symbolsInQFold ++ symbolsToQFoldSLookForNewPlace
+    quadruples = symbolsInQRemoveSymbols ++ symbolsToQRemoveSymbols ++ symbolsToQRemoveBracketAroundFstWord
+        ++ symbolsInQRemoveBracketsAroundFstWord ++ symbolsToQRemoveBracketsAroundSndWord
+        ++ symbolsInQRemoveBracketsAroundSndWord
+        ++ symbolsToQMoveToStart ++ symbolsInQMoveToStart ++ symbolsToQFold ++ symbolsInQFold
+        ++ symbolsToQFoldSLookForNewPlace
         ++ symbolsInQFoldSLookForNewPlace ++ symbolsToQFoldNonterminalWrite ++ symbolsToQFoldTerminalWrite
         ++ symbolsToQFoldSignWrite ++ symbolsToQFoldLeftBracketWrite ++ symbolsInQFoldRightBracketLookForNewPlace
         ++ symbolsToQCheckLastRightBracket ++ symbolsToQFoldRightBracketLast' ++ symbolsToQFoldRightBracket'
         ++ symbolsInQFoldRightBracket' ++ symbolsToQFoldRightBracket ++ symbolsInQFoldRightBracketLast'
-        ++ symbolsToQFoldRightBracketLast ++ symbolsFromRightBracketToQFold ++ symbolsFromRightBracketLastToQFold
+        ++ symbolsToQFoldRightBracketLast ++ symbolsFromRightBracketToQFold
+        ++ symbolsFromRightBracketLastToQFindNewSubstitution
     in (DQuadruples $ addCollectionToMap quadruples Map.empty)
 
 -- short relation is relation with one terminal in right part
@@ -1350,15 +1374,89 @@ generateBlockForSubstitution grammar@(Grammar (nonterminals, terminals, relation
 
 generateBlockForMovingToNextConjunction :: Grammar -> DebuggingQuadruples
 generateBlockForMovingToNextConjunction grammar@(Grammar (nonterminals, terminals, relations, _)) = let
+    transition = "Transition"
+    qShiftingFromFold = "qShiftingKTJFFromFold"
+    qRememberStart = "qRememberStart"
+
+    terminalsList = map terminalValue $ Set.toList terminals
     nonterminalsList = map nonterminalValue $ Set.toList nonterminals
+    relsList = Set.toList relations
     maxNumber = calculateMaxNumberOfRulesForNonterminal grammar
     indices = map show [0..maxNumber - 1]
+    plus = "+"
+    minus = "-"
+    signs = [plus, minus]
+    leftBracket = "("
+    rightBracket = ")"
+    space = " "
+    brackets = [leftBracket, rightBracket]
+    -- helper calculations of quads
     --qauds in this block - all conjs, which has next conj
-    --nonterminalsWithKRels = map nonterminalValue (getNonterminalsWithKRelsAnyLong (Set.toList relations) (read k :: Int))
-    --quads' = concatMap (\k -> calculateQuads grammar k nonterminalsWithKRels) indices
-    --quads =
-    quadruples = []
-    in (DQuadruples $ addCollectionToMap quadruples Map.empty)
+    indicesWithNonterms = map (\i ->
+                (i, filter (\t -> kthRelForNonterminalLong relsList t i) nonterminalsList)) indices
+    quads' = concatMap (\(i, nonterms) -> calculateQuads grammar i nonterms) indicesWithNonterms
+    -- if conj has next conj, then function calculateNextConjunctionInSameRule gives (Just s),
+    -- where s - next conj (SymbolsPair)
+    quads = filter (\(k, t, j, f) -> if (checkIfConjHasNeg grammar (k, t, j, f))
+        then let
+            pair = SymbolsPair (Nonterminal t, read k :: Int, True,
+                N $ Nonterminal j, N $ Nonterminal f) in
+            case (calculateNextConjunctionInSameRule grammar pair) of
+            Just _ -> True
+            Nothing -> False
+        else let
+            pair = SymbolsPair (Nonterminal t, read k :: Int, False,
+                N $ Nonterminal j, N $ Nonterminal f) in
+            case (calculateNextConjunctionInSameRule grammar pair)  of
+            Just _ -> True
+            Nothing -> False) quads'
+    qFoldRightBracketLast = "qFoldRightBracketLast"
+    qFindNewSubstitution = "qFindNewSubstitution"
+    stateTransitionOld = qFoldRightBracketLast ++ transition ++ qFindNewSubstitution
+    -- whole transition is ((DState qFoldRightBracketLast, DSymbol " "),(D $ DSymbol rightBracket, DState stateTransition))
+    differentTransition1Key = (DState qFoldRightBracketLast, DSymbol " ")
+    -- whole transition is ((DState stateTransition, DSymbol rightBracket),(DebuggingTypes.R, DState qFindNewSubstitution))
+    differentTransition2Key = (DState stateTransitionOld, DSymbol rightBracket)
+    (DQuadruples quadruplesMap'') = generateBlockForFolding grammar
+    quadruplesMap' = Map.delete differentTransition1Key quadruplesMap''
+    quadruplesMap = Map.delete differentTransition2Key quadruplesMap'
+
+    generatedQuadruples = generateFoldingForMidCongs quadruplesMap quads
+
+    -- generate special case for transition1 and transition2
+    symbolsFromRightBracketLastToQFindNewSubstitution = concatMap (\(k, t, j, f) -> let
+        oldState = qFoldRightBracketLast ++ k ++ t ++ j ++ f
+        newState = qShiftingFromFold ++ k ++ t ++ j ++ f
+        stateTransition = qFoldRightBracketLast ++ transition ++ qFindNewSubstitution in
+        [((DState oldState, DSymbol " "),(D $ DSymbol rightBracket, DState stateTransition)),
+        ((DState stateTransition, DSymbol rightBracket),(DebuggingTypes.R, DState newState))]) quads
+
+    symbolsInQShiftingFromFoldKTJF = concatMap (\(k, t, j, f) -> map (\s -> let
+        state = qShiftingFromFold ++ k ++ t ++ j ++ f in
+        ((DState state, DSymbol s),(DebuggingTypes.L, DState state)))
+        $ nonterminalsList ++ terminalsList ++ brackets ++ signs ++ [space]) quads
+    symbolsToQKTJFRememberStart = map (\(k, t, j, f) -> let
+        oldState = qShiftingFromFold ++ k ++ t ++ j ++ f
+        newState = qRememberStart ++ k ++ t ++ j ++ f in
+        ((DState oldState, DSymbol k),(DebuggingTypes.R, DState newState))) quads
+    newQuadruples = addCollectionToMap
+        (symbolsFromRightBracketLastToQFindNewSubstitution
+        ++ symbolsToQKTJFRememberStart ++ symbolsInQShiftingFromFoldKTJF)
+        Map.empty
+    allQuadruplesMap = Map.union generatedQuadruples newQuadruples
+    in (DQuadruples allQuadruplesMap)
+
+generateFoldingForMidCongs :: Map.Map (DebuggingState, DebuggingSymbol) (a, DebuggingState)
+        -> [([Char], [Char], [Char], [Char])]
+        -> Map.Map (DebuggingState, DebuggingSymbol) (a, DebuggingState)
+generateFoldingForMidCongs quadruples quads = let
+    quadruplesList = map (\(k, t, j, f) ->
+        Map.map ((\(move, DState state) -> (move, DState $ state ++ k ++ t ++ j ++ f)))
+            (Map.mapKeys (\(DState state, DSymbol symbol) ->
+                let updatedState = state ++ k ++ t ++ j ++ f in
+                (DState updatedState, DSymbol symbol)) quadruples)) quads
+   in Map.unions quadruplesList
+
 
 getShiftsDecrements :: Int -> String -> [(String, String)]
 getShiftsDecrements shiftSize symbol = let

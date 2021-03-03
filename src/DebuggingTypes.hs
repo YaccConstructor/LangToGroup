@@ -17,6 +17,10 @@ data DebuggingMove = D DebuggingSymbol | L | R
 
 newtype DebuggingQuadruples = DQuadruples (Map.Map (DebuggingState, DebuggingSymbol) (DebuggingMove, DebuggingState))
         deriving (Eq, Ord, Show)
+        
+
+newtype DebuggingTuringMachine = DTM DebuggingQuadruples
+    deriving (Show, Eq)
 
 finalDState :: DebuggingState
 finalDState = DState " "
