@@ -1,4 +1,4 @@
-module DebuggingTypes where
+module DebuggingTMTypes where
 
 import qualified Data.Map as Map
 
