@@ -6,6 +6,7 @@ import qualified Boolean2TM
 import qualified Data.Set as Set
 
 -- tests written for boolean grammars in normal form
+calculateNextConjunctionInSameRuleTest1 :: IO ()
 calculateNextConjunctionInSameRuleTest1 = do
   let testGr = Grammar (
                             Set.fromList [Nonterminal "Abc",Nonterminal "Cr",Nonterminal "D",Nonterminal "S"],
