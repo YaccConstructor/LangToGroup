@@ -5,31 +5,43 @@ module SPGens where
 import TMReader
 import SPTypes
 
-q :: TMReader Generator
-q = return $ G 0
+q_ :: Int -> TMReader Generator
+q_ x = return $ G x
 
-h :: TMReader Generator
-h = return $ G 1
+p_ :: Int -> TMReader Generator
+p_ x = do
+    n <- getN
+    return $ G (x + n + 1)
+
+h_0 :: TMReader Generator
+h_0 = do
+    n <- getN
+    return $ G (2*n + 2)
+
+h_1 :: TMReader Generator
+h_1 = do
+    n <- getN
+    return $ G (2*n + 3)
 
 s_ :: Int -> TMReader Generator
-s_ x = return $ G (x + 2)
-
-q_ :: Int -> TMReader Generator
-q_ x = do
-    m <- getM
-    return $ G (x + m + 3)
+s_ x = do
+    n <- getN
+    return $ G (x + 2*n + 4)
 
 isQ :: TMReader (Generator -> Bool)
 isQ = do
-    m <- getM
+    n <- getN
     return $
-        \(G x) -> x == 0 || x >= m + 3
+        \(G x) -> x >= 0 && x < 2*n + 2
 
 toString :: Generator -> TMReader String
 toString = flip $ do
+    n <- getN
     m <- getM
     return $ \case
-        G 0             -> "q"
-        G 1             -> "h"
-        G x | x < m + 3 -> "s_" ++ show (x - 2)
-        G x | otherwise -> "q_" ++ show (x - m - 3)
+        G x | x >= 0       && x <= n           -> "q_" ++ show x
+        G x | x >= n + 1   && x <= 2*n + 1     -> "p_" ++ show (x - n - 1)
+        G x | x == (2*n + 2)                   -> "h_0"
+        G x | x == (2*n + 3)                   -> "h_1"
+        G x | x >= 2*n + 4 && x <= 2*n + m + 4 -> "s_" ++ show (x - 2*n - 4)
+        G x | otherwise -> error $ "G " ++ show x ++ " isn't valid generator"

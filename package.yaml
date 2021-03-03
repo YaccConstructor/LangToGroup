@@ -66,12 +66,12 @@ executables:
     source-dirs:         src
 
 
-  LangToGroup-constructGP:
-    main:                GPKnuthBendixMain.hs
-    source-dirs:         src
-    ghc-options:
-    - -main-is GPKnuthBendixMain
-    - -O3
+#  LangToGroup-constructGP:
+#    main:                GPKnuthBendixMain.hs
+#    source-dirs:         src
+#    ghc-options:
+#    - -main-is GPKnuthBendixMain
+#    - -O3
 
 
 tests:

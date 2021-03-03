@@ -4,7 +4,9 @@ import TMTypes
 import TMSemigroup
 import TMReader
 import Move
+import TM2SP
 import SP2GP
+import SPTypes
 import GPTypes
 import Interpreter
 import qualified Set as MySet
@@ -75,25 +77,35 @@ printTMInfo msg (Just tm) = do
     let qs = TMTypes.toList tm
         n  = runTMReader getN tm
         m  = runTMReader getM tm
-        gp = groupBeta tm
-        rs = case gp of GP x -> x
+        sp = semigroupGamma tm
+        rs = case sp of SP x -> x
         gs = Set.fromList $ do
             r <- MySet.toList rs
-            let ew1 `Equals` ew2 = r
+            let ew1 `SPTypes.Equals` ew2 = r
+            ew1 ++ ew2
+        gp = groupBeta tm
+        rs' = case gp of GP x -> x
+        gs' = Set.fromList $ do
+            r <- MySet.toList rs'
+            let ew1 `GPTypes.Equals` ew2 = r
             e <- ew1 ++ ew2
             return $ case e of
                     Positive x -> x
                     Negative x -> x
-    putStr "Quadruples: "
+    putStr "Quadruples:  "
     print $ length qs
-    putStr "States:     "
-    print n
-    putStr "Symbols:    "
-    print m
-    putStr "Relations:  "
-    print $ MySet.size rs
-    putStr "Generators: "
+    putStr "States:      "
+    print $ n
+    putStr "Symbols:     "
+    print $ m
+    putStr "Generators:  "
     print $ Set.size gs
+    putStr "Relations:   "
+    print $ MySet.size rs
+    putStr "Generators': "
+    print $ Set.size gs'
+    putStr "Relations':  "
+    print $ MySet.size rs'
     putStrLn ""
 
 test :: IO ()

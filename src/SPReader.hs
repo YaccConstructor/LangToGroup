@@ -16,8 +16,8 @@ runSPReader spr = spr . (runTMReader $ do
     rs <- relations
     n <- TMReader.getN
     m <- TMReader.getM
-    let l = Set.size rs - 1
-    return (SP rs, n, m + 1, l))
+    let l = Set.size rs
+    return (SP rs, n, m, l))
 
 getS :: SPReader SemigroupPresentation
 getS (s, _, _, _) = s
@@ -35,4 +35,4 @@ fromTMReader :: TMReader a -> SPReader a
 fromTMReader tmr = do
     n <- getN
     m <- getM
-    return $ tmr (undefined, n, m - 1, undefined)
+    return $ tmr (undefined, n, m, undefined)

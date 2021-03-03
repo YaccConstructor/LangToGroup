@@ -27,14 +27,16 @@ relations = do
     m <- getM
     l <- getL
     let relationsList = Set.toList relationsSet
+        ss = [s_ i | i <- [0..m]] ++ [h_0, h_1]
+        rs = [r_ i | i <- [1..l]]
     fmap Set.fromList $ sequence $
         [
-            [x, s_ beta] === [s_ beta, x, x]
-            | beta <- [0..m]
+            [x, s] === [s, x, x]
+            | s <- ss
         ] ++
         [
-            [r_ i, s_ beta] === [s_ beta, x, r_ i, x]
-            | i <- [0..l], beta <- [0..m]
+            [r, s] === [s, x, r, x]
+            | r <- rs, s <- ss
         ] ++
         ( do
             (w1 `SP.Equals` w2, i) <- relationsList `zip` [0..]
@@ -46,21 +48,21 @@ relations = do
                 Equals <$> w1' <*> w2'
         ) ++
         [
-            [t, r_ i] === [r_ i, t]
-            | i <- [0..l]
+            [t, r] === [r, t]
+            | r <- rs
         ] ++
         [
             [t, x] === [x, t]
         ] ++
         [
-            [k, r_ i] === [r_ i, k]
-            | i <- [0..l]
+            [k, r] === [r, k]
+            | r <- rs
         ] ++
         [
             [k, x] === [x, k]
         ] ++
         [
-            [k, (q ^~), t, q] === [(q ^~), t, q, k]
+            [k, (h_1 ^~), ((q_ 0) ^~), h_0, t, (h_0 ^~), q_ 0, h_1] === [(h_1 ^~), ((q_ 0) ^~), h_0, t, (h_0 ^~), q_ 0, h_1, k]
         ]
 
 groupBeta :: TuringMachine -> GroupPresentation
