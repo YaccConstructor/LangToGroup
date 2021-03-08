@@ -648,8 +648,7 @@ generateBlockForFolding (Grammar (nonterminals, terminals, _, _)) = let
     qFoldRightBracket = "qFoldRightBracket"
     qFoldRightBracket' = "qFoldRightBracket'"
     qFindNewSubstitution = "qFindNewSubstitution"
-
-    write = "write"
+    
     minus = "-"
     plus = "+"
     signs = [minus, plus]
@@ -669,7 +668,6 @@ generateBlockForFolding (Grammar (nonterminals, terminals, _, _)) = let
         [((DState qRemoveSymbols, DSymbol t),(D $ DSymbol " ", DState stateTransition)),
         ((DState stateTransition, DSymbol " "),(DebuggingTMTypes.R, DState qRemoveSymbols))]) $ nonterminalsList ++ [negation]
     symbolsToQRemoveBracketAroundFstWord = concatMap (\sign -> let
-        -- FIXME: add uniform way for naming transition : oldStateName ++ transition ++ newStateName
         stateTransition = qRemoveSymbols ++ transition ++ qRemoveBracketsAroundFstWord in
         [((DState qRemoveSymbols, DSymbol sign),(D $ DSymbol " ", DState stateTransition)),
         ((DState stateTransition, DSymbol " "),(DebuggingTMTypes.R, DState qRemoveBracketsAroundFstWord))]) signs
@@ -702,7 +700,7 @@ generateBlockForFolding (Grammar (nonterminals, terminals, _, _)) = let
     symbolsInQRemoveBracketsAroundSndWord'' = map (\t -> let
         state = qRemoveBracketsAroundSndWord in
         ((DState state, DSymbol t),(DebuggingTMTypes.R, DState state))) terminalsList
-    symbolsInQRemoveBracketsAroundSndWord = 
+    symbolsInQRemoveBracketsAroundSndWord =
       symbolsInQRemoveBracketsAroundSndWord' ++ symbolsInQRemoveBracketsAroundSndWord''
     symbolsToQMoveToStart = let
         oldState = qRemoveBracketsAroundSndWord
@@ -733,36 +731,16 @@ generateBlockForFolding (Grammar (nonterminals, terminals, _, _)) = let
         state = qFold ++ t ++ lookForNewPlace in
         ((DState state, DSymbol " "),(DebuggingTMTypes.L, DState state))) symbols
 
-    -- FIXME think about creating one function with parameter possibleSymbols
     --BLOCK for qFoldNonterminalLookForNewPlace
-    symbolsToQFoldNonterminalWrite = map (\t -> let
-        oldState = qFold ++ t ++ lookForNewPlace
-        newState = qFold ++ t ++ write in
-        ((DState oldState, DSymbol rightBracket),(DebuggingTMTypes.R, DState newState))) nonterminalsList
-
+    symbolsToQFoldNonterminalWrite = generateToQFoldSymbolWrite' [rightBracket] nonterminalsList
     --BLOCK for qFoldTerminalLookForNewPlace
-    symbolsToQFoldTerminalWrite = concatMap (\t -> let
-        oldState = qFold ++ t ++ lookForNewPlace
-        newState = qFold ++ t ++ write
-        possibleSymbols = terminalsList ++ [leftBracket] in
-        map (\s -> ((DState oldState, DSymbol s),(DebuggingTMTypes.R, DState newState))) 
-            possibleSymbols) terminalsList
+    symbolsToQFoldTerminalWrite = generateToQFoldSymbolWrite' (terminalsList ++ [leftBracket]) terminalsList
 
     --BLOCK for qFoldSignLookForNewPlace
-    symbolsToQFoldSignWrite = concatMap (\t -> let
-        oldState = qFold ++ t ++ lookForNewPlace
-        newState = qFold ++ t ++ write
-        possibleSymbols = nonterminalsList in
-        map (\s -> ((DState oldState, DSymbol s),(DebuggingTMTypes.R, DState newState))) possibleSymbols) signs
+    symbolsToQFoldSignWrite = generateToQFoldSymbolWrite' nonterminalsList signs
 
     --BLOCK for qFold(LookForNewPlace
-    symbolsToQFoldLeftBracketWrite = concatMap (\t -> let
-        oldState = qFold ++ t ++ lookForNewPlace
-        newState = qFold ++ t ++ write
-        possibleSymbols = signs in
-        map (\s -> ((DState oldState, DSymbol s),(DebuggingTMTypes.R, DState newState))
-            ) possibleSymbols) [leftBracket]
-
+    symbolsToQFoldLeftBracketWrite = generateToQFoldSymbolWrite' signs [leftBracket]
 
     --BLOCK for qFold)LookForNewPlace
     qFoldRightBracketLookForNewPlace = qFold ++ rightBracket ++ lookForNewPlace
@@ -821,6 +799,20 @@ generateBlockForFolding (Grammar (nonterminals, terminals, _, _)) = let
         ++ symbolsToQFoldRightBracketLast ++ symbolsFromRightBracketToQFold
         ++ symbolsFromRightBracketLastToQFindNewSubstitution
     in (DQuadruples $ addCollectionToMap quadruples Map.empty)
+
+
+generateToQFoldSymbolWrite' :: [String] -> [String]
+    -> [((DebuggingState, DebuggingSymbol), (DebuggingMove, DebuggingState))]
+generateToQFoldSymbolWrite' inputSymbols stateSymbols = let
+    qFold = "qFold"
+    lookForNewPlace = "LookForNewPlace"
+    write = "write"
+    symbolsToQFoldLeftBracketWrite = concatMap (\t -> let
+        oldState = qFold ++ t ++ lookForNewPlace
+        newState = qFold ++ t ++ write in
+        map (\s -> ((DState oldState, DSymbol s),(DebuggingTMTypes.R, DState newState)))
+            inputSymbols) stateSymbols
+    in symbolsToQFoldLeftBracketWrite
 
 -- short relation is relation with one terminal in right part
 getNumbersOfShortRelations :: Grammar -> Map.Map Nonterminal [String]
