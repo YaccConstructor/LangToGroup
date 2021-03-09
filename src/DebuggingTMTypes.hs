@@ -1,6 +1,9 @@
+{-# LANGUAGE LambdaCase #-}
+
 module DebuggingTMTypes where
 
 import qualified Data.Map as Map
+import qualified Data.List as List
 import Data.Bifunctor as Bifunctor
 import Data.Char as Char
 import TMTypes
@@ -21,36 +24,54 @@ data DebuggingMove = D DebuggingSymbol | L | R
 
 newtype DebuggingQuadruples = DQuadruples (Map.Map (DebuggingState, DebuggingSymbol) (DebuggingMove, DebuggingState))
         deriving (Eq, Ord, Show)
-        
 
 newtype DebuggingTuringMachine = DTM DebuggingQuadruples
     deriving (Show, Eq)
 
 finalDState :: DebuggingState
-finalDState = DState " "
+finalDState = DState "Done"
 
 convertToTuringMachine :: DebuggingTuringMachine -> TuringMachine
-convertToTuringMachine (DTM (DQuadruples quadruplesMap)) = let
-    quadruplesMap' = Map.mapKeys (bimap convertToState convertToSymbol) quadruplesMap
-    quadruplesMap'' = Map.map (bimap convertToSymbolMove convertToState) quadruplesMap'
+convertToTuringMachine tm@(DTM (DQuadruples quadruplesMap)) = let
+    states = getStates tm
+    symbols = getSymbols tm
+    quadruplesMap' = Map.mapKeys (\(state, symbol) -> let
+        stateIndex = getStateIndex state states
+        symbolIndex = getSymbolIndex symbol symbols
+        in (Q stateIndex, S symbolIndex)) quadruplesMap
+    quadruplesMap'' = Map.map (\(move, state) -> let
+        stateIndex = getStateIndex state states
+        newMove = case move of
+            DebuggingTMTypes.L -> TMTypes.L
+            DebuggingTMTypes.R -> TMTypes.R
+            D s -> C $ S $ getSymbolIndex s symbols
+        in (newMove, Q stateIndex)) quadruplesMap'
     in TM quadruplesMap''
 
-convertToSymbolMove :: DebuggingMove -> SymbolMove
-convertToSymbolMove (D (DSymbol symbol)) = C $ S (foldCodesToNumber $ map ord symbol)
-convertToSymbolMove DebuggingTMTypes.L = TMTypes.L
-convertToSymbolMove DebuggingTMTypes.R = TMTypes.R
+getStateIndex :: DebuggingState -> [DebuggingState] -> Int
+getStateIndex state states =
+    case List.elemIndex state states of
+      Just index -> index
+      Nothing -> error "No such state. Something went wrong during convertation to Turing machine."
 
-convertToSymbol :: DebuggingSymbol -> Symbol
-convertToSymbol (DSymbol " ") = emptySymbol
-convertToSymbol (DSymbol symbol) = let
-    symbol' = foldCodesToNumber $ map Char.ord symbol
-    in S symbol'    
+getSymbolIndex :: DebuggingSymbol -> [DebuggingSymbol] -> Int
+getSymbolIndex symbol symbols =
+    case List.elemIndex symbol symbols of
+      Just index -> index
+      Nothing -> error "No such state. Something went wrong during convertation to Turing machine."
 
-convertToState :: DebuggingState -> State
-convertToState (DState state) = let
-    state' = foldCodesToNumber $ map Char.ord state
-    in Q state'    
+getStates :: DebuggingTuringMachine -> [DebuggingState]
+getStates (DTM (DQuadruples qdrs)) = let
+    states' = map (\(_, (_, DState state)) -> state) $ Map.toList qdrs
+    states'' = map (\((DState state, _), _) -> state) $ Map.toList qdrs
+    in map DState $ List.nub $ states' ++ states''
 
--- overflow
-foldCodesToNumber :: [Int] -> Int
-foldCodesToNumber codes = read (concatMap show codes) :: Int    
+getSymbols :: DebuggingTuringMachine -> [DebuggingSymbol]
+getSymbols (DTM (DQuadruples qdrs)) = let
+    symbols' = map (\case
+        (_, (D (DSymbol s), _)) -> s
+        _ -> "") $ Map.toList qdrs
+    filteredEmpty = filter (/= "") symbols'
+    symbols'' = map (\((_, DSymbol s), _) -> s) $ Map.toList qdrs
+    in map DSymbol $ List.nub $ filteredEmpty ++ symbols''
+
