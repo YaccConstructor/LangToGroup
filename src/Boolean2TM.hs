@@ -201,7 +201,7 @@ generateBlockForQKFindNegation grammar@(Grammar (nonterminals, terminals, relati
     -- BLOCK for qRulekFindNonterminal
 
     --nonterminalsWithKRels = map nonterminalValue (getNonterminalsWithKRelsAnyLong (Set.toList relations) (read k :: Int))
-    nonterminalsWithKthRel = filter (\t -> (kthRelForNonterminalLong relsList t k')) nonterminalsList
+    nonterminalsWithKthRel = filter (\t -> kthRelForNonterminalLong relsList t k') nonterminalsList
     symbolsToQRulekNonterminalFindFst = map (\t ->
             ((DState qRuleKFindNonterminal, DSymbol t),(DebuggingTMTypes.R, DState $ q ++ "Rule" ++ k' ++ t ++ "findFst"))
             ) nonterminalsWithKthRel
@@ -336,7 +336,7 @@ generateTransitionFromConjunctionResult grammar@(Grammar (nonterminals, terminal
 
     indicesWithNonterms = map (\i ->
             (i, filter (\t -> kthRelForNonterminalLong relsList t i) nonterminalsList)) indices
-    quads = concatMap (\(i, nonterms) -> calculateQuads grammar i nonterms) indicesWithNonterms
+    quads = concatMap (uncurry $ calculateQuads grammar) indicesWithNonterms
 
     -- BLOCK FOR qRulektjs
     quadruplesInRulektjs' = concatMap (\s ->
@@ -1032,7 +1032,7 @@ generateBlockForPreparingForSubstitution grammar@(Grammar (nonterminals, termina
         ) nonterms) indicesWithNonterms
     --BLOCK for qRememberStartCounterNonterm1Nonterm2Nonterm3
     rememberedSymbols = terminalsList ++ [rightBracket]
-    quintets = concatMap (\(k, t, j, f) -> map (\symbol -> (k, t, j, f, symbol)) rememberedSymbols) quads
+    quintets = concatMap (\(k, t, j, f) -> map (k, t, j, f,) rememberedSymbols) quads
 
     symbolsInQRememberStartKTJF = concatMap (\(k, t, j, f) -> map (\symbol ->
         ((DState $ qRememberStart  ++ k ++ t ++ j ++ f, DSymbol symbol),
@@ -1066,7 +1066,7 @@ generateBlockForPreparingForSubstitution grammar@(Grammar (nonterminals, termina
     symbolsWithSimilarStatesForTerms = nonterminalsList ++ signs ++
         terminalsList ++ brackets ++ [hash]
 
-    tuple6 = concatMap (\(k, t, j, f, s) -> map (\s' -> (k, t, j, f, s, s'))
+    tuple6 = concatMap (\(k, t, j, f, s) -> map (k, t, j, f, s,)
         symbolsWithSimilarStatesForTerms) quintets
     symbolsToQWriteSymbolKTJFsymbol = concatMap (\(k, t, j, f, s, s') -> let
         oldState = qShiftWord ++ s ++ k ++ t ++ j ++ f
@@ -1089,7 +1089,7 @@ generateBlockForPreparingForSubstitution grammar@(Grammar (nonterminals, termina
     shiftsNeg = map show [1..shiftNeg]
     -- case for shifts for terminals
     terminalQuintets = concatMap (\(k, t, j, f) ->
-        map (\symbol -> (k, t, j, f, symbol)) terminalsList) quads
+        map (k, t, j, f,) terminalsList) quads
     symbolsToQWriteSymbolKTJFshift = concatMap (\(k, t, j, f, s) ->
         if (checkIfConjHasNeg grammar (k, t, j, f)) then
             map (\i -> let
@@ -1134,7 +1134,7 @@ generateBlockForPreparingForSubstitution grammar@(Grammar (nonterminals, termina
     midShiftsNeg = shiftsPairsNeg \\ [endShiftNeg]
 
     symbolsToQUnmarkEndKTJF = concatMap (\(k, t, j, f, s) ->
-        if (checkIfConjHasNeg grammar (k, t, j, f)) then let
+        if checkIfConjHasNeg grammar (k, t, j, f) then let
             oldState =  qWriteCounter ++ s ++ k ++ t ++ j ++ f
             newState = qUnmarkEnd ++ k ++ t ++ j ++ f
             stateTransition = oldState ++ transition ++ newState
@@ -1152,7 +1152,7 @@ generateBlockForPreparingForSubstitution grammar@(Grammar (nonterminals, termina
             ((DState stateTransition, DSymbol newSymbol), (DebuggingTMTypes.R, DState newState))]
         ) terminalQuintets
     symbolsToQMoveToEndsKTJF = concatMap (\(k, t, j, f, s) ->
-        if (checkIfConjHasNeg grammar (k, t, j, f)) then
+        if checkIfConjHasNeg grammar (k, t, j, f) then
             concatMap (\ (i, iDecr) -> let
             oldState =  qWriteCounter ++ s ++ k ++ t ++ j ++ f
             newState = qMoveToEnd ++ s ++ k ++ t ++ j ++ f
@@ -1266,7 +1266,7 @@ generateBlockForSubstitution grammar@(Grammar (nonterminals, terminals, relation
         in (show number, nonterm, nonterm1Val, nonterm2Val)
         ) nonterms) indicesWithNonterms
 
-    quadsNeg = filter (\quad -> (checkIfConjHasNeg grammar quad)) quads
+    quadsNeg = filter (checkIfConjHasNeg grammar) quads
     quadsPos = quads \\ quadsNeg
 
     --BLOCK for qWritingRelationKTJF
@@ -1331,7 +1331,7 @@ generateBlockForSubstitution grammar@(Grammar (nonterminals, terminals, relation
         ((DState stateTransition, DSymbol rightBracket), (DebuggingTMTypes.R, DState newState))]) quads
 
     -- block for qLetterWritingKTJFJs'
-    quintets = concatMap (\(k, t, j, f) -> map (\symbol -> (k, t, j, f, symbol)) terminalsList) quads
+    quintets = concatMap (\(k, t, j, f) -> map (k, t, j, f,) terminalsList) quads
     symbolsInQLetterWritingKTJFJ = map (\(k, t, j, f) -> let
         state = qLetterWriting ++ k ++ t ++ j ++ f ++ j in
         ((DState state, DSymbol space), (DebuggingTMTypes.R, DState state))) quads
@@ -1343,7 +1343,7 @@ generateBlockForSubstitution grammar@(Grammar (nonterminals, terminals, relation
         ((DState stateTransition, DSymbol space), (DebuggingTMTypes.L, DState newState))]) quintets
 
     -- block for qLetterWritingKTJFJs'
-    skipSymbols = [space] ++ [rightBracket]
+    skipSymbols = space : [rightBracket]
     symbolsInQLetterWritingKTJFJs' = concatMap (\(k, t, j, f, s) -> map (\skipSymbol -> let
         state = qLetterWriting ++ k ++ t ++ j ++ f ++ j ++ s ++ comma in
         ((DState state, DSymbol skipSymbol), (DebuggingTMTypes.L, DState state))) skipSymbols) quintets
@@ -1439,20 +1439,20 @@ generateBlockForMovingToNextConjunction grammar@(Grammar (nonterminals, terminal
     --qauds in this block - all conjs, which has next conj
     indicesWithNonterms = map (\i ->
                 (i, filter (\t -> kthRelForNonterminalLong relsList t i) nonterminalsList)) indices
-    quads' = concatMap (\(i, nonterms) -> calculateQuads grammar i nonterms) indicesWithNonterms
+    quads' = concatMap (uncurry $ calculateQuads grammar) indicesWithNonterms
     -- if conj has next conj, then function calculateNextConjunctionInSameRule gives (Just s),
     -- where s - next conj (SymbolsPair)
-    quads = filter (\(k, t, j, f) -> if (checkIfConjHasNeg grammar (k, t, j, f))
+    quads = filter (\(k, t, j, f) -> if checkIfConjHasNeg grammar (k, t, j, f)
         then let
             pair = SymbolsPair (Nonterminal t, read k :: Int, True,
                 N $ Nonterminal j, N $ Nonterminal f) in
-            case (calculateNextConjunctionInSameRule grammar pair) of
+            case calculateNextConjunctionInSameRule grammar pair of
             Just _ -> True
             Nothing -> False
         else let
             pair = SymbolsPair (Nonterminal t, read k :: Int, False,
                 N $ Nonterminal j, N $ Nonterminal f) in
-            case (calculateNextConjunctionInSameRule grammar pair)  of
+            case calculateNextConjunctionInSameRule grammar pair  of
             Just _ -> True
             Nothing -> False) quads'
     qFoldRightBracketLast = "qFoldRightBracketLast"
@@ -1489,14 +1489,14 @@ generateBlockForMovingToNextConjunction grammar@(Grammar (nonterminals, terminal
         ++ symbolsToQKTJFRememberStart ++ symbolsInQShiftingFromFoldKTJF)
         Map.empty
     allQuadruplesMap = Map.union generatedQuadruples newQuadruples
-    in (DQuadruples allQuadruplesMap)
+    in DQuadruples allQuadruplesMap
 
 generateFoldingForMidCongs :: Map.Map (DebuggingState, DebuggingSymbol) (a, DebuggingState)
         -> [([Char], [Char], [Char], [Char])]
         -> Map.Map (DebuggingState, DebuggingSymbol) (a, DebuggingState)
 generateFoldingForMidCongs quadruples quads = let
     quadruplesList = map (\(k, t, j, f) ->
-        Map.map ((\(move, DState state) -> (move, DState $ state ++ k ++ t ++ j ++ f)))
+        Map.map (\(move, DState state) -> (move, DState $ state ++ k ++ t ++ j ++ f))
             (Map.mapKeys (\(DState state, DSymbol symbol) ->
                 let updatedState = state ++ k ++ t ++ j ++ f in
                 (DState updatedState, DSymbol symbol)) quadruples)) quads
@@ -1505,7 +1505,7 @@ generateFoldingForMidCongs quadruples quads = let
 
 getShiftsDecrements :: Int -> String -> [(String, String)]
 getShiftsDecrements shiftSize symbol = let
-    fstPair = [(symbol, (show shiftSize))]
+    fstPair = [(symbol, show shiftSize)]
     indices = [1..shiftSize]
     midPairs = map (\i -> if
         i == 1 then (show i, symbol)

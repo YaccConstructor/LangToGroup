@@ -4,15 +4,8 @@ module DebuggingTMTypes where
 
 import qualified Data.Map as Map
 import qualified Data.List as List
-import Data.Bifunctor as Bifunctor
-import Data.Char as Char
 import TMTypes
 
--- firstly generating descriptional states (name of states describes, which activities TM does in this state),
--- after convert it to state Q_index from TMTypes module via bijective transformation
--- c |-> chr $ c + (ord 'a' - 1)
--- (transformation is bijective, since will use only chars 'A'..'Z','a'..'z', '1'..'9', '-' with disjoint 
--- prefixes for debugging names)
 newtype DebuggingState = DState String
         deriving (Eq, Ord, Show)
 
@@ -58,7 +51,7 @@ getSymbolIndex :: DebuggingSymbol -> [DebuggingSymbol] -> Int
 getSymbolIndex symbol symbols =
     case List.elemIndex symbol symbols of
       Just index -> index
-      Nothing -> error "No such state. Something went wrong during convertation to Turing machine."
+      Nothing -> error "No such symbol. Something went wrong during convertation to Turing machine."
 
 getStates :: DebuggingTuringMachine -> [DebuggingState]
 getStates (DTM (DQuadruples qdrs)) = let
