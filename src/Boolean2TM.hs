@@ -1091,7 +1091,7 @@ generateBlockForPreparingForSubstitution grammar@(Grammar (nonterminals, termina
     terminalQuintets = concatMap (\(k, t, j, f) ->
         map (k, t, j, f,) terminalsList) quads
     symbolsToQWriteSymbolKTJFshift = concatMap (\(k, t, j, f, s) ->
-        if (checkIfConjHasNeg grammar (k, t, j, f)) then
+        if checkIfConjHasNeg grammar (k, t, j, f) then
             map (\i -> let
             oldState = qShiftWord ++ s ++ k ++ t ++ j ++ f
             newState = qWriteCounter ++ s ++ k ++ t ++ j ++ f in
