@@ -38,6 +38,7 @@ dependencies:
 - deepseq
 - rando
 - mtl
+- split
 
 ghc-options: 
     -Wall

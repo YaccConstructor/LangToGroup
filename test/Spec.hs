@@ -15,6 +15,7 @@ import TmsTests
 import TuringMachine2TmsTests
 import Tms2TuringMachineTests
 import TmsParserTests
+import Boolean2TMTests
 import qualified SPTests (tests)
 
 test1Grammar :: Grammar
@@ -97,6 +98,10 @@ main = defaultMainWithOpts
         testCase "parse Tms: test1tape1cmd" test1tape1cmd,
         testCase "parse Tms: test1tape3cmd" test1tape3cmd,
         testCase "parse Tms: test3tape3cmd" test3tape3cmd,
+        testCase "Boolean to TM: calculateNextConjunctionInSameRuleTest1" calculateNextConjunctionInSameRuleTest1,
+        testCase "Boolean to TM: calculateNextConjunctionInSameRuleTest2" calculateNextConjunctionInSameRuleTest2,
+        testCase "Boolean to TM: calculateFirstConjunctionInNextRuleTest1" calculateFirstConjunctionInNextRuleTest1,
+        testCase "Boolean to TM: calculateFirstConjunctionInNextRuleTest2" calculateFirstConjunctionInNextRuleTest2,
         head $ hUnitTestToTests SPTests.tests
         ]
        mempty
