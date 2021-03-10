@@ -29,7 +29,7 @@ relations = do
     n <- getN
     m <- getM
     TM quadruplesMap <- getT
-    let quadruples = Map.toList quadruplesMap
+    let quadruples = filter (\((q1, s1), (sm, q2)) -> q1 /= q2 || sm /= C s1) $ Map.toList quadruplesMap
     sos <- setsOfSymbols
     fmap Set.fromList $ sequence $
         ( do
