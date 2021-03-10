@@ -47,21 +47,21 @@ x = do
     n <- getN
     m <- getM
     l <- getL
-    return $ element (n + m + l + 5)
+    return $ element (n + m + l + 4)
 
 t :: SPReader Element
 t = do
     n <- getN
     m <- getM
     l <- getL
-    return $ element (n + m + l + 6)
+    return $ element (n + m + l + 5)
 
 k :: SPReader Element
 k = do
     n <- getN
     m <- getM
     l <- getL
-    return $ element (n + m + l + 7)
+    return $ element (n + m + l + 6)
 
 convertG :: SP.Generator -> SPReader Element
 convertG = (fromTMReader . toString) >=> fromString where

@@ -79,13 +79,13 @@ printTMInfo msg (Just tm) = do
         m  = runTMReader getM tm
         sp = semigroupGamma tm
         rs = case sp of SP x -> x
-        gs = Set.fromList $ do
+        gs = map (\(SPTypes.G i) -> i) $ do
             r <- MySet.toList rs
             let ew1 `SPTypes.Equals` ew2 = r
             ew1 ++ ew2
         gp = groupBeta tm
         rs' = case gp of GP x -> x
-        gs' = Set.fromList $ do
+        gs' = map (\(GPTypes.G i) -> i) $ do
             r <- MySet.toList rs'
             let ew1 `GPTypes.Equals` ew2 = r
             e <- ew1 ++ ew2
@@ -99,11 +99,11 @@ printTMInfo msg (Just tm) = do
     putStr "Symbols:     "
     print $ m
     putStr "Generators:  "
-    print $ Set.size gs
+    putStrLn $ show (maximum gs + 1) ++ " (" ++ show (Set.size $ Set.fromList gs) ++ ")"
     putStr "Relations:   "
     print $ MySet.size rs
     putStr "Generators': "
-    print $ Set.size gs'
+    putStrLn $ show (maximum gs' + 1) ++ " (" ++ show (Set.size $ Set.fromList gs') ++ ")"
     putStr "Relations':  "
     print $ MySet.size rs'
     putStrLn ""
