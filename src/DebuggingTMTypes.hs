@@ -2,9 +2,11 @@
 
 module DebuggingTMTypes where
 
+import TMTypes
+import GrammarType  
+  
 import qualified Data.Map as Map
 import qualified Data.List as List
-import TMTypes
 
 newtype DebuggingState = DState String
         deriving (Eq, Ord, Show)
@@ -23,6 +25,9 @@ newtype DebuggingTuringMachine = DTM DebuggingQuadruples
 
 finalDState :: DebuggingState
 finalDState = DState "Done"
+
+newtype SymbolsPair = SymbolsPair (Nonterminal, Int, Bool, GrammarType.Symbol, GrammarType.Symbol)
+    deriving (Eq, Show)
 
 convertToTuringMachine :: DebuggingTuringMachine -> TuringMachine
 convertToTuringMachine tm@(DTM (DQuadruples quadruplesMap)) = let
