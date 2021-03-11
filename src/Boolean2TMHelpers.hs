@@ -1,10 +1,16 @@
+{-# LANGUAGE TupleSections #-}
+
 module Boolean2TMHelpers where
 
 import GrammarType
-import DebuggingTMTypes  
+import DebuggingTMTypes
 import qualified Data.Set as Set
 import qualified Data.Map as Map
-  
+import Data.List
+import Data.List.Split (splitOn)
+import Data.Ord
+import Data.Maybe
+
 getShiftsDecrements :: Int -> String -> [(String, String)]
 getShiftsDecrements shiftSize symbol = let
     fstPair = [(symbol, show shiftSize)]
@@ -32,7 +38,7 @@ checkIfConjHasNeg (Grammar(_, _, relations, _)) (number, leftN, fstN, sndN) = do
         Nothing -> False
 
 calculateMaxNumberOfRulesForNonterminal :: Grammar -> Int
-calculateMaxNumberOfRulesForNonterminal (Grammar (_, _, relations, _)) = let 
+calculateMaxNumberOfRulesForNonterminal (Grammar (_, _, relations, _)) = let
     listRelations = Set.toList relations
     groupedRelations = calculateGroupRelationsByNonterminals listRelations
     in (snd $ maximumBy (comparing snd) (Map.toList $ Map.map length groupedRelations))
@@ -44,7 +50,7 @@ calculateGroupRelationsByNonterminals relations = let
     in Map.map sort mapWithReversedRelationsOrder
 
 calculateNextConjunctionInSameRule :: Grammar -> SymbolsPair -> Maybe SymbolsPair
-calculateNextConjunctionInSameRule (Grammar (_, _, relations, _)) 
+calculateNextConjunctionInSameRule (Grammar (_, _, relations, _))
     (SymbolsPair (nonterminal, relationNumber, hasNeg, N conjNonterminal1, N conjNonterminal2)) = do
     let groupedRelations = calculateGroupRelationsByNonterminals $ Set.toList relations
     let relationsForNonterminal = groupedRelations Map.! nonterminal
@@ -78,9 +84,9 @@ calculateFirstConjunctionInNextRule (Grammar (_, _, relations, _))
             relation = relationsForNonterminal !! nextRelationNumber
             conjunctionPairs = splitOn [O Conjunction] relation
         in Just $ convertListToConjunctionPair nonterminal nextRelationNumber $ head conjunctionPairs
-        
-       
-        
+
+
+
 calculateTriplets :: Foldable t => Grammar -> String -> t String -> [(String, String, String)]
 calculateTriplets grammar number
   = concatMap
@@ -137,7 +143,7 @@ refineSymbolInConjunctionToNonterminal _ = error "Not a nonterminal, conjunction
 
 addCollectionToMap :: (Ord k) => [(k, a)] -> Map.Map k a -> Map.Map k a
 addCollectionToMap ((a,b) : xs) myMap = addCollectionToMap xs $ Map.insert a b myMap
-addCollectionToMap [] myMap = myMap        
+addCollectionToMap [] myMap = myMap
 
 
 -- short relation is relation with one terminal in right part
@@ -151,8 +157,8 @@ getShortRightParts nonterminal rightParts = let
     indices' = map (\t -> if t then elemIndex t shortOrNotRels else Nothing) shortOrNotRels
     indices = map show $ catMaybes indices'
     in indices
-    
-    
+
+
 kthRelForNonterminalLong :: [Relation] -> String -> String -> Bool
 kthRelForNonterminalLong relations nontermVal k = do
   let k' = read k :: Int
@@ -188,5 +194,4 @@ symbolAcceptedByNonterminal (Grammar (_, _, relations, _)) nontermValue symbol =
 
 refineSymbolToTerminalValue :: GrammarType.Symbol -> String
 refineSymbolToTerminalValue (T t) = terminalValue t
-refineSymbolToTerminalValue _ = error "Given symbol is not terminal"    
-    
+refineSymbolToTerminalValue _ = error "Given symbol is not terminal"
