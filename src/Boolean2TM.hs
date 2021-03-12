@@ -37,7 +37,7 @@ generateBlockForFindingNewSubstitution grammar@(Grammar (nonterminals, terminals
   qSkipCompletedNonterminal = "qSkipCompletedNonterminal"
   qCountWordLength' = "qCountWordLength'"
   qCountWordLength = "qCountWordLength"
-  qMoveToEndToScanResults = "qMoveToEndToScanResults"
+  qMoveToEndToScanResults1 = "qMoveToEndToScanResults1"
   qFold' = "qFold'"
 
   terminalsList = Set.toList terminals
@@ -75,7 +75,7 @@ generateBlockForFindingNewSubstitution grammar@(Grammar (nonterminals, terminals
   symbolsToCountWordLengthQdrs = [((DState qCountWordLength', DSymbol Constants.leftBracket),(DebuggingTMTypes.L, DState qCountWordLength))]
 
   -- BLOCK for qFold'
-  symbolsToQMoveToEndToScanResults = [((DState qFold', DSymbol Constants.leftBracket),(DebuggingTMTypes.L, DState qMoveToEndToScanResults))]
+  symbolsToQMoveToEndToScanResults1 = [((DState qFold', DSymbol Constants.leftBracket),(DebuggingTMTypes.L, DState qMoveToEndToScanResults1))]
 
   -- BLOCK for qSkipCompletedNonterminal
   symbolsToQFindNewSubstitutionQdrs = map 
@@ -84,12 +84,14 @@ generateBlockForFindingNewSubstitution grammar@(Grammar (nonterminals, terminals
   quadruples = symbolsInQFindNewSubstitutionQdrs ++ symbolsFromQFindNewSubstitutionToAcceptQdrs ++ symbolsWhichChangeStateQdrs 
     ++ symbolsToQSubstituteOrFoldQdrs ++ symbolsToQSkipCompletedNonterminalQdrs ++ symbolsFromQCheckIfNotCompletedToAcceptQdrs
     ++ symbolsInQSubstituteOrFoldQdrs ++ symbolsToCountWordLength'Qdrs ++ symbolsToQFold'Qdrs ++ symbolsToCountWordLengthQdrs 
-    ++ symbolsToQMoveToEndToScanResults ++ symbolsToQFindNewSubstitutionQdrs
+    ++ symbolsToQMoveToEndToScanResults1 ++ symbolsToQFindNewSubstitutionQdrs
   in DQuadruples (Helpers.addCollectionToMap quadruples Map.empty)
 
 generateBlockForScanResults :: Grammar -> DebuggingQuadruples
 generateBlockForScanResults grammar@(Grammar (nonterminals, terminals, _, _)) = let
-    qMoveToEndAndScanResult = "qMoveToEndAndScanResult"
+    qMoveToEndToScanResults1 = "qMoveToEndToScanResults1"
+    qMoveToEndToScanResults2 = "qMoveToEndToScanResults2"
+
     qStart' = "qStart'"
     qSecPos = "qSecPos"
     qSecNeg = "qSecNeg"
@@ -106,11 +108,24 @@ generateBlockForScanResults grammar@(Grammar (nonterminals, terminals, _, _)) = 
     terminalsList = map terminalValue $ Set.toList terminals
     nonterminalsList = map nonterminalValue $ Set.toList nonterminals
     indices = map show [0..maxNumberOfRules - 1]
-    allSymbols = Constants.negation : terminalsList ++ nonterminalsList ++ Constants.signs ++ indices ++ Constants.brackets
 
-    symbolsInQMoveToEndAndScanResultQdrs = map
-        (\t -> ((DState qMoveToEndAndScanResult, DSymbol t),(DebuggingTMTypes.R, DState qMoveToEndAndScanResult))) allSymbols
-    symbolsToQStart'Qdrs = [((DState qMoveToEndAndScanResult, DSymbol Constants.space),(DebuggingTMTypes.L, DState qStart'))]
+    symbols = Constants.negation : terminalsList ++ nonterminalsList ++ indices ++ Constants.brackets
+    -- BLOCK for qMoveToEndToScanResults1Qdrs
+    symbolsInQMoveToEndToScanResults1Qdrs = map
+        (\t -> ((DState qMoveToEndToScanResults1, DSymbol t),
+            (DebuggingTMTypes.R, DState qMoveToEndToScanResults1))) symbols
+    symbolsToQMoveToEndToScanResults2Qdrs = map (\t ->
+        ((DState qMoveToEndToScanResults1, DSymbol t),
+        (DebuggingTMTypes.R, DState qMoveToEndToScanResults2))) Constants.signs
+
+    -- BLOCK for qMoveToEndToScanResults2Qdrs
+    symbolsInQMoveToEndToScanResults2Qdrs = map
+        (\t -> ((DState qMoveToEndToScanResults2, DSymbol t),
+        (DebuggingTMTypes.R, DState qMoveToEndToScanResults2)))
+        $ nonterminalsList ++ Constants.brackets ++ terminalsList
+    symbolsToQStart'Qdrs = map (\t ->
+        ((DState qMoveToEndToScanResults2, DSymbol t),
+        (DebuggingTMTypes.R, DState qStart'))) Constants.signs
 
     -- BLOCK for qStart'
     symbolsInQStart'Qdrs = map
@@ -142,7 +157,8 @@ generateBlockForScanResults grammar@(Grammar (nonterminals, terminals, _, _)) = 
     symbolsToQWordsChangingMoveToBringSymbolQdrs = map
         (\t -> ((DState qSomeNeg, DSymbol t),(DebuggingTMTypes.R, DState qWordsChangingMoveToBringSymbol))) indices
 
-    quadruples = symbolsInQMoveToEndAndScanResultQdrs ++ symbolsToQStart'Qdrs ++ symbolsInQStart'Qdrs
+    quadruples = symbolsInQMoveToEndToScanResults1Qdrs ++ symbolsToQMoveToEndToScanResults2Qdrs
+        ++  symbolsInQMoveToEndToScanResults2Qdrs ++ symbolsToQStart'Qdrs ++ symbolsInQStart'Qdrs
         ++ symbolsToQSecPosQdrs ++ symbolsToQSecNegQdrs ++ symbolsInQSecPosQdrs ++ symbolsToQBothPosQdrs
         ++ symbolsFromQSecPosToQSomeNegQdrs ++ symbolsInQSecNegQdrs ++ symbolsFromQSecNegToQSomeNegQdrs
         ++ symbolsInQBothPosQdrs ++ symbolsToQ_ithFindNegationQdrs ++ symbolsInSomeNegQdrs
@@ -662,7 +678,7 @@ generateBlockForFolding (Grammar (nonterminals, terminals, _, _)) = let
         ((DState qFoldRightBracket', DSymbol t),(DebuggingTMTypes.R, DState qFoldRightBracket))
         ) $ Constants.rightBracket : terminalsList
     symbolsFromRightBracketToQFold = let
-        oldState = qFoldRightBracket'
+        oldState = qFoldRightBracket
         newState = qFold
         stateTransition = oldState ++ transition ++ newState in
         [((DState oldState, DSymbol Constants.space),(D $ DSymbol Constants.rightBracket, DState stateTransition)),
@@ -865,7 +881,13 @@ generateBlockForPreparingForSubstitution grammar@(Grammar (nonterminals, termina
     rememberedSymbols = Constants.rightBracket : terminalsList
     quintets = concatMap (\(k, t, j, f) -> map (k, t, j, f,) rememberedSymbols) quads
 
-    symbolsInQRememberStartKTJF = concatMap (\(k, t, j, f) -> map (\symbol ->
+    symbolsInQRememberStartLeftKTJF = concatMap (\(k, t, j, f) -> map (\symbol ->
+        ((DState $ qRememberStart  ++ k ++ t ++ j ++ f, DSymbol symbol),
+        (DebuggingTMTypes.L, DState $ qRememberStart  ++ k ++ t ++ j ++ f)))
+        $ Constants.space : nonterminalsList)
+        quads
+
+    symbolsInQRememberStartRightKTJF = concatMap (\(k, t, j, f) -> map (\symbol ->
         ((DState $ qRememberStart  ++ k ++ t ++ j ++ f, DSymbol symbol),
         (DebuggingTMTypes.R, DState $ qRememberStart  ++ k ++ t ++ j ++ f))) $ Constants.leftBracket : indices)
         quads
@@ -1047,7 +1069,8 @@ generateBlockForPreparingForSubstitution grammar@(Grammar (nonterminals, termina
         [((DState oldState, DSymbol Constants.hash), (D $ DSymbol Constants.space, DState stateTransition)),
         ((DState stateTransition, DSymbol Constants.space), (DebuggingTMTypes.R, DState newState))]) quads
 
-    quadruples = symbolsInQRememberStartKTJF ++ symbolsToQRememberSymbolMarkEndKTJF
+    quadruples = symbolsInQRememberStartRightKTJF
+        ++ symbolsInQRememberStartLeftKTJF ++ symbolsToQRememberSymbolMarkEndKTJF
         ++ symbolsInQRememberSymbolMarkEndKTJF ++ symbolsToQShiftWordSymbolKTJF
         ++ symbolsInQShiftWordSymbolKTJF ++ symbolsToQWriteSymbolKTJFsymbol
         ++ symbolsToQWriteSymbolKTJFStar ++ symbolsToQWriteSymbolKTJFshift
@@ -1094,7 +1117,7 @@ generateBlockForSubstitution grammar@(Grammar (nonterminals, terminals, relation
     quadsPos = quads \\ quadsNeg
 
     --BLOCK for qWritingRelationKTJF
-    symbols = Constants.space : terminalsList ++ nonterminalsList ++ Constants.brackets
+    symbols = Constants.space : terminalsList ++ nonterminalsList ++ Constants.brackets ++ Constants.signs
     symbolsInQWritingRelationKTJF = concatMap (\(k, t, j, f) -> map (\symbol ->
         let state = qWritingRelation ++ k ++ t ++ j ++ f in
         ((DState state, DSymbol symbol), (DebuggingTMTypes.L, DState state))) symbols) quads
