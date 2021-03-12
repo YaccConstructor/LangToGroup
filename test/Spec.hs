@@ -99,11 +99,17 @@ main = defaultMainWithOpts
         testCase "parse Tms: test1tape1cmd" test1tape1cmd,
         testCase "parse Tms: test1tape3cmd" test1tape3cmd,
         testCase "parse Tms: test3tape3cmd" test3tape3cmd,
-        testCase "Boolean to TM: calculateNextConjunctionInSameRuleTest1" calculateNextConjunctionInSameRuleTest1,
-        testCase "Boolean to TM: calculateNextConjunctionInSameRuleTest2" calculateNextConjunctionInSameRuleTest2,
-        testCase "Boolean to TM: calculateFirstConjunctionInNextRuleTest1" calculateFirstConjunctionInNextRuleTest1,
-        testCase "Boolean to TM: calculateFirstConjunctionInNextRuleTest2" calculateFirstConjunctionInNextRuleTest2,
-        testCase "Boolean to TM: functionality test1" test1,
+        testCase "Boolean to TM helpers: calculateNextConjunctionInSameRuleTest1" calculateNextConjunctionInSameRuleTest1,
+        testCase "Boolean to TM helpers: calculateNextConjunctionInSameRuleTest2" calculateNextConjunctionInSameRuleTest2,
+        testCase "Boolean to TM helpers: calculateFirstConjunctionInNextRuleTest1" calculateFirstConjunctionInNextRuleTest1,
+        testCase "Boolean to TM helpers: calculateFirstConjunctionInNextRuleTest2" calculateFirstConjunctionInNextRuleTest2,
+        testCase "Boolean to TM helpers: getLongRelsTest" getLongRelsTest,
+        testCase "Boolean to TM helpers: checkIfConjHasNegTest1" checkIfConjHasNegTest1,
+        testCase "Boolean to TM helpers: checkIfConjHasNegTest2" checkIfConjHasNegTest2,
+        testCase "Boolean to TM helpers: relationHasOneTerminalInRightPartTest" relationHasOneTerminalInRightPartTest,
+        testCase "Boolean to TM helpers: getFstNontermsInConjOfGivenRelationTest" getFstNontermsInConjOfGivenRelationTest,
+        testCase "Boolean to TM helpers: getSndNontermsInConjOfGivenRelationTest" getSndNontermsInConjOfGivenRelationTest,
+        --testCase "Boolean to TM: functionality test1" test1,
         head $ hUnitTestToTests SPTests.tests
         ]
        mempty
