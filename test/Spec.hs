@@ -15,6 +15,7 @@ import TmsTests
 import TuringMachine2TmsTests
 import Tms2TuringMachineTests
 import TmsParserTests
+import Boolean2TMHelpersTests
 import Boolean2TMTests
 import qualified SPTests (tests)
 
@@ -102,6 +103,7 @@ main = defaultMainWithOpts
         testCase "Boolean to TM: calculateNextConjunctionInSameRuleTest2" calculateNextConjunctionInSameRuleTest2,
         testCase "Boolean to TM: calculateFirstConjunctionInNextRuleTest1" calculateFirstConjunctionInNextRuleTest1,
         testCase "Boolean to TM: calculateFirstConjunctionInNextRuleTest2" calculateFirstConjunctionInNextRuleTest2,
+        testCase "Boolean to TM: functionality test1" test1,
         head $ hUnitTestToTests SPTests.tests
         ]
        mempty

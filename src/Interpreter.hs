@@ -25,7 +25,7 @@ data WorkingState = WS {
         currentState :: State,
         tape :: Tape MetaString,
         alphabet :: Set String
-    }
+    } deriving (Show)
 
 blankStr :: String
 blankStr = "."
