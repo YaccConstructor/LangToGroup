@@ -109,6 +109,11 @@ main = defaultMainWithOpts
         testCase "Boolean to TM helpers: relationHasOneTerminalInRightPartTest" relationHasOneTerminalInRightPartTest,
         testCase "Boolean to TM helpers: getFstNontermsInConjOfGivenRelationTest" getFstNontermsInConjOfGivenRelationTest,
         testCase "Boolean to TM helpers: getSndNontermsInConjOfGivenRelationTest" getSndNontermsInConjOfGivenRelationTest,
+        testCase "Boolean to TM helpers: calculateQuadsTest1" calculateQuadsTest1,
+        testCase "Boolean to TM helpers: calculateQuadsTest2" calculateQuadsTest2,
+        testCase "Boolean to TM helpers: kthRelForNonterminalLongTest1" kthRelForNonterminalLongTest1,
+        testCase "Boolean to TM helpers: kthRelForNonterminalLongTest2" kthRelForNonterminalLongTest2,
+        testCase "Boolean to TM helpers: calculateQuadsFromGrammarTest" calculateQuadsFromGrammarTest,
         --testCase "Boolean to TM: functionality test1" test1,
         head $ hUnitTestToTests SPTests.tests
         ]

@@ -185,3 +185,47 @@ getSndNontermsInConjOfGivenRelationTest = do
   assertEqual "Getting fst nonterns in conjs in given rel" ["D"] actualS2
   let actualC1 = Helpers.getSecondNonterminalsInConjunctionsOfGivenRelation testGr "C" "1" "B"
   assertEqual "Getting fst nonterns in conjs in given rel" ["C"] actualC1
+
+calculateQuadsTest1 :: Assertion
+calculateQuadsTest1 = do
+  let actual = Helpers.calculateQuads testGr "1" ["S", "C"]
+  let expected = [("1", "S", "B","C"),("1", "S", "D","F"), ("1", "C", "B", "C")]
+  assertEqual "Getting quads: (,,,) from relations with given number" expected actual
+
+calculateQuadsTest2 :: Assertion
+calculateQuadsTest2 = do
+  let actual = Helpers.calculateQuads testGr "2" ["S"]
+  let expected = [("2", "S", "C","D")]
+  assertEqual "Getting quads: (,,,) from relations with given number" expected actual
+
+calculateQuadsFromGrammarTest :: Assertion
+calculateQuadsFromGrammarTest = do
+  let gr@(Grammar (nonterminals,_, rels,_)) = testGr
+  let maxNumber = Helpers.calculateMaxNumberOfRulesForNonterminal gr
+  assertEqual "check max number" 3 maxNumber
+  let indices = map show [0..maxNumber - 1]
+  let nonterminalsList = map nonterminalValue $ Set.toList nonterminals
+  let indicesWithNonterms = map (\i -> (i, filter (\t ->
+        Helpers.kthRelForNonterminalLong (Set.toList rels) t i) nonterminalsList)) indices
+  assertEqual "check indices with nonterms" [("0", []), ("1",["C","S"]), ("2", ["S"])] indicesWithNonterms
+  let actualQuads = concatMap (uncurry $ Helpers.calculateQuads gr) indicesWithNonterms
+  let expectedQuads = [("1", "S", "B","C"), ("1", "S", "D","F"),
+        ("1", "C", "B", "C"), ("2", "S", "C","D")]
+  assertEqual "Testing process of calculating all quads for all indices" True True
+
+
+kthRelForNonterminalLongTest1 :: Assertion
+kthRelForNonterminalLongTest1 = do
+  let actual0 = Helpers.kthRelForNonterminalLong testRels "S" "0"
+  let actual2 = Helpers.kthRelForNonterminalLong testRels "S" "2"
+  assertEqual "Check if 0th relation for given nonterminal long" False actual0
+  assertEqual "Check if 2th relation for given nonterminal long" True actual2
+
+kthRelForNonterminalLongTest2 :: Assertion
+kthRelForNonterminalLongTest2 = do
+  let (Grammar (_,_,relations',_)) = testGr
+  let relations = Set.toList relations'
+  let actual0 = Helpers.kthRelForNonterminalLong relations "C" "0"
+  let actual2 = Helpers.kthRelForNonterminalLong relations "C" "1"
+  assertEqual "Check if 0th relation for given nonterminal long" False actual0
+  assertEqual "Check if 2th relation for given nonterminal long" True actual2

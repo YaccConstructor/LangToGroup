@@ -87,36 +87,21 @@ calculateFirstConjunctionInNextRule (Grammar (_, _, relations, _))
 
 
 
-calculateTriplets :: Foldable t => Grammar -> String -> t String -> [(String, String, String)]
+calculateTriplets :: Grammar -> String -> [String] -> [(String, String, String)]
 calculateTriplets grammar number
   = concatMap
-      (\ t
-         -> let
-              firstNonterminals
-                = getFirstNonterminalsInConjunctionsOfGivenRelation
-                    grammar t number
-            in map (number, t,) firstNonterminals)
+      (\t -> let
+        firstNonterminals = getFirstNonterminalsInConjunctionsOfGivenRelation grammar t number
+        in map (number, t,) firstNonterminals)
 
 calculateQuads' :: Grammar -> [([Char], [Char], [Char])] -> [(String, String, String, [String])]
-calculateQuads' grammar = map (\ (k, t, j) -> (k, t, j, getSecondNonterminalsInConjunctionsOfGivenRelation grammar k t j))
+calculateQuads' grammar = map (\ (k, t, j) -> (k, t, j, getSecondNonterminalsInConjunctionsOfGivenRelation grammar t k j))
 
 calculateQuads :: Grammar -> String -> [String] -> [(String, String, String, String)]
 calculateQuads grammar k' nonterminalsWithKthRel = let
     triplets = calculateTriplets grammar k' nonterminalsWithKthRel
     quads' = calculateQuads' grammar triplets
     in concatMap (\ (k, t, j, s) -> map (k, t, j,) s) quads'
-
--- grammar -> string (nonterminal in left part) -> string (number of relation)
---  -> string (first nonterminal in conjunction) -> list of first nonterminals
-getSecondNonterminalsInConjunctionsOfGivenRelation :: Grammar -> String -> String -> String -> [String]
-getSecondNonterminalsInConjunctionsOfGivenRelation (Grammar (_, _, relations, _)) leftNonterminal number fstNontermInConj = let
-    groupedRelations = calculateGroupRelationsByNonterminals $ Set.toList relations
-    givenRelation = (groupedRelations Map.! Nonterminal leftNonterminal) !! (read number :: Int)
-    conjunctions = splitOn [O Conjunction] givenRelation
-    symbol = N (Nonterminal fstNontermInConj)
-    possibleConjunctions = filter (\t -> length t == 3 && t !! 1 == symbol || length t == 2 && head t == symbol) conjunctions
-    possibleSndNonterminals = map (\t -> if length t == 3 then t !! 2 else t !! 1) possibleConjunctions
-    in map refineSymbolInConjunctionToNonterminal possibleSndNonterminals
 
 getLongRels :: [Relation] -> [Relation]
 getLongRels = filter (not . relationHasOneTerminalInRightPart)
@@ -132,6 +117,19 @@ getFirstNonterminalsInConjunctionsOfGivenRelation (Grammar (_, _, relations, _))
         conjunctions = splitOn [O Conjunction] givenRelation
         firstSymbolsInConjunctions = map (\t -> if length t == 3 then t !! 1 else head t) conjunctions
         in map refineSymbolInConjunctionToNonterminal firstSymbolsInConjunctions
+
+-- grammar -> string (nonterminal in left part) -> string (number of relation)
+--  -> string (first nonterminal in conjunction) -> list of first nonterminals
+getSecondNonterminalsInConjunctionsOfGivenRelation :: Grammar -> String -> String -> String -> [String]
+getSecondNonterminalsInConjunctionsOfGivenRelation (Grammar (_, _, relations, _)) leftNonterminal number fstNontermInConj = let
+    groupedRelations = calculateGroupRelationsByNonterminals $ Set.toList relations
+    givenRelation = (groupedRelations Map.! Nonterminal leftNonterminal) !! (read number :: Int)
+    conjunctions = splitOn [O Conjunction] givenRelation
+    symbol = N (Nonterminal fstNontermInConj)
+    possibleConjunctions = filter (\t -> length t == 3 && t !! 1 == symbol || length t == 2 && head t == symbol) conjunctions
+    possibleSndNonterminals = map (\t -> if length t == 3 then t !! 2 else t !! 1) possibleConjunctions
+    in map refineSymbolInConjunctionToNonterminal possibleSndNonterminals
+
 
 relationHasOneTerminalInRightPart :: Relation -> Bool
 relationHasOneTerminalInRightPart (Relation (_, [T (Terminal _)])) = True
@@ -165,7 +163,7 @@ kthRelForNonterminalLong relations nontermVal k = do
   let groupedRelations = calculateGroupRelationsByNonterminals relations
   let nonterminal = Nonterminal nontermVal
   let relationsForNonterm = groupedRelations Map.! nonterminal
-  length relationsForNonterm >= k' &&
+  length relationsForNonterm > k' &&
     not (relationHasOneTerminalInRightPart $ Relation (nonterminal, relationsForNonterm !! k'))
 
 getFstConjInKthRel :: Grammar -> String -> String -> SymbolsPair
