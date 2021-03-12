@@ -114,6 +114,12 @@ main = defaultMainWithOpts
         testCase "Boolean to TM helpers: kthRelForNonterminalLongTest1" kthRelForNonterminalLongTest1,
         testCase "Boolean to TM helpers: kthRelForNonterminalLongTest2" kthRelForNonterminalLongTest2,
         testCase "Boolean to TM helpers: calculateQuadsFromGrammarTest" calculateQuadsFromGrammarTest,
+        testCase "Boolean to TM helpers: getShiftsDecrementsTest" getShiftsDecrementsTest,
+        testCase "Boolean to TM helpers: symbolAcceptedByNonterminalTest1" symbolAcceptedByNonterminalTest1,
+        testCase "Boolean to TM helpers: symbolAcceptedByNonterminalTest2" symbolAcceptedByNonterminalTest2,
+        testCase "Boolean to TM helpers: symbolAcceptedByNonterminalTest3" symbolAcceptedByNonterminalTest3,
+        testCase "Boolean to TM helpers: symbolAcceptedByNonterminalTest4" symbolAcceptedByNonterminalTest4,
+        testCase "Boolean to TM helpers: getNumbersOfShortRelationsTest" getNumbersOfShortRelationsTest,
         --testCase "Boolean to TM: functionality test1" test1,
         head $ hUnitTestToTests SPTests.tests
         ]

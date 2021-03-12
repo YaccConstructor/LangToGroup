@@ -221,7 +221,7 @@ generateBlockForQKFindNegation grammar@(Grammar (nonterminals, terminals, relati
             (DebuggingTMTypes.R, DState $ q ++ "Rule" ++ k ++ t ++ j ++ "findSnd"))) triplets
 
     -- BLOCK for qRulektjFindSnd
-    quads = Helpers.calculateQuads grammar k' nonterminalsWithKthRel
+    quads = Helpers.calculateAllQuads grammar
     symbolsInRulektjFindSnd = concatMap (\s ->
         map (\(k, t, j) ->
             ((DState $ q ++ "Rule" ++ k ++ t ++ j ++ "findSnd", DSymbol s),
@@ -250,7 +250,7 @@ generateCaseForNegConj quadruples = let
 
 --BLOCK for moving from conjunction results to next blocks
 generateTransitionFromConjunctionResult :: Grammar -> DebuggingQuadruples
-generateTransitionFromConjunctionResult grammar@(Grammar (nonterminals, terminals, relations, _)) = let
+generateTransitionFromConjunctionResult grammar@(Grammar (_, terminals, _, _)) = let
     q = "q"
     rewrite = "Rewrite"
     transition = "Transition"
@@ -258,15 +258,7 @@ generateTransitionFromConjunctionResult grammar@(Grammar (nonterminals, terminal
     rule = "Rule"
     terminalsList = map terminalValue $ Set.toList terminals
 
-    nonterminalsList = map nonterminalValue $ Set.toList nonterminals
-    relsList = Set.toList relations
-
-    maxNumberOfRules = Helpers.calculateMaxNumberOfRulesForNonterminal grammar
-    indices = map show [0..maxNumberOfRules - 1]
-
-    indicesWithNonterms = map (\i ->
-            (i, filter (\t -> Helpers.kthRelForNonterminalLong relsList t i) nonterminalsList)) indices
-    quads = concatMap (uncurry $ Helpers.calculateQuads grammar) indicesWithNonterms
+    quads = Helpers.calculateAllQuads grammar
 
     -- BLOCK FOR qRulektjs
     quadruplesInRulektjs' = concatMap (\s ->
@@ -280,7 +272,6 @@ generateTransitionFromConjunctionResult grammar@(Grammar (nonterminals, terminal
     quadruplesInRulektjs = quadruplesInRulektjs' ++ quadruplesInRulektjs''
 
     -- BLOCK, which generates transitions to next subprograms - move to next rule, folding conj with sign, changing words
-
     -- fold and put +
     lastConjsWithoutNeg = filter (\t -> let
         hasNeg = Helpers.checkIfConjHasNeg grammar t
@@ -1265,21 +1256,16 @@ generateBlockForSubstitution grammar@(Grammar (nonterminals, terminals, relation
     in (DQuadruples $ Helpers.addCollectionToMap quadruples Map.empty)
 
 generateBlockForMovingToNextConjunction :: Grammar -> DebuggingQuadruples
-generateBlockForMovingToNextConjunction grammar@(Grammar (nonterminals, terminals, relations, _)) = let
+generateBlockForMovingToNextConjunction grammar@(Grammar (nonterminals, terminals, _, _)) = let
     transition = "Transition"
     qShiftingFromFold = "qShiftingKTJFFromFold"
     qRememberStart = "qRememberStart"
 
     terminalsList = map terminalValue $ Set.toList terminals
     nonterminalsList = map nonterminalValue $ Set.toList nonterminals
-    relsList = Set.toList relations
-    maxNumber = Helpers.calculateMaxNumberOfRulesForNonterminal grammar
-    indices = map show [0..maxNumber - 1]
     -- helper calculations of quads
     --qauds in this block - all conjs, which has next conj
-    indicesWithNonterms = map (\i ->
-                (i, filter (\t -> Helpers.kthRelForNonterminalLong relsList t i) nonterminalsList)) indices
-    quads' = concatMap (uncurry $ Helpers.calculateQuads grammar) indicesWithNonterms
+    quads' = Helpers.calculateAllQuads grammar
     -- if conj has next conj, then function calculateNextConjunctionInSameRule gives (Just s),
     -- where s - next conj (SymbolsPair)
     quads = filter (\(k, t, j, f) -> if Helpers.checkIfConjHasNeg grammar (k, t, j, f)

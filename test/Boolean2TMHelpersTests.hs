@@ -5,6 +5,7 @@ import GrammarType
 import DebuggingTMTypes
 import qualified Boolean2TMHelpers as Helpers
 import qualified Data.Set as Set
+import qualified Data.Map as Map
 
 -- tests written for boolean grammars in normal form
 calculateNextConjunctionInSameRuleTest1 :: IO ()
@@ -146,22 +147,22 @@ getLongRelsTest = do
 
 checkIfConjHasNegTest1 :: Assertion
 checkIfConjHasNegTest1 = do
-    assertEqual "Check if conjunction has negation" False $ Helpers.checkIfConjHasNeg testGr ("1","S","B","C")
+    assertEqual "Assert if conjunction has negation" False $ Helpers.checkIfConjHasNeg testGr ("1","S","B","C")
 
 checkIfConjHasNegTest2 :: Assertion
 checkIfConjHasNegTest2 = do
-    assertEqual "Check if conjunction has negation" True $ Helpers.checkIfConjHasNeg testGr ("1","S","D","F")
+    assertEqual "Assert if conjunction has negation" True $ Helpers.checkIfConjHasNeg testGr ("1","S","D","F")
 
 relationHasOneTerminalInRightPartTest :: Assertion
 relationHasOneTerminalInRightPartTest = do
-    assertEqual "Check if relation is short" True $ Helpers.relationHasOneTerminalInRightPart $ testRels !! 3
-    assertEqual "Check if relation is short" True $ Helpers.relationHasOneTerminalInRightPart $ testRels !! 4
-    assertEqual "Check if relation is short" False $ Helpers.relationHasOneTerminalInRightPart $ testRels !! 2
-    assertEqual "Check if relation is short" True $ Helpers.relationHasOneTerminalInRightPart $ testRels !! 5
-    assertEqual "Check if relation is short" False $ Helpers.relationHasOneTerminalInRightPart $ testRels !! 1
-    assertEqual "Check if relation is short" True $ Helpers.relationHasOneTerminalInRightPart $ testRels !! 6
-    assertEqual "Check if relation is short" True $ Helpers.relationHasOneTerminalInRightPart $ testRels !! 7
-    assertEqual "Check if relation is short" False $ Helpers.relationHasOneTerminalInRightPart $ head testRels
+    assertEqual "Assert if relation is short" True $ Helpers.relationHasOneTerminalInRightPart $ testRels !! 3
+    assertEqual "Assert if relation is short" True $ Helpers.relationHasOneTerminalInRightPart $ testRels !! 4
+    assertEqual "Assert if relation is short" False $ Helpers.relationHasOneTerminalInRightPart $ testRels !! 2
+    assertEqual "Assert if relation is short" True $ Helpers.relationHasOneTerminalInRightPart $ testRels !! 5
+    assertEqual "Assert if relation is short" False $ Helpers.relationHasOneTerminalInRightPart $ testRels !! 1
+    assertEqual "Assert if relation is short" True $ Helpers.relationHasOneTerminalInRightPart $ testRels !! 6
+    assertEqual "Assert if relation is short" True $ Helpers.relationHasOneTerminalInRightPart $ testRels !! 7
+    assertEqual "Assert if relation is short" False $ Helpers.relationHasOneTerminalInRightPart $ head testRels
 
 getFstNontermsInConjOfGivenRelationTest :: Assertion
 getFstNontermsInConjOfGivenRelationTest = do
@@ -202,24 +203,30 @@ calculateQuadsFromGrammarTest :: Assertion
 calculateQuadsFromGrammarTest = do
   let gr@(Grammar (nonterminals,_, rels,_)) = testGr
   let maxNumber = Helpers.calculateMaxNumberOfRulesForNonterminal gr
-  assertEqual "check max number" 3 maxNumber
+  assertEqual "Assert max number" 3 maxNumber
   let indices = map show [0..maxNumber - 1]
   let nonterminalsList = map nonterminalValue $ Set.toList nonterminals
   let indicesWithNonterms = map (\i -> (i, filter (\t ->
         Helpers.kthRelForNonterminalLong (Set.toList rels) t i) nonterminalsList)) indices
-  assertEqual "check indices with nonterms" [("0", []), ("1",["C","S"]), ("2", ["S"])] indicesWithNonterms
+  assertEqual "Assert indices with nonterms" [("0", []), ("1",["C","S"]), ("2", ["S"])] indicesWithNonterms
   let actualQuads = concatMap (uncurry $ Helpers.calculateQuads gr) indicesWithNonterms
-  let expectedQuads = [("1", "S", "B","C"), ("1", "S", "D","F"),
-        ("1", "C", "B", "C"), ("2", "S", "C","D")]
-  assertEqual "Testing process of calculating all quads for all indices" True True
+  let expectedQuads = [("1", "C", "B", "C"), ("1", "S", "B","C"),
+        ("1", "S", "D","F"), ("2", "S", "C","D")]
+  assertEqual "Testing process of calculating all quads for all indices" actualQuads expectedQuads
 
+calculateAllQuadsTest :: Assertion
+calculateAllQuadsTest = do
+  let expectedQuads = [("1", "C", "B", "C"), ("1", "S", "B","C"),
+        ("1", "S", "D","F"), ("2", "S", "C","D")]
+  let actualQuads = Helpers.calculateAllQuads testGr
+  assertEqual "Testing process of calculating all quads for all indices" actualQuads expectedQuads
 
 kthRelForNonterminalLongTest1 :: Assertion
 kthRelForNonterminalLongTest1 = do
   let actual0 = Helpers.kthRelForNonterminalLong testRels "S" "0"
   let actual2 = Helpers.kthRelForNonterminalLong testRels "S" "2"
-  assertEqual "Check if 0th relation for given nonterminal long" False actual0
-  assertEqual "Check if 2th relation for given nonterminal long" True actual2
+  assertEqual "Assert if 0th relation for given nonterminal long" False actual0
+  assertEqual "Assert if 2th relation for given nonterminal long" True actual2
 
 kthRelForNonterminalLongTest2 :: Assertion
 kthRelForNonterminalLongTest2 = do
@@ -227,5 +234,52 @@ kthRelForNonterminalLongTest2 = do
   let relations = Set.toList relations'
   let actual0 = Helpers.kthRelForNonterminalLong relations "C" "0"
   let actual2 = Helpers.kthRelForNonterminalLong relations "C" "1"
-  assertEqual "Check if 0th relation for given nonterminal long" False actual0
-  assertEqual "Check if 2th relation for given nonterminal long" True actual2
+  assertEqual "Assert if 0th relation for given nonterminal long" False actual0
+  assertEqual "Assert if 2th relation for given nonterminal long" True actual2
+
+
+getShiftsDecrementsTest :: Assertion 
+getShiftsDecrementsTest = do
+  let expected1 = [("*","7"),("1","*"),("2","1"),("3","2"),("4","3"),("5","4"),("6","5"),("7","6")]
+  let actual1 = Helpers.getShiftsDecrements 7 "*"
+  assertEqual "Assert correctness of shifts generating" expected1 actual1
+  let expected2 = [("*","6"),("1","*"),("2","1"),("3","2"),("4","3"),("5","4"),("6","5")]
+  let actual2 = Helpers.getShiftsDecrements 6 "*"
+  assertEqual "Assert correctness of shifts generating" expected2 actual2
+
+symbolAcceptedByNonterminalTest1 :: Assertion
+symbolAcceptedByNonterminalTest1 = do
+  let actual1 = Helpers.symbolAcceptedByNonterminal testGr "S" "b"
+  let actual2 = Helpers.symbolAcceptedByNonterminal testGr "S" "a"
+  assertEqual "Assert that testGr does not have S -> b rel" False actual1
+  assertEqual "Assert that testGr has S -> a rel" True actual2
+
+symbolAcceptedByNonterminalTest2 :: Assertion
+symbolAcceptedByNonterminalTest2 = do
+  let actual1 = Helpers.symbolAcceptedByNonterminal testGr "D" "a"
+  let actual2 = Helpers.symbolAcceptedByNonterminal testGr "D" "b"
+  assertEqual "Assert that testGr does not have D -> a rel" False actual1
+  assertEqual "Assert that testGr has D -> b rel" True actual2
+
+symbolAcceptedByNonterminalTest3 :: Assertion
+symbolAcceptedByNonterminalTest3 = do
+  let actual1 = Helpers.symbolAcceptedByNonterminal testGr "F" "b"
+  let actual2 = Helpers.symbolAcceptedByNonterminal testGr "F" "a"
+  assertEqual "Assert that testGr does not have F -> a rel" False actual1
+  assertEqual "Assert that testGr has F -> b rel" True actual2
+
+symbolAcceptedByNonterminalTest4 :: Assertion
+symbolAcceptedByNonterminalTest4 = do
+  let actual1 = Helpers.symbolAcceptedByNonterminal testGr "C" "b"
+  let actual2 = Helpers.symbolAcceptedByNonterminal testGr "C" "a"
+  assertEqual "Assert that testGr does not have C -> b rel" False actual1
+  assertEqual "Assert that testGr has C -> a rel" True actual2
+
+getNumbersOfShortRelationsTest :: Assertion
+getNumbersOfShortRelationsTest = do
+    let expected = Map.fromList [(Nonterminal "C",["0"]), (Nonterminal "B",["0"]),
+            (Nonterminal "D", ["0"]), (Nonterminal "F", ["0"]), (Nonterminal "S",["0"])]
+    let actual = Helpers.getNumbersOfShortRelations testGr
+    assertEqual "Assert numbers of short relations" expected actual
+
+get
