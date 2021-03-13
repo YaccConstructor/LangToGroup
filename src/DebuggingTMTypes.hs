@@ -3,7 +3,8 @@
 module DebuggingTMTypes where
 
 import TMTypes
-import GrammarType  
+import GrammarType
+import Boolean2TMConstants
   
 import qualified Data.Map as Map
 import qualified Data.List as List
@@ -25,6 +26,9 @@ newtype DebuggingTuringMachine = DTM DebuggingQuadruples
 
 finalDState :: DebuggingState
 finalDState = DState "Done"
+
+startDState :: DebuggingState
+startDState = DState "qWriteStartCounter"
 
 newtype SymbolsPair = SymbolsPair (Nonterminal, Int, Bool, GrammarType.Symbol, GrammarType.Symbol)
     deriving (Eq, Show)
@@ -62,14 +66,17 @@ getStates :: DebuggingTuringMachine -> [DebuggingState]
 getStates (DTM (DQuadruples qdrs)) = let
     states' = map (\(_, (_, DState state)) -> state) $ Map.toList qdrs
     states'' = map (\((DState state, _), _) -> state) $ Map.toList qdrs
-    in map DState $ List.nub $ states' ++ states''
+    (DState final) = finalDState
+    (DState start) = startDState
+    in map DState $ List.nub $ final : start : states' ++ states''
 
 getSymbols :: DebuggingTuringMachine -> [DebuggingSymbol]
 getSymbols (DTM (DQuadruples qdrs)) = let
+    blank = "."
     symbols' = map (\case
         (_, (D (DSymbol s), _)) -> s
         _ -> "") $ Map.toList qdrs
     filteredEmpty = filter (/= "") symbols'
     symbols'' = map (\((_, DSymbol s), _) -> s) $ Map.toList qdrs
-    in map DSymbol $ List.nub $ filteredEmpty ++ symbols''
+    in map DSymbol $ List.sort $ List.nub $ blank : filteredEmpty ++ symbols''
 

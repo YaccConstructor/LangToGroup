@@ -281,5 +281,3 @@ getNumbersOfShortRelationsTest = do
             (Nonterminal "D", ["0"]), (Nonterminal "F", ["0"]), (Nonterminal "S",["0"])]
     let actual = Helpers.getNumbersOfShortRelations testGr
     assertEqual "Assert numbers of short relations" expected actual
-
-get

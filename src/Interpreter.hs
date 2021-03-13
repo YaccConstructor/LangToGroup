@@ -51,6 +51,10 @@ startWithAlphabet :: Show a => TuringMachine -> [a] -> Int -> Set a -> WorkingSt
 startWithAlphabet tm word ind =
     WS tm startState (Tape.fromList (MS . show <$> word) ind (MS blankStr)) . Set.map show
 
+startWithAlphabet' :: TuringMachine -> [String] -> Int -> Set String -> WorkingState
+startWithAlphabet' tm word ind
+  = WS tm startState (Tape.fromList (map MS word) ind (MS blankStr))
+
 states :: WorkingState -> [WorkingState]
 states ws =
     let mws' = step ws

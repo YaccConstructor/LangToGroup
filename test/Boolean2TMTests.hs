@@ -4,8 +4,12 @@ import Boolean2TM
 import Interpreter
 import DebuggingTMTypes
 import GrammarType
+import TMTypes
+import qualified Data.Map as Map
+import Data.Map (Map)
 
-import Data.Set as Set
+import qualified Data.Set as Set
+import Data.List as List
 
 test1 :: IO ()
 test1 = do
@@ -17,9 +21,20 @@ test1 = do
                                 Relation (Nonterminal "D", [T $ Terminal "b"]),
                                 Relation (Nonterminal "F", [T $ Terminal "a"])],
                             Nonterminal "S")
-    let tm = convertToTuringMachine $ boolean2tm grammar
-    let states' = states $ start tm "bab" 0                        
+    let dtm = boolean2tm grammar
+    let tm = convertToTuringMachine dtm
+    print tm
+    let alphabet' = Set.fromList [" ","+","-",")","a","b","#","*","(","C","D","1","6","2","3","4","5","B","F","S","0","!"]
+
+    let states' = states $ startWithAlphabet' tm ["S","(","b","a","b",")"] 0 alphabet'
+    let states'' = getStates dtm
+    let statesPairs = map (\t -> (elemIndex t states'', t)) states''
+    let symbols = getSymbols dtm
+    let symbolsPairs = map (\t -> (elemIndex t symbols, t)) symbols
+    print symbolsPairs
+    print statesPairs
     print states'
+    print $ length states'
 
 nonterminals1 :: [Nonterminal]
 nonterminals1 = [Nonterminal "S",Nonterminal "B",Nonterminal "C",Nonterminal "D", Nonterminal "F"]
