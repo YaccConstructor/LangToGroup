@@ -29,7 +29,7 @@ star :: [Char]
 star = "*"
 
 space :: [Char]
-space = " "  
+space = "."  
 
 comma :: [Char]
 comma = "'"

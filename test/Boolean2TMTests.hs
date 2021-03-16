@@ -5,6 +5,7 @@ import Interpreter
 import DebuggingTMTypes
 import GrammarType
 import TMTypes
+import Boolean2TMConstants as Constants
 import qualified Data.Map as Map
 import Data.Map (Map)
 
@@ -24,16 +25,26 @@ test1 = do
     let dtm = boolean2tm grammar
     let tm = convertToTuringMachine dtm
     print tm
-    let alphabet' = Set.fromList [" ","+","-",")","a","b","#","*","(","C","D","1","6","2","3","4","5","B","F","S","0","!"]
-
-    let states' = states $ startWithAlphabet' tm ["S","(","b","a","b",")"] 0 alphabet'
+    --let alphabet' = Set.fromList [" ","+","-",")","a","b","#","*","(","C","D","1","6","2","3","4","5","B","F","S","0","!"]
+    let alphabet' = Set.fromList ["!","#",Constants.leftBracket,")","*","+","-","0","1","2","3","4","5","6","B","C","D","F","S","a","b"]
+    let states' = states $ startWithAlphabet' tm ["S",Constants.leftBracket,"b","a","b",")"] 0 alphabet'
     let states'' = getStates dtm
     let statesPairs = map (\t -> (elemIndex t states'', t)) states''
     let symbols = getSymbols dtm
     let symbolsPairs = map (\t -> (elemIndex t symbols, t)) symbols
     print symbolsPairs
     print statesPairs
-    print states'
+    mapM (\(WS _ currentState tape alphabet) -> let
+            (Q index') = currentState;
+            state = snd $ head $ filter (\(Just index, DState s) -> index == index') statesPairs;
+            (DState stringState) = state 
+        in do {
+            print currentState;
+            print stringState;
+            print tape;
+            print alphabet;
+            print " "}) states'
+    print $ [Constants.leftBracket] ++ ["1","2"]    
     print $ length states'
 
 nonterminals1 :: [Nonterminal]

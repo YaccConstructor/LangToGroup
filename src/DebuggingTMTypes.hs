@@ -78,5 +78,7 @@ getSymbols (DTM (DQuadruples qdrs)) = let
         _ -> "") $ Map.toList qdrs
     filteredEmpty = filter (/= "") symbols'
     symbols'' = map (\((_, DSymbol s), _) -> s) $ Map.toList qdrs
-    in map DSymbol $ List.sort $ List.nub $ blank : filteredEmpty ++ symbols''
+    list' = List.sort $ List.nub $ filteredEmpty ++ symbols''
+    list = List.delete blank list'
+    in map DSymbol $ blank : list
 
