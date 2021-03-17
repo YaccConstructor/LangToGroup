@@ -120,7 +120,8 @@ main = defaultMainWithOpts
         testCase "Boolean to TM helpers: symbolAcceptedByNonterminalTest3" symbolAcceptedByNonterminalTest3,
         testCase "Boolean to TM helpers: symbolAcceptedByNonterminalTest4" symbolAcceptedByNonterminalTest4,
         testCase "Boolean to TM helpers: getNumbersOfShortRelationsTest" getNumbersOfShortRelationsTest,
-        testCase "Boolean to TM: functionality test1" test1,
+        testCase "Boolean to TM: functionality test1" test11,
+        testCase "Boolean to TM: functionality test2" test12,
         head $ hUnitTestToTests SPTests.tests
         ]
        mempty
