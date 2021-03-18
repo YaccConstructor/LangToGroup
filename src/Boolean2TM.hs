@@ -409,12 +409,12 @@ generateBlockCheckIfWordsSplitCanBeChanged grammar@(Grammar (nonterminals, termi
     --BLOCK for qWordsChangingFailedK
     symbolsToQkMoveToStart = map
         (\counter -> ((DState $ failed ++ counter, DSymbol Constants.leftBracket),
-        (DebuggingTMTypes.L, DState $ "q" ++ counter ++ moveToStart))) indices
+        (DebuggingTMTypes.L, DState $ "q" ++ counter ++ moveToStart ++ negationWord))) indices
 
     --BLOCK for qWordsChangingFailedNegationK
     symbolsToQkMoveToStartNegation = map
         (\counter -> ((DState $ failedNegation ++ counter, DSymbol Constants.leftBracket),
-        (DebuggingTMTypes.L, DState $ "q" ++ counter ++ moveToStart ++ negationWord))) indices
+        (DebuggingTMTypes.L, DState $ "q" ++ counter ++ moveToStart))) indices
 
     quadruples = --symbolsInQWordsChangingMoveToBringSymbol ++ symbolsToQMoveToBringSymbol
         symbolsInMoveToBringSymbol ++ symbolsToMetFstNonterminalQdrs ++ symbolsInMetFstNonterminal
