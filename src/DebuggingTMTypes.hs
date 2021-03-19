@@ -25,7 +25,10 @@ newtype DebuggingTuringMachine = DTM DebuggingQuadruples
     deriving (Show, Eq)
 
 finalDState :: DebuggingState
-finalDState = DState "Done"
+finalDState = DState "accepted"
+
+errorDState :: DebuggingState
+errorDState = DState "notAccepted"
 
 startDState :: DebuggingState
 startDState = DState "qWriteStartCounter"
@@ -53,7 +56,7 @@ convertToTuringMachine tm@(DTM (DQuadruples quadruplesMap)) = let
 getStateIndex :: DebuggingState -> [DebuggingState] -> Int
 getStateIndex state states =
     case List.elemIndex state states of
-      Just index -> index
+      Just index -> index - 1 -- since states numeration starts from -1
       Nothing -> error "No such state. Something went wrong during convertation to Turing machine."
 
 getSymbolIndex :: DebuggingSymbol -> [DebuggingSymbol] -> Int
@@ -68,7 +71,8 @@ getStates (DTM (DQuadruples qdrs)) = let
     states'' = map (\((DState state, _), _) -> state) $ Map.toList qdrs
     (DState final) = finalDState
     (DState start) = startDState
-    in map DState $ List.nub $ final : start : states' ++ states''
+    (DState error) = errorDState
+    in map DState $ List.nub $ error : final : start : states' ++ states''
 
 getSymbols :: DebuggingTuringMachine -> [DebuggingSymbol]
 getSymbols (DTM (DQuadruples qdrs)) = let

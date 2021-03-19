@@ -26,10 +26,11 @@ boolean2tm grammar = let
         quadruples11 = generateBlockForRefiningConjunctionDetails grammar
         quadruples12 = generateBlockCheckIfWordsSplitCanBeChanged grammar
         quadruples13 = generateBlockForChangingWord grammar
-        quadruples14 = generateTransitionFromConjunctionResult grammar in
-        (DTM $ unionQuadruples [quadruples1, quadruples2,
-        quadruples3,quadruples4,quadruples5, quadruples7,quadruples8,
-        quadruples9,quadruples10,quadruples11, quadruples12, quadruples13, quadruples14])
+        quadruples14 = generateTransitionFromConjunctionResult grammar
+        quadruples15 = generateBlockForGettingAccepted grammar in
+        (DTM $ unionQuadruples [quadruples1, quadruples2, quadruples3, quadruples4,
+        quadruples5, quadruples7, quadruples8, quadruples9, quadruples10, quadruples11,
+        quadruples12, quadruples13, quadruples14, quadruples15])
 
 -- naming for blocks of TM?
 generateBlockForFindingNewSubstitution :: Grammar -> DebuggingQuadruples
@@ -42,6 +43,7 @@ generateBlockForFindingNewSubstitution grammar@(Grammar (nonterminals, terminals
   qCountWordLength = "qCountWordLength"
   qMoveToEndToScanResults1 = "qMoveToEndToScanResults1"
   qFold' = "qFold'"
+  done = "Done"
 
   terminalsList = Set.toList terminals
   nonterminalsList = Set.toList nonterminals
@@ -57,7 +59,7 @@ generateBlockForFindingNewSubstitution grammar@(Grammar (nonterminals, terminals
   symbolsInQFindNewSubstitutionQdrs = map (\t -> ((DState qFindNewSubstitution, DSymbol t),
         (DebuggingTMTypes.L, DState qFindNewSubstitution))) list
   -- in TMTypes EmptySymbol is 0
-  symbolsFromQFindNewSubstitutionToAcceptQdrs = [((DState qFindNewSubstitution, DSymbol Constants.space),(DebuggingTMTypes.R, finalDState))]
+  symbolsFromQFindNewSubstitutionToAcceptQdrs = [((DState qFindNewSubstitution, DSymbol Constants.space),(DebuggingTMTypes.R, DState done))]
   symbolsWhichChangeStateQdrs =
     map ((\t -> ((DState qFindNewSubstitution, DSymbol t), (DebuggingTMTypes.R, DState qCheckIfNotCompleted))) . nonterminalValue) nonterminalsList
 
@@ -66,7 +68,7 @@ generateBlockForFindingNewSubstitution grammar@(Grammar (nonterminals, terminals
     ((DState qCheckIfNotCompleted, DSymbol t),(DebuggingTMTypes.R, DState qSubstituteOrFold))) indices
   symbolsToQSkipCompletedNonterminalQdrs = map 
     (\t -> ((DState qCheckIfNotCompleted, DSymbol t),(DebuggingTMTypes.L, DState qSkipCompletedNonterminal))) signsList
-  symbolsFromQCheckIfNotCompletedToAcceptQdrs = [((DState qCheckIfNotCompleted, DSymbol Constants.space),(DebuggingTMTypes.R, finalDState))]
+  symbolsFromQCheckIfNotCompletedToAcceptQdrs = [((DState qCheckIfNotCompleted, DSymbol Constants.space),(DebuggingTMTypes.R, DState done))]
 
   -- BLOCK for qSubstituteOrFold
   symbolsInQSubstituteOrFoldQdrs = [((DState qSubstituteOrFold, DSymbol Constants.leftBracket),(DebuggingTMTypes.R, DState qSubstituteOrFold))]
@@ -434,6 +436,7 @@ generateBlockForChangingWord (Grammar (nonterminals, terminals, _, _)) = let
     transition = "transition"
     writeBroughtSymbol = qWordsChanging ++ "WriteBroughtSymbol"
     createCounterForFstNonterminal = qWordsChanging ++ "CreateCounterForFstNonterminal"
+    createCounterForSndNonterminal = qWordsChanging ++ "CreateCounterForSndNonterminal"
     moveToEnd = qWordsChanging ++ "moveToEnd"
     qFindNewSubstitution = "qFindNewSubstitution"
     fstCounter = "0"
@@ -493,8 +496,19 @@ generateBlockForChangingWord (Grammar (nonterminals, terminals, _, _)) = let
         ((DState createCounterForFstNonterminal, DSymbol t),
         (DebuggingTMTypes.L, DState createCounterForFstNonterminal)))
         $ Constants.leftBracket : terminalsList
+    symbolsToCreateCounterForSndNonterminal = concatMap (\t -> let
+            oldState = createCounterForFstNonterminal
+            newState = createCounterForSndNonterminal
+            stateTransition = oldState ++ transition  ++ newState in
+            [((DState oldState, DSymbol t),(D $ DSymbol fstCounter, DState stateTransition)),
+            ((DState stateTransition, DSymbol fstCounter),(DebuggingTMTypes.R, DState newState))
+            ]) Constants.signs
+    symbolsInCreateCounterForSndNonterminal = map (\t ->
+         ((DState createCounterForSndNonterminal, DSymbol t),
+         (DebuggingTMTypes.R, DState createCounterForSndNonterminal)))
+         $ Constants.leftBracket : Constants.rightBracket : terminalsList ++ nonterminalsList
     symbolsToMoveToEnd = concatMap (\t -> let
-        oldState = createCounterForFstNonterminal
+        oldState = createCounterForSndNonterminal
         newState = moveToEnd
         stateTransition = oldState ++ transition  ++ newState in
         [((DState oldState, DSymbol t),(D $ DSymbol fstCounter, DState stateTransition)),
@@ -509,7 +523,8 @@ generateBlockForChangingWord (Grammar (nonterminals, terminals, _, _)) = let
 
     quadruples = symbolsToBroughtSymbolt ++ symbolsInBroughtSymbolt ++ symbolsToWritetk
         ++ symbolsToBroughtSymbolt' ++ symbolsToWriteBroughtSymbolt ++ symbolsToCreateCounterForFstNonterminal
-        ++ symbolsInCreateCounterForFstNonterminal ++ symbolsToMoveToEnd ++ symbolsInMoveToEnd
+        ++ symbolsInCreateCounterForFstNonterminal ++ symbolsToCreateCounterForSndNonterminal 
+        ++ symbolsInCreateCounterForSndNonterminal ++ symbolsToMoveToEnd ++ symbolsInMoveToEnd
         ++ symbolsToQFindNewSubstitution
 
     in (DQuadruples $ Helpers.addCollectionToMap quadruples Map.empty)
@@ -1340,6 +1355,16 @@ generateBlockForMovingToNextConjunction grammar@(Grammar (nonterminals, terminal
     allQuadruplesMap = Map.union generatedQuadruples newQuadruples
     in DQuadruples allQuadruplesMap
 
+generateBlockForGettingAccepted :: Grammar -> DebuggingQuadruples
+generateBlockForGettingAccepted (Grammar (nonterminals, _, _, _)) = let
+    done = "Done"
+    nonterminalslList = map nonterminalValue $ Set.toList nonterminals
+    symbolsInDone = map (\t -> ((DState done, DSymbol t),(DebuggingTMTypes.R, DState done))) nonterminalslList
+    symbolsToAccepted = [((DState done, DSymbol Constants.plus),(DebuggingTMTypes.L, finalDState))]
+    symbolsToNotAccepted = [((DState done, DSymbol Constants.minus),(DebuggingTMTypes.L, errorDState))]
+    symbols = symbolsInDone ++ symbolsToAccepted ++ symbolsToNotAccepted
+    in DQuadruples $ Helpers.addCollectionToMap symbols Map.empty
+
 generateFoldingForMidCongs :: Map.Map (DebuggingState, DebuggingSymbol) (a, DebuggingState)
         -> [([Char], [Char], [Char], [Char])]
         -> Map.Map (DebuggingState, DebuggingSymbol) (a, DebuggingState)
@@ -1350,6 +1375,4 @@ generateFoldingForMidCongs quadruples quads = let
                 let updatedState = state ++ k ++ t ++ j ++ f in
                 (DState updatedState, DSymbol symbol)) quadruples)) quads
    in Map.unions quadruplesList
-
-
 
