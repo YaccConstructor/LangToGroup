@@ -4,7 +4,6 @@ module DebuggingTMTypes where
 
 import TMTypes
 import GrammarType
-import Boolean2TMConstants
   
 import qualified Data.Map as Map
 import qualified Data.List as List

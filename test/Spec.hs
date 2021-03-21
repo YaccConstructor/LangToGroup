@@ -76,8 +76,8 @@ simpleCfgToTMMapTest = do
     assertEqual "simple cfg to TMs convertion" expectedTM (cfg2tm test1Grammar)
 
 main :: IO ()
-main = defaultMainWithOpts
-       [testCase "simple cfg to TM map" simpleCfgToTMMapTest,
+main = defaultMainWithOpts   
+       ([testCase "simple cfg to TM map" simpleCfgToTMMapTest,
         testCase "cft to TM to config test" configsTest,
         testCase "simple sm test" smInterpretationTest,
         testCase "sm test 2" smInterpretationTest2,
@@ -123,7 +123,6 @@ main = defaultMainWithOpts
         testCase "Boolean to TM: functionality test11" test11,
         testCase "Boolean to TM: functionality test12" test12,
         testCase "Boolean to TM: functionality test22" test22,
-        head $ hUnitTestToTests testsWordAccepted,
         head $ hUnitTestToTests SPTests.tests
-        ]
+        ] ++ hUnitTestToTests Boolean2TMTests.tests)
        mempty
