@@ -68,10 +68,10 @@ getStates :: DebuggingTuringMachine -> [DebuggingState]
 getStates (DTM (DQuadruples qdrs)) = let
     states' = map (\(_, (_, DState state)) -> state) $ Map.toList qdrs
     states'' = map (\((DState state, _), _) -> state) $ Map.toList qdrs
-    (DState final) = finalDState
-    (DState start) = startDState
-    (DState error) = errorDState
-    in map DState $ List.nub $ error : final : start : states' ++ states''
+    (DState final') = finalDState
+    (DState start') = startDState
+    (DState error') = errorDState
+    in map DState $ List.nub $ error' : final' : start' : states' ++ states''
 
 getSymbols :: DebuggingTuringMachine -> [DebuggingSymbol]
 getSymbols (DTM (DQuadruples qdrs)) = let
