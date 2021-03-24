@@ -546,9 +546,9 @@ generateBlockForWritingSigns grammar@(Grammar (nonterminals, _, rels,_)) = let
         oldState = qRewriteWithMinus ++ nonterm
         newState = qFindNewSubstitution
         stateTransition = oldState ++ transition ++ newState
-        relsForNonterm = (Helpers.calculateGroupRelationsByNonterminals $ Set.toList rels) Map.! nonterm'
+        relsForNonterm = Helpers.calculateGroupRelationsByNonterminals (Set.toList rels) Map.! nonterm'
         in
-        if ((read i :: Int) == length relsForNonterm - 1)
+        if (read i :: Int) == length relsForNonterm - 1
             then
             [((DState oldState, DSymbol i),(D $ DSymbol Constants.minus, DState stateTransition)),
             ((DState stateTransition, DSymbol Constants.minus),(DebuggingTMTypes.L, DState newState))]
@@ -667,8 +667,7 @@ generateBlockForFolding (Grammar (nonterminals, terminals, _, _)) = let
     symbolsToQFoldRightBracketLookForNewPlace = map (\t -> let
         oldState = qFold
         newState = qFold ++ t ++ lookForNewPlace in
-        ((DState oldState, DSymbol t),(DebuggingTMTypes.L, DState newState)))
-        $ [Constants.rightBracket]
+        ((DState oldState, DSymbol t),(DebuggingTMTypes.L, DState newState))) [Constants.rightBracket]
 
     --BLOCK for qFoldSLookForNewPlace - it common for all symbols except ")"
     symbols = Constants.leftBracket : terminalsList ++ nonterminalsList ++ Constants.signs
@@ -1346,7 +1345,7 @@ generateBlockForMovingToNextConjunction grammar@(Grammar (nonterminals, terminal
             Nothing -> error "Next pair does not exist, though original was in list of mid conjs."
         j'' = Helpers.refineSymbolInConjunctionToNonterminal j'
         f'' = Helpers.refineSymbolInConjunctionToNonterminal f'
-        newState = qRememberStart ++ (show k') ++ t' ++ j'' ++ f'' in
+        newState = qRememberStart ++ show k' ++ t' ++ j'' ++ f'' in
         ((DState oldState, DSymbol k),(DebuggingTMTypes.R, DState newState))) quads
     newQuadruples = Helpers.addCollectionToMap
         (symbolsFromRightBracketLastToQFindNewSubstitution
