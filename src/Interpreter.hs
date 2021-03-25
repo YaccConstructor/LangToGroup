@@ -25,7 +25,7 @@ data WorkingState = WS {
         currentState :: State,
         tape :: Tape MetaString,
         alphabet :: Set String
-    }
+    } deriving (Show)
 
 blankStr :: String
 blankStr = "."
@@ -50,6 +50,10 @@ start tm word ind = startWithAlphabet tm word ind $ Set.fromList word
 startWithAlphabet :: Show a => TuringMachine -> [a] -> Int -> Set a -> WorkingState
 startWithAlphabet tm word ind =
     WS tm startState (Tape.fromList (MS . show <$> word) ind (MS blankStr)) . Set.map show
+
+startWithAlphabet' :: TuringMachine -> [String] -> Int -> Set String -> WorkingState
+startWithAlphabet' tm word ind
+  = WS tm startState (Tape.fromList (map MS word) ind (MS blankStr))
 
 states :: WorkingState -> [WorkingState]
 states ws =

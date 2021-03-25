@@ -1,95 +1,124 @@
+{-# LANGUAGE LambdaCase #-}
+
 module Boolean2TMTests where
 
-import Test.HUnit
-import GrammarType
-import qualified Boolean2TM
+import Boolean2TM
+import Interpreter
+import DebuggingTMTypes
+import TMTypes
+import InterpreterInputData
+
 import qualified Data.Set as Set
+import Data.List as List
+import Test.HUnit
 
--- tests written for boolean grammars in normal form
-calculateNextConjunctionInSameRuleTest1 :: IO ()
-calculateNextConjunctionInSameRuleTest1 = do
-  let testGr = Grammar (
-                            Set.fromList [Nonterminal "Abc",Nonterminal "Cr",Nonterminal "D",Nonterminal "S"],
-                            Set.fromList [Terminal "b"],
-                            Set.fromList [
-                                            Relation (Nonterminal "S",[N $ Nonterminal "D", N $ Nonterminal "Cr",O Conjunction, N $ Nonterminal "S", N $ Nonterminal "Abc"])
-                                         ],
-                            Nonterminal "S")
-  let testConjunctionPair = Boolean2TM.SymbolsPair (Nonterminal "S", 0, False, N $ Nonterminal "D", N $ Nonterminal "Cr")
-  let expectedConjunctionPair = Boolean2TM.SymbolsPair (Nonterminal "S", 0, False, N $ Nonterminal "S", N $ Nonterminal "Abc")
-  let actualConjunctionPair = Boolean2TM.calculateNextConjunctionInSameRule testGr testConjunctionPair
-  case actualConjunctionPair of
-        Nothing -> assertFailure "In relation no such conjunction, or next conjunction does not exist"
-        Just pair -> assertEqual "assert getting next conjunction" expectedConjunctionPair  pair  
-  let testConjunctionPair1 = Boolean2TM.SymbolsPair (Nonterminal "S", 0, False, N $ Nonterminal "S", N $ Nonterminal "Abc")
-  let expectedConjunctionPair1 = Nothing
-  let actualConjunctionPair1 = Boolean2TM.calculateNextConjunctionInSameRule testGr testConjunctionPair1
-  case actualConjunctionPair1 of
-        Nothing -> assertEqual "assert getting next conjunction" actualConjunctionPair1 expectedConjunctionPair1
-        Just _ -> assertFailure "Next conjunction does not exist, but result is not Nothing"
-    
-    
-calculateNextConjunctionInSameRuleTest2 :: Assertion
-calculateNextConjunctionInSameRuleTest2 = do
-  let testGr = Grammar (
-                            Set.fromList [Nonterminal "S",Nonterminal "Sa", Nonterminal "Sb"],
-                            Set.fromList [Terminal "b"],
-                            Set.fromList [
-                                            Relation (Nonterminal "S",[N $ Nonterminal "Sa", N $ Nonterminal "S", O Conjunction, O Negation, N $ Nonterminal "Sa", N $ Nonterminal "Sb"]),
-                                            Relation (Nonterminal "S",[N $ Nonterminal "Sb", N $ Nonterminal "Sa"])
-                                         ],
-                            Nonterminal "S")
-  let testConjunctionPair1 = Boolean2TM.SymbolsPair (Nonterminal "S", 1, False, N $ Nonterminal "Sb", N $ Nonterminal "Sa")
-  let actualConjunctionPair1 = Boolean2TM.calculateNextConjunctionInSameRule testGr testConjunctionPair1
-  case actualConjunctionPair1 of
-        Nothing -> assertEqual "assert getting next conjunction" actualConjunctionPair1 Nothing 
-        Just _ -> assertFailure "Next conjunction does not exist, but result is not Nothing"  
-  let testConjunctionPair2 = Boolean2TM.SymbolsPair (Nonterminal "S", 0, False, N $ Nonterminal "Sa", N $ Nonterminal "S")
-  let actualConjunctionPair2 = Boolean2TM.calculateNextConjunctionInSameRule testGr testConjunctionPair2
-  let expectedConjunctionPair2 = Boolean2TM.SymbolsPair (Nonterminal "S", 0, True, N $ Nonterminal "Sa", N $ Nonterminal "Sb")
-  case actualConjunctionPair2 of
-        Just pair -> assertEqual "assert getting next conjunction in the same rule" pair expectedConjunctionPair2
-        Nothing -> assertFailure "Next conjunction does not exist, but result is not Nothing"
+tests :: Test
+tests = TestList [testsAccepted,  testsAccepted',  testsNotAccepted,  others]
 
-calculateFirstConjunctionInNextRuleTest1 :: Assertion
-calculateFirstConjunctionInNextRuleTest1 = do
-  let testGr = Grammar (
-                              Set.fromList [Nonterminal "S",Nonterminal "Sa", Nonterminal "Sb", Nonterminal "Sc"],
-                              Set.fromList [Terminal "b"],
-                              Set.fromList [
-                                              Relation (Nonterminal "S",[N $ Nonterminal "Sa", N $ Nonterminal "S", O Conjunction, O Negation, N $ Nonterminal "Sa", N $ Nonterminal "Sb"]),
-                                              Relation (Nonterminal "S",[N $ Nonterminal "Sa", N $ Nonterminal "Sd", O Conjunction, N $ Nonterminal "Sb", N $ Nonterminal "Sc"])
-                                           ],
-                              Nonterminal "S")
-  let testConjunctionPair1 = Boolean2TM.SymbolsPair (Nonterminal "S", 0, False, N $ Nonterminal "Sa", N $ Nonterminal "S")
-  let testConjunctionPair2 = Boolean2TM.SymbolsPair (Nonterminal "S", 0, True, N $ Nonterminal "Sa", N $ Nonterminal "Sb")
+testsAccepted :: Test
+testsAccepted = let
+    numbers = [3..10]
+    tests1 = map (\t -> let
+        word = ["S", "("] ++ replicate t "b" ++ ["a", ")"] in
+        generateTestLabel testData1 word True) numbers
+    tests2 = concatMap (\t -> let
+        word = ["S", "("] ++ replicate t "b" ++ ["a", "b", ")"] in
+        [generateTestLabel testData1 word True, 
+        generateTestLabel testData2 word True]) numbers
+    tests4 = map (\t -> let
+        word = ["S", "("] ++ replicate t "a" ++ [")"] in
+        generateTestLabel testData3 word True) numbers
+    allTests = tests1 ++ tests2 ++ tests4
+    in TestLabel "Correctness of algorithm building TM by boolean grammar:"
+        $ TestList allTests
 
-  let actualConjunctionPair1 = Boolean2TM.calculateFirstConjunctionInNextRule testGr testConjunctionPair1
-  let actualConjunctionPair2 = Boolean2TM.calculateFirstConjunctionInNextRule testGr testConjunctionPair2
+testsAccepted' :: Test
+testsAccepted' = let
+    numbers = [1..7]
+    tests1 = map (\t -> let
+        word = ["S", "("] ++ replicate t "c" ++ replicate t "b" ++ [")"] in
+        generateTestLabel testData4 word True) numbers
+    tests2 = map (\t -> let
+        word = ["S", "(", "b", "c"] ++ replicate t "b" ++ [")"] in
+        generateTestLabel testData5 word True) numbers
+    tests3 = map (\t -> let
+        word = ["S", "(", "c"] ++ replicate t "b" ++ [")"] in
+        generateTestLabel testData5 word True) numbers
+    allTests = tests1 ++ tests2 ++ tests3
+    in TestLabel "Correctness of algorithm building TM by boolean grammar:"
+            $ TestList allTests
 
-  let expectedConjunctionPair = Boolean2TM.SymbolsPair (Nonterminal "S", 1, False, N $ Nonterminal "Sa", N $ Nonterminal "Sd")
+testsNotAccepted :: Test
+testsNotAccepted = let
+    numbers = [3..13]
+    testsNotAccepted1 = concatMap (\t -> let
+        word = ["S", "("] ++ replicate t "a" ++ [")"] in
+        [generateTestLabel testData1 word False, 
+        generateTestLabel testData2 word False]) numbers
+    testsNotAccepted2 = concatMap (\t -> let
+        word = ["S", "("] ++ replicate t "b" ++ [")"] in
+        [generateTestLabel testData1 word False, 
+        generateTestLabel testData2 word False]) numbers
+    testsNotAccepted3 = concatMap (\t -> let
+        word = ["S", "("] ++ replicate t "c" ++ [")"] in
+        [generateTestLabel testData4 word False, 
+        generateTestLabel testData5 word False]) numbers
+    allTests = testsNotAccepted1 ++ testsNotAccepted2
+        ++ testsNotAccepted3
+    in TestLabel "Correctness of algorithm building TM by boolean grammar:"
+                   $ TestList allTests
 
-  case actualConjunctionPair1 of
-        Nothing -> assertFailure "Next conjunction does not exist"
-        Just pair -> assertEqual "assert getting first conjunction in next rule" expectedConjunctionPair pair
-  case actualConjunctionPair2 of
-        Nothing -> assertFailure "Next conjunction does not exist"
-        Just pair -> assertEqual "assert getting first conjunction in next rule" expectedConjunctionPair pair
+others :: Test
+others = let
+    allTests = TestList [
+        generateTestLabel testData1 ["S", "(", "a", ")"] True, 
+        generateTestLabel testData1 ["S", "(", "a", "b", ")"] True, 
+        generateTestLabel testData1 ["S", "(", "b", ")"] False, 
+        generateTestLabel testData1 ["S", "(", "b", "a", "b", ")"] True, 
+        generateTestLabel testData2 ["S", "(", "b", "b", ")"] True, 
+        generateTestLabel testData2 ["S", "(", "b", "b", ")"] True, 
+        generateTestLabel testData5 ["S", "(", "b", ")"] False, 
+        generateTestLabel testData5 ["S", "(", "c", ")"] False, 
+        generateTestLabel testData5 ["S", "(", "b", "c", ")"] True]
+    in TestLabel "Other tests for checking correctness algorithm building TM by boolean grammar:" allTests
 
-calculateFirstConjunctionInNextRuleTest2 :: Assertion
-calculateFirstConjunctionInNextRuleTest2 = do
-  let testGr = Grammar (
-                              Set.fromList [Nonterminal "S",Nonterminal "Sa", Nonterminal "Sb", Nonterminal "Sc"],
-                              Set.fromList [Terminal "b"],
-                              Set.fromList [
-                                              Relation (Nonterminal "S",[N $ Nonterminal "Sa", N $ Nonterminal "S", O Conjunction, O Negation, N $ Nonterminal "Sa", N $ Nonterminal "Sb"]),
-                                              Relation (Nonterminal "S",[N $ Nonterminal "Sa", N $ Nonterminal "S", O Conjunction, N $ Nonterminal "Sb", N $ Nonterminal "Sc"]),
-                                              Relation (Nonterminal "S", [O Negation, N $ Nonterminal "Sb", N $ Nonterminal "Sa"])
-                                           ],
-                              Nonterminal "S")
-  let testConjunctionPair = Boolean2TM.SymbolsPair (Nonterminal "S", 1, False, N $ Nonterminal "Sa", N $ Nonterminal "S")
-  let expectedConjunctionPair = Boolean2TM.SymbolsPair (Nonterminal "S", 2, True, N $ Nonterminal "Sb", N $ Nonterminal "Sa")
-  let actualConjunctionPair = Boolean2TM.calculateFirstConjunctionInNextRule testGr testConjunctionPair
-  case actualConjunctionPair of
-          Nothing -> assertFailure "Next conjunction does not exist"
-          Just pair -> assertEqual "assert getting first conjunction in next rule" expectedConjunctionPair pair
+generateTestLabel :: InterpreterInputData -> [String] -> Bool -> Test
+generateTestLabel input word accepted = let
+    testCase = generateTestCase input word accepted in
+    TestLabel ("Test for grammar " ++ inId input) testCase
+
+generateTestCase :: InterpreterInputData -> [String] -> Bool -> Test
+generateTestCase input word accepted = let
+    tm = convertToTuringMachine $ boolean2tm $ inGrammar input
+    xs = states $ startWithAlphabet' tm word 0 $ inAlphabet input
+    testCase = if accepted
+        then TestCase (assertEqual (concat word) (Q 0) (currentState $ last xs))
+        else TestCase (assertEqual (concat word) (Q (-1)) (currentState $ last xs))
+    description = if accepted
+        then "check word " ++ concat word ++ " accepted"
+        else "check word " ++ concat word ++ " not accepted"
+    in TestLabel description testCase
+
+-- print info
+printInfo :: DebuggingTuringMachine -> TuringMachine -> Set.Set String -> [String] -> IO [()]
+printInfo dtm tm inputAlphabet word = do
+    let states' = states $ startWithAlphabet' tm word 0 inputAlphabet
+    let states'' = getStates dtm
+    let statesPairs = map (\t -> (elemIndex t states'',  t)) states''
+    let symbols = getSymbols dtm
+    let symbolsPairs = map (\t -> (elemIndex t symbols,  t)) symbols
+    print symbolsPairs
+    print statesPairs
+    print tm
+    mapM (\(WS _ currentState' tape' alphabet') -> let
+        (Q index') = currentState';
+        state = snd $ head $ filter (\case
+            (Just index,  DState _) -> index == index'
+            (Nothing,  _) -> False) statesPairs;
+        (DState stringState) = state
+        in do {
+            print currentState';
+            print stringState;
+            print tape';
+            print alphabet';}) states'
+

@@ -2,9 +2,11 @@
 
 module DebuggingTMTypes where
 
+import TMTypes
+import GrammarType
+  
 import qualified Data.Map as Map
 import qualified Data.List as List
-import TMTypes
 
 newtype DebuggingState = DState String
         deriving (Eq, Ord, Show)
@@ -22,7 +24,16 @@ newtype DebuggingTuringMachine = DTM DebuggingQuadruples
     deriving (Show, Eq)
 
 finalDState :: DebuggingState
-finalDState = DState "Done"
+finalDState = DState "accepted"
+
+errorDState :: DebuggingState
+errorDState = DState "notAccepted"
+
+startDState :: DebuggingState
+startDState = DState "qWriteStartCounter"
+
+newtype SymbolsPair = SymbolsPair (Nonterminal, Int, Bool, GrammarType.Symbol, GrammarType.Symbol)
+    deriving (Eq, Show)
 
 convertToTuringMachine :: DebuggingTuringMachine -> TuringMachine
 convertToTuringMachine tm@(DTM (DQuadruples quadruplesMap)) = let
@@ -44,7 +55,7 @@ convertToTuringMachine tm@(DTM (DQuadruples quadruplesMap)) = let
 getStateIndex :: DebuggingState -> [DebuggingState] -> Int
 getStateIndex state states =
     case List.elemIndex state states of
-      Just index -> index
+      Just index -> index - 1 -- since states numeration starts from -1
       Nothing -> error "No such state. Something went wrong during convertation to Turing machine."
 
 getSymbolIndex :: DebuggingSymbol -> [DebuggingSymbol] -> Int
@@ -57,14 +68,20 @@ getStates :: DebuggingTuringMachine -> [DebuggingState]
 getStates (DTM (DQuadruples qdrs)) = let
     states' = map (\(_, (_, DState state)) -> state) $ Map.toList qdrs
     states'' = map (\((DState state, _), _) -> state) $ Map.toList qdrs
-    in map DState $ List.nub $ states' ++ states''
+    (DState final') = finalDState
+    (DState start') = startDState
+    (DState error') = errorDState
+    in map DState $ List.nub $ error' : final' : start' : states' ++ states''
 
 getSymbols :: DebuggingTuringMachine -> [DebuggingSymbol]
 getSymbols (DTM (DQuadruples qdrs)) = let
+    blank = "."
     symbols' = map (\case
         (_, (D (DSymbol s), _)) -> s
         _ -> "") $ Map.toList qdrs
     filteredEmpty = filter (/= "") symbols'
     symbols'' = map (\((_, DSymbol s), _) -> s) $ Map.toList qdrs
-    in map DSymbol $ List.nub $ filteredEmpty ++ symbols''
+    list' = List.sort $ List.nub $ filteredEmpty ++ symbols''
+    list = List.delete blank list'
+    in map DSymbol $ blank : list
 

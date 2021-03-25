@@ -15,6 +15,7 @@ import TmsTests
 import TuringMachine2TmsTests
 import Tms2TuringMachineTests
 import TmsParserTests
+import Boolean2TMHelpersTests
 import Boolean2TMTests
 import qualified SPTests (tests)
 
@@ -75,8 +76,8 @@ simpleCfgToTMMapTest = do
     assertEqual "simple cfg to TMs convertion" expectedTM (cfg2tm test1Grammar)
 
 main :: IO ()
-main = defaultMainWithOpts
-       [testCase "simple cfg to TM map" simpleCfgToTMMapTest,
+main = defaultMainWithOpts   
+       ([testCase "simple cfg to TM map" simpleCfgToTMMapTest,
         testCase "cft to TM to config test" configsTest,
         testCase "simple sm test" smInterpretationTest,
         testCase "sm test 2" smInterpretationTest2,
@@ -98,10 +99,27 @@ main = defaultMainWithOpts
         testCase "parse Tms: test1tape1cmd" test1tape1cmd,
         testCase "parse Tms: test1tape3cmd" test1tape3cmd,
         testCase "parse Tms: test3tape3cmd" test3tape3cmd,
-        testCase "Boolean to TM: calculateNextConjunctionInSameRuleTest1" calculateNextConjunctionInSameRuleTest1,
-        testCase "Boolean to TM: calculateNextConjunctionInSameRuleTest2" calculateNextConjunctionInSameRuleTest2,
-        testCase "Boolean to TM: calculateFirstConjunctionInNextRuleTest1" calculateFirstConjunctionInNextRuleTest1,
-        testCase "Boolean to TM: calculateFirstConjunctionInNextRuleTest2" calculateFirstConjunctionInNextRuleTest2,
+        testCase "Boolean to TM helpers: calculateNextConjunctionInSameRuleTest1" calculateNextConjunctionInSameRuleTest1,
+        testCase "Boolean to TM helpers: calculateNextConjunctionInSameRuleTest2" calculateNextConjunctionInSameRuleTest2,
+        testCase "Boolean to TM helpers: calculateFirstConjunctionInNextRuleTest1" calculateFirstConjunctionInNextRuleTest1,
+        testCase "Boolean to TM helpers: calculateFirstConjunctionInNextRuleTest2" calculateFirstConjunctionInNextRuleTest2,
+        testCase "Boolean to TM helpers: getLongRelsTest" getLongRelsTest,
+        testCase "Boolean to TM helpers: checkIfConjHasNegTest1" checkIfConjHasNegTest1,
+        testCase "Boolean to TM helpers: checkIfConjHasNegTest2" checkIfConjHasNegTest2,
+        testCase "Boolean to TM helpers: relationHasOneTerminalInRightPartTest" relationHasOneTerminalInRightPartTest,
+        testCase "Boolean to TM helpers: getFstNontermsInConjOfGivenRelationTest" getFstNontermsInConjOfGivenRelationTest,
+        testCase "Boolean to TM helpers: getSndNontermsInConjOfGivenRelationTest" getSndNontermsInConjOfGivenRelationTest,
+        testCase "Boolean to TM helpers: calculateQuadsTest1" calculateQuadsTest1,
+        testCase "Boolean to TM helpers: calculateQuadsTest2" calculateQuadsTest2,
+        testCase "Boolean to TM helpers: kthRelForNonterminalLongTest1" kthRelForNonterminalLongTest1,
+        testCase "Boolean to TM helpers: kthRelForNonterminalLongTest2" kthRelForNonterminalLongTest2,
+        testCase "Boolean to TM helpers: calculateQuadsFromGrammarTest" calculateQuadsFromGrammarTest,
+        testCase "Boolean to TM helpers: getShiftsDecrementsTest" getShiftsDecrementsTest,
+        testCase "Boolean to TM helpers: symbolAcceptedByNonterminalTest1" symbolAcceptedByNonterminalTest1,
+        testCase "Boolean to TM helpers: symbolAcceptedByNonterminalTest2" symbolAcceptedByNonterminalTest2,
+        testCase "Boolean to TM helpers: symbolAcceptedByNonterminalTest3" symbolAcceptedByNonterminalTest3,
+        testCase "Boolean to TM helpers: symbolAcceptedByNonterminalTest4" symbolAcceptedByNonterminalTest4,
+        testCase "Boolean to TM helpers: getNumbersOfShortRelationsTest" getNumbersOfShortRelationsTest,
         head $ hUnitTestToTests SPTests.tests
-        ]
+        ] ++ hUnitTestToTests Boolean2TMTests.tests)
        mempty
