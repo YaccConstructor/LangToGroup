@@ -103,7 +103,7 @@ getFirstNonterminalsInConjunctionsOfGivenRelation (Grammar (_, _, relations, _))
 -- grammar -> string (nonterminal in left part) -> string (number of relation)
 --  -> string (first nonterminal in conjunction) -> list of first nonterminals
 getSecondNonterminalsInConjunctionsOfGivenRelation :: Grammar -> String -> String -> String -> [String]
-getSecondNonterminalsInConjunctionsOfGivenRelation 
+getSecondNonterminalsInConjunctionsOfGivenRelation
     (Grammar (_, _, relations, _)) leftNonterminal number fstNontermInConj = let
     groupedRelations = calculateGroupRelationsByNonterminals $ Set.toList relations
     conjs = (groupedRelations Map.! Nonterminal leftNonterminal) !! (read number :: Int)
@@ -148,10 +148,11 @@ checkIfConjHasNeg (Grammar(_, _, relations, _)) (number, leftN, fstN, sndN) = do
     let relationsForNonterminal = groupedRelations Map.! Nonterminal leftN
     let conjs = relationsForNonterminal !! (read number :: Int)
     --let conjunctionsPair = splitOn [O Conjunction] relation
-    let index = elemIndex [N (Nonterminal fstN), N (Nonterminal sndN)] $ map symbols conjs
-    case index of
+    any (\t -> t == NegConj [N (Nonterminal fstN), N (Nonterminal sndN)]) conjs
+    --let index = elemIndex [N (Nonterminal fstN), N (Nonterminal sndN)] $ map symbols conjs
+    {--case index of
         Just _ -> True
-        Nothing -> False
+        Nothing -> False --}
         
 kthRelForNonterminalLong :: [Relation] -> String -> String -> Bool
 kthRelForNonterminalLong relations nontermVal k = do
@@ -160,11 +161,12 @@ kthRelForNonterminalLong relations nontermVal k = do
     let nonterminal = Nonterminal nontermVal
     let relationsForNonterm = groupedRelations Map.! nonterminal
     length relationsForNonterm > k' &&
-        not (relationHasOneTerminalInRightPart $ BooleanRelation (nonterminal, relationsForNonterm !! k'))        
+        not (relationHasOneTerminalInRightPart $ BooleanRelation (nonterminal, relationsForNonterm !! k'))
 
 relationHasOneTerminalInRightPart :: Relation -> Bool
 relationHasOneTerminalInRightPart (Relation (_, [T (Terminal _)])) = True
 relationHasOneTerminalInRightPart (BooleanRelation (_, [NegConj [T (Terminal _)]])) = True
+relationHasOneTerminalInRightPart (BooleanRelation (_, [PosConj [T (Terminal _)]])) = True
 relationHasOneTerminalInRightPart _ = False
 
 symbolAcceptedByNonterminal :: Grammar -> String -> String -> Bool

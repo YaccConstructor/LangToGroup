@@ -142,9 +142,9 @@ relation13 = Relation (Nonterminal "C", [N $ Nonterminal "B", N $ Nonterminal "C
 
 getLongRelsTest :: Assertion
 getLongRelsTest = do
-   let expectedRels = Helpers.getLongRels testRels
-   let actualRels = [relation11, relation12, relation13]
-   assertEqual "assert getting long relations" actualRels expectedRels
+   let actualRels = Helpers.getLongRels testRels
+   let expectedRels = [relation11, relation12, relation13]
+   assertEqual "assert getting long relations" expectedRels actualRels
 
 checkIfConjHasNegTest1 :: Assertion
 checkIfConjHasNegTest1 = do

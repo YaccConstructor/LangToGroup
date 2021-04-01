@@ -112,7 +112,7 @@ testGr5 = Grammar (Set.fromList nonterminals5,  Set.fromList [Terminal "b",  Ter
                     Relation (Nonterminal "B", [T $ Terminal "b"]), 
                     Relation (Nonterminal "C", [T $ Terminal "c"]), 
                     BooleanRelation (Nonterminal "S", [PosConj [N $ Nonterminal "B", N $ Nonterminal "C"],
-                        NegConj [N $ Nonterminal "D",  N $ Nonterminal "C"]]),
+                        PosConj [N $ Nonterminal "D",  N $ Nonterminal "C"]]),
                     Relation (Nonterminal "C", [N $ Nonterminal "C", N $ Nonterminal "B"]), 
                     BooleanRelation (Nonterminal "S", [PosConj [N $ Nonterminal "C", N $ Nonterminal "D"],
                         NegConj [N $ Nonterminal "D", N $ Nonterminal "B"]])],
