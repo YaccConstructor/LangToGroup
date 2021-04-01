@@ -27,7 +27,6 @@ disjoinIfTerminal letter =
         GrammarType.T (Terminal c) -> Value c 1
         N (Nonterminal c) -> Value c 0
         GrammarType.Eps -> error "Can not disjoin eps"
-        GrammarType.O _ -> error "Can not disjoin operand"
 
 mapValue :: [String] -> [Square]
 mapValue = map (`Value` 0)

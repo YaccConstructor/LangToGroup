@@ -10,7 +10,7 @@ import qualified Data.Set as Set
 import GrammarReader
 import GrammarType
 
-testCustomCFG :: Assertion
+{--testCustomCFG :: Assertion
 testCustomCFG = do
     let input = "S; S B; a b\nS-> a B\nB-> b"
     let expectedGr = Grammar (
@@ -58,4 +58,4 @@ testCustomBoolean = do
     let result =  parseMaybe GrammarReader.parser input
     case result of
         Nothing -> assertFailure "Error occured during parsing custom grammar."
-        Just grammar -> assertEqual "assert grammar representation" expectedGr grammar
+        Just grammar -> assertEqual "assert grammar representation" expectedGr grammar--}

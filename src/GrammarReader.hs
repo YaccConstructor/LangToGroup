@@ -4,7 +4,7 @@
 --
 -- Depending on the type of grammar, specific algorithm for building a group will be executed.
 
-module GrammarReader (convertGrammar2TM,parser) where
+module GrammarReader {---(convertGrammar2TM,parser) --}where
 
 import Text.Megaparsec
 import Text.Megaparsec.Char
@@ -20,7 +20,7 @@ import GrammarType
 import CFG2TM
 import ParsingHelpers
 import TM2Tms
-
+{--
 -- |Parser part.
 
 -- |Parsers for terminal symbols in given grammar: it might be Epsilon, Nonterminal, Terminal, Conjunction or Negation
@@ -164,7 +164,7 @@ convertGrammar2TM grammarFile errorFile = do
           CFG -> putStrLn ("CFG " ++ show cs) >> case tm2tms (cfg2tm cs) of
             Left err -> hPutStrLn stderr $ "Error: " ++ show err
             Right tms -> putStrLn ("\n" ++ show tms)
-
+--}
 
 -- |Valid examples of input
 -- 1) context-free grammar

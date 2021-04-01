@@ -1,8 +1,6 @@
  -- |This module represents types of formal grammar.
 --
 -- In the moment we use it to represent a context-free grammar, conjunctive grammar, boolean grammar.
-
-{-# LANGUAGE DataKinds #-}
 module GrammarType where
 
 import Data.Set (Set)
@@ -25,13 +23,14 @@ newtype Nonterminal = Nonterminal {nonterminalValue :: String}
 data Symbol = T Terminal | N Nonterminal | Eps
     deriving (Eq, Ord, Show)
 
-newtype PConj = PConj [Symbol]
+{--newtype CFGRightPart = CFGRightPart [Symbol]--{symbols :: [Symbol]}
     deriving (Eq, Ord, Show)
 
 newtype NConj = NConj [Symbol]
-    deriving (Eq, Ord, Show)
+    deriving (Eq, Ord, Show) --}
 
-data Conj = PosConj' PConj | NegConj' NConj
+data Conj = PosConj {{--rightPart :: CFGRightPart,--} symbols :: [Symbol]} 
+          | NegConj {{---nConj :: NConj,--} symbols :: [Symbol]}
     deriving (Eq, Ord, Show)
     
 -- |This type is synonym 'Nonterminal' and used in order to separate 'StartSymbol' from normal 'Nonterminal'.
@@ -40,7 +39,7 @@ type StartSymbol = Nonterminal
 -- |'Relation' is a rule of 'Grammar'. 
 --
 -- Rule might be in context-free, conjunctive or boolean form.
-data Relation = Relation (Nonterminal, PConj) | BooleanRelation (Nonterminal, [Conj])
+data Relation = Relation (Nonterminal, [Symbol]) | BooleanRelation (Nonterminal, [Conj])
     deriving (Eq, Ord, Show)
 
 -- |This type we using to classify grammars.

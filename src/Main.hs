@@ -28,7 +28,7 @@ argd = [ Arg { argIndex = InputFlagString,
                argData = argDataRequired "errors-file-full-path" ArgtypeString,
                argDesc = "Full path to file, where errors should be recorded during parsing" }]
 
-main :: IO ()
+{---main :: IO ()
 main = do
     args <- parseArgsIO
           (ArgsParseControl ArgsComplete ArgsSoftDash)
@@ -37,7 +37,7 @@ main = do
           Just input -> case getArg args OutputFlagString of
                           Just output -> convertGrammar2TM input output
                           Nothing     -> error "OutputFlagString parsing error"
-          Nothing    -> error "InputFlagString parsing error"
+          Nothing    -> error "InputFlagString parsing error" --}
 
 mainTms :: String -> String -> IO ()
 mainTms filename errorFile = do

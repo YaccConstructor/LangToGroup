@@ -14,8 +14,8 @@ calculateNextConjunctionInSameRuleTest1 = do
         Set.fromList [Nonterminal "Abc",Nonterminal "Cr",Nonterminal "D",Nonterminal "S"],
         Set.fromList [Terminal "b"],
         Set.fromList [
-        Relation (Nonterminal "S",[N $ Nonterminal "D", N $ Nonterminal "Cr",
-            O Conjunction, N $ Nonterminal "S", N $ Nonterminal "Abc"])
+        BooleanRelation (Nonterminal "S",[PosConj [N $ Nonterminal "D", N $ Nonterminal "Cr"],
+           PosConj [N $ Nonterminal "S", N $ Nonterminal "Abc"]])
         ],
         Nonterminal "S")
   let testConjunctionPair = DebuggingTMTypes.SymbolsPair (
@@ -41,9 +41,9 @@ calculateNextConjunctionInSameRuleTest2 = do
         Set.fromList [Nonterminal "S",Nonterminal "Sa", Nonterminal "Sb"],
         Set.fromList [Terminal "b"],
         Set.fromList [
-            Relation (Nonterminal "S",[N $ Nonterminal "Sa", N $ Nonterminal "S",
-                O Conjunction, O Negation, N $ Nonterminal "Sa", N $ Nonterminal "Sb"]),
-            Relation (Nonterminal "S",[N $ Nonterminal "Sb", N $ Nonterminal "Sa"])
+            BooleanRelation (Nonterminal "S",[PosConj [N $ Nonterminal "Sa", N $ Nonterminal "S"],
+                NegConj [N $ Nonterminal "Sa", N $ Nonterminal "Sb"]]),
+            BooleanRelation (Nonterminal "S",[PosConj [N $ Nonterminal "Sb", N $ Nonterminal "Sa"]])
         ],
         Nonterminal "S")
   let testConjunctionPair1 = DebuggingTMTypes.SymbolsPair (
@@ -67,10 +67,10 @@ calculateFirstConjunctionInNextRuleTest1 = do
         Set.fromList [Nonterminal "S",Nonterminal "Sa", Nonterminal "Sb", Nonterminal "Sc"],
         Set.fromList [Terminal "b"],
         Set.fromList [
-            Relation (Nonterminal "S",[N $ Nonterminal "Sa", N $ Nonterminal "S", O Conjunction,
-                O Negation, N $ Nonterminal "Sa", N $ Nonterminal "Sb"]),
-            Relation (Nonterminal "S",[N $ Nonterminal "Sa", N $ Nonterminal "Sd", O Conjunction,
-                N $ Nonterminal "Sb", N $ Nonterminal "Sc"])
+            BooleanRelation (Nonterminal "S",[PosConj [N $ Nonterminal "Sa", N $ Nonterminal "S"],
+                NegConj [N $ Nonterminal "Sa", N $ Nonterminal "Sb"]]),
+            BooleanRelation (Nonterminal "S", [PosConj [N $ Nonterminal "Sa", N $ Nonterminal "Sd"],
+                PosConj [N $ Nonterminal "Sb", N $ Nonterminal "Sc"]])
         ],
         Nonterminal "S")
   let testConjunctionPair1 = DebuggingTMTypes.SymbolsPair (
@@ -97,11 +97,11 @@ calculateFirstConjunctionInNextRuleTest2 = do
         Set.fromList [Nonterminal "S",Nonterminal "Sa", Nonterminal "Sb", Nonterminal "Sc"],
         Set.fromList [Terminal "b"],
         Set.fromList [
-            Relation (Nonterminal "S",[N $ Nonterminal "Sa", N $ Nonterminal "S", O Conjunction,
-                O Negation, N $ Nonterminal "Sa", N $ Nonterminal "Sb"]),
-            Relation (Nonterminal "S",[N $ Nonterminal "Sa", N $ Nonterminal "S", O Conjunction,
-                N $ Nonterminal "Sb", N $ Nonterminal "Sc"]),
-            Relation (Nonterminal "S", [O Negation, N $ Nonterminal "Sb", N $ Nonterminal "Sa"])
+            BooleanRelation (Nonterminal "S",[PosConj [N $ Nonterminal "Sa", N $ Nonterminal "S"],
+                NegConj [N $ Nonterminal "Sa", N $ Nonterminal "Sb"]]),
+            BooleanRelation (Nonterminal "S",[PosConj [N $ Nonterminal "Sa", N $ Nonterminal "S"],
+                NegConj [N $ Nonterminal "Sb", N $ Nonterminal "Sc"]]),
+            BooleanRelation (Nonterminal "S", [NegConj [N $ Nonterminal "Sb", N $ Nonterminal "Sa"]])
             ],
         Nonterminal "S")
   let testConjunctionPair = DebuggingTMTypes.SymbolsPair (
@@ -123,15 +123,16 @@ testGr = Grammar (Set.fromList [Nonterminal "S", Nonterminal "B", Nonterminal "C
 
 testRels :: [Relation]
 testRels = [relation11, relation12, relation13,
-                       Relation (Nonterminal "S", [T $ Terminal "a"]),
-                       Relation (Nonterminal "B", [T $ Terminal "b"]),
-                       Relation (Nonterminal "C", [T $ Terminal "a"]),
-                       Relation (Nonterminal "D", [T $ Terminal "b"]),
-                       Relation (Nonterminal "F", [T $ Terminal "a"])]
+                       BooleanRelation (Nonterminal "S", [PosConj [T $ Terminal "a"]]),
+                       BooleanRelation (Nonterminal "B", [PosConj [T $ Terminal "b"]]),
+                       BooleanRelation (Nonterminal "C", [PosConj [T $ Terminal "a"]]),
+                       BooleanRelation (Nonterminal "D", [PosConj [T $ Terminal "b"]]),
+                       BooleanRelation (Nonterminal "F", [PosConj [T $ Terminal "a"]])]
 
 relation11 :: Relation
-relation11 = Relation (Nonterminal "S",
-    [N $ Nonterminal "B", N $ Nonterminal "C",O Conjunction, O Negation, N $ Nonterminal "D", N $ Nonterminal "F"])
+relation11 = BooleanRelation (Nonterminal "S",
+    [PosConj [N $ Nonterminal "B", N $ Nonterminal "C"],
+    NegConj [N $ Nonterminal "D", N $ Nonterminal "F"]])
 
 relation12 :: Relation
 relation12 = Relation (Nonterminal "S", [N $ Nonterminal "C", N $ Nonterminal "D"])

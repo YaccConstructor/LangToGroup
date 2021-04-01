@@ -21,19 +21,19 @@ alphabet1 = Set.fromList ["!", "#", "(", ")",
 testGr1 :: Grammar
 testGr1 = Grammar (Set.fromList nonterminals1,  Set.fromList [Terminal "b",  Terminal "a"], 
                     Set.fromList [relation11,  relation12,  relation13, 
-                    Relation (Nonterminal "S", [T $ Terminal "a"]), 
-                    Relation (Nonterminal "B", [T $ Terminal "b"]), 
-                    Relation (Nonterminal "C", [T $ Terminal "a"]), 
-                    Relation (Nonterminal "D", [T $ Terminal "b"]), 
-                    Relation (Nonterminal "F", [T $ Terminal "a"])], 
+                    Relation (Nonterminal "S", [T $ Terminal "a"]),
+                    Relation (Nonterminal "B", [T $ Terminal "b"]),
+                    Relation (Nonterminal "C", [T $ Terminal "a"]),
+                    Relation (Nonterminal "D", [T $ Terminal "b"]),
+                    Relation (Nonterminal "F", [T $ Terminal "a"])],
                     Nonterminal "S")
 relation11 :: Relation
-relation11 = Relation (Nonterminal "S", 
-    [N $ Nonterminal "B", N $ Nonterminal "C", O Conjunction, O Negation, N $ Nonterminal "D", N $ Nonterminal "F"])
+relation11 = BooleanRelation (Nonterminal "S",
+    [PosConj [N $ Nonterminal "B", N $ Nonterminal "C"], NegConj [N $ Nonterminal "D", N $ Nonterminal "F"]])
 relation12 :: Relation
-relation12 = Relation (Nonterminal "S", [N $ Nonterminal "C", N $ Nonterminal "D"])
+relation12 = BooleanRelation (Nonterminal "S", [PosConj [N $ Nonterminal "C", N $ Nonterminal "D"]])
 relation13 :: Relation
-relation13 = Relation (Nonterminal "C", [N $ Nonterminal "B", N $ Nonterminal "C"])
+relation13 = BooleanRelation (Nonterminal "C", [PosConj [N $ Nonterminal "B", N $ Nonterminal "C"]])
 nonterminals1 :: [Nonterminal]
 nonterminals1 = [Nonterminal "S", Nonterminal "B", Nonterminal "C", Nonterminal "D",  Nonterminal "F"]
 
@@ -48,14 +48,14 @@ alphabet2 = Set.fromList ["!", "#", "(", ")",
 testGr2 :: Grammar
 testGr2 = Grammar (Set.fromList nonterminals2, Set.fromList [Terminal "b", Terminal "a"], 
                     Set.fromList [relation21, relation22, relation23, relation24, 
-                    Relation (Nonterminal "S", [T $ Terminal "a"]), 
-                    Relation (Nonterminal "B", [T $ Terminal "b"]), 
-                    Relation (Nonterminal "D", [T $ Terminal "a"]), 
-                    Relation (Nonterminal "C", [T $ Terminal "b"])], 
+                    Relation (Nonterminal "S", [T $ Terminal "a"]),
+                    Relation (Nonterminal "B", [T $ Terminal "b"]),
+                    Relation (Nonterminal "D", [T $ Terminal "a"]),
+                    Relation (Nonterminal "C", [T $ Terminal "b"])],
                     Nonterminal "S")
 relation21 :: Relation
-relation21 = Relation (Nonterminal "S", 
-    [O Negation, N $ Nonterminal "A", N $ Nonterminal "C", O Conjunction, N $ Nonterminal "B", N $ Nonterminal "C"])
+relation21 = BooleanRelation (Nonterminal "S",
+    [NegConj [N $ Nonterminal "A", N $ Nonterminal "C"], PosConj [N $ Nonterminal "B", N $ Nonterminal "C"]])
 relation22 :: Relation
 relation22 = Relation (Nonterminal "A", [N $ Nonterminal "D", N $ Nonterminal "B"])
 relation23 :: Relation
@@ -111,11 +111,11 @@ testGr5 = Grammar (Set.fromList nonterminals5,  Set.fromList [Terminal "b",  Ter
                     Relation (Nonterminal "D", [T $ Terminal "b"]), 
                     Relation (Nonterminal "B", [T $ Terminal "b"]), 
                     Relation (Nonterminal "C", [T $ Terminal "c"]), 
-                    Relation (Nonterminal "S", [N $ Nonterminal "B", N $ Nonterminal "C", 
-                        O Conjunction, N $ Nonterminal "D",  N $ Nonterminal "C"]), 
+                    BooleanRelation (Nonterminal "S", [PosConj [N $ Nonterminal "B", N $ Nonterminal "C"],
+                        NegConj [N $ Nonterminal "D",  N $ Nonterminal "C"]]),
                     Relation (Nonterminal "C", [N $ Nonterminal "C", N $ Nonterminal "B"]), 
-                    Relation (Nonterminal "S", [N $ Nonterminal "C", N $ Nonterminal "D", 
-                        O Conjunction, O Negation, N $ Nonterminal "D", N $ Nonterminal "B"])], 
+                    BooleanRelation (Nonterminal "S", [PosConj [N $ Nonterminal "C", N $ Nonterminal "D"],
+                        NegConj [N $ Nonterminal "D", N $ Nonterminal "B"]])],
                     Nonterminal "S")
 nonterminals5 :: [Nonterminal]
 nonterminals5 = [Nonterminal "S", Nonterminal "B", Nonterminal "C", Nonterminal "D"]
