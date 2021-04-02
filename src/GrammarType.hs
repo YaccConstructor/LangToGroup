@@ -20,17 +20,11 @@ newtype Nonterminal = Nonterminal {nonterminalValue :: String}
 -- 'N' is for 'Nonterminal'.
 --
 -- And 'Eps' is for empty symbol, epsilon.
-data Symbol = T Terminal | N Nonterminal | Eps
+data Symbol = T {terminal :: Terminal} | N {nonterminal :: Nonterminal} | Eps
     deriving (Eq, Ord, Show)
 
-{--newtype CFGRightPart = CFGRightPart [Symbol]--{symbols :: [Symbol]}
-    deriving (Eq, Ord, Show)
-
-newtype NConj = NConj [Symbol]
-    deriving (Eq, Ord, Show) --}
-
-data Conj = PosConj {{--rightPart :: CFGRightPart,--} symbols :: [Symbol]} 
-          | NegConj {{---nConj :: NConj,--} symbols :: [Symbol]}
+data Conj = PosConj {symbols :: [Symbol]}
+          | NegConj {symbols :: [Symbol]}
     deriving (Eq, Ord, Show)
     
 -- |This type is synonym 'Nonterminal' and used in order to separate 'StartSymbol' from normal 'Nonterminal'.
