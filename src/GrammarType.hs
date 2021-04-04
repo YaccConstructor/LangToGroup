@@ -20,9 +20,10 @@ newtype Nonterminal = Nonterminal {nonterminalValue :: String}
 -- 'N' is for 'Nonterminal'.
 --
 -- And 'Eps' is for empty symbol, epsilon.
-data Symbol = T {terminal :: Terminal} | N {nonterminal :: Nonterminal} | Eps
+data Symbol = T Terminal | N Nonterminal | Eps
     deriving (Eq, Ord, Show)
 
+-- |Conj is helper type  for representing the right part of a relation in a boolean grammar
 data Conj = PosConj {symbols :: [Symbol]}
           | NegConj {symbols :: [Symbol]}
     deriving (Eq, Ord, Show)
@@ -31,8 +32,10 @@ data Conj = PosConj {symbols :: [Symbol]}
 type StartSymbol = Nonterminal
 
 -- |'Relation' is a rule of 'Grammar'. 
---
--- Rule might be in context-free, conjunctive or boolean form.
+-- First constructor is for working only with CFG grammars
+-- Second constructor is for working with Boolean or Conjunctive grammars, 
+-- though it might be used for defining grammars too
+-- (right part of CFG relation is one PosConj in right part of boolean relation)   
 data Relation = Relation (Nonterminal, [Symbol]) | BooleanRelation (Nonterminal, [Conj])
     deriving (Eq, Ord, Show)
 
