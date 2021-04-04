@@ -169,23 +169,23 @@ getFstNontermsInConjOfGivenRelationTest :: Assertion
 getFstNontermsInConjOfGivenRelationTest = do
   let expectedS1 = ["B", "D"]
   let expectedS2 = ["C"]
-  let actualS1 = Helpers.getFirstNonterminalsInConjunctionsOfGivenRelation testGr "S" "1"
-  let actualS2 = Helpers.getFirstNonterminalsInConjunctionsOfGivenRelation testGr "S" "2"
+  let actualS1 = Helpers.getFstNonterminalsInConjsOfGivenRel testGr "S" "1"
+  let actualS2 = Helpers.getFstNonterminalsInConjsOfGivenRel testGr "S" "2"
   assertEqual "Getting fst nonterns in conjs in given rel" expectedS1 actualS1
   assertEqual "Getting fst nonterns in conjs in given rel" expectedS2 actualS2
   let expectedC1 = ["B"]
-  let actualC1 = Helpers.getFirstNonterminalsInConjunctionsOfGivenRelation testGr "C" "1"
+  let actualC1 = Helpers.getFstNonterminalsInConjsOfGivenRel testGr "C" "1"
   assertEqual "Getting fst nonterns in conjs in given rel" expectedC1 actualC1
 
 getSndNontermsInConjOfGivenRelationTest :: Assertion
 getSndNontermsInConjOfGivenRelationTest = do
-  let actualS1' = Helpers.getSecondNonterminalsInConjunctionsOfGivenRelation testGr "S" "1" "B"
-  let actualS1'' = Helpers.getSecondNonterminalsInConjunctionsOfGivenRelation testGr "S" "1" "D"
-  let actualS2 = Helpers.getSecondNonterminalsInConjunctionsOfGivenRelation testGr "S" "2" "C"
+  let actualS1' = Helpers.getSndNonterminalsInConjsOfGivenRel testGr "S" "1" "B"
+  let actualS1'' = Helpers.getSndNonterminalsInConjsOfGivenRel testGr "S" "1" "D"
+  let actualS2 = Helpers.getSndNonterminalsInConjsOfGivenRel testGr "S" "2" "C"
   assertEqual "Getting fst nonterns in conjs in given rel" ["C"] actualS1'
   assertEqual "Getting fst nonterns in conjs in given rel" ["F"] actualS1''
   assertEqual "Getting fst nonterns in conjs in given rel" ["D"] actualS2
-  let actualC1 = Helpers.getSecondNonterminalsInConjunctionsOfGivenRelation testGr "C" "1" "B"
+  let actualC1 = Helpers.getSndNonterminalsInConjsOfGivenRel testGr "C" "1" "B"
   assertEqual "Getting fst nonterns in conjs in given rel" ["C"] actualC1
 
 calculateQuadsTest1 :: Assertion
