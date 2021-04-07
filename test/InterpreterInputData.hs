@@ -1,5 +1,5 @@
 module InterpreterInputData (
-    InterpreterInputData,  inAlphabet,  inGrammar,  inId, 
+    InterpreterInputData (IN), inAlphabet,  inGrammar,  inId,
     testData1,  testData2,  testData3,  testData4,  testData5) where
 
 import GrammarType
@@ -122,20 +122,19 @@ nonterminals5 = [Nonterminal "S", Nonterminal "B", Nonterminal "C", Nonterminal 
 
 --data for test grammar 6
 alphabet6 :: Set.Set [Char]
-alphabet6 = Set.fromList ["!", "#", "(", ")", "*", "+", "-", "0", "1", "2", "3", "4", 
+alphabet6 = Set.fromList ["!", "#", "(", ")", "*", "+", "-", "0", "1", "2", "3", "4",
     "5", "6", "7", "B", "C", "D", "S", "b", "c"]
 testGr6 :: Grammar
-testGr6 = Grammar (Set.fromList nonterminals5,  Set.fromList [Terminal "b",  Terminal "c"], 
+testGr6 = Grammar (Set.fromList nonterminals5,  Set.fromList [Terminal "b",  Terminal "c"],
                     Set.fromList [
-                    Relation (Nonterminal "D", [T $ Terminal "b"]), 
-                    Relation (Nonterminal "B", [T $ Terminal "b"]), 
-                    Relation (Nonterminal "C", [T $ Terminal "c"]), 
+                    Relation (Nonterminal "D", [T $ Terminal "b"]),
+                    Relation (Nonterminal "B", [T $ Terminal "b"]),
+                    Relation (Nonterminal "C", [T $ Terminal "c"]),
                     BooleanRelation (Nonterminal "S", [PosConj [N $ Nonterminal "B", N $ Nonterminal "C"],
                         PosConj [N $ Nonterminal "D",  N $ Nonterminal "C"]]),
-                    Relation (Nonterminal "C", [N $ Nonterminal "C", N $ Nonterminal "B"]), 
+                    Relation (Nonterminal "C", [N $ Nonterminal "C", N $ Nonterminal "B"]),
                     BooleanRelation (Nonterminal "S", [PosConj [N $ Nonterminal "C", N $ Nonterminal "D"],
                         NegConj [N $ Nonterminal "D", N $ Nonterminal "B"]])],
                     Nonterminal "S")
 nonterminals6 :: [Nonterminal]
 nonterminals6 = [Nonterminal "S", Nonterminal "B", Nonterminal "C", Nonterminal "D"]
-    
