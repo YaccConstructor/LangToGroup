@@ -43,7 +43,7 @@ printInfo dtm tm inputAlphabet word = do
     mapM (\(WS _ currentState' tape' alphabet') -> let
         (Q index') = currentState';
         state = snd $ head $ filter (\case
-            (Just index,  DState _) -> index == index'
+            (Just index,  DState _) -> index == index' + 1
             (Nothing,  _) -> False) statesPairs;
         (DState stringState) = state
         in do {
