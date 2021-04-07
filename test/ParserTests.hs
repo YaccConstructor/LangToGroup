@@ -69,13 +69,11 @@ expectedBoolean = Grammar (
             [PosConj [T (Terminal "a")],
             PosConj [T (Terminal "b")],
             NegConj [T (Terminal "v")],
-            NegConj [N (Nonterminal "Sa")],
-            NegConj [N (Nonterminal "Eps")]]),
+            NegConj [N (Nonterminal "Sa")]]),
             BooleanRelation (Nonterminal "S",
             [PosConj [T (Terminal "c")],
             NegConj [T (Terminal "v")],
-            NegConj [N (Nonterminal "Sa")],
-            NegConj [N (Nonterminal "Eps")]]),
+            NegConj [N (Nonterminal "Sa")]]),
             BooleanRelation (Nonterminal "Sa",[NegConj [T (Terminal "b")]])
             ],
         Nonterminal "S")           

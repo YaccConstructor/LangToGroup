@@ -17,6 +17,7 @@ import Tms2TuringMachineTests
 import TmsParserTests
 import Boolean2TMHelpersTests
 import Boolean2TMTests
+import qualified IntegrationParserBoolean2tmTests (tests)
 import qualified SPTests (tests)
 
 test1Grammar :: Grammar
@@ -121,5 +122,5 @@ main = defaultMainWithOpts
         testCase "Boolean to TM helpers: symbolAcceptedByNonterminalTest4" symbolAcceptedByNonterminalTest4,
         testCase "Boolean to TM helpers: getNumbersOfShortRelationsTest" getNumbersOfShortRelationsTest,
         head $ hUnitTestToTests SPTests.tests
-        ] ++ hUnitTestToTests Boolean2TMTests.tests)
+        ] ++ hUnitTestToTests Boolean2TMTests.tests ++ hUnitTestToTests IntegrationParserBoolean2tmTests.tests)
        mempty
