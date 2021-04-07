@@ -7,7 +7,7 @@ import qualified Data.Set as Set
 
 data InterpreterInputData = IN {
     inGrammar :: Grammar, 
-    inAlphabet :: Set.Set [Char], 
+    inAlphabet :: Set.Set String, 
     inId :: String
 }
 

@@ -120,8 +120,9 @@ main = defaultMainWithOpts
         testCase "Boolean to TM helpers: symbolAcceptedByNonterminalTest2" symbolAcceptedByNonterminalTest2,
         testCase "Boolean to TM helpers: symbolAcceptedByNonterminalTest3" symbolAcceptedByNonterminalTest3,
         testCase "Boolean to TM helpers: symbolAcceptedByNonterminalTest4" symbolAcceptedByNonterminalTest4,
-        testCase "Boolean to TM helpers: getNumbersOfShortRelationsTest" getNumbersOfShortRelationsTest1,
-        testCase "Boolean to TM helpers: getNumbersOfShortRelationsTest" getNumbersOfShortRelationsTest2,
+        testCase "Boolean to TM helpers: getNumbersOfShortRelationsTest1" getNumbersOfShortRelationsTest1,
+        testCase "Boolean to TM helpers: getNumbersOfShortRelationsTest2" getNumbersOfShortRelationsTest2,
+        testCase "Boolean to TM helpers: calculateGroupRelationsByNonterminalsTest" calculateGroupRelationsByNonterminalsTest,
         head $ hUnitTestToTests SPTests.tests
         ] ++ hUnitTestToTests Boolean2TMTests.tests ++ hUnitTestToTests IntegrationParserBoolean2tmTests.tests)
        mempty

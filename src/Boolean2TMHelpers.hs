@@ -75,7 +75,7 @@ getLongRels = filter (not . relationHasOneTerminalInRightPart)
 getShortRightParts :: Nonterminal -> [[Conj]] -> [String]
 getShortRightParts nonterminal rightParts = let
     shortOrNotRels = map (\t ->
-        (elemIndex t rightParts, 
+        (elemIndex t rightParts,
         relationHasOneTerminalInRightPart (BooleanRelation (nonterminal, t)))) rightParts
     indices' = map (\(i, t) -> if t then i else Nothing) shortOrNotRels
     indices = map show $ catMaybes indices'

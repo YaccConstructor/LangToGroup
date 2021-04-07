@@ -130,13 +130,13 @@ testRels = [relation11, relation12, relation13,
                        BooleanRelation (Nonterminal "F", [PosConj [T $ Terminal "a"]])]
 
 testGr2 :: Grammar
-testGr2 = Grammar (Set.fromList [Nonterminal "A", Nonterminal "B", Nonterminal "S"],
+testGr2 = Grammar (Set.fromList [Nonterminal "Ab", Nonterminal "Bc", Nonterminal "S"],
                 Set.fromList [Terminal "a",  Terminal "b"],
-                Set.fromList [Relation (Nonterminal "S", [N $ Nonterminal "A", N $ Nonterminal "B"]),
-                Relation (Nonterminal "B", [N $ Nonterminal "B", N $ Nonterminal "B"]),
-                Relation (Nonterminal "A", [T $ Terminal "a"]),
-                Relation (Nonterminal "A", [T $ Terminal "b"]),
-                Relation (Nonterminal "B", [T $ Terminal "b"])],
+                Set.fromList [Relation (Nonterminal "S", [N $ Nonterminal "Ab", N $ Nonterminal "Bc"]),
+                Relation (Nonterminal "Bc", [N $ Nonterminal "Bc", N $ Nonterminal "Bc"]),
+                Relation (Nonterminal "Ab", [T $ Terminal "a"]),
+                Relation (Nonterminal "Ab", [T $ Terminal "b"]),
+                Relation (Nonterminal "Bc", [T $ Terminal "b"])],
                 Nonterminal "S")
 
 relation11 :: Relation
@@ -288,14 +288,24 @@ symbolAcceptedByNonterminalTest4 = do
 
 getNumbersOfShortRelationsTest1 :: Assertion
 getNumbersOfShortRelationsTest1 = do
-    let expected = Map.fromList [(Nonterminal "C",["0"]), (Nonterminal "B",["0"]),
+   let expected = Map.fromList [(Nonterminal "C",["0"]), (Nonterminal "B",["0"]),
             (Nonterminal "D", ["0"]), (Nonterminal "F", ["0"]), (Nonterminal "S",["0"])]
-    let actual = Helpers.getNumbersOfShortRelations testGr1
-    assertEqual "Assert numbers of short relations" expected actual
+   let actual = Helpers.getNumbersOfShortRelations testGr1
+   assertEqual "Assert numbers of short relations" actual expected
 
 getNumbersOfShortRelationsTest2 :: Assertion
 getNumbersOfShortRelationsTest2 = do
-   let expected = Map.fromList [(Nonterminal "S",[]), (Nonterminal "B",["0"]),
-               (Nonterminal "A", ["0","1"])]
+   let expected = Map.fromList [(Nonterminal "S",[]), (Nonterminal "Bc",["0"]),
+               (Nonterminal "Ab", ["0","1"])]
    let actual = Helpers.getNumbersOfShortRelations testGr2
-   assertEqual "Assert numbers of short relations" expected actual
+   assertEqual "Assert numbers of short relations" actual expected
+
+calculateGroupRelationsByNonterminalsTest :: Assertion
+calculateGroupRelationsByNonterminalsTest = do
+    let expected = Map.fromList [
+            (Nonterminal "Ab", [[PosConj [T $ Terminal "a"]], [PosConj [T $ Terminal "b"]]]),
+            (Nonterminal "Bc", [[PosConj [T $ Terminal "b"]], [PosConj [N $ Nonterminal "Bc", N $ Nonterminal "Bc"]]]),
+            (Nonterminal "S", [[PosConj [N $ Nonterminal "Ab", N $ Nonterminal "Bc"]]])]
+    let (Grammar (_, _, rels, _)) = testGr2
+    let actual = Helpers.calculateGroupRelationsByNonterminals $ Set.toList rels
+    assertEqual "Assert numbers of short relations" actual expected
