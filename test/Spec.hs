@@ -84,9 +84,6 @@ main = defaultMainWithOpts
         testCase "sm test 2" smInterpretationTest2,
         testCase "apply rule test" applyRuleTest,
         testCase "sm2gr test" sm2grTest,
-        testCase "custom CFG to TM" testCustomCFG,
-        testCase "custom conjunctive to TM" testCustomConjunctive,
-        testCase "custom boolean to TM" testCustomBoolean,
         testCase "show one tape Tms" testShowOneTapeTms,
         testCase "show multi tape Tms" testShowMultiTapeTms,
         testCase "one tape TM to Tms" testOneTapeTM2Tms,
@@ -124,5 +121,8 @@ main = defaultMainWithOpts
         testCase "Boolean to TM helpers: getNumbersOfShortRelationsTest2" getNumbersOfShortRelationsTest2,
         testCase "Boolean to TM helpers: calculateGroupRelationsByNonterminalsTest" calculateGroupRelationsByNonterminalsTest,
         head $ hUnitTestToTests SPTests.tests
-        ] ++ hUnitTestToTests Boolean2TMTests.tests ++ hUnitTestToTests IntegrationParserBoolean2tmTests.tests)
+        ] ++ 
+        hUnitTestToTests Boolean2TMTests.tests ++ 
+        hUnitTestToTests IntegrationParserBoolean2tmTests.tests ++ 
+        hUnitTestToTests ParserTests.tests)
        mempty
