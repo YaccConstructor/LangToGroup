@@ -1,6 +1,6 @@
 {-# LANGUAGE TupleSections #-}
 
-module Boolean2TM where
+module Boolean2TM (boolean2tm) where
 
 import GrammarType
 import DebuggingTMTypes
@@ -11,9 +11,13 @@ import qualified Data.Set as Set
 import qualified Data.Map as Map
 import Data.List
 import Data.Maybe
+import TMTypes (TuringMachine)
+ 
+boolean2tm :: Grammar -> TuringMachine
+boolean2tm grammar = convertToTuringMachine $ boolean2tm' grammar
 
-boolean2tm :: Grammar -> DebuggingTuringMachine
-boolean2tm grammar = let
+boolean2tm' :: Grammar -> DebuggingTuringMachine
+boolean2tm' grammar = let
         quadruples1 = generateBlockForFolding grammar
         quadruples2 = generateBlockForMovingToNextConjunction grammar
         quadruples3 = generateBlockForSubstitution grammar
