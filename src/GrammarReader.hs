@@ -5,23 +5,18 @@
 --
 -- Depending on the type of grammar, specific algorithm for building a group will be executed.
 
-module GrammarReader (convertGrammar2TM,parser) where
+module GrammarReader (parser, parseFromFile, checkGrammarType) where
 
 import Text.Megaparsec
 import Text.Megaparsec.Char
-import Text.Megaparsec.Error (errorBundlePretty)
 
 import Data.Functor
 import Data.Set (Set)
 import qualified Data.Set as Set
 import Data.List.Split
 
-import System.IO
-
 import GrammarType
-import CFG2TM
 import ParsingHelpers
-import TM2Tms
 
 data ParserToken = N' Nonterminal
     | T' Terminal
@@ -169,18 +164,6 @@ pGrammar = do
 
 parser :: Parser Grammar
 parser = makeEofParser pGrammar
-
-convertGrammar2TM :: String -> String -> IO ()
-convertGrammar2TM grammarFile errorFile = do
-    result <- parseFromFile parser errorFile grammarFile
-    case result of
-      Left err -> hPutStrLn stderr $ "Parsing error: " ++ errorBundlePretty err
-      Right cs -> case checkGrammarType cs of
-          Boolean -> putStrLn ("Boolean " ++ show cs) -- here will be new algorithm
-          Conjunctive -> putStrLn ("Conjunctive " ++ show cs)
-          CFG -> putStrLn ("CFG " ++ show cs) >> case tm2tms (cfg2tm cs) of
-            Left err -> hPutStrLn stderr $ "Error: " ++ show err
-            Right tms -> putStrLn ("\n" ++ show tms)
 
 -- |Method for classifying type of input grammar.
 checkGrammarType :: Grammar -> GrammarType
