@@ -241,8 +241,9 @@ generateBlockForQKFindNegation grammar@(Grammar (nonterminals, terminals, relati
 
     quadruples = symbolsToQRulekFindNonterminal ++ symbolsToQRulekNonterminalFindFst
             ++ symbolsInQRulektFindFst ++ symbolsToQRulektjFindSnd ++ symbolsInRulektjFindSnd ++ symbolsToQRulektjs
+            ++ symbolsInQkMoveToStart
     commonQuadruples = symbolsInQkFindNegation ++ symbolsToQkMoveToStart
-            ++ symbolsToQkMoveToStartNegation ++ symbolsInQkMoveToStart
+            ++ symbolsToQkMoveToStartNegation
 
     quadruplesMap = Helpers.addCollectionToMap quadruples Map.empty
     quadruplesNegMap = generateCaseForNegConj quadruplesMap
