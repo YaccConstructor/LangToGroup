@@ -1,0 +1,6 @@
+S; S A1 B1 S1; a b
+S-> A1 S1
+S1-> S B1
+S-> A1 B1
+B1-> b
+A1-> a
