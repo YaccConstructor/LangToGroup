@@ -17,7 +17,7 @@ import Tms2TuringMachineTests
 import TmsParserTests
 import Boolean2TMHelpersTests
 import Boolean2TMTests
-import qualified IntegrationParserBoolean2tmTests (tests, test')
+import qualified IntegrationParserBoolean2tmTests (tests)
 import qualified SPTests (tests)
 
 test1Grammar :: Grammar
