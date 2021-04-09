@@ -19,7 +19,7 @@ generateTestLabel input word accepted = let
 
 generateTestCase :: InterpreterInputData -> [String] -> Bool -> Test
 generateTestCase input word accepted = let
-    tm = convertToTuringMachine $ boolean2tm $ inGrammar input
+    tm = boolean2tm $ inGrammar input
     xs = states $ startWithAlphabet' tm word 0 $ inAlphabet input
     testCase = if accepted
         then TestCase (assertEqual (concat word) (Q 0) (currentState $ last xs))
