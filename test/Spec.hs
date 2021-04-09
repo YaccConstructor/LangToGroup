@@ -17,7 +17,7 @@ import Tms2TuringMachineTests
 import TmsParserTests
 import Boolean2TMHelpersTests
 import Boolean2TMTests
-import qualified IntegrationParserBoolean2tmTests (tests)
+import qualified IntegrationParserBoolean2tmTests (tests, test')
 import qualified SPTests (tests)
 
 test1Grammar :: Grammar
@@ -120,7 +120,8 @@ main = defaultMainWithOpts
         testCase "Boolean to TM helpers: getNumbersOfShortRelationsTest1" getNumbersOfShortRelationsTest1,
         testCase "Boolean to TM helpers: getNumbersOfShortRelationsTest2" getNumbersOfShortRelationsTest2,
         testCase "Boolean to TM helpers: calculateGroupRelationsByNonterminalsTest" calculateGroupRelationsByNonterminalsTest,
-        head $ hUnitTestToTests SPTests.tests
+        head $ hUnitTestToTests SPTests.tests,
+        testCase "lala" IntegrationParserBoolean2tmTests.test'
         ] ++ 
         hUnitTestToTests Boolean2TMTests.tests ++ 
         hUnitTestToTests IntegrationParserBoolean2tmTests.tests ++ 

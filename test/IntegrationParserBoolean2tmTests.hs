@@ -10,9 +10,11 @@ import qualified Data.Set as Set
 import GrammarReader
 import InterpreterInputData
 import TestGenerationHelpers
+import Boolean2TM
+import DebuggingTMTypes
 
 tests :: Test
-tests = TestList [test1, test2, test3]
+tests = TestList [test1, test2, test3, test4]
 
 test1 :: Test
 test1 = let
@@ -84,3 +86,27 @@ test3 = let
                     in generateTestLabel testData word False) numbers
                 allTests = tests1 ++ tests2 ++ tests3
                 in TestLabel "Correctness of grammar parser and boolean2tm algorithm integration:" $ TestList allTests
+
+test4 :: Test
+test4 = let
+    input = ""
+    alphabet = inAlphabet testData6
+    numbers = [2..4]
+    tests1 = map (\t -> let
+        word = ["S","(","a"] ++ replicate t "b" ++ replicate t "c" ++ [")"]
+        testData = IN (inGrammar testData6) alphabet "integration4.1"
+        in generateTestLabel testData word True) numbers
+    tests2 = map (\t -> let
+        word = ["S","("] ++ replicate t "a" ++ replicate t "b" ++ replicate t "c" ++ [")"]
+        testData = IN (inGrammar testData6) alphabet "integration4.2"
+        in generateTestLabel testData word False) numbers
+    allTests = tests1 ++ tests2
+    in TestLabel "Correctness of grammar parser and boolean2tm algorithm integration:" $ TestList allTests    
+   
+test' :: Assertion
+test' = do
+    let alphabet = inAlphabet testData6
+    let dtm = boolean2tm $ inGrammar testData6
+    let tm = convertToTuringMachine dtm    
+    printInfo dtm tm alphabet ["S", "(","a","a", "b","b","c","c",")"]
+    assertEqual "lala" True True    
