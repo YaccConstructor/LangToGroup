@@ -6,6 +6,7 @@ import Text.Megaparsec
 import Test.HUnit
 
 import qualified Data.Set as Set
+import Data.Text (pack)
 
 import GrammarReader
 import InterpreterInputData
@@ -14,7 +15,7 @@ import Boolean2TM
 import DebuggingTMTypes
 
 tests :: Test
-tests = TestList [test1, test2, test3, test4]
+tests = TestList [test1, test2, test3, test4, test5, test6]
 
 test1 :: Test
 test1 = let
@@ -87,22 +88,77 @@ test3 = let
                 allTests = tests1 ++ tests2 ++ tests3
                 in TestLabel "Correctness of grammar parser and boolean2tm algorithm integration:" $ TestList allTests
 
+numbers' :: [Int]
+numbers' = [2..4]
+
 test4 :: Test
 test4 = let
-    input = ""
+    input = pack $ "S; S A A1 B D C C1 B1 B2 D1; a b c\nS-> A B&! D C\n"
+            ++ "A-> A1 A\nA-> a\nA1-> a\nB-> B1 B2\nB1-> b\nB2-> B C1\nC1-> c\nB-> B1 C1\n"
+            ++ "C-> C1 C\nC-> c\nD-> A1 D1\nD1-> D B1\nD-> A1 B1\nB1-> b"
     alphabet = inAlphabet testData6
-    numbers = [2..4]
-    tests1 = map (\t -> let
-        word = ["S","(","a"] ++ replicate t "b" ++ replicate t "c" ++ [")"]
-        testData = IN (inGrammar testData6) alphabet "integration4.1"
-        in generateTestLabel testData word True) numbers
-    tests2 = map (\t -> let
-        word = ["S","("] ++ replicate t "a" ++ replicate t "b" ++ replicate t "c" ++ [")"]
-        testData = IN (inGrammar testData6) alphabet "integration4.2"
-        in generateTestLabel testData word False) numbers
-    allTests = tests1 ++ tests2
-    in TestLabel "Correctness of grammar parser and boolean2tm algorithm integration:" $ TestList allTests    
-   
+    result =  parseMaybe GrammarReader.parser input
+        in case result of
+            Nothing -> TestLabel "Correct input format for parser" $ TestCase $ assertFailure "no parse"
+            Just gr -> let
+                assertion = assertEqual "a^mb^nc^n" gr $ inGrammar testData6
+                checkGr = TestLabel "Check grammar parsed correctly" $ TestCase assertion
+                tests1 = map (\t -> let
+                    word = ["S","(","a"] ++ replicate t "b" ++ replicate t "c" ++ [")"]
+                    testData = IN gr alphabet "integration4.1 a^mb^nc^n (m /= n)"
+                    in generateTestLabel testData word True) numbers'
+                tests2 = map (\t -> let
+                    word = ["S","("] ++ replicate t "a" ++ replicate t "b" ++ replicate t "c" ++ [")"]
+                    testData = IN gr alphabet "integration4.2 a^mb^nc^n (m /= n)"
+                    in generateTestLabel testData word False) numbers'
+                allTests = checkGr : tests1 ++ tests2
+                in TestLabel "Correctness of grammar parser and boolean2tm algorithm integration" $ TestList allTests
+
+test5 :: Test
+test5 = let
+    input = pack $ "S; S A A1 B D C C1 B1 B2 D1; a b c\nS-> A B& D C\n"
+            ++ "A-> A1 A\nA-> a\nA1-> a\nB-> B1 B2\nB1-> b\nB2-> B C1\nC1-> c\nB-> B1 C1\n"
+            ++ "C-> C1 C\nC-> c\nD-> A1 D1\nD1-> D B1\nD-> A1 B1\nB1-> b"
+    alphabet = inAlphabet testData7
+    result =  parseMaybe GrammarReader.parser input
+        in case result of
+            Nothing -> TestLabel "Correct input format for parser" $ TestCase $ assertFailure "no parse"
+            Just gr -> let
+                assertion = assertEqual "a^mb^nc^n" gr $ inGrammar testData7
+                checkGr = TestLabel "Check grammar parsed correctly" $ TestCase assertion
+                tests1 = map (\t -> let
+                    word = ["S","(","a"] ++ replicate t "b" ++ replicate t "c" ++ [")"]
+                    testData = IN gr alphabet "integration5.1 a^nb^nc^n"
+                    in generateTestLabel testData word False) numbers'
+                tests2 = map (\t -> let
+                    word = ["S","("] ++ replicate t "a" ++ replicate t "b" ++ replicate t "c" ++ [")"]
+                    testData = IN gr alphabet "integration5.2 a^nb^nc^n"
+                    in generateTestLabel testData word True) numbers'
+                allTests = checkGr : tests1 ++ tests2
+                in TestLabel "Correctness of grammar parser and boolean2tm algorithm integration" $ TestList allTests
+
+test6 :: Test
+test6 = let
+    input = "S; S A1 B1 S1; a b\nS-> A1 S1\nS1-> S B1\nS-> A1 B1\nB1-> b\nA1-> a"
+    alphabet = inAlphabet testData8
+    result =  parseMaybe GrammarReader.parser input
+        in case result of
+        Nothing -> TestLabel "Correct input format for parser" $ TestCase $ assertFailure "no parse"
+        Just gr -> let
+            assertion = assertEqual "a^mb^nc^n" gr $ inGrammar testData8
+            checkGr = TestLabel "Check grammar parsed correctly" $ TestCase assertion
+            tests1 = map (\t -> let
+                word = ["S","("] ++ replicate t "a" ++ replicate t "b" ++ [")"]
+                testData = IN gr alphabet "integration6.1 a^nb^n"
+                in generateTestLabel testData word True) numbers'
+            tests2 = map (\t -> let
+                word = ["S","(", "a"] ++ replicate t "a" ++ replicate t "b" ++ [")"]
+                testData = IN gr alphabet "integration5.2 a^nb^n"
+                in generateTestLabel testData word False) numbers'
+            allTests = checkGr : tests1 ++ tests2
+            in TestLabel "Correctness of grammar parser and boolean2tm algorithm integration" $ TestList allTests
+
+
 test' :: Assertion
 test' = do
     let alphabet = inAlphabet testData6

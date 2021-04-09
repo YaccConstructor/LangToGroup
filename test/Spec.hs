@@ -120,8 +120,7 @@ main = defaultMainWithOpts
         testCase "Boolean to TM helpers: getNumbersOfShortRelationsTest1" getNumbersOfShortRelationsTest1,
         testCase "Boolean to TM helpers: getNumbersOfShortRelationsTest2" getNumbersOfShortRelationsTest2,
         testCase "Boolean to TM helpers: calculateGroupRelationsByNonterminalsTest" calculateGroupRelationsByNonterminalsTest,
-        head $ hUnitTestToTests SPTests.tests,
-        testCase "lala" IntegrationParserBoolean2tmTests.test'
+        head $ hUnitTestToTests SPTests.tests
         ] ++ 
         hUnitTestToTests Boolean2TMTests.tests ++ 
         hUnitTestToTests IntegrationParserBoolean2tmTests.tests ++ 
