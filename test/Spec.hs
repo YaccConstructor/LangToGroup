@@ -17,6 +17,7 @@ import Tms2TuringMachineTests
 import TmsParserTests
 import Boolean2TMHelpersTests
 import Boolean2TMTests
+import qualified IntegrationParserBoolean2tmTests (tests)
 import qualified SPTests (tests)
 
 test1Grammar :: Grammar
@@ -83,9 +84,6 @@ main = defaultMainWithOpts
         testCase "sm test 2" smInterpretationTest2,
         testCase "apply rule test" applyRuleTest,
         testCase "sm2gr test" sm2grTest,
-        testCase "custom CFG to TM" testCustomCFG,
-        testCase "custom conjunctive to TM" testCustomConjunctive,
-        testCase "custom boolean to TM" testCustomBoolean,
         testCase "show one tape Tms" testShowOneTapeTms,
         testCase "show multi tape Tms" testShowMultiTapeTms,
         testCase "one tape TM to Tms" testOneTapeTM2Tms,
@@ -119,7 +117,12 @@ main = defaultMainWithOpts
         testCase "Boolean to TM helpers: symbolAcceptedByNonterminalTest2" symbolAcceptedByNonterminalTest2,
         testCase "Boolean to TM helpers: symbolAcceptedByNonterminalTest3" symbolAcceptedByNonterminalTest3,
         testCase "Boolean to TM helpers: symbolAcceptedByNonterminalTest4" symbolAcceptedByNonterminalTest4,
-        testCase "Boolean to TM helpers: getNumbersOfShortRelationsTest" getNumbersOfShortRelationsTest,
+        testCase "Boolean to TM helpers: getNumbersOfShortRelationsTest1" getNumbersOfShortRelationsTest1,
+        testCase "Boolean to TM helpers: getNumbersOfShortRelationsTest2" getNumbersOfShortRelationsTest2,
+        testCase "Boolean to TM helpers: calculateGroupRelationsByNonterminalsTest" calculateGroupRelationsByNonterminalsTest,
         head $ hUnitTestToTests SPTests.tests
-        ] ++ hUnitTestToTests Boolean2TMTests.tests)
+        ] ++ 
+        hUnitTestToTests Boolean2TMTests.tests ++ 
+        hUnitTestToTests IntegrationParserBoolean2tmTests.tests ++ 
+        hUnitTestToTests ParserTests.tests)
        mempty

@@ -6,10 +6,20 @@
 module Main where
 
 import System.Console.ParseArgs
+import Text.Megaparsec.Error (errorBundlePretty)
 
-import GrammarReader
+import GrammarReader as Reader
 import TmsParser
+import Boolean2TM
+import SP2GP
+import GPTypes
+import TM2Tms (tm2tms)
+import TMType (TM)
+import TMTypes
+import Set (size)
+
 import System.IO
+import Data.Map as Map
 
 data Options =
     InputFlagString | OutputFlagString
@@ -35,9 +45,37 @@ main = do
           argd
     case getArg args InputFlagString of
           Just input -> case getArg args OutputFlagString of
-                          Just output -> convertGrammar2TM input output
+                          Just output -> grammar2Group input output
                           Nothing     -> error "OutputFlagString parsing error"
           Nothing    -> error "InputFlagString parsing error"
+
+grammar2Group :: String -> String -> IO ()
+grammar2Group grammarFile errorFile = do
+    result <- parseFromFile Reader.parser errorFile grammarFile
+    case result of
+        Left err -> hPutStrLn stderr $ "Parsing error: " ++ errorBundlePretty err
+        Right cs -> do {
+                print $ checkGrammarType cs;
+                print cs;
+                let 
+                    tm@(TM quadruples) = boolean2tm cs
+                    (GP rels) = groupBeta tm 
+                in do {  
+                    putStrLn "Number of transitions in Turing Machine";   
+                    print $ Map.size quadruples;
+                    putStrLn "Number of relations in group";
+                    print $ Set.size rels
+                }
+            }
+
+tm2TMS :: TM -> IO ()
+tm2TMS tm = do
+    putStrLn "Converting turing machine to visualizer"
+    case tm2tms tm of
+        Left err -> hPutStrLn stderr $ "Error: " ++ show err
+        Right tms -> putStrLn ("\n" ++ show tms)
+
+
 
 mainTms :: String -> String -> IO ()
 mainTms filename errorFile = do

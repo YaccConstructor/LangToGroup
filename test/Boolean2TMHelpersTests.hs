@@ -14,8 +14,8 @@ calculateNextConjunctionInSameRuleTest1 = do
         Set.fromList [Nonterminal "Abc",Nonterminal "Cr",Nonterminal "D",Nonterminal "S"],
         Set.fromList [Terminal "b"],
         Set.fromList [
-        Relation (Nonterminal "S",[N $ Nonterminal "D", N $ Nonterminal "Cr",
-            O Conjunction, N $ Nonterminal "S", N $ Nonterminal "Abc"])
+        BooleanRelation (Nonterminal "S",[PosConj [N $ Nonterminal "D", N $ Nonterminal "Cr"],
+           PosConj [N $ Nonterminal "S", N $ Nonterminal "Abc"]])
         ],
         Nonterminal "S")
   let testConjunctionPair = DebuggingTMTypes.SymbolsPair (
@@ -41,9 +41,9 @@ calculateNextConjunctionInSameRuleTest2 = do
         Set.fromList [Nonterminal "S",Nonterminal "Sa", Nonterminal "Sb"],
         Set.fromList [Terminal "b"],
         Set.fromList [
-            Relation (Nonterminal "S",[N $ Nonterminal "Sa", N $ Nonterminal "S",
-                O Conjunction, O Negation, N $ Nonterminal "Sa", N $ Nonterminal "Sb"]),
-            Relation (Nonterminal "S",[N $ Nonterminal "Sb", N $ Nonterminal "Sa"])
+            BooleanRelation (Nonterminal "S",[PosConj [N $ Nonterminal "Sa", N $ Nonterminal "S"],
+                NegConj [N $ Nonterminal "Sa", N $ Nonterminal "Sb"]]),
+            BooleanRelation (Nonterminal "S",[PosConj [N $ Nonterminal "Sb", N $ Nonterminal "Sa"]])
         ],
         Nonterminal "S")
   let testConjunctionPair1 = DebuggingTMTypes.SymbolsPair (
@@ -67,10 +67,10 @@ calculateFirstConjunctionInNextRuleTest1 = do
         Set.fromList [Nonterminal "S",Nonterminal "Sa", Nonterminal "Sb", Nonterminal "Sc"],
         Set.fromList [Terminal "b"],
         Set.fromList [
-            Relation (Nonterminal "S",[N $ Nonterminal "Sa", N $ Nonterminal "S", O Conjunction,
-                O Negation, N $ Nonterminal "Sa", N $ Nonterminal "Sb"]),
-            Relation (Nonterminal "S",[N $ Nonterminal "Sa", N $ Nonterminal "Sd", O Conjunction,
-                N $ Nonterminal "Sb", N $ Nonterminal "Sc"])
+            BooleanRelation (Nonterminal "S",[PosConj [N $ Nonterminal "Sa", N $ Nonterminal "S"],
+                NegConj [N $ Nonterminal "Sa", N $ Nonterminal "Sb"]]),
+            BooleanRelation (Nonterminal "S", [PosConj [N $ Nonterminal "Sa", N $ Nonterminal "Sd"],
+                PosConj [N $ Nonterminal "Sb", N $ Nonterminal "Sc"]])
         ],
         Nonterminal "S")
   let testConjunctionPair1 = DebuggingTMTypes.SymbolsPair (
@@ -97,11 +97,11 @@ calculateFirstConjunctionInNextRuleTest2 = do
         Set.fromList [Nonterminal "S",Nonterminal "Sa", Nonterminal "Sb", Nonterminal "Sc"],
         Set.fromList [Terminal "b"],
         Set.fromList [
-            Relation (Nonterminal "S",[N $ Nonterminal "Sa", N $ Nonterminal "S", O Conjunction,
-                O Negation, N $ Nonterminal "Sa", N $ Nonterminal "Sb"]),
-            Relation (Nonterminal "S",[N $ Nonterminal "Sa", N $ Nonterminal "S", O Conjunction,
-                N $ Nonterminal "Sb", N $ Nonterminal "Sc"]),
-            Relation (Nonterminal "S", [O Negation, N $ Nonterminal "Sb", N $ Nonterminal "Sa"])
+            BooleanRelation (Nonterminal "S",[PosConj [N $ Nonterminal "Sa", N $ Nonterminal "S"],
+                NegConj [N $ Nonterminal "Sa", N $ Nonterminal "Sb"]]),
+            BooleanRelation (Nonterminal "S",[PosConj [N $ Nonterminal "Sa", N $ Nonterminal "S"],
+                NegConj [N $ Nonterminal "Sb", N $ Nonterminal "Sc"]]),
+            BooleanRelation (Nonterminal "S", [NegConj [N $ Nonterminal "Sb", N $ Nonterminal "Sa"]])
             ],
         Nonterminal "S")
   let testConjunctionPair = DebuggingTMTypes.SymbolsPair (
@@ -115,23 +115,34 @@ calculateFirstConjunctionInNextRuleTest2 = do
 
 
 --input for next tests
-testGr :: Grammar
-testGr = Grammar (Set.fromList [Nonterminal "S", Nonterminal "B", Nonterminal "C", Nonterminal "D", Nonterminal "F"],
+testGr1 :: Grammar
+testGr1 = Grammar (Set.fromList [Nonterminal "S", Nonterminal "B", Nonterminal "C", Nonterminal "D", Nonterminal "F"],
                 Set.fromList [Terminal "b", Terminal "a"],
                 Set.fromList testRels,
                 Nonterminal "S")
 
 testRels :: [Relation]
 testRels = [relation11, relation12, relation13,
-                       Relation (Nonterminal "S", [T $ Terminal "a"]),
-                       Relation (Nonterminal "B", [T $ Terminal "b"]),
-                       Relation (Nonterminal "C", [T $ Terminal "a"]),
-                       Relation (Nonterminal "D", [T $ Terminal "b"]),
-                       Relation (Nonterminal "F", [T $ Terminal "a"])]
+                       BooleanRelation (Nonterminal "S", [PosConj [T $ Terminal "a"]]),
+                       BooleanRelation (Nonterminal "B", [PosConj [T $ Terminal "b"]]),
+                       BooleanRelation (Nonterminal "C", [PosConj [T $ Terminal "a"]]),
+                       BooleanRelation (Nonterminal "D", [PosConj [T $ Terminal "b"]]),
+                       BooleanRelation (Nonterminal "F", [PosConj [T $ Terminal "a"]])]
+
+testGr2 :: Grammar
+testGr2 = Grammar (Set.fromList [Nonterminal "Ab", Nonterminal "Bc", Nonterminal "S"],
+                Set.fromList [Terminal "a",  Terminal "b"],
+                Set.fromList [Relation (Nonterminal "S", [N $ Nonterminal "Ab", N $ Nonterminal "Bc"]),
+                Relation (Nonterminal "Bc", [N $ Nonterminal "Bc", N $ Nonterminal "Bc"]),
+                Relation (Nonterminal "Ab", [T $ Terminal "a"]),
+                Relation (Nonterminal "Ab", [T $ Terminal "b"]),
+                Relation (Nonterminal "Bc", [T $ Terminal "b"])],
+                Nonterminal "S")
 
 relation11 :: Relation
-relation11 = Relation (Nonterminal "S",
-    [N $ Nonterminal "B", N $ Nonterminal "C",O Conjunction, O Negation, N $ Nonterminal "D", N $ Nonterminal "F"])
+relation11 = BooleanRelation (Nonterminal "S",
+    [PosConj [N $ Nonterminal "B", N $ Nonterminal "C"],
+    NegConj [N $ Nonterminal "D", N $ Nonterminal "F"]])
 
 relation12 :: Relation
 relation12 = Relation (Nonterminal "S", [N $ Nonterminal "C", N $ Nonterminal "D"])
@@ -141,17 +152,17 @@ relation13 = Relation (Nonterminal "C", [N $ Nonterminal "B", N $ Nonterminal "C
 
 getLongRelsTest :: Assertion
 getLongRelsTest = do
-   let expectedRels = Helpers.getLongRels testRels
-   let actualRels = [relation11, relation12, relation13]
-   assertEqual "assert getting long relations" actualRels expectedRels
+   let actualRels = Helpers.getLongRels testRels
+   let expectedRels = [relation11, relation12, relation13]
+   assertEqual "assert getting long relations" expectedRels actualRels
 
 checkIfConjHasNegTest1 :: Assertion
 checkIfConjHasNegTest1 = do
-    assertEqual "Assert if conjunction has negation" False $ Helpers.checkIfConjHasNeg testGr ("1","S","B","C")
+    assertEqual "Assert if conjunction has negation" False $ Helpers.checkIfConjHasNeg testGr1 ("1","S","B","C")
 
 checkIfConjHasNegTest2 :: Assertion
 checkIfConjHasNegTest2 = do
-    assertEqual "Assert if conjunction has negation" True $ Helpers.checkIfConjHasNeg testGr ("1","S","D","F")
+    assertEqual "Assert if conjunction has negation" True $ Helpers.checkIfConjHasNeg testGr1 ("1","S","D","F")
 
 relationHasOneTerminalInRightPartTest :: Assertion
 relationHasOneTerminalInRightPartTest = do
@@ -168,40 +179,40 @@ getFstNontermsInConjOfGivenRelationTest :: Assertion
 getFstNontermsInConjOfGivenRelationTest = do
   let expectedS1 = ["B", "D"]
   let expectedS2 = ["C"]
-  let actualS1 = Helpers.getFirstNonterminalsInConjunctionsOfGivenRelation testGr "S" "1"
-  let actualS2 = Helpers.getFirstNonterminalsInConjunctionsOfGivenRelation testGr "S" "2"
+  let actualS1 = Helpers.getFstNonterminalsInConjsOfGivenRel testGr1 "S" "1"
+  let actualS2 = Helpers.getFstNonterminalsInConjsOfGivenRel testGr1 "S" "2"
   assertEqual "Getting fst nonterns in conjs in given rel" expectedS1 actualS1
   assertEqual "Getting fst nonterns in conjs in given rel" expectedS2 actualS2
   let expectedC1 = ["B"]
-  let actualC1 = Helpers.getFirstNonterminalsInConjunctionsOfGivenRelation testGr "C" "1"
+  let actualC1 = Helpers.getFstNonterminalsInConjsOfGivenRel testGr1 "C" "1"
   assertEqual "Getting fst nonterns in conjs in given rel" expectedC1 actualC1
 
 getSndNontermsInConjOfGivenRelationTest :: Assertion
 getSndNontermsInConjOfGivenRelationTest = do
-  let actualS1' = Helpers.getSecondNonterminalsInConjunctionsOfGivenRelation testGr "S" "1" "B"
-  let actualS1'' = Helpers.getSecondNonterminalsInConjunctionsOfGivenRelation testGr "S" "1" "D"
-  let actualS2 = Helpers.getSecondNonterminalsInConjunctionsOfGivenRelation testGr "S" "2" "C"
+  let actualS1' = Helpers.getSndNonterminalsInConjsOfGivenRel testGr1 "S" "1" "B"
+  let actualS1'' = Helpers.getSndNonterminalsInConjsOfGivenRel testGr1 "S" "1" "D"
+  let actualS2 = Helpers.getSndNonterminalsInConjsOfGivenRel testGr1 "S" "2" "C"
   assertEqual "Getting fst nonterns in conjs in given rel" ["C"] actualS1'
   assertEqual "Getting fst nonterns in conjs in given rel" ["F"] actualS1''
   assertEqual "Getting fst nonterns in conjs in given rel" ["D"] actualS2
-  let actualC1 = Helpers.getSecondNonterminalsInConjunctionsOfGivenRelation testGr "C" "1" "B"
+  let actualC1 = Helpers.getSndNonterminalsInConjsOfGivenRel testGr1 "C" "1" "B"
   assertEqual "Getting fst nonterns in conjs in given rel" ["C"] actualC1
 
 calculateQuadsTest1 :: Assertion
 calculateQuadsTest1 = do
-  let actual = Helpers.calculateQuads testGr "1" ["S", "C"]
+  let actual = Helpers.calculateQuads testGr1 "1" ["S", "C"]
   let expected = [("1", "S", "B","C"),("1", "S", "D","F"), ("1", "C", "B", "C")]
   assertEqual "Getting quads: (,,,) from relations with given number" expected actual
 
 calculateQuadsTest2 :: Assertion
 calculateQuadsTest2 = do
-  let actual = Helpers.calculateQuads testGr "2" ["S"]
+  let actual = Helpers.calculateQuads testGr1 "2" ["S"]
   let expected = [("2", "S", "C","D")]
   assertEqual "Getting quads: (,,,) from relations with given number" expected actual
 
 calculateQuadsFromGrammarTest :: Assertion
 calculateQuadsFromGrammarTest = do
-  let gr@(Grammar (nonterminals,_, rels,_)) = testGr
+  let gr@(Grammar (nonterminals,_, rels,_)) = testGr1
   let maxNumber = Helpers.calculateMaxNumberOfRulesForNonterminal gr
   assertEqual "Assert max number" 3 maxNumber
   let indices = map show [0..maxNumber - 1]
@@ -218,7 +229,7 @@ calculateAllQuadsTest :: Assertion
 calculateAllQuadsTest = do
   let expectedQuads = [("1", "C", "B", "C"), ("1", "S", "B","C"),
         ("1", "S", "D","F"), ("2", "S", "C","D")]
-  let actualQuads = Helpers.calculateAllQuads testGr
+  let actualQuads = Helpers.calculateAllQuads testGr1
   assertEqual "Testing process of calculating all quads for all indices" actualQuads expectedQuads
 
 kthRelForNonterminalLongTest1 :: Assertion
@@ -230,7 +241,7 @@ kthRelForNonterminalLongTest1 = do
 
 kthRelForNonterminalLongTest2 :: Assertion
 kthRelForNonterminalLongTest2 = do
-  let (Grammar (_,_,relations',_)) = testGr
+  let (Grammar (_,_,relations',_)) = testGr1
   let relations = Set.toList relations'
   let actual0 = Helpers.kthRelForNonterminalLong relations "C" "0"
   let actual2 = Helpers.kthRelForNonterminalLong relations "C" "1"
@@ -249,35 +260,52 @@ getShiftsDecrementsTest = do
 
 symbolAcceptedByNonterminalTest1 :: Assertion
 symbolAcceptedByNonterminalTest1 = do
-  let actual1 = Helpers.symbolAcceptedByNonterminal testGr "S" "b"
-  let actual2 = Helpers.symbolAcceptedByNonterminal testGr "S" "a"
+  let actual1 = Helpers.symbolAcceptedByNonterminal testGr1 "S" "b"
+  let actual2 = Helpers.symbolAcceptedByNonterminal testGr1 "S" "a"
   assertEqual "Assert that testGr does not have S -> b rel" False actual1
   assertEqual "Assert that testGr has S -> a rel" True actual2
 
 symbolAcceptedByNonterminalTest2 :: Assertion
 symbolAcceptedByNonterminalTest2 = do
-  let actual1 = Helpers.symbolAcceptedByNonterminal testGr "D" "a"
-  let actual2 = Helpers.symbolAcceptedByNonterminal testGr "D" "b"
+  let actual1 = Helpers.symbolAcceptedByNonterminal testGr1 "D" "a"
+  let actual2 = Helpers.symbolAcceptedByNonterminal testGr1 "D" "b"
   assertEqual "Assert that testGr does not have D -> a rel" False actual1
   assertEqual "Assert that testGr has D -> b rel" True actual2
 
 symbolAcceptedByNonterminalTest3 :: Assertion
 symbolAcceptedByNonterminalTest3 = do
-  let actual1 = Helpers.symbolAcceptedByNonterminal testGr "F" "b"
-  let actual2 = Helpers.symbolAcceptedByNonterminal testGr "F" "a"
+  let actual1 = Helpers.symbolAcceptedByNonterminal testGr1 "F" "b"
+  let actual2 = Helpers.symbolAcceptedByNonterminal testGr1 "F" "a"
   assertEqual "Assert that testGr does not have F -> a rel" False actual1
   assertEqual "Assert that testGr has F -> b rel" True actual2
 
 symbolAcceptedByNonterminalTest4 :: Assertion
 symbolAcceptedByNonterminalTest4 = do
-  let actual1 = Helpers.symbolAcceptedByNonterminal testGr "C" "b"
-  let actual2 = Helpers.symbolAcceptedByNonterminal testGr "C" "a"
+  let actual1 = Helpers.symbolAcceptedByNonterminal testGr1 "C" "b"
+  let actual2 = Helpers.symbolAcceptedByNonterminal testGr1 "C" "a"
   assertEqual "Assert that testGr does not have C -> b rel" False actual1
   assertEqual "Assert that testGr has C -> a rel" True actual2
 
-getNumbersOfShortRelationsTest :: Assertion
-getNumbersOfShortRelationsTest = do
-    let expected = Map.fromList [(Nonterminal "C",["0"]), (Nonterminal "B",["0"]),
+getNumbersOfShortRelationsTest1 :: Assertion
+getNumbersOfShortRelationsTest1 = do
+   let expected = Map.fromList [(Nonterminal "C",["0"]), (Nonterminal "B",["0"]),
             (Nonterminal "D", ["0"]), (Nonterminal "F", ["0"]), (Nonterminal "S",["0"])]
-    let actual = Helpers.getNumbersOfShortRelations testGr
-    assertEqual "Assert numbers of short relations" expected actual
+   let actual = Helpers.getNumbersOfShortRelations testGr1
+   assertEqual "Assert numbers of short relations" actual expected
+
+getNumbersOfShortRelationsTest2 :: Assertion
+getNumbersOfShortRelationsTest2 = do
+   let expected = Map.fromList [(Nonterminal "S",[]), (Nonterminal "Bc",["0"]),
+               (Nonterminal "Ab", ["0","1"])]
+   let actual = Helpers.getNumbersOfShortRelations testGr2
+   assertEqual "Assert numbers of short relations" actual expected
+
+calculateGroupRelationsByNonterminalsTest :: Assertion
+calculateGroupRelationsByNonterminalsTest = do
+    let expected = Map.fromList [
+            (Nonterminal "Ab", [[PosConj [T $ Terminal "a"]], [PosConj [T $ Terminal "b"]]]),
+            (Nonterminal "Bc", [[PosConj [T $ Terminal "b"]], [PosConj [N $ Nonterminal "Bc", N $ Nonterminal "Bc"]]]),
+            (Nonterminal "S", [[PosConj [N $ Nonterminal "Ab", N $ Nonterminal "Bc"]]])]
+    let (Grammar (_, _, rels, _)) = testGr2
+    let actual = Helpers.calculateGroupRelationsByNonterminals $ Set.toList rels
+    assertEqual "Assert numbers of short relations" actual expected

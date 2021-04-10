@@ -1,14 +1,9 @@
-
--- |This module represents types of formal grammar. 
+ -- |This module represents types of formal grammar.
 --
 -- In the moment we use it to represent a context-free grammar, conjunctive grammar, boolean grammar.
 module GrammarType where
 
 import Data.Set (Set)
-
--- |'Operand' is a type that represents logical operations in 'Boolean' or 'Conjunctive' grammars.
-data Operand = Conjunction | Negation
-    deriving (Eq, Ord, Show)
 
 -- |'Terminal' is a type that represents terminal in the formal grammar 'Grammar'.
 newtype Terminal = Terminal {terminalValue :: String}
@@ -24,19 +19,24 @@ newtype Nonterminal = Nonterminal {nonterminalValue :: String}
 --
 -- 'N' is for 'Nonterminal'.
 --
--- 'O' is for 'Operand'.
---
 -- And 'Eps' is for empty symbol, epsilon.
-data Symbol = T Terminal | N Nonterminal | O Operand | Eps
+data Symbol = T Terminal | N Nonterminal | Eps
     deriving (Eq, Ord, Show)
 
+-- |Conj is helper type  for representing the right part of a relation in a boolean grammar
+data Conj = PosConj {symbols :: [Symbol]}
+          | NegConj {symbols :: [Symbol]}
+    deriving (Eq, Ord, Show)
+    
 -- |This type is synonym 'Nonterminal' and used in order to separate 'StartSymbol' from normal 'Nonterminal'.
 type StartSymbol = Nonterminal
 
 -- |'Relation' is a rule of 'Grammar'. 
---
--- Rule might be in context-free, conjunctive or boolean form.
-newtype Relation = Relation (Nonterminal, [Symbol])
+-- First constructor is for working only with CFG grammars
+-- Second constructor is for working with Boolean or Conjunctive grammars, 
+-- though it might be used for defining grammars too
+-- (right part of CFG relation is one PosConj in right part of boolean relation)   
+data Relation = Relation (Nonterminal, [Symbol]) | BooleanRelation (Nonterminal, [Conj])
     deriving (Eq, Ord, Show)
 
 -- |This type we using to classify grammars.

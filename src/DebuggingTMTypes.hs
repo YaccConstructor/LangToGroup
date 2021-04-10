@@ -38,17 +38,17 @@ newtype SymbolsPair = SymbolsPair (Nonterminal, Int, Bool, GrammarType.Symbol, G
 convertToTuringMachine :: DebuggingTuringMachine -> TuringMachine
 convertToTuringMachine tm@(DTM (DQuadruples quadruplesMap)) = let
     states = getStates tm
-    symbols = getSymbols tm
+    symbols' = getSymbols tm
     quadruplesMap' = Map.mapKeys (\(state, symbol) -> let
         stateIndex = getStateIndex state states
-        symbolIndex = getSymbolIndex symbol symbols
+        symbolIndex = getSymbolIndex symbol symbols'
         in (Q stateIndex, S symbolIndex)) quadruplesMap
     quadruplesMap'' = Map.map (\(move, state) -> let
         stateIndex = getStateIndex state states
         newMove = case move of
             DebuggingTMTypes.L -> TMTypes.L
             DebuggingTMTypes.R -> TMTypes.R
-            D s -> C $ S $ getSymbolIndex s symbols
+            D s -> C $ S $ getSymbolIndex s symbols'
         in (newMove, Q stateIndex)) quadruplesMap'
     in TM quadruplesMap''
 
@@ -59,8 +59,8 @@ getStateIndex state states =
       Nothing -> error "No such state. Something went wrong during convertation to Turing machine."
 
 getSymbolIndex :: DebuggingSymbol -> [DebuggingSymbol] -> Int
-getSymbolIndex symbol symbols =
-    case List.elemIndex symbol symbols of
+getSymbolIndex symbol symbols' =
+    case List.elemIndex symbol symbols' of
       Just index -> index
       Nothing -> error "No such symbol. Something went wrong during convertation to Turing machine."
 
