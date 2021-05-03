@@ -14,7 +14,7 @@ import TestGenerationHelpers
 import Boolean2TM
 
 tests :: Test
-tests = TestList [test1, test2, test3, test4, test5, test6]
+tests = TestList [test1, test2, test3, test4, test5, test6, test7]
 
 test1 :: Test
 test1 = let
@@ -158,7 +158,43 @@ test6 = let
                 in generateTestLabel tm testData word True) numbers'
             tests2 = map (\t -> let
                 word = ["S","(", "a"] ++ replicate t "a" ++ replicate t "b" ++ [")"]
-                testData = IN gr alphabet "integration5.2 a^nb^n"
+                testData = IN gr alphabet "integration6.2 a^nb^n"
                 in generateTestLabel tm testData word False) numbers'
             allTests = checkGr : tests1 ++ tests2
-            in TestLabel "Correctness of grammar parser and boolean2tm algorithm integration" $ TestList allTests    
+            in TestLabel "Correctness of grammar parser and boolean2tm algorithm integration" $ TestList allTests
+
+test7 :: Test
+test7 = let
+    input = pack $ "S; S X A A1 B B1 C C1; a b\nS-> X C1&! A B&! B A\nA-> X A1\n"
+        ++ "A1-> A X\nA-> a\nB-> X B1\nB1-> B X\nB-> b\nC-> X C1\nC1-> X C\nC-> X X\nX-> a\nX-> b\nC1-> a\nC1-> b"
+    alphabet = inAlphabet testData9
+    result =  parseMaybe GrammarReader.parser input
+        in case result of
+        Nothing -> TestLabel "Correct input format for parser" $ TestCase $ assertFailure "no parse"
+        Just gr -> let
+            tm = boolean2tm gr
+            assertion = assertEqual "a^mb^nc^n" gr $ inGrammar testData9
+            checkGr = TestLabel "Check grammar parsed correctly" $ TestCase assertion
+            tests1 = map (\t -> let
+                word = replicate t "a" ++ replicate t "b"
+                doubleWord = ["S","("] ++ word ++ word ++ [")"]
+                doubleWord' = ["S","("] ++ word ++ word ++ ["b", ")"]
+                testData = IN gr alphabet "integration7.1 {a,b}*"
+                in [generateTestLabel tm testData doubleWord True,
+                    generateTestLabel tm testData doubleWord' False]) numbers'
+            tests2 = map (\t -> let
+                word = concat (replicate t ["a","b"])
+                doubleWord = ["S","("] ++ word ++ word ++ [")"]
+                doubleWord' = ["S","(","a"] ++ word ++ word ++ [")"]
+                testData = IN gr alphabet "integration7.2 {a,b}*"
+                in [generateTestLabel tm testData doubleWord True,
+                    generateTestLabel tm testData doubleWord' False]) numbers'
+            tests3 = map (\t -> let
+                word = concat (replicate t ["b","a"])
+                doubleWord = ["S","("] ++ word ++ word ++ [")"]
+                doubleWord' = ["S","("] ++ word ++ word ++ ["b",")"]
+                testData = IN gr alphabet "integration7.3 {a,b}*"
+                in [generateTestLabel tm testData doubleWord True,
+                    generateTestLabel tm testData doubleWord' False]) numbers'
+            allTests = concat $ [checkGr] : tests1 ++ tests2 ++ tests3
+            in TestLabel "Correctness of grammar parser and boolean2tm algorithm integration" $ TestList allTests

@@ -1,6 +1,6 @@
 module InterpreterInputData (
     InterpreterInputData (IN), inAlphabet,  inGrammar,  inId,
-    testData1,  testData2,  testData3,  testData4,  testData5, testData6, testData7, testData8) where
+    testData1,  testData2,  testData3,  testData4,  testData5, testData6, testData7, testData8, testData9) where
 
 import GrammarType
 import qualified Data.Set as Set
@@ -192,6 +192,7 @@ testGr7 = Grammar (Set.fromList nonterminals,
                     Set.fromList $ rel70 : commonRels,
                     Nonterminal "S")
 
+
 testData8 :: InterpreterInputData
 testData8 = IN testGr8 alphabet8 "8"
 alphabet8 :: Set.Set [Char]
@@ -220,4 +221,55 @@ rel82 = Relation (Nonterminal "S1", [N $ Nonterminal "S", N $ Nonterminal "B1"])
 rel83 :: Relation
 rel83 = Relation (Nonterminal "S", [N $ Nonterminal "A1", N $ Nonterminal "B1"])
 
+testData9 :: InterpreterInputData
+testData9 = IN testGr9 alphabet9 "9"
+alphabet9 :: Set.Set [Char]
+alphabet9 = Set.fromList ["!", "#", "(", ")", "*", "+", "-", "0", "1", "2", "3", "4",
+    "5", "6", "7", "A", "A1", "B", "B1", "C", "C1", "S", "X", "a", "b"]
+testGr9 :: Grammar
+testGr9 = Grammar (Set.fromList nonterminals9,
+                    Set.fromList terminals9,
+                    Set.fromList [{--rel90--} rel91, rel92, rel93, rel94, rel95, rel96, rel97, rel98,
+                        Relation (Nonterminal "B", [T $ Terminal "b"]),
+                        Relation (Nonterminal "A", [T $ Terminal "a"]),
+                        Relation (Nonterminal "X", [T $ Terminal "b"]),
+                        Relation (Nonterminal "X", [T $ Terminal "a"]),
+                        Relation (Nonterminal "C1", [T $ Terminal "a"]),
+                        Relation (Nonterminal "C1", [T $ Terminal "b"])],
+                    Nonterminal "S")
 
+nonterminals9 :: [Nonterminal]
+nonterminals9 = [Nonterminal "S", Nonterminal "A1", Nonterminal "B1",
+    Nonterminal "A", Nonterminal "B", Nonterminal "C", Nonterminal "C1", Nonterminal "X"]
+
+terminals9 :: [Terminal]
+terminals9 = [Terminal "a", Terminal "b"]
+
+rel90 :: Relation
+rel90 = BooleanRelation (Nonterminal "S", [NegConj [N $ Nonterminal "A", N $ Nonterminal "B"],
+    NegConj [N $ Nonterminal "B", N $ Nonterminal "A"]])
+
+rel91 :: Relation
+rel91 = BooleanRelation (Nonterminal "S", [PosConj [N $ Nonterminal "X", N $ Nonterminal "C1"],
+    NegConj [N $ Nonterminal "A", N $ Nonterminal "B"], NegConj [N $ Nonterminal "B", N $ Nonterminal "A"]])
+
+rel92 :: Relation
+rel92 = Relation (Nonterminal "A", [N $ Nonterminal "X", N $ Nonterminal "A1"])
+
+rel93 :: Relation
+rel93 = Relation (Nonterminal "B", [N $ Nonterminal "X", N $ Nonterminal "B1"])
+
+rel94 :: Relation
+rel94 = Relation (Nonterminal "C", [N $ Nonterminal "X", N $ Nonterminal "C1"])
+
+rel95 :: Relation
+rel95 = Relation (Nonterminal "A1", [N $ Nonterminal "A", N $ Nonterminal "X"])
+
+rel96 :: Relation
+rel96 = Relation (Nonterminal "B1", [N $ Nonterminal "B", N $ Nonterminal "X"])
+
+rel97 :: Relation
+rel97 = Relation (Nonterminal "C1", [N $ Nonterminal "X", N $ Nonterminal "C"])
+
+rel98 :: Relation
+rel98 = Relation (Nonterminal "C", [N $ Nonterminal "X", N $ Nonterminal "X"])
