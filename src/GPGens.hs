@@ -21,55 +21,49 @@ neg (Negative g) = Positive g
 q_ :: Int -> SPReader Element
 q_ x = return $ element x
 
-h_0 :: SPReader Element
-h_0 = do
+h :: SPReader Element
+h = do
     n <- getN
     return $ element (n + 1)
-
-h_1 :: SPReader Element
-h_1 = do
-    n <- getN
-    return $ element (n + 2)
 
 s_ :: Int -> SPReader Element
 s_ i = do
     n <- getN
-    return $ element (i + n + 3)
+    return $ element (i + n + 2)
 
 r_ :: Int -> SPReader Element
 r_ i = do
     n <- getN
     m <- getM
-    return $ element (i + n + m + 3)
+    return $ element (i + n + m + 2)
 
 x :: SPReader Element
 x = do
     n <- getN
     m <- getM
     l <- getL
-    return $ element (n + m + l + 4)
+    return $ element (n + m + l + 3)
 
 t :: SPReader Element
 t = do
     n <- getN
     m <- getM
     l <- getL
-    return $ element (n + m + l + 5)
+    return $ element (n + m + l + 4)
 
 k :: SPReader Element
 k = do
     n <- getN
     m <- getM
     l <- getL
-    return $ element (n + m + l + 6)
+    return $ element (n + m + l + 5)
 
 convertG :: SP.Generator -> SPReader Element
 convertG = (fromTMReader . toString) >=> fromString where
     fromString :: String -> SPReader Element
     fromString = \case
         'q':'_':num -> q_ (read num)
-        "h_0"       -> h_0
-        "h_1"       -> h_1
+        "h"       -> h
         's':'_':num -> s_ (read num)
         other       -> error $ show other ++ " isn't valid generator"
 

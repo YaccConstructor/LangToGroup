@@ -31,13 +31,13 @@ tests = TestLabel "Correctness of constructing semigroup from machine" $
                                 then Nothing
                                 else Just 242
                         initWord <- sequence $
-                            [h_0, q_ 1] ++
+                            [h, q_ 1] ++
                             (
                                 if null word
                                 then [s_ 0]
                                 else (s_ . (Map.!) alphabet) <$> word
                             ) ++
-                            [h_1]
+                            [h]
                         return $ (~=?) answer $
                             any (q_0 `elem`) $
                                 solve depth rules initWord

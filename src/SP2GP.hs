@@ -27,7 +27,7 @@ relations = do
     m <- getM
     l <- getL
     let relationsList = Set.toList relationsSet
-        ss = [s_ i | i <- [0..m]] ++ [h_0, h_1]
+        ss = [s_ i | i <- [0..m]] ++ [h]
         rs = [r_ i | i <- [1..l]]
     fmap Set.fromList $ sequence $
         [
@@ -62,7 +62,7 @@ relations = do
             [k, x] === [x, k]
         ] ++
         [
-            [k, (h_1 ^~), ((q_ 0) ^~), h_0, t, (h_0 ^~), q_ 0, h_1] === [(h_1 ^~), ((q_ 0) ^~), h_0, t, (h_0 ^~), q_ 0, h_1, k]
+            [k, (h ^~), ((q_ 0) ^~), h, t, (h ^~), q_ 0, h] === [(h ^~), ((q_ 0) ^~), h, t, (h ^~), q_ 0, h, k]
         ]
 
 groupBeta :: TuringMachine -> GroupPresentation

@@ -8,20 +8,15 @@ import SPTypes
 q_ :: Int -> TMReader Generator
 q_ x = return $ G x
 
-h_0 :: TMReader Generator
-h_0 = do
+h :: TMReader Generator
+h = do
     n <- getN
     return $ G (n + 1)
-
-h_1 :: TMReader Generator
-h_1 = do
-    n <- getN
-    return $ G (n + 2)
 
 s_ :: Int -> TMReader Generator
 s_ x = do
     n <- getN
-    return $ G (x + n + 3)
+    return $ G (x + n + 2)
 
 isQ :: TMReader (Generator -> Bool)
 isQ = do
@@ -35,7 +30,6 @@ toString = flip $ do
     m <- getM
     return $ \case
         G x | x >= 0     && x <= n         -> "q_" ++ show x
-        G x | x == (n + 1)                 -> "h_0"
-        G x | x == (n + 2)                 -> "h_1"
-        G x | x >= n + 3 && x <= n + m + 3 -> "s_" ++ show (x - n - 3)
+        G x | x == (n + 1)                 -> "h"
+        G x | x >= n + 2 && x <= n + m + 2 -> "s_" ++ show (x - n - 2)
         G x | otherwise -> error $ "G " ++ show x ++ " isn't valid generator"
