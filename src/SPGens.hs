@@ -13,20 +13,15 @@ p_ x = do
     n <- getN
     return $ G (x + n + 1)
 
-h_0 :: TMReader Generator
-h_0 = do
+h :: TMReader Generator
+h = do
     n <- getN
     return $ G (2*n + 2)
-
-h_1 :: TMReader Generator
-h_1 = do
-    n <- getN
-    return $ G (2*n + 3)
 
 s_ :: Int -> TMReader Generator
 s_ x = do
     n <- getN
-    return $ G (x + 2*n + 4)
+    return $ G (x + 2*n + 3)
 
 isQ :: TMReader (Generator -> Bool)
 isQ = do
@@ -41,7 +36,6 @@ toString = flip $ do
     return $ \case
         G x | x >= 0       && x <= n           -> "q_" ++ show x
         G x | x >= n + 1   && x <= 2*n + 1     -> "p_" ++ show (x - n - 1)
-        G x | x == (2*n + 2)                   -> "h_0"
-        G x | x == (2*n + 3)                   -> "h_1"
-        G x | x >= 2*n + 4 && x <= 2*n + m + 4 -> "s_" ++ show (x - 2*n - 4)
+        G x | x == (2*n + 2)                   -> "h"
+        G x | x >= 2*n + 3 && x <= 2*n + m + 3 -> "s_" ++ show (x - 2*n - 3)
         G x | otherwise -> error $ "G " ++ show x ++ " isn't valid generator"

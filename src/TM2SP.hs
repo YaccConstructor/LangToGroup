@@ -39,8 +39,7 @@ relations = do
                     [[q_ i, s_ j] === [q_ l, s_ k]] ++ (
                         if j == 0
                         then [
-                            [q_ i, h_0] === [h_0, q_ l, s_ k],
-                            [q_ i, h_1] === [q_ l, s_ k, h_1]
+                            [q_ i, h] === [q_ l, s_ k, h]
                           ]
                         else []
                     )
@@ -49,8 +48,7 @@ relations = do
                     [[q_ i, s_ j] === [s_ j, q_ l]] ++ (
                         if j == 0
                         then [
-                            [q_ i, h_0] === [h_0, q_ l],
-                            [q_ i, h_1] === [s_ 0, q_ l, h_1]
+                            [q_ i, h] === [s_ 0, q_ l, h]
                           ]
                         else []
                     )
@@ -59,8 +57,7 @@ relations = do
                     [[s_ j, p_ i] === [p_ l, s_ j]] ++ (
                         if j == 0
                         then [
-                            [h_0, p_ i] === [h_0, p_ l, s_ 0],
-                            [h_1, p_ i] === [p_ l, h_1]
+                            [h, p_ i] === [h, p_ l, s_ 0]
                           ]
                         else []
                     )
@@ -75,14 +72,15 @@ relations = do
         ( do
             (q, ss) <- sos
             s <- ss
-            guard (s == S 0)
+            guard $ s == S 0
             let Q alpha = q
-            h <- [h_0, h_1]
-            return $ [q_ alpha, h] === [h, p_ alpha]
+            [
+                [q_ alpha, h] === [s_ 0, p_ alpha, h],
+                [h, p_ alpha] === [h, q_ alpha, s_ 0]
+              ]
         ) ++
-        [[q_ 0, h_0]          === [h_0, q_ 0]] ++
-        [[q_ 0, s_ beta]      === [q_ 0]      | beta <- [0..m]] ++
-        [[s_ beta, q_ 0, h_1] === [q_ 0, h_1] | beta <- [0..m]]
+        [[q_ 0, s_ beta]    === [q_ 0]    | beta <- [0..m]] ++
+        [[s_ beta, q_ 0, h] === [q_ 0, h] | beta <- [0..m]]
 
 semigroupGamma :: TuringMachine -> SemigroupPresentation
 semigroupGamma = SP . runTMReader relations
