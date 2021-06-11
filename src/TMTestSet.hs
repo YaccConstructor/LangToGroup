@@ -99,4 +99,58 @@ testSet = [
         ("aaaaaa", True)
     ])
     | i <- [13,14]
+  ] ++ [
+    (15, [
+        ("", True),
+        ("d", False),
+        ("cc", True),
+        ("da", False),
+        ("cbc", False),
+        ("abab", False),
+        ("abba", True),
+        ("bbbb", True),
+        ("dddd", True),
+        ("ccdd", False),
+        ("adba", False),
+        ("aaaaa", False),
+        ("cbada", False),
+        ("baccab", True),
+        ("adccda", True),
+        ("cadbbdac", True),
+        ("cadbadac", False)
+    ]),
+    (16, [
+        ("", True),
+        ("c", False),
+        ("ff", True),
+        ("fg", False),
+        ("hch", False),
+        ("hca", False),
+        ("dbdb", False),
+        ("bddb", True),
+        ("gccg", True),
+        ("eeee", True),
+        ("cehc", False),
+        ("deffed", True),
+        ("chaahc", True),
+        ("gggggg", True)
+    ]),
+    (17, [
+        ("", True),
+        ("d", False),
+        ("jj", True),
+        ("ka", False),
+        ("mlm", False),
+        ("oabd", False),
+        ("lppl", True),
+        ("bddb", True),
+        ("aaaa", True),
+        ("ecee", False),
+        ("iiiii", False),
+        ("johhoj", True),
+        ("iijjii", True),
+        ("iphhpi", True),
+        ("dnffnd", True),
+        ("eiaeia", False)
+    ])
   ]

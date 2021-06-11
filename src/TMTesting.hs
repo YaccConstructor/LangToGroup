@@ -170,7 +170,7 @@ testingSet = [
     ),
     ("ababa", "ab",
         foldr (+++) empty [ moveOnly (S i) ToRight 2 | i <- [1,2,1,2,1] ] +++
-        acceptOnly (S 0) 3
+        acceptOnly (S 0) 2
     ),
     ("a(bc)*ba", "abc",
         moveOnly (S 1) ToRight 3 +++
