@@ -33,12 +33,17 @@ dependencies:
 - megaparsec
 - parseargs
 - prettyprinter >= 1.7.0
+- pretty-simple
 - hlint
 - HaskellForMaths
 - deepseq
 - rando
 - mtl
 - split
+- lens
+- template-haskell
+- haskell-src-meta
+- extra
 
 ghc-options: 
     -Wall
@@ -60,20 +65,10 @@ executables:
     - LangToGroup
     - matrix >= 0.3.6.1
     - cli  
-   
-   
+
   LangToGroup-user:
     main:                Main.hs
     source-dirs:         src
-
-
-  LangToGroup-constructGP:
-    main:                GPKnuthBendixMain.hs
-    source-dirs:         src
-    ghc-options:
-    - -main-is GPKnuthBendixMain
-    - -O3
-
 
 tests:
   LangToGroup-test:

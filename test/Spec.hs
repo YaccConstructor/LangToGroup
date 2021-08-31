@@ -18,7 +18,7 @@ import TmsParserTests
 import Boolean2TMHelpersTests
 import Boolean2TMTests
 import qualified IntegrationParserBoolean2tmTests (tests)
-import qualified SPTests (tests)
+import qualified TM2SPTest
 
 test1Grammar :: Grammar
 test1Grammar = grammar where
@@ -120,7 +120,7 @@ main = defaultMainWithOpts
         testCase "Boolean to TM helpers: getNumbersOfShortRelationsTest1" getNumbersOfShortRelationsTest1,
         testCase "Boolean to TM helpers: getNumbersOfShortRelationsTest2" getNumbersOfShortRelationsTest2,
         testCase "Boolean to TM helpers: calculateGroupRelationsByNonterminalsTest" calculateGroupRelationsByNonterminalsTest,
-        head $ hUnitTestToTests SPTests.tests
+        head $ hUnitTestToTests TM2SPTest.test
         ] ++ 
         hUnitTestToTests Boolean2TMTests.tests ++ 
         hUnitTestToTests IntegrationParserBoolean2tmTests.tests ++ 

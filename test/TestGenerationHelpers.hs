@@ -4,32 +4,37 @@ module TestGenerationHelpers where
   
 import InterpreterInputData
 import DebuggingTMTypes 
-import TMTypes 
-import Interpreter
+import TuringMachine.Interpreter 
 
 import Test.HUnit
+import Control.Lens ((^.))
 import qualified Data.Set as Set
 import Data.List as List
 
-generateTestLabel :: TuringMachine -> InterpreterInputData -> [String] -> Bool -> Test
-generateTestLabel tm input word accepted = let
+generateTestLabel :: Maybe TuringMachine -> InterpreterInputData -> String -> Bool -> Test
+generateTestLabel Nothing input _ _ =
+    TestLabel ("Test for grammar " ++ inId input) $
+        TestCase $ assertString "Turing Machine wasn't built"
+generateTestLabel (Just tm) input word accepted = let
     testCase = generateTestCase tm input word accepted in
     TestLabel ("Test for grammar " ++ inId input) testCase
 
-generateTestCase :: TuringMachine -> InterpreterInputData -> [String] -> Bool -> Test
+generateTestCase :: TuringMachine -> InterpreterInputData -> String -> Bool -> Test
 generateTestCase tm input word accepted = let
     --tm = boolean2tm $ inGrammar input
-    xs = states $ startWithAlphabet' tm word 0 $ inAlphabet input
-    testCase = if accepted
-        then TestCase (assertEqual (concat word) (Q 0) (currentState $ last xs))
-        else TestCase (assertEqual (concat word) (Q (-1)) (currentState $ last xs))
-    description = if accepted
-        then "check word " ++ concat word ++ " accepted"
-        else "check word " ++ concat word ++ " not accepted"
+    finalWS = last $ smartRun tm $ initWS word 0
+    testCase =
+        if accepted
+        then TestCase $ assertBool word $ finalWS^.currentState == finalState
+        else TestCase $ assertBool word $ finalWS^.currentState /= finalState
+    description =
+        if accepted
+        then "check word " ++ word ++ " accepted"
+        else "check word " ++ word ++ " not accepted"
     in TestLabel description testCase
 
 -- print info
-printInfo :: DebuggingTuringMachine -> TuringMachine -> Set.Set String -> [String] -> IO [()]
+{-printInfo :: DebuggingTuringMachine -> TuringMachine -> Set.Set String -> [String] -> IO [()]
 printInfo dtm tm inputAlphabet word = do
     let states' = states $ startWithAlphabet' tm word 0 inputAlphabet
     let states'' = getStates dtm
@@ -49,4 +54,4 @@ printInfo dtm tm inputAlphabet word = do
             print currentState';
             print stringState;
             print tape';
-            print alphabet';}) states'
+            print alphabet';}) states'-}

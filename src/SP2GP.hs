@@ -1,67 +1,73 @@
-module SP2GP where
+module SP2GP (
+    groupBeta,
+    groupBeta_1,
+  ) where
 
-import TMTypes
-import SPReader
-import GPTypes
-import GPGens
-import SPTypes (SemigroupPresentation(..))
-import qualified SPTypes as SP
-import SPGens (isQ)
-import qualified Set
-import Control.Applicative (liftA2)
+import SP2GP.Generators
+import SP2GP.Relations
+import SemigroupPresentation
+import qualified GroupPresentation as GP
+import TM2SP (SemigroupPresentation_1 (unSP1))
 
-(^*) :: SP.GWord -> SPReader EWord
-(^*) w = do
-    gNotIsQ <- (not .) <$> fromTMReader isQ
-    let (leftSWord, a : rightSWord) = span gNotIsQ w
-    leftSWord' <- map neg <$> convertW leftSWord
-    q' : rightSWord' <- convertW (a : rightSWord)
-    return $ leftSWord' ++ (q' : rightSWord')
+sp2gp ::
+    MonadFail m =>
+    Gens ->
+    Rels ->
+    SemigroupPresentation ->
+    m GP.GroupPresentation
+sp2gp gs rs' sp = do
+    gd <- gens gs sp
+    rs <- rels rs' gd sp
+    return $ GP.groupPresentation rs gd
 
-(===) :: [SPReader Element] -> [SPReader Element] -> SPReader Relation
-w1 === w2 = Equals <$> sequence w1 <*> sequence w2
-
-relations :: SPReader Relations
-relations = do
-    SP relationsSet <- getS
-    m <- getM
-    l <- getL
-    let relationsList = Set.toList relationsSet
-    fmap Set.fromList $ sequence $
-        [
-            [x, s_ beta] === [s_ beta, x, x]
-            | beta <- [0..m]
-        ] ++
-        [
-            [r_ i, s_ beta] === [s_ beta, x, r_ i, x]
-            | i <- [0..l], beta <- [0..m]
-        ] ++
-        ( do
-            (w1 `SP.Equals` w2, i) <- relationsList `zip` [0..]
-            let asEWord = fmap (: [])
-            let (<++>) = liftA2 (++)
-            let w1' = asEWord (r_ i ^~) <++> (w1 ^*) <++> asEWord (r_ i)
-            let w2' = (w2 ^*)
-            return $
-                Equals <$> w1' <*> w2'
-        ) ++
-        [
-            [t, r_ i] === [r_ i, t]
-            | i <- [0..l]
-        ] ++
-        [
-            [t, x] === [x, t]
-        ] ++
-        [
-            [k, r_ i] === [r_ i, k]
-            | i <- [0..l]
-        ] ++
-        [
-            [k, x] === [x, k]
-        ] ++
-        [
-            [k, (q ^~), t, q] === [(q ^~), t, q, k]
+groupBeta :: MonadFail m => SemigroupPresentation -> m GP.GroupPresentation
+groupBeta =
+    sp2gp [
+            group (strGenerators.filterByFormat("q{}")),
+            simple "s",
+            group (strGenerators.filterByFormat("s{}")),
+            "r_{}" `from` strNumRelations,
+            simple "x t k"
+        ] [[[
+            "x s_B" === "s_B x^2",
+            "r_i s_B" === "s_B x r_i x",
+            "r_i^-1 F_i^# q_i_1 G_i r_i" === "H_i^# q_i_2 K_i",
+            "t r_i" === "r_i t",
+            "t x" === "x t",
+            "k r_i" === "r_i k",
+            "k x" === "x k",
+            "k q^-1 t q" === "q^-1 t q k"
+        ] & for' (
+            "{s_B}" `in'`
+            (strGenerators.filterByFormat("s_{}").insertGen("s")))
+        ] & for' (
+            ("r_{i}", "F_i q{_i_1} G_i" === "H_i q{_i_2} K_i") `in'`
+            (strNumRelations, strRelations.forAll(replaceGenerator("h", "s")))
+          )
         ]
 
-groupBeta :: TuringMachine -> GroupPresentation
-groupBeta = GP . runSPReader relations
+groupBeta_1 :: MonadFail m => SemigroupPresentation_1 -> m GP.GroupPresentation
+groupBeta_1 =
+    (. unSP1) $ sp2gp [
+            group (strGenerators.filterByFormat("q{}")),
+            simple "s",
+            group (strGenerators.filterByFormat("s{}")),
+            "r_{}" `from` strNumRelations,
+            simple "x t k"
+        ] [[[
+            "x s_B" === "s_B x^2",
+            "r_i s_B" === "s_B x r_i x",
+            "r_i^-1 F_i^# q_i_1 G_i r_i" === "H_i^# q_i_2 K_i",
+            "t r_i" === "r_i t",
+            "t x" === "x t",
+            "k r_i" === "r_i k",
+            "k x" === "x k",
+            "k s^-1 q_0^-1 s t s^-1 q_0 s" === "s^-1 q_0^-1 s t s^-1 q_0 s k"
+        ] & for' (
+            "{s_B}" `in'`
+            (strGenerators.filterByFormat("s_{}").insertGen("s")))
+        ] & for' (
+            ("r_{i}", "F_i q{_i_1} G_i" === "H_i q{_i_2} K_i") `in'`
+            (strNumRelations, strRelations.forAll(replaceGenerator("h", "s")))
+          )
+        ]

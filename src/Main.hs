@@ -11,15 +11,13 @@ import Text.Megaparsec.Error (errorBundlePretty)
 import GrammarReader as Reader
 import TmsParser
 import Boolean2TM
-import SP2GP
-import GPTypes
 import TM2Tms (tm2tms)
 import TMType (TM)
-import TMTypes
-import Set (size)
+import TM2SP
+import SP2GP
+import ShowInfo
 
 import System.IO
-import Data.Map as Map
 
 data Options =
     InputFlagString | OutputFlagString
@@ -54,19 +52,13 @@ grammar2Group grammarFile errorFile = do
     result <- parseFromFile Reader.parser errorFile grammarFile
     case result of
         Left err -> hPutStrLn stderr $ "Parsing error: " ++ errorBundlePretty err
-        Right cs -> do {
-                print $ checkGrammarType cs;
-                print cs;
-                let 
-                    tm@(TM quadruples) = boolean2tm cs
-                    (GP rels) = groupBeta tm 
-                in do {  
-                    putStrLn "Number of transitions in Turing Machine";   
-                    print $ Map.size quadruples;
-                    putStrLn "Number of relations in group";
-                    print $ Set.size rels
-                }
-            }
+        Right cs -> do
+            print $ checkGrammarType cs
+            print cs
+            tm <- boolean2tm cs
+            sp <- semigroupGamma tm
+            gp <- groupBeta sp
+            putStr $ showInfo (tm, gp)
 
 tm2TMS :: TM -> IO ()
 tm2TMS tm = do

@@ -2,11 +2,12 @@
 
 module DebuggingTMTypes where
 
-import TMTypes
+import TuringMachine
 import GrammarType
   
-import qualified Data.Map as Map
 import qualified Data.List as List
+import Data.Containers.ListUtils (nubOrd)
+import Control.Monad (forM)
 
 newtype DebuggingState = DState String
         deriving (Eq, Ord, Show)
@@ -17,7 +18,7 @@ newtype DebuggingSymbol = DSymbol String
 data DebuggingMove = D DebuggingSymbol | L | R
     deriving (Eq, Ord, Show)
 
-newtype DebuggingQuadruples = DQuadruples (Map.Map (DebuggingState, DebuggingSymbol) (DebuggingMove, DebuggingState))
+newtype DebuggingQuadruples = DQuadruples (Map (DebuggingState, DebuggingSymbol) (DebuggingMove, DebuggingState))
         deriving (Eq, Ord, Show)
 
 newtype DebuggingTuringMachine = DTM DebuggingQuadruples
@@ -26,62 +27,45 @@ newtype DebuggingTuringMachine = DTM DebuggingQuadruples
 finalDState :: DebuggingState
 finalDState = DState "accepted"
 
-errorDState :: DebuggingState
-errorDState = DState "notAccepted"
-
 startDState :: DebuggingState
 startDState = DState "qWriteStartCounter"
 
 newtype SymbolsPair = SymbolsPair (Nonterminal, Int, Bool, GrammarType.Symbol, GrammarType.Symbol)
     deriving (Eq, Show)
 
-convertToTuringMachine :: DebuggingTuringMachine -> TuringMachine
-convertToTuringMachine tm@(DTM (DQuadruples quadruplesMap)) = let
-    states = getStates tm
-    symbols' = getSymbols tm
-    quadruplesMap' = Map.mapKeys (\(state, symbol) -> let
-        stateIndex = getStateIndex state states
-        symbolIndex = getSymbolIndex symbol symbols'
-        in (Q stateIndex, S symbolIndex)) quadruplesMap
-    quadruplesMap'' = Map.map (\(move, state) -> let
-        stateIndex = getStateIndex state states
-        newMove = case move of
-            DebuggingTMTypes.L -> TMTypes.L
-            DebuggingTMTypes.R -> TMTypes.R
-            D s -> C $ S $ getSymbolIndex s symbols'
-        in (newMove, Q stateIndex)) quadruplesMap'
-    in TM quadruplesMap''
+convertToTuringMachine :: MonadFail m => DebuggingTuringMachine -> m TuringMachine
+convertToTuringMachine tm@(DTM (DQuadruples quadruplesMap)) = do
+    let states' = getStates tm
+        (alphabet', symbols') = getSymbols tm
+    quadruplesList <- forM (toList quadruplesMap) $
+        \((state1, symbol1), (symbolOrMove, state2)) -> do
+            qf <- states'  !? state1
+            s  <- symbols' !? symbol1
+            sm <- case symbolOrMove of
+                    L -> return $ M toLeft
+                    R -> return $ M toRight
+                    D symbol2 -> S <$> symbols' !? symbol2
+            qt <- states'  !? state2
+            return ((qf, s), (sm, qt))
+    return $ turingMachine (fromList quadruplesList) emptyC alphabet'
 
-getStateIndex :: DebuggingState -> [DebuggingState] -> Int
-getStateIndex state states =
-    case List.elemIndex state states of
-      Just index -> index - 1 -- since states numeration starts from -1
-      Nothing -> error "No such state. Something went wrong during convertation to Turing machine."
-
-getSymbolIndex :: DebuggingSymbol -> [DebuggingSymbol] -> Int
-getSymbolIndex symbol symbols' =
-    case List.elemIndex symbol symbols' of
-      Just index -> index
-      Nothing -> error "No such symbol. Something went wrong during convertation to Turing machine."
-
-getStates :: DebuggingTuringMachine -> [DebuggingState]
+getStates :: DebuggingTuringMachine -> IsoMap DebuggingState State
 getStates (DTM (DQuadruples qdrs)) = let
-    states' = map (\(_, (_, DState state)) -> state) $ Map.toList qdrs
-    states'' = map (\((DState state, _), _) -> state) $ Map.toList qdrs
+    states' = concatMap (\((DState s1, _), (_, DState s2)) -> [s1, s2]) $
+        toList qdrs
     (DState final') = finalDState
     (DState start') = startDState
-    (DState error') = errorDState
-    in map DState $ List.nub $ error' : final' : start' : states' ++ states''
+    dstates = map DState $ nubOrd $ final' \> start' \> states'
+    in fromList $ zip (finalDState : startDState : dstates) [minBound]
 
-getSymbols :: DebuggingTuringMachine -> [DebuggingSymbol]
+getSymbols :: DebuggingTuringMachine -> (Alphabet, IsoMap DebuggingSymbol TuringMachine.Symbol)
 getSymbols (DTM (DQuadruples qdrs)) = let
-    blank = "."
-    symbols' = map (\case
-        (_, (D (DSymbol s), _)) -> s
-        _ -> "") $ Map.toList qdrs
-    filteredEmpty = filter (/= "") symbols'
-    symbols'' = map (\((_, DSymbol s), _) -> s) $ Map.toList qdrs
-    list' = List.sort $ List.nub $ filteredEmpty ++ symbols''
-    list = List.delete blank list'
-    in map DSymbol $ blank : list
-
+    blank = [blankChar]
+    dsymbols' = concatMap (\case
+        ((_, DSymbol s), (D (DSymbol s'), _)) -> [s, s']
+        ((_, DSymbol s), _) -> [s]) $ toList qdrs
+    dsymbols = map DSymbol $ List.sort $ blank \> nubOrd dsymbols'
+    in (
+        fromList $ zip (Nothing : map Just ['a'..]) [minBound..],
+        fromList $ zip (DSymbol blank : dsymbols)   [minBound..]
+      )

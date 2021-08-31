@@ -18,7 +18,9 @@
 #
 # resolver: ./custom-snapshot.yaml
 # resolver: https://example.com/snapshots/2018-01-01.yaml
-resolver: lts-12.13
+
+resolver: lts-17.11
+#resolver: lts-12.13
 
 # User packages to be built.
 # Various formats can be used as shown in the example below.
@@ -38,12 +40,8 @@ packages:
 - .
 
 extra-deps:
-- HaTeX-3.20.0.0
-- cli-0.2.0
-- megaparsec-7.0.0
-- prettyprinter-1.7.0
 - HaskellForMaths-0.4.9
-- rando-0.0.0.4
+- cli-0.2.0
 # Dependency packages to be pulled from upstream that are not in the resolver
 # using the same syntax as the packages field.
 # (e.g., acme-missiles-0.3)

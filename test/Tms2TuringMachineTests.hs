@@ -8,7 +8,8 @@ module Tms2TuringMachineTests (
 import Test.HUnit
 
 import TmsType
-import TMTypes
+import TuringMachine as TM
+import TuringMachine.Constructors (makeStandartTM, CharOrMove (C, M'))
 import Tms2TuringMachine
 
 testTms2TuringMachine :: Tms -> TuringMachine -> Assertion
@@ -44,9 +45,9 @@ tmsSimple = Tms (
     )
 
 turingMachineSimple :: TuringMachine
-turingMachineSimple = fromList [
-        ((startState, a), (C emptySymbol, finalState)),
-        ((q2,         b), (L,             q3))
+turingMachineSimple = makeStandartTM [
+        (startState, 'a', C blankChar, finalState),
+        (q2,         'b', M' toLeft,   q3)
     ]
 
 tmsLeaveStay :: Tms
@@ -61,11 +62,11 @@ tmsLeaveStay = Tms (
     )
 
 turingMachineLeaveStay :: TuringMachine
-turingMachineLeaveStay = fromList [
-        ((q2, a), (C a, q3)),
-        ((q2, b), (C b, q3)),
-        ((q2, c), (C c, q3)),
-        ((q2, emptySymbol), (C emptySymbol, q3))
+turingMachineLeaveStay = makeStandartTM [
+        (q2, 'a', C 'a', q3),
+        (q2, 'b', C 'b', q3),
+        (q2, 'c', C 'c', q3),
+        (q2, blankChar, C blankChar, q3)
     ]
 
 tmsLeaveMove :: Tms
@@ -80,11 +81,11 @@ tmsLeaveMove = Tms (
     )
 
 turingMachineLeaveMove :: TuringMachine
-turingMachineLeaveMove = fromList [
-        ((q2, emptySymbol), (R, q3)),
-        ((q2, a), (R, q3)),
-        ((q2, b), (R, q3)),
-        ((q2, c), (R, q3))
+turingMachineLeaveMove = makeStandartTM [
+        (q2, blankChar, M' toRight, q3),
+        (q2, 'a', M' toRight, q3),
+        (q2, 'b', M' toRight, q3),
+        (q2, 'c', M' toRight, q3)
     ]
 
 tmsChangeMove :: Tms
@@ -99,12 +100,12 @@ tmsChangeMove = Tms (
     )
 
 turingMachineChangeMove :: TuringMachine
-turingMachineChangeMove = fromList [
-        ((q1, c), (C emptySymbol, trans)),
-        ((trans, emptySymbol), (R, q0))
+turingMachineChangeMove = makeStandartTM [
+        (q1, 'c', C blankChar, trans),
+        (trans, blankChar, M' toRight, q0)
     ]
     where
-        trans = Q $ hash "Q_1_0"
+        trans = state $ hash "Q_1_0"
 
 tmsIdMove :: Tms
 tmsIdMove = Tms (
@@ -118,20 +119,20 @@ tmsIdMove = Tms (
     )
 
 turingMachineIdMove :: TuringMachine
-turingMachineIdMove = fromList [
-        ((q2, c), (R, q3))
+turingMachineIdMove = makeStandartTM [
+        (q2, 'c', M' toRight, q3)
     ]
 
-a :: Symbol
+{-a :: Symbol
 b :: Symbol
 c :: Symbol
-(a, b, c) = (S 97, S 98, S 99)
+(a, b, c) = (S 97, S 98, S 99)-}
 
-q0 :: TMTypes.State
-q1 :: TMTypes.State
-q2 :: TMTypes.State
-q3 :: TMTypes.State
-(q0, q1, q2, q3) = (finalState, startState, Q 2, Q 3)
+q0 :: TM.State
+q1 :: TM.State
+q2 :: TM.State
+q3 :: TM.State
+(q0, q1, q2, q3) = (finalState, startState, state 2, state 3)
 
 tmq0 :: TmsState
 tmq1 :: TmsState

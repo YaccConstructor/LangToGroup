@@ -108,7 +108,7 @@ cmd2tmsTapeCmd (
         []
 
 -- Command can not be translated to Tms format.
-cmd2tmsTapeCmd cmd = fail $ "Command '" ++ show cmd ++ "' can not be converted to '[TmsSingleTapeCommand]'"
+cmd2tmsTapeCmd cmd = Left $ "Command '" ++ show cmd ++ "' can not be converted to '[TmsSingleTapeCommand]'"
 
 cmd2tmsTapeCmds :: [TapeCommand] -> Either String [TmsCommand]
 cmd2tmsTapeCmds tapeCmds = do
@@ -131,14 +131,14 @@ cmd2tmsTapeCmds tapeCmds = do
 toValue :: Square -> Either String Char
 toValue (Value name n) =
     quotName2Char name n
-toValue _              = fail "Square is expected to be 'Value' to convert to 'Char'"
+toValue _              = Left "Square is expected to be 'Value' to convert to 'Char'"
 
 -- |Convert 'String' with 'Int' quotes to 'Char'.
 -- Character length is exactly 1, so longer strings can not be supported, so as many quotes.
 quotName2Char :: String -> Int -> Either String Char
 quotName2Char (c : "") 0 = return c
 quotName2Char (c : "") 1 = return $ toQuot c
-quotName2Char name nQuot = fail $ "Can not convert string '" ++ name ++ "' with " ++ show nQuot ++ " quotes into 'Char'."
+quotName2Char name nQuot = Left $ "Can not convert string '" ++ name ++ "' with " ++ show nQuot ++ " quotes into 'Char'."
 
 -- |Quoted (or just fancy) version of characters.
 quoted :: Data.Map.Map Char Char
