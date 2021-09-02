@@ -110,7 +110,10 @@ class Format f => Match f r where
     match :: f -> String -> r
 
 instance Match SimpleFormat Bool where
-    match (SimpleFormat st fn) s = isPrefixOf st s && isSuffixOf fn s
+    match (SimpleFormat st fn) s =
+        isPrefixOf st s &&
+        isSuffixOf fn s &&
+        length s >= length st + length fn
 
 instance MonadFail m => Match SimpleFormat (m String) where
     match f@(SimpleFormat st fn) s =
