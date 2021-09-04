@@ -3,6 +3,7 @@ module TuringMachine2Tms (turingMachine2tms, turingMachineSt2tmsSt) where
 
 import Data.Functor ((<&>))
 import Data.Maybe (fromMaybe)
+import Data.List (sort)
 
 import TmsType
 import TuringMachine
@@ -13,8 +14,8 @@ turingMachine2tms tm =
             "TMTypes_TuringMachine",
             turingMachineSt2tmsSt startState,
             [turingMachineSt2tmsSt finalState],
-            toList (tm^.quadruples) <&> turingMCmd2tms (tm^.alphabet) <&> toTmsCommand,
-            [fromMaybe '_' <$> values (tm^.alphabet)]
+            sort $ toList (tm^.quadruples) <&> turingMCmd2tms (tm^.alphabet) <&> toTmsCommand,
+            [head . show <$> (blank \> (values (tm^.alphabet) :: ShowedSymbols))]
         )
 
 -- Section of helper functions.
@@ -33,4 +34,9 @@ turingMCmd2tms alph ((iniSt, from), (act, folSt)) = (
             M m | m == toLeft -> (MoveLeft,  ChangeFromTo (symb2char from) (symb2char from))
                 | otherwise   -> (MoveRight, ChangeFromTo (symb2char from) (symb2char from))
         symb2char :: Symbol -> Char
-        symb2char = fromMaybe '_' . fromMaybe (Just '?') . (alph !?)
+        symb2char s = fromMaybe '?' $ do
+            s' <- alph !? s
+            return $
+                if s' == blank
+                then '_'
+                else head $ show s'

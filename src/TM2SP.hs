@@ -27,13 +27,13 @@ tm2sp gs rs' tm = do
 convertInput :: MonadFail m => TuringMachine -> (String, Int) -> m String
 convertInput tm ("", _) = do
     let a = tm^.alphabet
-    b <- a !? Nothing
+    b <- a !? blank
     let b' = "s_" ++ show (numSymbol b)
     return $ unwords ["h", "q_1", b', "h"]
 convertInput tm (str, pos) = do
     let a = tm^.alphabet
-    ss <- traverse (a !?) $ map Just str
-    b' <- ("s_" ++) <$> show <$> numSymbol <$> (a !? Nothing)
+    ss <- traverse (a !?) $ showedSymbols str
+    b' <- ("s_" ++) <$> show <$> numSymbol <$> (a !? blank)
     let ss' = ("s_" ++) <$> show <$> numSymbol <$> ss
         ss'' = if
             | pos < 0 ->

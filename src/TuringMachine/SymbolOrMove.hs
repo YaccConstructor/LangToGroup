@@ -1,20 +1,41 @@
 module TuringMachine.SymbolOrMove (
-    SymbolOrMove (S, M),
+    MoveOr (S, M),
+    SymbolOrMove,
+    ShowedSymbolOrMove,
+    getSymbol,
     isSymbol,
+    getMove,
     isMove,
     module TuringMachine.Symbol,
+    module TuringMachine.ShowedSymbol,
     module TuringMachine.Move,
   ) where
 
 import TuringMachine.Symbol
+import TuringMachine.ShowedSymbol
 import TuringMachine.Move
 
-data SymbolOrMove = S Symbol | M Move
-    deriving (Eq, Ord, Show)
+import Data.Maybe (isJust)
 
-isSymbol :: SymbolOrMove -> Bool
-isSymbol (S _) = True
-isSymbol _ = False
+data MoveOr s =
+      S s
+    | M Move
+    deriving (Eq, Ord)
 
-isMove :: SymbolOrMove -> Bool
-isMove = not . isSymbol
+type SymbolOrMove = MoveOr Symbol
+
+type ShowedSymbolOrMove = MoveOr ShowedSymbol
+
+getSymbol :: MonadFail m => MoveOr s -> m s
+getSymbol (S s) = return s
+getSymbol _ = fail "Symbol expected, but Move was found"
+
+isSymbol :: MoveOr s -> Bool
+isSymbol = isJust . getSymbol
+
+getMove :: MonadFail m => MoveOr s -> m Move
+getMove (M m) = return m
+getMove _ = fail "Move expected, but Symbol was found"
+
+isMove :: MoveOr s -> Bool
+isMove = isJust . getMove

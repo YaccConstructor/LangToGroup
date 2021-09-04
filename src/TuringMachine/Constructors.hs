@@ -1,7 +1,6 @@
 {-# LANGUAGE MultiWayIf, TupleSections, ScopedTypeVariables #-}
 
 module TuringMachine.Constructors (
-    CharOrMove (C, M'),
     makeStandartTM,
     crash,
     check,
@@ -17,7 +16,7 @@ module TuringMachine.Constructors (
     (||>),
     (@@>),
     loop,
-    forCs,
+    forSs,
     module TuringMachine,
   ) where
 
@@ -28,7 +27,6 @@ import Containers.PrismMap (toMap)
 
 import Control.Monad (forM_, (>=>))
 import Data.Maybe (mapMaybe)
-import Data.List.Extra (nubOrd)
 import qualified Control.Monad.State as ST
 
 infixl 8 +^>, >+^
@@ -38,53 +36,52 @@ infixl 5 ||>
 
 type LocalState = ST.State (TuringMachine, TuringMachine)
 
-data CharOrMove =
-      C Char
-    | M' Move
-
-type LocalQuadruple = (State, Char, CharOrMove, State)
+type LocalQuadruple = (State, ShowedSymbol, ShowedSymbolOrMove, State)
 
 makeStandartTM :: [LocalQuadruple] -> TuringMachine
 makeStandartTM lqs =
-    let cs = blankChar \> (nubOrd $ concatMap getCs lqs)
-        sd = fromList ([] :: [(String, State)])
-        a  = fromList $ zip (Nothing : map Just cs) [minBound..]
-    in  turingMachine (fromList $ mapMaybe (toQ a) lqs) sd a
+    let cs = fromList (concatMap getSs lqs) <\ blank :: Set ShowedSymbol
+        ls = fromList [] :: PrismMap String State
+        a  = fromList $ zip (blank : toList cs) [minBound..]
+    in  turingMachine (fromList $ mapMaybe (toQ a) lqs) ls a
       where
-        getCs :: LocalQuadruple -> [Char]
-        getCs (_, c, M' _, _) = [c]
-        getCs (_, c, C c', _) = [c, c']
+        getSs :: LocalQuadruple -> [ShowedSymbol]
+        getSs (_, s, M _, _) = [s]
+        getSs (_, s, S s', _) = [s, s']
         toQ :: Alphabet -> LocalQuadruple -> Maybe TuringMachine.Quadruple
-        toQ a (q1, c, M' m, q2) =
-            let mc = if c == blankChar then Nothing else Just c
-            in  (\c' -> ((q1, c'), (M m, q2))) <$> (a !? mc)
-        toQ a (q1, c, C c', q2) =
-            let mc  = if c  == blankChar then Nothing else Just c
-                mc' = if c' == blankChar then Nothing else Just c'
-            in  (\c1 c2 -> ((q1, c1), (S c2, q2)))
-                    <$> (a !? mc)
-                    <*> (a !? mc')
+        toQ a (q1, s, M m, q2) = do
+            s_ <- a !? s
+            return ((q1, s_), (M m, q2))
+        toQ a (q1, s, S s', q2) = do
+            s_  <- a !? s
+            s'_ <- a !? s'
+            return ((q1, s_), (S s'_, q2))
 
-forCs :: (Char -> TuringMachine) -> String -> TuringMachine
-forCs ctm cs = foldr (||>) crash $ map ctm cs -- `cs' may be changed to `nubOrd cs'
+forSs ::
+    ShowedSymbolClass s =>
+    (ShowedSymbol -> TuringMachine) ->
+    [s] ->
+    TuringMachine
+forSs sstm = foldr (||>) crash . map sstm . showedSymbols
 
 crash :: TuringMachine
 crash = makeStandartTM []
 
-check :: String -> TuringMachine
-check = forCs $ \c -> makeStandartTM [(startState, c, C c, finalState)]
+check :: ShowedSymbolClass s => [s] -> TuringMachine
+check = forSs $ \s -> makeStandartTM [(startState, s, S s, finalState)]
 
-die :: String -> TuringMachine
-die = forCs $ \c -> makeStandartTM [(startState, c, C c, startState)]
+die :: ShowedSymbolClass s => [s] -> TuringMachine
+die = forSs $ \s -> makeStandartTM [(startState, s, S s, startState)]
 
-move :: Move -> String -> TuringMachine
-move m = forCs $ \c -> makeStandartTM [(startState, c, M' m, finalState)]
+move :: ShowedSymbolClass s => Move -> [s] -> TuringMachine
+move m = forSs $ \s -> makeStandartTM [(startState, s, M m, finalState)]
 
-moveInf :: Move -> String -> TuringMachine
-moveInf m = forCs $ \c -> makeStandartTM [(startState, c, M' m, startState)]
+moveInf :: ShowedSymbolClass s => Move -> [s] -> TuringMachine
+moveInf m = forSs $ \s -> makeStandartTM [(startState, s, M m, startState)]
 
-rewrite :: String -> Char -> TuringMachine
-rewrite cs c' = forCs (\c -> makeStandartTM [(startState, c, C c', finalState)]) cs
+rewrite :: ShowedSymbolClass s => [s] -> ShowedSymbol -> TuringMachine
+rewrite ss s' =
+    forSs (\s -> makeStandartTM [(startState, s, S s', finalState)]) ss
 
 (+^>) :: String -> TuringMachine -> TuringMachine
 lbl +^> tm = tm & labeledStates <+~ (lbl, startState)
@@ -123,9 +120,9 @@ makeTMop mainAction = curry $ ST.evalState $ do
             return $ fromList $ ls1' ++ ls2'
         updateAlphabet = do
             (a1, a2) <- ST.gets $ both %~ view alphabet
-            let allChars :: [Maybe Char] = toList $ valuesSet a1 \/ valuesSet a2
+            let allChars :: [ShowedSymbol] = toList $ valuesSet a1 \/ valuesSet a2
                 newA = fromList $ zip allChars [minBound..]
-            forM_ (zip [_1, _2] [a1, a2]) $ \(tm, a) ->
+            forM_ [(_1, a1), (_2, a2)] $ \(tm, a) ->
                 tm.symbols %= ((a !?) >=> (newA !?))
             return newA
         --here you must use either FlexibleContexts extension or type definition
@@ -170,5 +167,5 @@ loop =
         then startState
         else s
 
-rewriteAndMove :: String -> Char -> Move -> TuringMachine
-rewriteAndMove s c m = rewrite s c ++> move m [c]
+rewriteAndMove :: ShowedSymbolClass s => [s] -> ShowedSymbol -> Move -> TuringMachine
+rewriteAndMove ss s m = rewrite ss s ++> move m [s]

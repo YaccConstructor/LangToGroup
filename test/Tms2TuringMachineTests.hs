@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module Tms2TuringMachineTests (
     testTms2TuringMachineSimple,
     testTms2TuringMachineLeaveStay,
@@ -9,7 +11,7 @@ import Test.HUnit
 
 import TmsType
 import TuringMachine as TM
-import TuringMachine.Constructors (makeStandartTM, CharOrMove (C, M'))
+import TuringMachine.Constructors (makeStandartTM)
 import Tms2TuringMachine
 
 testTms2TuringMachine :: Tms -> TuringMachine -> Assertion
@@ -41,13 +43,13 @@ tmsSimple = Tms (
             TmsCommand (tmq1, [TmsSingleTapeCommand (ChangeFromTo 'a' '_', Stay)],     tmq0),
             TmsCommand (tmq2, [TmsSingleTapeCommand (ChangeFromTo 'b' 'b', MoveLeft)], tmq3)
         ],
-        ["abc"]
+        ["ab"]
     )
 
 turingMachineSimple :: TuringMachine
 turingMachineSimple = makeStandartTM [
-        (startState, 'a', C blankChar, finalState),
-        (q2,         'b', M' toLeft,   q3)
+        (startState, "a", S blank, finalState),
+        (q2,         "b", M toLeft,   q3)
     ]
 
 tmsLeaveStay :: Tms
@@ -63,10 +65,10 @@ tmsLeaveStay = Tms (
 
 turingMachineLeaveStay :: TuringMachine
 turingMachineLeaveStay = makeStandartTM [
-        (q2, 'a', C 'a', q3),
-        (q2, 'b', C 'b', q3),
-        (q2, 'c', C 'c', q3),
-        (q2, blankChar, C blankChar, q3)
+        (q2, "a", S "a", q3),
+        (q2, "b", S "b", q3),
+        (q2, "c", S "c", q3),
+        (q2, blank, S blank, q3)
     ]
 
 tmsLeaveMove :: Tms
@@ -82,10 +84,10 @@ tmsLeaveMove = Tms (
 
 turingMachineLeaveMove :: TuringMachine
 turingMachineLeaveMove = makeStandartTM [
-        (q2, blankChar, M' toRight, q3),
-        (q2, 'a', M' toRight, q3),
-        (q2, 'b', M' toRight, q3),
-        (q2, 'c', M' toRight, q3)
+        (q2, blank, M toRight, q3),
+        (q2, "a", M toRight, q3),
+        (q2, "b", M toRight, q3),
+        (q2, "c", M toRight, q3)
     ]
 
 tmsChangeMove :: Tms
@@ -96,13 +98,13 @@ tmsChangeMove = Tms (
         [
             TmsCommand (tmq1, [TmsSingleTapeCommand (ChangeFromTo 'c' '_', MoveRight)], tmq0)
         ],
-        ["abc"]
+        ["c"]
     )
 
 turingMachineChangeMove :: TuringMachine
 turingMachineChangeMove = makeStandartTM [
-        (q1, 'c', C blankChar, trans),
-        (trans, blankChar, M' toRight, q0)
+        (q1, "c", S blank, trans),
+        (trans, blank, M toRight, q0)
     ]
     where
         trans = state $ hash "Q_1_0"
@@ -115,12 +117,12 @@ tmsIdMove = Tms (
         [
             TmsCommand (tmq2, [TmsSingleTapeCommand (ChangeFromTo 'c' 'c', MoveRight)], tmq3)
         ],
-        ["abc"]
+        ["c"]
     )
 
 turingMachineIdMove :: TuringMachine
 turingMachineIdMove = makeStandartTM [
-        (q2, 'c', M' toRight, q3)
+        (q2, "c", M toRight, q3)
     ]
 
 {-a :: Symbol

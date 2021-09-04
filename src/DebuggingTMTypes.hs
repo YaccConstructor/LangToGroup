@@ -1,18 +1,16 @@
-{-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE LambdaCase, ScopedTypeVariables #-}
 
 module DebuggingTMTypes where
 
 import TuringMachine
 import GrammarType
-  
-import qualified Data.List as List
-import Data.Containers.ListUtils (nubOrd)
+
 import Control.Monad (forM)
 
 newtype DebuggingState = DState String
         deriving (Eq, Ord, Show)
 
-newtype DebuggingSymbol = DSymbol String
+newtype DebuggingSymbol = DSymbol { unDSymbol :: String }
         deriving (Eq, Ord, Show)
 
 data DebuggingMove = D DebuggingSymbol | L | R
@@ -33,7 +31,10 @@ startDState = DState "qWriteStartCounter"
 newtype SymbolsPair = SymbolsPair (Nonterminal, Int, Bool, GrammarType.Symbol, GrammarType.Symbol)
     deriving (Eq, Show)
 
-convertToTuringMachine :: MonadFail m => DebuggingTuringMachine -> m TuringMachine
+convertToTuringMachine ::
+    MonadFail m =>
+    DebuggingTuringMachine ->
+    m TuringMachine
 convertToTuringMachine tm@(DTM (DQuadruples quadruplesMap)) = do
     let states' = getStates tm
         (alphabet', symbols') = getSymbols tm
@@ -51,21 +52,24 @@ convertToTuringMachine tm@(DTM (DQuadruples quadruplesMap)) = do
 
 getStates :: DebuggingTuringMachine -> IsoMap DebuggingState State
 getStates (DTM (DQuadruples qdrs)) = let
-    states' = concatMap (\((DState s1, _), (_, DState s2)) -> [s1, s2]) $
-        toList qdrs
-    (DState final') = finalDState
-    (DState start') = startDState
-    dstates = map DState $ nubOrd $ final' \> start' \> states'
-    in fromList $ zip (finalDState : startDState : dstates) [minBound]
+    dstates :: Set DebuggingState =
+        fromList $
+            concatMap (\((s1, _), (_, s2)) -> [s1, s2]) $
+                toList qdrs
+    dstates' = finalDState \> startDState \> dstates
+    in fromList $ zip (finalDState +> startDState +> toList dstates') [minBound..]
 
 getSymbols :: DebuggingTuringMachine -> (Alphabet, IsoMap DebuggingSymbol TuringMachine.Symbol)
 getSymbols (DTM (DQuadruples qdrs)) = let
-    blank = [blankChar]
-    dsymbols' = concatMap (\case
-        ((_, DSymbol s), (D (DSymbol s'), _)) -> [s, s']
-        ((_, DSymbol s), _) -> [s]) $ toList qdrs
-    dsymbols = map DSymbol $ List.sort $ blank \> nubOrd dsymbols'
+    blank' = DSymbol "."
+    dsymbols :: Set DebuggingSymbol =
+        fromList $
+            concatMap (\case
+                    ((_, s), (D s', _)) -> [s, s']
+                    ((_, s), _) -> [s]) $
+                toList qdrs
+    dsymbols' = blank' \> dsymbols
     in (
-        fromList $ zip (Nothing : map Just ['a'..]) [minBound..],
-        fromList $ zip (DSymbol blank : dsymbols)   [minBound..]
+        fromList $ zip (blank  : (read <$> unDSymbol <$> toList dsymbols')) [minBound..],
+        fromList $ zip (blank' : toList dsymbols')   [minBound..]
       )

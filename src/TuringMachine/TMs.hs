@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module TuringMachine.TMs (
     testingSetTMs,
     module TuringMachine,
@@ -10,8 +12,8 @@ import ShowInfo
 import TuringMachine.Constructors
 import TuringMachine.Optimization
 
--- here '.' == blankChar (from TuringMachine.Symbol)
--- I use '.' for more readable code
+-- here "." == blankChar (from TuringMachine.Symbol)
+-- I use "." for more readable code
 
 simple :: String -> TuringMachine
 simple s = foldr1 (++>) $ move toRight <$> pure <$> s
@@ -34,12 +36,12 @@ dyck_v1 =
     die "*" ||>
     loop (
         (
-                rewriteAndMove "(" '.' toRight ++>
-                (moveInf toRight "()*" ||> rewrite "." '*')
+                rewriteAndMove "(" "." toRight ++>
+                (moveInf toRight "()*" ||> rewrite "." "*")
               ||>
-                rewriteAndMove ")" '.' toRight ++>
+                rewriteAndMove ")" "." toRight ++>
                 (moveInf toRight "()*" ||> move toLeft ".") ++>
-                (rewriteAndMove "*" '.' toLeft ||> die ".()")
+                (rewriteAndMove "*" "." toLeft ||> die ".()")
           ) ++> (
             moveInf toLeft "()*" ||> move toRight "."
           )
@@ -50,20 +52,20 @@ dyck_v2 = optimize maxO $
     check "." ||>
     die ")" ||>
     loop (
-        rewriteAndMove "(" '.' toRight ++>
-        (rewrite "(" '{' ||> rewrite ")" '}' ||> die ".")
+        rewriteAndMove "(" "." toRight ++>
+        (rewrite "(" "{" ||> rewrite ")" "}" ||> die ".")
       ) ||>
     loop (
-        rewriteAndMove "{" '.' toRight ++>
+        rewriteAndMove "{" "." toRight ++>
         (
             moveInf toRight "{}" ||>
-            rewriteAndMove "(" '{' toRight ||>
-            rewriteAndMove ")" '}' toRight ||>
+            rewriteAndMove "(" "{" toRight ||>
+            rewriteAndMove ")" "}" toRight ||>
             die "."
           ) ++>
         (
-            rewrite "(" '{' ||>
-            rewrite ")" '}' ||>
+            rewrite "(" "{" ||>
+            rewrite ")" "}" ||>
             die "."
           ) ++>
         (
@@ -71,22 +73,22 @@ dyck_v2 = optimize maxO $
             move toRight "."
           )
       ) ||>
-    loop (rewriteAndMove "}" '.' toRight)
+    loop (rewriteAndMove "}" "." toRight)
 
 dyck_v3 :: TuringMachine
 dyck_v3 = optimize maxO $
     check "." ||>
     die ")" ||>
     loop (
-        rewriteAndMove "(" '.' toRight @@>
-        rewriteAndMove ")" '.' toRight ++>
+        rewriteAndMove "(" "." toRight @@>
+        rewriteAndMove ")" "." toRight ++>
         (
             die "." ||>
             (
-                rewriteAndMove "(" '.' toRight ++>
+                rewriteAndMove "(" "." toRight ++>
                 (
                     moveInf toRight "(" ||>
-                    rewrite ")" '(' ||>
+                    rewrite ")" "(" ||>
                     die "."
                   ) ++>
                 (
@@ -102,9 +104,9 @@ badEvenPalindrome a =
     check "." ||>
     loop (
         foldr1 (||>) [
-            rewriteAndMove [c] '.' toRight ++>
+            rewriteAndMove [c] "." toRight ++>
             (moveInf toRight a ||> move toLeft ".") ++>
-            (rewrite [c] '.' ||> die ('.':a)) ++>
+            (rewrite [c] "." ||> die ('.' : a)) ++>
             move toLeft "." ++>
             (moveInf toLeft a ||> move toRight ".")
           | c <- a
@@ -116,9 +118,9 @@ evenPalindrome a =
     check "." ||>
     loop (
         foldr1 (||>) [
-            rewriteAndMove [c] '.' toRight ++>
+            rewriteAndMove [c] "." toRight ++>
             (moveInf toRight a ||> move toLeft ".") ++>
-            (rewrite [c] '.' ||> die ('.':a))
+            (rewrite [c] "." ||> die ('.' : a))
           | c <- a
           ] ++>
         move toLeft "." ++>

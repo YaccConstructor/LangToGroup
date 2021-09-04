@@ -1,4 +1,4 @@
-{-# LANGUAGE TemplateHaskell, TupleSections, RankNTypes, TypeApplications #-}
+{-# LANGUAGE TemplateHaskell, TupleSections, RankNTypes, TypeApplications, OverloadedStrings #-}
 
 module TuringMachine (
     LabeledStates,
@@ -36,7 +36,7 @@ import GHC.Generics ((:.:)(Comp1, unComp1))
 
 type LabeledStates = PrismMap String State
 
-type Alphabet = IsoMap (Maybe Char) Symbol
+type Alphabet = IsoMap ShowedSymbol Symbol
 
 data TuringMachine = TM
   { _quadruples :: Quadruples
@@ -64,24 +64,16 @@ instance Show TuringMachine where
                             ((tm^.labeledStates) !?)
                             (show . numState)
                             q1
-                    s'  = pure $
+                    s'  = show $
                         maybe'
-                            (
-                                maybe'
-                                    ((tm^.alphabet) !?)
-                                    (const $ Just '?')
-                              )
-                            (const blankChar)
+                            ((tm^.alphabet) !?)
+                            (const "?")
                             s
                     sm' = case sm of
-                        S s_ -> pure $
+                        S s_ -> show $
                             maybe'
-                                (
-                                    maybe'
-                                        ((tm^.alphabet) !?)
-                                        (const $ Just '?')
-                                  )
-                                (const blankChar)
+                                ((tm^.alphabet) !?)
+                                (const "?")
                                 s_
                         M m  -> show m
                     q2' =
@@ -154,7 +146,7 @@ strLabeledStates :: TMGetter (Set String)
 strLabeledStates = labeledStates . to keysSet
 
 strSymbols :: TMGetter (Set String)
-strSymbols = alphabet . to (gmap (maybe [blankChar] pure) . valuesSet)
+strSymbols = alphabet . to (gmap (show :: ShowedSymbol -> String) . valuesSet)
 
 strNumStates :: TMGetter (Set String)
 strNumStates = allStates . to (gmap (show . numState))

@@ -66,7 +66,7 @@ removeUselessQuadruples = do
         statesToS =
             allQs \\ statesToM \\ fromList [startState, finalState]
         loops =
-            (\((q1, s), (ms, q2)) -> (q1 :: State) == q2 && ms == S s) <?> qs
+            isLoop <?> qs
         qsToStatesToS =
             (stateToFrom statesToS <?> qs) \\ loops
         statesAndSymbolsToS :: [(State, Symbol)] =
@@ -82,6 +82,8 @@ removeUselessQuadruples = do
     when (size qs > size qs')
         isChanged
       where
+        isLoop :: Predicate Quadruple
+        isLoop ((q1, s), (sm, q2)) = q1 == q2 && sm == S s
         withAnyMove :: Predicate QuadrupleToPart
         withAnyMove (M _, _) = True
         withAnyMove _ = False
@@ -179,7 +181,7 @@ fixIfQuadrupleFromFinalState = do
     qs <- use quadruples
     let fromFinalState = views (_1._1) (== finalState)
     when (or $ fromFinalState <$> toList qs) $ do
-        allSs <- uses alphabet (map (fromMaybe blankChar) . values)
+        allSs :: [ShowedSymbol] <- uses alphabet values
         put $ die allSs
 
 fixIfWithoutFinalState :: TMConverting
@@ -187,7 +189,7 @@ fixIfWithoutFinalState = do
     qs <- use quadruples
     let hasFinalState = views (_2._2) (== finalState)
     when (and $ not.hasFinalState <$> toList qs) $ do
-        allSs <- uses alphabet (map (fromMaybe blankChar) . values)
+        allSs :: [ShowedSymbol] <- uses alphabet values
         put $ die allSs
 
 optimization :: Level -> TMConverting

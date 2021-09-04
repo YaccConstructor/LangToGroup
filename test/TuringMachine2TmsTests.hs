@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module TuringMachine2TmsTests where
 
 import Test.HUnit
@@ -6,19 +8,17 @@ import TmsType
 import TuringMachine.Constructors
 import TuringMachine2Tms
 
-
 testTuringMachine2Tms :: Assertion
 testTuringMachine2Tms = assertEqual "Invalid conversion from TMTypes.TuringMachine to Tms" (turingMachine2tms turingMachine) tms
     where
         turingMachine :: TuringMachine
         turingMachine = makeStandartTM [
-                (startState, 'a', C 'b',      q2),
-                (q2,         'b', M' toLeft,  q4),
-                (q4,         'a', M' toRight, q3),
-                (q3,         'c', C 'a',      q2),
-                (startState, blankChar, C blankChar, finalState)
+                (q1, "a", S "b",     q2),
+                (q2, "b", M toLeft,  q4),
+                (q4, "a", M toRight, q3),
+                (q3, "c", S "a",     q2),
+                (q1, blank, S blank, q0)
             ]
-
         tms :: Tms
         tms = Tms (
                 "TMTypes_TuringMachine",
@@ -33,6 +33,5 @@ testTuringMachine2Tms = assertEqual "Invalid conversion from TMTypes.TuringMachi
                 ],
                 ["abc"]
             )
-
-        (q2, q3, q4) = (state 2, state 3, state 4)
+        (q0, q1, q2, q3, q4) = (finalState, startState, state 2, state 3, state 4)
         [tmq0, tmq1, tmq2, tmq3, tmq4] = TmsState . ("Q_" ++) . show <$> [0 .. 4]

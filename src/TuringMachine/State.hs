@@ -9,7 +9,7 @@ module TuringMachine.State (
   ) where
 
 newtype State = Q { numState :: Int }
-    deriving (Eq, Ord, Num, Enum, Show)
+    deriving (Eq, Ord, Num, Enum)
 
 instance Bounded State where
     minBound = Q 0

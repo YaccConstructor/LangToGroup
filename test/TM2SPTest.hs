@@ -1,4 +1,4 @@
-{-# LANGUAGE TupleSections #-}
+{-# LANGUAGE TupleSections, OverloadedStrings #-}
 
 module TM2SPTest (
     TM2SPTest.test,
@@ -160,7 +160,7 @@ testingSet = flip addValuesFromMapByTitle testingSetTMs $ fromList $ [
 test :: Test
 test = TestLabel "Correctness of constructing semigroup from machine" $
     TestList $ flip map testingSet $ \(testingTM, testingWords) ->
-        TestLabel (title testingTM) $
+        TestLabel (show $ title testingTM) $
             TestList $ flip map testingWords $ \(word, ans) ->
                 TestLabel ("\"" ++ word ++ "\" " ++ if ans then "V" else "X") $
                     let tm = withoutTitle testingTM

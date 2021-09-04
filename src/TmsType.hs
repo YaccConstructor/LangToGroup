@@ -16,11 +16,11 @@ import Prettyprinter
 --
 -- 'ChangeFromTo f t' is change it from 'f' to 't'.
 data TmsTapeSquare = Leave | ChangeFromTo Char Char
-    deriving (Eq)
+    deriving (Eq, Ord)
 
 -- |Type of Tms tape head movement
 data TmsTapeHeadMovement = MoveLeft | Stay | MoveRight
-    deriving (Eq)
+    deriving (Eq, Ord)
 
 instance Show TmsTapeHeadMovement where
     show MoveLeft  = "<"
@@ -34,7 +34,7 @@ newtype TmsState = TmsState String
 -- |Type of Tms command for one tape.
 -- TmsSingleTapeCommand (action, movement).
 newtype TmsSingleTapeCommand = TmsSingleTapeCommand (TmsTapeSquare, TmsTapeHeadMovement)
-    deriving (Eq)
+    deriving (Eq, Ord)
 
 -- |Type of Tms single tape command
 type OneTapeTMCommand = (TmsState, TmsSingleTapeCommand, TmsState)
@@ -44,7 +44,7 @@ toTmsCommand (ini, cmd, fol) = TmsCommand (ini, [cmd], fol)
 
 -- |Type of Tms command for entire Turing machine.
 newtype TmsCommand = TmsCommand (TmsState, [TmsSingleTapeCommand], TmsState)
-    deriving (Eq)
+    deriving (Eq, Ord)
 
 -- |Type of Tms format.
 -- Tms            (name,   init      accept        commands,     tapeAlphabets).

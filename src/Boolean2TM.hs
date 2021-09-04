@@ -1,6 +1,6 @@
 {-# LANGUAGE TupleSections #-}
 
-module Boolean2TM (boolean2tm) where
+module Boolean2TM (boolean2tm, boolean2tm') where
 
 import GrammarType
 import DebuggingTMTypes
@@ -12,7 +12,7 @@ import qualified Data.Map as Map
 import Data.List
 import Data.Maybe
 import TuringMachine (TuringMachine)
- 
+
 boolean2tm :: MonadFail m => Grammar -> m TuringMachine
 boolean2tm grammar = convertToTuringMachine $ boolean2tm' grammar
 

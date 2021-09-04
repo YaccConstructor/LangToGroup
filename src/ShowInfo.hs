@@ -1,5 +1,7 @@
+{-# LANGUAGE MultiParamTypeClasses, OverloadedStrings #-}
+
 module ShowInfo (
-    Title,
+    Title (Title),
     WithTitle,
     withTitle,
     title,
@@ -13,10 +15,23 @@ import GroupPresentation as GP
 
 import Control.Lens (imap)
 import Data.List (intercalate)
+import Data.String (IsString (fromString))
 
-type Title = String
+newtype Title = Title String
+    deriving (Eq, Ord)
+
+instance Show Title where
+    show (Title t) = t
+
+instance IsString Title where
+    fromString = Title
 
 newtype WithTitle a = WT (Title, a)
+
+instance Insertable Title Char where
+    insert = (fmap.fmap) return unsafeInsert
+    unsafeInsert c (Title t) = Title $ c : t
+    (Title t) <+ c = Title $ t ++ [c]
 
 withTitle :: Title -> a -> WithTitle a
 withTitle = curry WT
@@ -28,30 +43,31 @@ withoutTitle :: WithTitle a -> a
 withoutTitle (WT (_, a)) = a
 
 class ShowInfo a where
-    showTitle :: a -> String
+    showTitle :: a -> Title
     showInfo :: a -> String
     showTitleAndInfo :: a -> String
     showTitleAndInfo a =
         addTitleWithNewLine (showTitle a) (showInfo a)
-    showListTitle :: [a] -> String
+    showListTitle :: [a] -> Title
     showListTitle = const "List"
     showListInfo :: [a] -> String
     showListInfo as =
         let titleLength = length $ show $ length as - 1
             prettyShowNum n =
                 let nAsStr = show n
-                in  nAsStr ++ replicate (titleLength - length nAsStr) ' '
+                in  Title $
+                        nAsStr ++ replicate (titleLength - length nAsStr) ' '
         in  concat $
                 imap (\i a ->
                     addTitleWithoutNewLine (prettyShowNum i) (showInfo a)
                   ) as
 
 addTitleWithNewLine :: Title -> String -> String
-addTitleWithNewLine t =
+addTitleWithNewLine (Title t) =
     ((t ++ ":\n") ++) . unlines . map ("    " ++ ) . lines
 
 addTitleWithoutNewLine :: Title -> String -> String
-addTitleWithoutNewLine t =
+addTitleWithoutNewLine (Title t) =
     unlines .
     imap (\i -> (++) (
         if i == 0

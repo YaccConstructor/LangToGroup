@@ -5,11 +5,10 @@ module TuringMachine.Symbol (
     symbol,
     numSymbol,
     blankSymbol,
-    blankChar,
   ) where
 
 newtype Symbol = S { numSymbol :: Int }
-    deriving (Eq, Ord, Num, Enum, Show)
+    deriving (Eq, Ord, Num, Enum)
 
 instance Bounded Symbol where
     minBound = S 0
@@ -20,6 +19,3 @@ symbol = S
 
 blankSymbol :: Symbol
 blankSymbol = S 0
-
-blankChar :: Char
-blankChar = '.'

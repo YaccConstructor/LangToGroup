@@ -18,7 +18,7 @@ type Depth = Maybe Int
 data RuleType =
       Direct Int
     | Inverse Int
-    deriving (Eq, Ord, Show)
+    deriving (Eq, Ord)
 
 type Rule = (GWord, GWord)
 

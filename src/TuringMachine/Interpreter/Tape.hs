@@ -7,15 +7,19 @@ module TuringMachine.Interpreter.Tape (
     fromString,
   ) where
 
-import TuringMachine.Move
-import TuringMachine.Symbol
+import TuringMachine.SymbolOrMove
 import Lens
 
-import Control.Monad (guard)
-import Data.List (intersperse)
-import Data.Maybe (fromMaybe, isNothing)
+import System.Console.ANSI (
+    Color(Green),
+    ColorIntensity (Vivid),
+    ConsoleLayer (Foreground),
+    Underlining (SingleUnderline),
+    SGR (Reset, SetUnderlining, SetColor),
+    setSGRCode
+  )
 
-type TapeSymbol = Maybe Char
+type TapeSymbol = ShowedSymbol
 
 type TapePart = [TapeSymbol]
 
@@ -33,11 +37,15 @@ instance Eq Tape where
 
 instance Show Tape where
     show (Tape l t r) =
-        let toChar = fromMaybe ' '
-            l' = toChar <$> reverse l
-            t' = [toChar t]
-            r' = toChar <$> r
-        in  intersperse ' ' l' ++ "[" ++ t' ++ "]" ++ intersperse ' ' r'
+        show l ++
+        setSGRCode [SetColor Foreground Vivid Green] ++
+        "[" ++
+        setSGRCode [Reset, SetUnderlining SingleUnderline] ++
+        show t ++
+        setSGRCode [Reset, SetColor Foreground Vivid Green] ++
+        "]" ++
+        setSGRCode [Reset] ++
+        show r
 
 makeLenses ''Tape
 
@@ -46,27 +54,26 @@ move = to . go where
     go m (Tape l t r)
         | m == toLeft =
             let l' = if null l then [] else tail l
-                t' = if null l then Nothing else head l
-                r' = if null r && isNothing t then [] else t : r
+                t' = if null l then blank else head l
+                r' = if null r && isBlank t then [] else t : r
             in  Tape l' t' r'
         | otherwise =
-            let l' = if null l && isNothing t then [] else t : l
-                t' = if null r then Nothing else head r
+            let l' = if null l && isBlank t then [] else t : l
+                t' = if null r then blank else head r
                 r' = if null r then [] else tail r
             in  Tape l' t' r'
 
 fromString :: String -> Int -> Tape
 fromString s i =
-    let s' = (\c -> do { guard $ c /= blankChar; return c }) <$> s
-        (l, t, r) = splitByIndex i s'
+    let (l, t, r) = splitByIndex i $ showedSymbols s
     in  Tape (reverse l) t r
       where
         splitByIndex i_ s'_
-            | null s'_ = ([], Nothing, [])
-            | i_ < 0   = ([], Nothing, replicate (-i_-1) Nothing ++ s'_)
+            | null s'_ = ([], blank, [])
+            | i_ < 0   = ([], blank, replicate (-i_-1) blank ++ s'_)
             | otherwise = splitByIndex' i_ s'_
         splitByIndex' i_ s'_
-            | null s'_ = (replicate i_ Nothing, Nothing, [])
+            | null s'_ = (replicate i_ blank, blank, [])
             | i_ == 0  = ([], head s'_, tail s'_)
             | otherwise =
                 let (l', t', r') = splitByIndex' (i_-1) (tail s'_)

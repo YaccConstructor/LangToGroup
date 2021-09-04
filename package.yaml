@@ -44,6 +44,7 @@ dependencies:
 - template-haskell
 - haskell-src-meta
 - extra
+- ansi-terminal
 
 ghc-options: 
     -Wall

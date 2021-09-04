@@ -14,7 +14,7 @@ import Data.List as List
 generateTestLabel :: Maybe TuringMachine -> InterpreterInputData -> String -> Bool -> Test
 generateTestLabel Nothing input _ _ =
     TestLabel ("Test for grammar " ++ inId input) $
-        TestCase $ assertString "Turing Machine wasn't built"
+        TestCase $ assertFailure "Turing Machine wasn't built"
 generateTestLabel (Just tm) input word accepted = let
     testCase = generateTestCase tm input word accepted in
     TestLabel ("Test for grammar " ++ inId input) testCase
