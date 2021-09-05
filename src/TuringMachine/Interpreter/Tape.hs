@@ -11,11 +11,11 @@ import TuringMachine.SymbolOrMove
 import Lens
 
 import System.Console.ANSI (
+    SGR (Reset, SetConsoleIntensity, SetColor),
+    ConsoleLayer (Foreground),
     Color(Green),
     ColorIntensity (Vivid),
-    ConsoleLayer (Foreground),
-    Underlining (SingleUnderline),
-    SGR (Reset, SetUnderlining, SetColor),
+    ConsoleIntensity (BoldIntensity),
     setSGRCode
   )
 
@@ -38,11 +38,9 @@ instance Eq Tape where
 instance Show Tape where
     show (Tape l t r) =
         show l ++
-        setSGRCode [SetColor Foreground Vivid Green] ++
+        setSGRCode [SetColor Foreground Vivid Green, SetConsoleIntensity BoldIntensity] ++
         "[" ++
-        setSGRCode [Reset, SetUnderlining SingleUnderline] ++
         show t ++
-        setSGRCode [Reset, SetColor Foreground Vivid Green] ++
         "]" ++
         setSGRCode [Reset] ++
         show r
