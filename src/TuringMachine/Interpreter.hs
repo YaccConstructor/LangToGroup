@@ -8,6 +8,7 @@ module TuringMachine.Interpreter (
     initWS,
     run,
     smartRun,
+    superSmartRun,
     module TuringMachine.Interpreter.Tape,
     module TuringMachine,
   ) where
@@ -58,3 +59,21 @@ smartRun tm ws =
             if qf == qt && S s == sm
             then [ws, ws']
             else ws : smartRun tm ws'
+
+superSmartRun ::
+    MonadFail m =>
+    TuringMachine ->
+    WorkingState ->
+    m [WorkingState]
+superSmartRun tm ws =
+    case step tm ws of
+        Nothing ->
+            if ws^.currentState == finalState
+            then return [ws]
+            else fail "Can't find step from non-final state"
+        Just (((qf, s), (sm, qt)), ws') ->
+            if qf == qt && S s == sm
+            then return [ws, ws']
+            else do
+                wss <- superSmartRun tm ws'
+                return (ws : wss)

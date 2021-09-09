@@ -12,6 +12,7 @@ import TM2SP.Generators
 import TM2SP.Relations
 import TuringMachine
 import qualified SemigroupPresentation as SP
+import ShowInfo
 
 tm2sp ::
     MonadFail m =>
@@ -77,6 +78,11 @@ semigroupGamma =
         ] & for' ("s_{B}" `in'` strNumSymbols)]
 
 newtype SemigroupPresentation_1 = SP1 { unSP1 :: SP.SemigroupPresentation }
+
+instance ShowInfo (SemigroupPresentation_1) where
+    showTitle = const $ Title "Semigroup Presentation"
+    showInfo (SP1 sp) = showInfo sp
+    showListTitle = const $ Title "List of Semigroup Presentations"
 
 semigroupGamma_1 :: MonadFail m => TuringMachine -> m SemigroupPresentation_1
 semigroupGamma_1 =

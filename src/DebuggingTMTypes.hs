@@ -3,6 +3,7 @@
 module DebuggingTMTypes where
 
 import TuringMachine
+import TuringMachine.Optimization
 import GrammarType
 
 import Control.Monad (forM)
@@ -48,7 +49,7 @@ convertToTuringMachine tm@(DTM (DQuadruples quadruplesMap)) = do
                     D symbol2 -> S <$> symbols' !? symbol2
             qt <- states'  !? state2
             return ((qf, s), (sm, qt))
-    return $ turingMachine (fromList quadruplesList) emptyC alphabet'
+    return $ safeOptimize O1 $ turingMachine (fromList quadruplesList) emptyC alphabet'
 
 getStates :: DebuggingTuringMachine -> IsoMap DebuggingState State
 getStates (DTM (DQuadruples qdrs)) = let
