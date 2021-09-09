@@ -6,7 +6,6 @@ import Prelude hiding (Word)
 import Text.LaTeX.Base.Render
 import Text.LaTeX.Base
 import Lib
-import Data.Tuple.Utils
 import Data.Graph.Inductive.PatriciaTree (Gr)
 import Data.Text.Lazy (fromStrict, replace, pack)
 import Data.GraphViz
@@ -15,6 +14,9 @@ import Data.GraphViz.Attributes.Complete
 import Data.Text (Text)
 import qualified Data.ByteString.Lazy as B
 import Data.Text.Lazy.Encoding
+
+snd3 :: (a, b, c) -> b
+snd3 (_, b, _) = b
 
 tex2text :: LaTeXM a -> Data.Text.Text
 tex2text = render . execLaTeXM

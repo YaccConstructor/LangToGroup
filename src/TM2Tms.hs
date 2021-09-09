@@ -5,7 +5,6 @@ import Data.List (transpose, intercalate)
 import Data.Set (toList)
 import Data.Map (fromList, lookup, Map)
 import Data.List.NonEmpty (reverse, NonEmpty(..), length)
-import Data.Tuple.Utils (snd3)
 import Data.Maybe (fromMaybe)
 
 import TMType
@@ -125,7 +124,7 @@ cmd2tmsTapeCmds tapeCmds = do
         makeIdTapeCommand (_, _, st) = (st, TmsSingleTapeCommand (Leave, Stay), st)
         startState = mergeMultipleNames . fmap (\(TmsState s, _, _) -> s)
         finalState = mergeMultipleNames . fmap (\(_, _, TmsState f) -> f)
-        commands = fmap snd3
+        commands = fmap $ \(_, x, _) -> x
 
 -- |Convert 'Square' to 'Char'.
 toValue :: Square -> Either String Char

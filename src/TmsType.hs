@@ -3,9 +3,7 @@
 
 module TmsType where
 
-import Data.Tuple.Utils (fst3, snd3, thd3)
 import Data.List (intercalate)
-import Data.List.Utils (replace)
 import GHC.Unicode (isAlphaNum)
 
 import Prettyprinter
@@ -90,4 +88,21 @@ instance Show Tms where
 
 -- |Process string so that it does not contain illegal characters.
 filterStateName :: String -> String
-filterStateName = replace "^" "v" . filter (\c -> isAlphaNum c || elem c ['_', '^'])
+filterStateName = replace '^' 'v' . filter (\c -> isAlphaNum c || elem c ['_', '^'])
+  where
+    replace :: Eq a => a -> a -> [a] -> [a]
+    replace = replace' []
+    replace' :: Eq a => [a] -> a -> a -> [a] -> [a]
+    replace' r x y [] = reverse r
+    replace' r x y (z:zs)
+        | x == z =    replace' (y:r) x y zs
+        | otherwise = replace' (z:r) x y zs
+
+fst3 :: (a, b, c) -> a
+fst3 (a, _, _) = a
+
+snd3 :: (a, b, c) -> b
+snd3 (_, b, _) = b
+
+thd3 :: (a, b, c) -> c
+thd3 (_, _, c) = c

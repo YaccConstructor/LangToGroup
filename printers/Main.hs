@@ -28,7 +28,6 @@ import SMInterpreter()
 import Helpers
 import DotGraphWriter()
 import MapleFuncWriter()
-import Data.Tuple.Utils
 import Console.Options
 import Data.List (isSuffixOf)
 
@@ -244,6 +243,7 @@ printPresentationGap is_det grammar outFileName = do
 printExample :: Bool -> Grammar -> String -> IO()
 printExample is_det grammar outFileName = renderFile outFileName exampleLatex
     where
+        fst3 (x, _, _) = x
         symm = toSymm is_det
         exampleLatex = execLaTeXM $
             do
