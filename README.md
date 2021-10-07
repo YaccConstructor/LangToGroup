@@ -1,6 +1,8 @@
 # LangToGroup
 
 This project provides an opportunity to build a grammar group representation in two ways, which is displayed in the following picture:
+![](media/approaches.png)
+
 
 
 ## First approach
@@ -9,7 +11,7 @@ Implementation of [Isoperimetric and Isodiametric Functions of Groups](https://a
 Implementation algorithm building the presentation of the group for a formal language with the preservation of the language. The implementation of this algorithm is necessary for research in the field of formal languages with the involvement of the group-theoretical methods. At present, there are only theoretical works showing the possibility of such construction, however, the algorithm and its implementation are absent up to this point. As far as we know, this implementation is the first in its area.  
 
 ## Second approach
-Implementation of building Turing machine by boolean grammar algorithm, described in [Boolean grammars](https://doi.org/10.1016/j.ic.2004.03.006) and algorithm, descrbied in [An Introduction to the Theory of Groups](https://doi.org/10.1007/978-1-4612-4176-8), which by given turing machine builds group presentation via building semigroup presentation.
+Implementation of building Turing machine by boolean grammar algorithm, described in [Boolean grammars](https://doi.org/10.1016/j.ic.2004.03.006) and algorithm, descrbied in [An Introduction to the Theory of Groups](https://doi.org/10.1007/978-1-4612-4176-8), which by given Turing machine builds group presentation via building semigroup presentation.
 
 ## Build status
 [![Build Status](https://travis-ci.org/YaccConstructor/LangToGroup.svg?branch=master)](https://travis-ci.org/YaccConstructor/LangToGroup)
@@ -25,22 +27,28 @@ For run the tests:
 ``stack test``
 
 ## Experiments
-
-### Running experiments for the first approach
-
-To be continued.
-
-### Running experiments for the second approach
-Here is the table with some examples of building group presentations by different grammars, where:
+Here are the tables with some examples of building group presentations by different grammars, where:
 - **States** -- number of states in built Turing machine, 
 - **Gen** -- number of generators, 
 - **Rel** -- number of relations, 
 - **N** -- number of rules in normal grammar.
 
+### Running experiments for the first approach
 
+| Language | Grammar | N | States | Generators | Relations | 
+| -- | -- |-- | -- | -- | --|
+| 1 rule | CFG |1 | 4 | 56187 |  89508 | 
+| <img src="https://render.githubusercontent.com/render/math?math=\{a^{*} \}"> | CFG |3 | 9 | 204903 | 347370 |
+| Dyck | CFG |6 | 19 | 957619 | 1478859 |
+
+
+### Running experiments for the second approach
 
 | Language | Grammar | N | States | Generators | Relations | 
 |----------|---------|---|------------|-----------| --|
+| 1 rule | CFG | 1 | -- | -- | -- |
+| <img src="https://render.githubusercontent.com/render/math?math=\{a^{*} \}"> | CFG |3 |  | - | - |
+| Dyck | CFG | - | - | - | - |
 | <img src="https://render.githubusercontent.com/render/math?math=\{a^{n} \mid n \in N \}"> | CFG| 2 | 221 |  7384 | 149982 | 
 | <img src="https://render.githubusercontent.com/render/math?math=\{a^{n} b^{n} \mid n \in N \}"> | CFG| 5 | 719 |  29510 | 719150 | 
 | <img src="https://render.githubusercontent.com/render/math?math=\{a^{n} b^{n} c^{n} \mid n \in N \}"> | Conjunctive | 14 | 3459 |  179112 | 5619872 | 
