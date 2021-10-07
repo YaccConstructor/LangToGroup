@@ -1,5 +1,9 @@
 {-# LANGUAGE StandaloneDeriving, FlexibleInstances, MultiParamTypeClasses, DeriveAnyClass #-}
 
+-- |Module `Containers.Pair` include type `Pair` and useful functions for work
+--  with it.
+--
+--  `Pair a` is just pair as `(a, a)`.
 module Containers.Pair (
     Pair (Pair),
     unPair,

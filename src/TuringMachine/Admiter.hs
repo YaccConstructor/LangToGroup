@@ -1,5 +1,7 @@
 {-# LANGUAGE MultiWayIf #-}
 
+-- |Module `TuringMachine.Admiter` include `admit` function for detecting if
+--  input Turing machine admit input string.
 module TuringMachine.Admiter (
     Depth,
     Action,

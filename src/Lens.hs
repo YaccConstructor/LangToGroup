@@ -1,3 +1,4 @@
+-- |Module `Lens` include the most common objects for working with lenses.
 module Lens (
     Getter,
     Getting,

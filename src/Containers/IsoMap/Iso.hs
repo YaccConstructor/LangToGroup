@@ -1,5 +1,7 @@
 {-# LANGUAGE FunctionalDependencies #-}
 
+-- |Module `Containers.IsoMap.Iso` include class `Iso` for realisation of
+--  isomorphism.
 module Containers.IsoMap.Iso (
     Iso (..),
   ) where

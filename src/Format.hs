@@ -1,5 +1,10 @@
 {-# LANGUAGE MultiParamTypeClasses, TypeSynonymInstances, FlexibleInstances, FlexibleContexts, UndecidableInstances #-}
 
+-- |Module `Format` include types of so called "formats" and methods for work
+--  with them.
+--
+--  Format is object for simple pattern matching and generating strings by
+--  template.
 module Format (
     SimpleFormat,
     TaggedFormat,

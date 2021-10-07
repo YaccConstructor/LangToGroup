@@ -1,5 +1,8 @@
 {-# LANGUAGE TemplateHaskell, TupleSections, RankNTypes #-}
 
+-- |Module `SemigroupPresentation` include type of semigroup presentation and
+--  useful objects for working with it. This module also export other useful
+--  modules.
 module SemigroupPresentation (
     GeneratorsDescr,
     SemigroupPresentation,

@@ -1,3 +1,5 @@
+-- |Module `Time` include useful functions for working calculations which must
+--  be done after a certain period of time.
 module Time (
     TimeAccuracy (MS, S, M, H),
     MonadTimeout,

@@ -1,3 +1,8 @@
+-- |Module `Containers.PrismMap` include type `PrismMap` and useful functions
+--  for working with it.
+--
+--  `PrismMap` is kind of `Map` with faster access to keys by value. So, it is
+--  almost `IsoMap`, but without isomorphism restriction.
 module Containers.PrismMap (
     PrismMap,
     size,

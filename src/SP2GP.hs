@@ -1,3 +1,5 @@
+-- |Module `SP2GP` include functions `groupBeta` and `groupBeta_1` for
+--  converting semigroup presentation to group presentation.
 module SP2GP (
     groupBeta,
     groupBeta_1,

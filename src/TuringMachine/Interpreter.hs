@@ -1,5 +1,7 @@
 {-# LANGUAGE TemplateHaskell #-}
 
+-- |Module `TuringMachine.Interpreter` include functions for interpreting of
+--  Turing machine.
 module TuringMachine.Interpreter (
     WorkingState,
     currentState,

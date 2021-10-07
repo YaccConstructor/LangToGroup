@@ -1,5 +1,7 @@
 {-# LANGUAGE ScopedTypeVariables, TypeApplications, TupleSections #-}
 
+-- |Module `TuringMachine.Optimization` include functions for reducing size of
+--  Turing machine with saving of functionality.
 module TuringMachine.Optimization (
     optimize,
     optimal,

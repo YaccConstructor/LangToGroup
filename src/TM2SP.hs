@@ -1,5 +1,7 @@
 {-# LANGUAGE MultiWayIf #-}
 
+-- |Module `TM2SP` include functions `semigroupGamma`, `semigroupGamma_1` and
+--  `semigroupGamma_2` for converting Turing machine to semigroup presentation.
 module TM2SP (
     convertInput,
     semigroupGamma,

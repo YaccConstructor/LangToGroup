@@ -1,3 +1,5 @@
+-- |Module `TuringMachine.Optimization.Level` include levels of optimization of
+--  Turing machine.
 module TuringMachine.Optimization.Level (
     Level (..),
     maxO,

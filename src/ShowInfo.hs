@@ -1,5 +1,7 @@
 {-# LANGUAGE MultiParamTypeClasses, OverloadedStrings #-}
 
+-- |Module `ShowInfo` include class `ShowInfo` for pretty printing of objects
+--  in this project.
 module ShowInfo (
     Title (Title),
     WithTitle,

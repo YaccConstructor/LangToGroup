@@ -1,5 +1,7 @@
 {-# LANGUAGE TemplateHaskell, RankNTypes #-}
 
+-- |Module `TuringMachine.Interpreter.Tape` include type of Turing machine's
+--  tape and useful functions for working with it.
 module TuringMachine.Interpreter.Tape (
     Tape,
     top,

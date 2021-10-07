@@ -1,5 +1,7 @@
 {-# LANGUAGE MultiWayIf, TupleSections, ScopedTypeVariables #-}
 
+-- |Module `TuringMachine.Constructors` include a lot of constructors of Turing
+-- machine.
 module TuringMachine.Constructors (
     makeStandartTM,
     crash,

@@ -1,5 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
+-- |Module `TuringMachine.TMs` include set of Turing machines for testing.
 module TuringMachine.TMs (
     testingSetTMs,
     module TuringMachine,

@@ -1,5 +1,11 @@
 {-# LANGUAGE FlexibleInstances, FunctionalDependencies, ScopedTypeVariables, IncoherentInstances, LambdaCase #-}
 
+-- |Module `Containers.IsoMap` include type `IsoMap` and useful functions for
+--  working with it.
+--
+--  `IsoMap` is kind of `Map` with isomorphism between keys and values. So,
+--  difference between keys ans values is erased, and you can use as keys any
+--  of two available sets, and other set will be used as values.
 module Containers.IsoMap (
     IsoMap,
     size,

@@ -1,5 +1,7 @@
 {-# LANGUAGE TemplateHaskell, RankNTypes #-}
 
+-- |Module `GroupPresentation` include type of group presentation and useful
+--  objects for working with it. This module also export other useful modules.
 module GroupPresentation (
     GeneratorsDescr,
     GroupPresentation,

@@ -1,3 +1,7 @@
+-- |Module `Containers.Quadruple` include type `Quadruple` and useful functions
+--  for work with it.
+--
+--  `Quadruple a` is just quadruple as `(a, a, a, a)`.
 module Containers.Quadruple (
     Quadruple (Quadruple),
     unQuadruple,

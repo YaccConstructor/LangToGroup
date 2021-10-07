@@ -1,5 +1,7 @@
 {-# LANGUAGE TemplateHaskell #-}
 
+-- |Module `StringRewriting` include type of string rewriting system and useful
+--  objects for working with it. This module also export other useful modules.
 module StringRewriting (
     GeneratorsDescr,
     StringRewriting,

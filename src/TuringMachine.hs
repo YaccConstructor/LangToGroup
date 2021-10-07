@@ -1,5 +1,7 @@
 {-# LANGUAGE TemplateHaskell, TupleSections, RankNTypes, TypeApplications, OverloadedStrings #-}
 
+-- |Module `TuringMachine` include type of Turing machine and useful objects
+--  for working with it. This module also export other useful modules.
 module TuringMachine (
     LabeledStates,
     Alphabet,

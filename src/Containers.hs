@@ -1,5 +1,7 @@
 {-# LANGUAGE FlexibleInstances, FunctionalDependencies, DefaultSignatures, GeneralizedNewtypeDeriving #-}
 
+-- |Module `Containers` include a lot of general methods for working with
+--  containers. All methods are scattered by classes.
 module Containers (
     S.Set,
     M.Map,

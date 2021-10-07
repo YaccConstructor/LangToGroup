@@ -1,3 +1,5 @@
+-- |Module `TuringMachine.Optimization.Safe` include function `secure` for
+--  increasing of security of Turing machine.
 module TuringMachine.Optimization.Safe (
     secure,
   ) where
