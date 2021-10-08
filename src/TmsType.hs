@@ -3,9 +3,7 @@
 
 module TmsType where
 
-import Data.Tuple.Utils (fst3, snd3, thd3)
 import Data.List (intercalate)
-import Data.List.Utils (replace)
 import GHC.Unicode (isAlphaNum)
 
 import Prettyprinter
@@ -16,11 +14,11 @@ import Prettyprinter
 --
 -- 'ChangeFromTo f t' is change it from 'f' to 't'.
 data TmsTapeSquare = Leave | ChangeFromTo Char Char
-    deriving (Eq)
+    deriving (Eq, Ord)
 
 -- |Type of Tms tape head movement
 data TmsTapeHeadMovement = MoveLeft | Stay | MoveRight
-    deriving (Eq)
+    deriving (Eq, Ord)
 
 instance Show TmsTapeHeadMovement where
     show MoveLeft  = "<"
@@ -34,7 +32,7 @@ newtype TmsState = TmsState String
 -- |Type of Tms command for one tape.
 -- TmsSingleTapeCommand (action, movement).
 newtype TmsSingleTapeCommand = TmsSingleTapeCommand (TmsTapeSquare, TmsTapeHeadMovement)
-    deriving (Eq)
+    deriving (Eq, Ord)
 
 -- |Type of Tms single tape command
 type OneTapeTMCommand = (TmsState, TmsSingleTapeCommand, TmsState)
@@ -44,7 +42,7 @@ toTmsCommand (ini, cmd, fol) = TmsCommand (ini, [cmd], fol)
 
 -- |Type of Tms command for entire Turing machine.
 newtype TmsCommand = TmsCommand (TmsState, [TmsSingleTapeCommand], TmsState)
-    deriving (Eq)
+    deriving (Eq, Ord)
 
 -- |Type of Tms format.
 -- Tms            (name,   init      accept        commands,     tapeAlphabets).
@@ -90,4 +88,21 @@ instance Show Tms where
 
 -- |Process string so that it does not contain illegal characters.
 filterStateName :: String -> String
-filterStateName = replace "^" "v" . filter (\c -> isAlphaNum c || elem c ['_', '^'])
+filterStateName = replace '^' 'v' . filter (\c -> isAlphaNum c || elem c ['_', '^'])
+  where
+    replace :: Eq a => a -> a -> [a] -> [a]
+    replace = replace' []
+    replace' :: Eq a => [a] -> a -> a -> [a] -> [a]
+    replace' r x y [] = reverse r
+    replace' r x y (z:zs)
+        | x == z =    replace' (y:r) x y zs
+        | otherwise = replace' (z:r) x y zs
+
+fst3 :: (a, b, c) -> a
+fst3 (a, _, _) = a
+
+snd3 :: (a, b, c) -> b
+snd3 (_, b, _) = b
+
+thd3 :: (a, b, c) -> c
+thd3 (_, _, c) = c

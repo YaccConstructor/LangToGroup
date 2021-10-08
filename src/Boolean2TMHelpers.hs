@@ -98,7 +98,7 @@ getFstNonterminalsInConjsOfGivenRel
     if relationHasOneTerminalInRightPart $ BooleanRelation (Nonterminal nonterminal, conjs)
         then []
         else let
-        firstSymbolsInConjunctions = map (head . symbols) conjs
+        firstSymbolsInConjunctions = map head $ map symbols conjs
         in map refineSymbolInConjunctionToNonterminal firstSymbolsInConjunctions
 
 -- grammar -> string (nonterminal in left part) -> string (number of relation)

@@ -28,15 +28,15 @@ test1 = let
             numbers = [1..10]
             tm = boolean2tm gr
             tests1 = map (\t -> let
-                word = ["S","(","a"] ++ replicate t "b" ++ [")"]
+                word = "S(a" ++ replicate t 'b' ++ ")"
                 testData = IN gr alphabet "integration1.1"
                 in generateTestLabel tm testData word True) numbers
             tests2 = map (\t -> let
-                word = ["S","(","b"] ++ replicate t "b" ++ [")"]
+                word = "S(b" ++ replicate t 'b' ++ ")"
                 testData = IN gr alphabet "integration1.2"
                 in generateTestLabel tm testData word True) numbers
             tests3 = map (\t -> let
-                word = ["S", "(", "b"] ++ replicate t "b" ++ ["a",")"]
+                word = "S(b" ++ replicate t 'b' ++ "a)"
                 testData = IN gr alphabet "integration1.3"
                 in generateTestLabel tm testData word False) numbers
             allTests = tests1 ++ tests2 ++ tests3
@@ -54,11 +54,11 @@ test2 = let
             numbers = [1..10]
             tm = boolean2tm gr
             tests1 = map (\t -> let
-                word = ["S","(","a", "a"] ++ replicate t "a" ++ [")"]
+                word = "S(aa" ++ replicate t 'a' ++ ")"
                 testData = IN gr alphabet "integration2.1"
                 in generateTestLabel tm testData word True) numbers
             tests2 = map (\t -> let
-                word = ["S","(","a"] ++ replicate t "a" ++ ["b", ")"]
+                word = "S(a" ++ replicate t 'a' ++ "b)"
                 testData = IN gr alphabet "integration2.2"
                 in generateTestLabel tm testData word False) numbers
             allTests = tests1 ++ tests2
@@ -76,15 +76,15 @@ test3 = let
                 numbers = [1..10]
                 tm = boolean2tm gr
                 tests1 = map (\t -> let
-                    word = ["S","(","b"] ++ replicate t "d" ++ ["b",")"]
+                    word = "S(b" ++ replicate t 'd' ++ "b)"
                     testData = IN gr alphabet "integration3.1"
                     in generateTestLabel tm testData word True) numbers
                 tests2 = map (\t -> let
-                    word = ["S","("] ++ replicate t "d" ++ [")"]
+                    word = "S(" ++ replicate t 'd' ++ ")"
                     testData = IN gr alphabet "integration3.2"
                     in generateTestLabel tm testData word False) numbers
                 tests3 = map (\t -> let
-                    word = ["S","("] ++ replicate t "b" ++ [")"]
+                    word = "S(" ++ replicate t 'b' ++ ")"
                     testData = IN gr alphabet "integration3.3"
                     in generateTestLabel tm testData word False) numbers
                 allTests = tests1 ++ tests2 ++ tests3
@@ -107,11 +107,11 @@ test4 = let
                 assertion = assertEqual "a^mb^nc^n" gr $ inGrammar testData6
                 checkGr = TestLabel "Check grammar parsed correctly" $ TestCase assertion
                 tests1 = map (\t -> let
-                    word = ["S","(","a"] ++ replicate t "b" ++ replicate t "c" ++ [")"]
+                    word = "S(a" ++ replicate t 'b' ++ replicate t 'c' ++ ")"
                     testData = IN gr alphabet "integration4.1 a^mb^nc^n (m /= n)"
                     in generateTestLabel tm testData word True) numbers'
                 tests2 = map (\t -> let
-                    word = ["S","("] ++ replicate t "a" ++ replicate t "b" ++ replicate t "c" ++ [")"]
+                    word = "S(" ++ replicate t 'a' ++ replicate t 'b' ++ replicate t 'c' ++ ")"
                     testData = IN gr alphabet "integration4.2 a^mb^nc^n (m /= n)"
                     in generateTestLabel tm testData word False) numbers'
                 allTests = checkGr : tests1 ++ tests2
@@ -131,11 +131,11 @@ test5 = let
                 assertion = assertEqual "a^mb^nc^n" gr $ inGrammar testData7
                 checkGr = TestLabel "Check grammar parsed correctly" $ TestCase assertion
                 tests1 = map (\t -> let
-                    word = ["S","(","a"] ++ replicate t "b" ++ replicate t "c" ++ [")"]
+                    word = "S(a" ++ replicate t 'b' ++ replicate t 'c' ++ ")"
                     testData = IN gr alphabet "integration5.1 a^nb^nc^n"
                     in generateTestLabel tm testData word False) numbers'
                 tests2 = map (\t -> let
-                    word = ["S","("] ++ replicate t "a" ++ replicate t "b" ++ replicate t "c" ++ [")"]
+                    word = "S(" ++ replicate t 'a' ++ replicate t 'b' ++ replicate t 'c' ++ ")"
                     testData = IN gr alphabet "integration5.2 a^nb^nc^n"
                     in generateTestLabel tm testData word True) numbers'
                 allTests = checkGr : tests1 ++ tests2
@@ -153,11 +153,11 @@ test6 = let
             assertion = assertEqual "a^mb^nc^n" gr $ inGrammar testData8
             checkGr = TestLabel "Check grammar parsed correctly" $ TestCase assertion
             tests1 = map (\t -> let
-                word = ["S","("] ++ replicate t "a" ++ replicate t "b" ++ [")"]
+                word = "S(" ++ replicate t 'a' ++ replicate t 'b' ++ ")"
                 testData = IN gr alphabet "integration6.1 a^nb^n"
                 in generateTestLabel tm testData word True) numbers'
             tests2 = map (\t -> let
-                word = ["S","(", "a"] ++ replicate t "a" ++ replicate t "b" ++ [")"]
+                word = "S(a" ++ replicate t 'a' ++ replicate t 'b' ++ ")"
                 testData = IN gr alphabet "integration6.2 a^nb^n"
                 in generateTestLabel tm testData word False) numbers'
             allTests = checkGr : tests1 ++ tests2
@@ -176,23 +176,23 @@ test7 = let
             assertion = assertEqual "a^mb^nc^n" gr $ inGrammar testData9
             checkGr = TestLabel "Check grammar parsed correctly" $ TestCase assertion
             tests1 = map (\t -> let
-                word = replicate t "a" ++ replicate t "b"
-                doubleWord = ["S","("] ++ word ++ word ++ [")"]
-                doubleWord' = ["S","("] ++ word ++ word ++ ["b", ")"]
+                word = replicate t 'a' ++ replicate t 'b'
+                doubleWord = "S(" ++ word ++ word ++ ")"
+                doubleWord' = "S(" ++ word ++ word ++ "b)"
                 testData = IN gr alphabet "integration7.1 {a,b}*"
                 in [generateTestLabel tm testData doubleWord True,
                     generateTestLabel tm testData doubleWord' False]) numbers'
             tests2 = map (\t -> let
-                word = concat (replicate t ["a","b"])
-                doubleWord = ["S","("] ++ word ++ word ++ [")"]
-                doubleWord' = ["S","(","a"] ++ word ++ word ++ [")"]
+                word = concat (replicate t "ab")
+                doubleWord = "S(" ++ word ++ word ++ ")"
+                doubleWord' = "S(a" ++ word ++ word ++ ")"
                 testData = IN gr alphabet "integration7.2 {a,b}*"
                 in [generateTestLabel tm testData doubleWord True,
                     generateTestLabel tm testData doubleWord' False]) numbers'
             tests3 = map (\t -> let
-                word = concat (replicate t ["b","a"])
-                doubleWord = ["S","("] ++ word ++ word ++ [")"]
-                doubleWord' = ["S","("] ++ word ++ word ++ ["b",")"]
+                word = concat (replicate t "ba")
+                doubleWord = "S(" ++ word ++ word ++ ")"
+                doubleWord' = "S(" ++ word ++ word ++ "b)"
                 testData = IN gr alphabet "integration7.3 {a,b}*"
                 in [generateTestLabel tm testData doubleWord True,
                     generateTestLabel tm testData doubleWord' False]) numbers'

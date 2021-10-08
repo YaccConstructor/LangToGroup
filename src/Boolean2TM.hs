@@ -1,6 +1,6 @@
 {-# LANGUAGE TupleSections #-}
 
-module Boolean2TM (boolean2tm) where
+module Boolean2TM (boolean2tm, boolean2tm') where
 
 import GrammarType
 import DebuggingTMTypes
@@ -11,9 +11,9 @@ import qualified Data.Set as Set
 import qualified Data.Map as Map
 import Data.List
 import Data.Maybe
-import TMTypes (TuringMachine)
- 
-boolean2tm :: Grammar -> TuringMachine
+import TuringMachine (TuringMachine)
+
+boolean2tm :: MonadFail m => Grammar -> m TuringMachine
 boolean2tm grammar = convertToTuringMachine $ boolean2tm' grammar
 
 boolean2tm' :: Grammar -> DebuggingTuringMachine
@@ -1365,8 +1365,7 @@ generateBlockForGettingAccepted (Grammar (nonterminals, _, _, _)) = let
     nonterminalslList = map nonterminalValue $ Set.toList nonterminals
     symbolsInDone = map (\t -> ((DState done, DSymbol t),(DebuggingTMTypes.R, DState done))) nonterminalslList
     symbolsToAccepted = [((DState done, DSymbol Constants.plus),(DebuggingTMTypes.L, finalDState))]
-    symbolsToNotAccepted = [((DState done, DSymbol Constants.minus),(DebuggingTMTypes.L, errorDState))]
-    symbols = symbolsInDone ++ symbolsToAccepted ++ symbolsToNotAccepted
+    symbols = symbolsInDone ++ symbolsToAccepted
     in DQuadruples $ Helpers.addCollectionToMap symbols Map.empty
 
 generateFoldingForMidCongs :: Map.Map (DebuggingState, DebuggingSymbol) (a, DebuggingState)

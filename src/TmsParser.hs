@@ -141,6 +141,6 @@ parseTms inputFile errorFile = do
     result <- parseFromFile TmsParser.parser errorFile inputFile
     case result of
         Left err ->
-            return $ fail $ "Parsing error: " ++ errorBundlePretty err
+            return $ Left $ "Parsing error: " ++ errorBundlePretty err
         Right tms ->
             return $ pure tms
