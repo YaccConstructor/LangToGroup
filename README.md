@@ -34,7 +34,7 @@ For run the tests:
 
 ## Usage
 ```bash
-stack run -- LangToGroup-user <options>
+stack run -- LangToGroup-cli <options>
 ```
 
 ```

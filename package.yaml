@@ -52,6 +52,11 @@ ghc-options:
 
 library:
   source-dirs: src
+  ghc-options:
+  - -O2
+  - -funfolding-use-threshold=16
+  - -optc-O3
+  - -fno-warn-orphans
 
 executables:
   LangToGroup-printer:
@@ -67,17 +72,15 @@ executables:
     - matrix >= 0.3.6.1
     - cli  
 
-  LangToGroup-user:
+  LangToGroup-cli:
     main:                Main.hs
-    source-dirs:         src
+    source-dirs:         app
     ghc-options:
-    - -O2
-    - -funfolding-use-threshold=16
-    - -optc-O3
     - -threaded
     - -rtsopts
     - -with-rtsopts=-N
-    - -fno-warn-orphans
+    dependencies:
+    - LangToGroup
 
 tests:
   LangToGroup-test:
