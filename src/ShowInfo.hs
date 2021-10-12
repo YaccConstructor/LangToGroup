@@ -14,6 +14,7 @@ module ShowInfo (
 import TuringMachine
 import SemigroupPresentation as SP
 import GroupPresentation as GP
+import GRType
 
 import Control.Lens (imap)
 import Data.List (intercalate)
@@ -107,6 +108,14 @@ instance ShowInfo GroupPresentation where
     showInfo gp = concatMap (++ "\n") [
         "generators: " ++ show (gp^.GP.allGenerators.to(size)),
         "relations: " ++ show (gp^.GP.relations.to(size))
+      ]
+    showListTitle = const "List of Group Presentations"
+
+instance ShowInfo GR where
+    showTitle = const "Group Presentation"
+    showInfo (GR (a, r)) = concatMap (++ "\n") [
+        "generators: " ++ show (size a),
+        "relations: " ++ show (size r)
       ]
     showListTitle = const "List of Group Presentations"
 

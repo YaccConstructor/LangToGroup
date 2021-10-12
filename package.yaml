@@ -70,6 +70,14 @@ executables:
   LangToGroup-user:
     main:                Main.hs
     source-dirs:         src
+    ghc-options:
+    - -O2
+    - -funfolding-use-threshold=16
+    - -optc-O3
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    - -fno-warn-orphans
 
 tests:
   LangToGroup-test:

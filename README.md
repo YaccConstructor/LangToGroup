@@ -13,6 +13,12 @@ Implementation algorithm building the presentation of the group for a formal lan
 ## Second approach
 Implementation of building Turing machine by boolean grammar algorithm, described in [Boolean grammars](https://doi.org/10.1016/j.ic.2004.03.006) and algorithm, descrbied in [An Introduction to the Theory of Groups](https://doi.org/10.1007/978-1-4612-4176-8), which by given Turing machine builds group presentation via building semigroup presentation.
 
+## Modifications of second approach
+There are two modifications of second approach, which produce a more compact
+group presentation, but this modifications haven't strict theoretical proof of
+saving properties of original approach. So, use them if size of group
+presentation is more important than theoretical properties.
+
 ## Build status
 [![Build Status](https://travis-ci.org/YaccConstructor/LangToGroup.svg?branch=master)](https://travis-ci.org/YaccConstructor/LangToGroup)
 
@@ -25,6 +31,33 @@ To build run:
 For run the tests:
 
 ``stack test``
+
+## Usage
+```bash
+stack run -- LangToGroup-user <options>
+```
+
+```
+Options:
+    -i, --input <file_path>
+        Full path to file with grammar definition
+    -o, --output <file_path>
+        Full path to file for printing results
+    -e, --error <file_path>
+        Full path to file, where errors should be recorded during parsing
+    -f, --first-approach
+        Use first approach
+    -s, --second-approach
+        Use second approach
+    -a, --second-approach-a
+        Use second approach, modification (a)
+    -b, --second-approach-b
+        Use second approach, modification (b)
+    -q, --quiet
+        Print only information about result
+    -h, --help
+        Print help information and exit
+```
 
 ## Experiments
 Here are the tables with some examples of building group presentations by different grammars, where:

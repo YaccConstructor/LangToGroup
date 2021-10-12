@@ -136,11 +136,6 @@ parser :: Parser Tms
 parser = makeEofParser pTms
 
 -- | Parse Tms from file.
-parseTms :: String -> String -> IO (Either String Tms)
-parseTms inputFile errorFile = do
-    result <- parseFromFile TmsParser.parser errorFile inputFile
-    case result of
-        Left err ->
-            return $ Left $ "Parsing error: " ++ errorBundlePretty err
-        Right tms ->
-            return $ pure tms
+parseTms :: FilePath -> FilePath -> IO Tms
+parseTms inputFile errorFile =
+    parseFromFile TmsParser.parser errorFile inputFile
