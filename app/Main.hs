@@ -53,13 +53,14 @@ openOutputAnd fp action = bracket (openFile fp WriteMode) hClose action
 
 firstApproach :: Approach
 firstApproach quiet grammar handle = do
-    let (sm, accessWord, _) = tm2sm $ symTM $ cfg2tm grammar
+    let tm = cfg2tm grammar
+        (sm, accessWord, _) = tm2sm $ symTM tm
         gr@(GR (a, _)) = sm2gr (sm, accessWord)
         hub = hubRelation accessWord
         genmap = fromList $ zip (toList a) $ map ((++) "f." . show) [1..]
     if quiet
     then
-        hPutStr handle $ showInfo gr
+        hPutStr handle $ showInfo (grammar, tm, gr)
     else
         writeGap gr handle genmap hub
 
@@ -73,7 +74,7 @@ secondApproachTemplate tm2a a2gp quiet grammar handle = do
     gp <- a2gp a
     if quiet
     then
-        hPutStr handle $ showInfo gp
+        hPutStr handle $ showInfo (grammar, tm, gp)
     else do
         fmt <- gapFormat gp
         hPutStr handle fmt
