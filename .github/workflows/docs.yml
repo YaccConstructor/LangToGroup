@@ -16,13 +16,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Set dist variable
-        run: echo "DIST_PATH=$(echo `stack path --dist-dir`/doc/html)" >> $GITHUB_ENV
-
-      - name: Check dist variable
-        run: echo ${{ env.DIST_PATH }}
-
-      - name: Check actual dist
-        run: stack path --dist-dir 
+        run: echo "DIST_PATH=$(echo `stack path --dist-dir`/doc/html/LangToGroup)" >> $GITHUB_ENV
 
       - name: Run haddock
         run: stack haddock
