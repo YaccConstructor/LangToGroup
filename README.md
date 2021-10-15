@@ -58,6 +58,33 @@ Options:
     -h, --help
         Print help information and exit
 ```
+For example, if you want build presentation of grammar via second modification of the second approach and get only metrics in console, you should enter:
+`-i grammar.txt -q -b`
+
+And if you want to build presentation of grammar via first approach and save result presentation to file, you should enter:
+`-i grammar.txt -o presentation.txt -f`
+
+Examples of grammar files given below.
+
+**Boolean grammar**
+
+    S; S Sa; c v b
+    S-> c&! v&! Sa&! Eps
+    Sa->! b
+    S-> a& b&! v&! Sa&! Eps
+**Conjunctive grammar**
+
+    S; S Abc D Cr; c b d e
+    S-> D c& d Abc
+    Abc-> b
+    D-> Cr
+    Cr-> e
+**Context-free grammar**
+
+    S; S A D1; c2 b e
+    S-> c2 D1 A
+    A-> b
+    D1-> e
 
 ## Experiments
 Here are the tables with some examples of building group presentations by different grammars, where:
@@ -87,22 +114,27 @@ Here are the tables with some examples of building group presentations by differ
 | <img src="https://render.githubusercontent.com/render/math?math=\{ww \mid w \in \{a,b\}*\}">| Boolean| 14 | 2498 | 125587 | 3691770 |
 | <img src="https://render.githubusercontent.com/render/math?math=\{a^{m} b^{n} c^{n} \mid (m != n), m, n \in N\}"> | Boolean | 14 | 3461 |185307 | 5999829| 
 
-### Running experiments for the second approach, modification `a`
-| Language | Grammar | N | States | Generators | Relations | 
-|----------|---------|---|------------|-----------| --|
-| 1 rule | CFG | 1 | 120 | 2300 | 28171 |
-| Dyck language without empty word | CFG | 10 | 1471 | 69755 | 1911168 |
-| <img src="https://render.githubusercontent.com/render/math?math=\{a^{n} \mid n \in N \}"> | CFG| 2 | 221 |  7384 | 149982 | 
-| <img src="https://render.githubusercontent.com/render/math?math=\{a^{n} b^{n} \mid n \in N \}"> | CFG| 5 | 719 |  29510 | 719150 | 
-
-
 ### Running experiments for the second approach, modification `b`
 | Language | Grammar | N | States | Generators | Relations | 
 |----------|---------|---|------------|-----------| --|
-| 1 rule | CFG | 1 | 120 | 2300 | 28171 |
-| Dyck language without empty word| CFG | 10 | 1471 | 69755 | 1911168 |
-| <img src="https://render.githubusercontent.com/render/math?math=\{a^{n} \mid n \in N \}"> | CFG| 2 | 221 |  7384 | 149982 | 
-| <img src="https://render.githubusercontent.com/render/math?math=\{a^{n} b^{n} \mid n \in N \}"> | CFG| 5 | 719 |  29510 | 719150 | 
+| 1 rule | CFG | 1 | 120 | 926 | 8762 |
+| Dyck language without empty word | CFG | 10 | 1471 | 12683 | 271992 |
+| <img src="https://render.githubusercontent.com/render/math?math=\{a^{n} \mid n \in N \}"> | CFG| 2 | 221 |  1780 | 27678 | 
+| <img src="https://render.githubusercontent.com/render/math?math=\{a^{n} b^{n} \mid n \in N \}"> | CFG| 5 | 719 |  6080 | 115450 | 
+| <img src="https://render.githubusercontent.com/render/math?math=\{a^{n} b^{n} c^{n} \mid n \in N \}"> | Conjunctive | 14 | 3459 | 29695 | 727872 | 
+| <img src="https://render.githubusercontent.com/render/math?math=\{ww \mid w \in \{a,b\}*\}">| Boolean| 14 | 2498 | 21649 | 498720 |
+| <img src="https://render.githubusercontent.com/render/math?math=\{a^{m} b^{n} c^{n} \mid (m != n), m, n \in N\}"> | Boolean | 14 | 3461 | 29727 | 751509| 
+
+### Running experiments for the second approach, modification `a`
+| Language | Grammar | N | States | Generators | Relations | 
+|----------|---------|---|------------|-----------| --|
+| 1 rule | CFG | 1 | 120 | 1562 | 18590 |
+| Dyck language without empty word| CFG | 10 | 1471 | 31934 | 852208 |
+| <img src="https://render.githubusercontent.com/render/math?math=\{a^{n} \mid n \in N \}"> | CFG| 2 | 221 |  4191 | 82950 | 
+| <img src="https://render.githubusercontent.com/render/math?math=\{a^{n} b^{n} \mid n \in N \}"> | CFG| 5 | 719 |  14348 | 340125 | 
+| <img src="https://render.githubusercontent.com/render/math?math=\{a^{n} b^{n} c^{n} \mid n \in N \}"> | Conjunctive | 14 | 3459 |  79021 | 2416992 | 
+| <img src="https://render.githubusercontent.com/render/math?math=\{ww \mid w \in \{a,b\}*\}">| Boolean| 14 | 2498 | 58358 | 1674930 |
+| <img src="https://render.githubusercontent.com/render/math?math=\{a^{m} b^{n} c^{n} \mid (m != n), m, n \in N\}"> | Boolean | 14 | 3461 |81374 | 2570073| 
 
 
 ## Execution 
@@ -137,34 +169,6 @@ Also, output filename can be specified by ``-o <filename>`` flag, if it does not
 For example, following prints in "out.txt" a group presentation, which obtained from Dyck language grammar using nondeterministic symmetrization: 
 
 ``stack exec -- LangToGroup-printer -G --is_det false --print_example dyck``
-
-### Building group presentation by custom grammar file
-For this you should use ``-i <filepath>`` flag for configuring full path to input file with grammar and ``-o <filepath>`` for configuring full path to output file for storing possible errors.
-So, for printing turing machine from given custom grammar file:
-
-``stack exec -- stack exec -- LangToGroup-user -i <filepath> -o <filepath>``
-
-Examples of grammar files given below.
-
-**Boolean grammar**
-
-    S; S Sa; c v b
-    S-> c&! v&! Sa&! Eps
-    Sa->! b
-    S-> a& b&! v&! Sa&! Eps
-**Conjunctive grammar**
-
-    S; S Abc D Cr; c b d e
-    S-> D c& d Abc
-    Abc-> b
-    D-> Cr
-    Cr-> e
-**Context-free grammar**
-
-    S; S A D1; c2 b e
-    S-> c2 D1 A
-    A-> b
-    D1-> e
 
 
     
