@@ -1,0 +1,11 @@
+S; S A C E D B A G; a b
+S-> A C
+C-> b
+C-> E C
+E-> B A
+D-> E C
+C-> G D
+G-> A C
+A-> a
+B-> b
+D-> b
