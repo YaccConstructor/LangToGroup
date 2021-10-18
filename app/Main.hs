@@ -1,4 +1,4 @@
-{-# LANGUAGE MultiWayIf #-}
+{-# LANGUAGE TemplateHaskell, MultiWayIf #-}
 
 -- |This module represents interactive mode of working with program.
 --
@@ -6,18 +6,11 @@
 
 module Main where
 
-import System.Console.ParseArgs
-import Text.Megaparsec.Error (errorBundlePretty)
+import Control.Exception (bracket)
 
-import GrammarType (Grammar)
 import GRType (GR (GR))
 import GrammarReader as Reader
-import TmsParser
 import Boolean2TM
-import TM2Tms (tm2tms)
-import TMType (TM)
-import TuringMachine (TuringMachine)
-import GroupPresentation (GroupPresentation)
 import TM2SP
 import SP2GP
 import CFG2TM
@@ -28,178 +21,164 @@ import GP2GAP
 import GapFuncWriter
 import ShowInfo
 import Containers (fromList, toList)
-import Data.Maybe (fromMaybe, isJust)
+import Lens
+import Data.List.Split (splitWhen)
+import Control.Monad (when, (>=>))
 
+import System.Console.GetOpt
+import System.Environment (getArgs)
 import System.IO
-import Control.Exception (bracket)
 
-type Approach = Bool -> Grammar -> Handle -> IO ()
+data Approach =
+      First
+    | Second
+    | SecondA
+    | SecondB
+    deriving (Eq)
 
-data Option =
-      InputFile
-    | OutputFile
-    | ErrorFile
-    | FirstApproach
-    | SecondApproach
-    | SecondApproach_a
-    | SecondApproach_b
-    | Quiet
+data Object =
+      ObjectGrammar
+    | ObjectTuringMachine
+    | ObjectGroupPresentation
+
+data Flag =
+      InputFile FilePath
+    | OutputFile FilePath
+    | ErrorFile FilePath
+    | UsedApproach (Either String Approach)
+    | GPinLaTeX
+    | Info (Either String [Object])
     | Help
-    deriving (Ord, Eq, Show)
 
-openOutputAnd :: FilePath -> (Handle -> IO a) -> IO a
-openOutputAnd "" action = action stdout
-openOutputAnd fp action = bracket (openFile fp WriteMode) hClose action
+options :: [OptDescr Flag]
+options =
+    [ Option "i" ["input"]    (ReqArg InputFile  "file_path")
+        "Full path to file with grammar definition"
+    , Option "o" ["output"]   (ReqArg OutputFile "file_path")
+        "Full path to file for printing results"
+    , Option "e" ["error"]    (ReqArg ErrorFile  "file_path")
+        "Full path to file, where errors should be recorded during parsing"
+    , Option "a" ["approach"] (ReqArg (UsedApproach . toApproach) "approach")
+        "Used approach, can be 'first', 'second', 'second_a' or 'second_b'"
+    , Option "L" ["LaTeX"]    (NoArg  GPinLaTeX)
+        "Print result in LaTeX format (while doesn't work)"
+    , Option "I" ["info"]     (ReqArg (Info . toObjects) "objects")
+        "Print useful information about objects. Objects must be separeted by\
+        \ comma. Every object must be 'grammar', 'turing_machine' or\
+        \ 'group_presentation' string."
+    , Option "h" ["help"]     (NoArg Help)
+        "Print help and exit"
+    ] where
+        toApproach :: String -> Either String Approach
+        toApproach s
+            | s == "first"    = Right First
+            | s == "second"   = Right Second
+            | s == "second_a" = Right SecondA
+            | s == "second_b" = Right SecondB
+            | otherwise       = Left s
+        toObjects :: String -> Either String [Object]
+        toObjects = traverse toObject . splitWhen (== ',')
+        toObject :: String -> Either String Object
+        toObject s
+            | s == "grammar"            = Right ObjectGrammar
+            | s == "turing_machine"     = Right ObjectTuringMachine
+            | s == "group_presentation" = Right ObjectGroupPresentation
+            | otherwise                 = Left s
 
-firstApproach :: Approach
-firstApproach quiet grammar handle = do
-    let tm = cfg2tm grammar
-        (sm, accessWord, _) = tm2sm $ symTM tm
-        gr@(GR (a, _)) = sm2gr (sm, accessWord)
-        hub = hubRelation accessWord
-        genmap = fromList $ zip (toList a) $ map ((++) "f." . show) [1..]
-    if quiet
-    then
-        hPutStr handle $ showInfo (grammar, tm, gr)
-    else
-        writeGap gr handle genmap hub
+getFlags :: MonadFail m => [String] -> m [Flag]
+getFlags args =
+    case getOpt RequireOrder options args of
+        (fs, _, []) -> return fs
+        (_, _, err) -> fail $ unlines err
 
-secondApproachTemplate ::
-    (TuringMachine -> IO a) ->
-    (a -> IO GroupPresentation) ->
-    Approach
-secondApproachTemplate tm2a a2gp quiet grammar handle = do
-    tm <- boolean2tm grammar
-    a  <- tm2a tm
-    gp <- a2gp a
-    if quiet
-    then
-        hPutStr handle $ showInfo (grammar, tm, gp)
-    else do
-        fmt <- gapFormat gp
-        hPutStr handle fmt
+data Config =
+      PrintingHelp
+    | NormalExecution NormalExecutionConfig
 
-secondApproach :: Approach
-secondApproach = secondApproachTemplate semigroupGamma groupBeta
+data NormalExecutionConfig = NEC
+    { _inputFile  :: FilePath
+    , _outputFile :: FilePath
+    , _errorFile  :: FilePath
+    , _approach   :: Approach
+    , _infoGr     :: Bool
+    , _infoTM     :: Bool
+    , _infoGP     :: Bool
+    }
 
-secondApproach_a :: Approach
-secondApproach_a = secondApproachTemplate semigroupGamma_1 groupBeta_1
+makeLenses ''NormalExecutionConfig
 
-secondApproach_b :: Approach
-secondApproach_b = secondApproachTemplate semigroupGamma_2 groupBeta_1
-
--- |List of options, which might be used for executing algorithm.
-argd :: [ Arg Option ]
-argd = [ Arg { argIndex = InputFile,
-               argName = Just "input",
-               argAbbr = Just 'i',
-               argData = argDataOptional "file_path" ArgtypeString,
-               argDesc = "Full path to file with grammar definition" },
-         Arg { argIndex = OutputFile,
-               argName = Just "output",
-               argAbbr = Just 'o',
-               argData = argDataOptional "file_path" ArgtypeString,
-               argDesc = "Full path to file for printing results" },
-         Arg { argIndex = ErrorFile,
-               argName = Just "error",
-               argAbbr = Just 'e',
-               argData = argDataOptional "file_path" ArgtypeString,
-               argDesc = "Full path to file, where errors should be recorded during parsing" },
-         Arg { argIndex = FirstApproach,
-               argName = Just "first-approach",
-               argAbbr = Just 'f',
-               argData = Nothing,
-               argDesc = "Use first approach" },
-         Arg { argIndex = SecondApproach,
-               argName = Just "second-approach",
-               argAbbr = Just 's',
-               argData = Nothing,
-               argDesc = "Use second approach" },
-         Arg { argIndex = SecondApproach_a,
-               argName = Just "second-approach-a",
-               argAbbr = Just 'a',
-               argData = Nothing,
-               argDesc = "Use second approach, modification (a)" },
-         Arg { argIndex = SecondApproach_b,
-               argName = Just "second-approach-b",
-               argAbbr = Just 'b',
-               argData = Nothing,
-               argDesc = "Use second approach, modification (b)" },
-         Arg { argIndex = Quiet,
-               argName = Just "quiet",
-               argAbbr = Just 'q',
-               argData = Nothing,
-               argDesc = "Print only information about result" },
-         Arg { argIndex = Help,
-               argName = Just "help",
-               argAbbr = Just 'h',
-               argData = Nothing,
-               argDesc = "Print help information and exit" }
-    ]
+getConfig :: MonadFail m => [Flag] -> m Config
+getConfig = go defaultNormalExecutionConfig
+  where
+    defaultNormalExecutionConfig =
+        NEC "" "" "" First False False False
+    go c [] = return $ NormalExecution c
+    go c (f:fs) = case f of
+        InputFile  fp -> go (c & inputFile  .~ fp) fs
+        OutputFile fp -> go (c & outputFile .~ fp) fs
+        ErrorFile  fp -> go (c & errorFile  .~ fp) fs
+        UsedApproach (Left na) -> fail $ "Unknown approach: " ++ na
+        UsedApproach (Right a) -> go (c & approach .~ a) fs
+        GPinLaTeX -> go c fs
+        Info (Left no) -> fail $ "Unknown object: " ++ no
+        Info (Right []) -> go c fs
+        Info (Right (ObjectGrammar:os))           -> go (c & infoGr .~ True) (Info (Right os) : fs)
+        Info (Right (ObjectTuringMachine:os))     -> go (c & infoTM .~ True) (Info (Right os) : fs)
+        Info (Right (ObjectGroupPresentation:os)) -> go (c & infoGP .~ True) (Info (Right os) : fs)
+        Help -> return PrintingHelp
 
 printHelp :: IO ()
-printHelp = do
-    putStrLn $ unlines $
-        ["Options:"] ++ [
-            "    " ++ case ma of { Just a -> "-" ++ [a]; Nothing -> "  " } ++
-            ", " ++ case mn of { Just n -> "--" ++ n; Nothing -> "" } ++
-            (if isJust md then " <file_path>" else "") ++
-            "\n        " ++ d
-          | Arg _ ma mn md d <- argd
-          ]
+printHelp =
+    putStr $
+        usageInfo "Usage: LangToGroup-cli <options>\nOptions:" options
+
+safeOpen :: FilePath -> (Handle -> IO a) -> IO a
+safeOpen "" action = action stdout
+safeOpen fp action = bracket (openFile fp WriteMode) hClose action
 
 main :: IO ()
 main = do
-    args <- parseArgsIO
-          (ArgsParseControl ArgsComplete ArgsSoftDash)
-          argd
-    if gotArg args Help
-    then printHelp
+    args <- getArgs
+    flags <- getFlags args
+    config <- getConfig flags
+    case config of
+        PrintingHelp -> printHelp
+        NormalExecution nec -> normalExecute nec
+
+normalExecute :: NormalExecutionConfig -> IO ()
+normalExecute config = do
+    grammar <- parseFromFile Reader.parser (config^.errorFile) (config^.inputFile)
+    if config^.approach == First
+    then
+        let tm = cfg2tm grammar
+            (sm, accessWord, _) = tm2sm $ symTM tm
+            gr@(GR (a, _)) = sm2gr (sm, accessWord)
+            hub = hubRelation accessWord
+            genmap = fromList $ zip (toList a) $ map ((++) "f." . show) [1..]
+        in  safeOpen (config^.outputFile) $ \handle -> do
+                when (config^.infoGr) $
+                    hPutStr handle $ showTitleAndInfo grammar
+                when (config^.infoTM) $
+                    hPutStr handle $ showTitleAndInfo tm
+                when (config^.infoGP) $
+                    hPutStr handle $ showTitleAndInfo gr
+                when (not (config^.infoGr || config^.infoTM || config^.infoGP)) $
+                    writeGap gr handle genmap hub
     else do
-        let inputFile  = fromMaybe "" $ getArg args InputFile
-            outputFile = fromMaybe "" $ getArg args OutputFile
-            errorFile  = fromMaybe "" $ getArg args ErrorFile
-            approach   = getApproach args
-            quiet      = gotArg args Quiet
-        grammar <- parseFromFile Reader.parser errorFile inputFile
-        openOutputAnd outputFile $
-            approach quiet grammar
-
-getApproach :: Args Option -> Approach
-getApproach args =
-    let fa   = gotArg args FirstApproach
-        sa   = gotArg args SecondApproach
-        sa_a = gotArg args SecondApproach_a
-        sa_b = gotArg args SecondApproach_b
-    in  if  | fa   -> firstApproach
-            | sa   -> secondApproach
-            | sa_a -> secondApproach_a
-            | sa_b -> secondApproach_b
-            | otherwise -> firstApproach
-
-{-grammar2Group :: String -> String -> IO ()
-grammar2Group grammarFile errorFile = do
-    result <- parseFromFile Reader.parser errorFile grammarFile
-    case result of
-        Left err -> hPutStrLn stderr $ "Parsing error: " ++ errorBundlePretty err
-        Right cs -> do
-            print $ checkGrammarType cs
-            print cs
-            tm <- boolean2tm cs
-            sp <- semigroupGamma tm
-            gp <- groupBeta sp
-            putStr $ showInfo (tm, gp)-}
-
-{-tm2TMS :: TM -> IO ()
-tm2TMS tm = do
-    putStrLn "Converting turing machine to visualizer"
-    case tm2tms tm of
-        Left err -> hPutStrLn stderr $ "Error: " ++ show err
-        Right tms -> putStrLn ("\n" ++ show tms)-}
-
-{-mainTms :: String -> String -> IO ()
-mainTms filename errorFile = do
-    tmsParsingResult <- parseTms filename errorFile
-    case tmsParsingResult of
-        Left err -> hPrint stderr err
-        Right tms -> print tms -- Do whatever you want with tms :: Tms. -}
+        tm2gp <- case config^.approach of
+                Second  -> return $ semigroupGamma   >=> groupBeta
+                SecondA -> return $ semigroupGamma_1 >=> groupBeta_1
+                SecondB -> return $ semigroupGamma_2 >=> groupBeta_1
+                _       -> fail "Unreal case"
+        tm <- boolean2tm grammar
+        gp <- tm2gp tm
+        safeOpen (config^.outputFile) $ \handle -> do
+            when (config^.infoGr) $
+                hPutStr handle $ showTitleAndInfo grammar
+            when (config^.infoTM) $
+                hPutStr handle $ showTitleAndInfo tm
+            when (config^.infoGP) $
+                hPutStr handle $ showTitleAndInfo gp
+            when (not (config^.infoGr || config^.infoTM || config^.infoGP)) $ do
+                fmt <- gapFormat gp
+                hPutStr handle fmt

@@ -38,31 +38,22 @@ stack run -- LangToGroup-cli <options>
 ```
 
 ```
+Usage: LangToGroup-cli <options>
 Options:
-    -i, --input <file_path>
-        Full path to file with grammar definition
-    -o, --output <file_path>
-        Full path to file for printing results
-    -e, --error <file_path>
-        Full path to file, where errors should be recorded during parsing
-    -f, --first-approach
-        Use first approach
-    -s, --second-approach
-        Use second approach
-    -a, --second-approach-a
-        Use second approach, modification (a)
-    -b, --second-approach-b
-        Use second approach, modification (b)
-    -q, --quiet
-        Print only information about result
-    -h, --help
-        Print help information and exit
+  -i file_path  --input=file_path    Full path to file with grammar definition
+  -o file_path  --output=file_path   Full path to file for printing results
+  -e file_path  --error=file_path    Full path to file, where errors should be recorded during parsing
+  -a approach   --approach=approach  Used approach, can be 'first', 'second', 'second_a' or 'second_b'
+  -L            --LaTeX              Print result in LaTeX format (while doesn't work)
+  -I objects    --info=objects       Print useful information about objects. Objects must be separeted by comma. Every object must be 'grammar', 'turing_machine' or 'group_presentation' string.
+  -h            --help               Print help and exit
 ```
-For example, if you want build presentation of grammar via second modification of the second approach and get only metrics in console, you should enter:
-`-i grammar.txt -q -b`
 
-And if you want to build presentation of grammar via first approach and save result presentation to file, you should enter:
-`-i grammar.txt -o presentation.txt -f`
+For example, if you want build presentation of grammar via second modification of the second approach and get metrics of produced group presentation, you should type options:
+`-i grammar.txt -a second_b -I group_presentation`
+
+And if you want to build presentation of grammar via first approach and save produced group presentation to file, you should type options:
+`-i grammar.txt -o group_presentation.txt -a first`
 
 Examples of grammar files given below.
 
@@ -114,17 +105,6 @@ Here are the tables with some examples of building group presentations by differ
 | <img src="https://render.githubusercontent.com/render/math?math=\{ww \mid w \in \{a,b\}*\}">| Boolean| 14 | 2498 | 125587 | 3691770 |
 | <img src="https://render.githubusercontent.com/render/math?math=\{a^{m} b^{n} c^{n} \mid (m != n), m, n \in N\}"> | Boolean | 14 | 3461 |185307 | 5999829| 
 
-### Running experiments for the second approach, modification `b`
-| Language | Grammar | N | States | Generators | Relations | 
-|----------|---------|---|------------|-----------| --|
-| 1 rule | CFG | 1 | 120 | 926 | 8762 |
-| Dyck language without empty word | CFG | 10 | 1471 | 12683 | 271992 |
-| <img src="https://render.githubusercontent.com/render/math?math=\{a^{n} \mid n \in N \}"> | CFG| 2 | 221 |  1780 | 27678 | 
-| <img src="https://render.githubusercontent.com/render/math?math=\{a^{n} b^{n} \mid n \in N \}"> | CFG| 5 | 719 |  6080 | 115450 | 
-| <img src="https://render.githubusercontent.com/render/math?math=\{a^{n} b^{n} c^{n} \mid n \in N \}"> | Conjunctive | 14 | 3459 | 29695 | 727872 | 
-| <img src="https://render.githubusercontent.com/render/math?math=\{ww \mid w \in \{a,b\}*\}">| Boolean| 14 | 2498 | 21649 | 498720 |
-| <img src="https://render.githubusercontent.com/render/math?math=\{a^{m} b^{n} c^{n} \mid (m != n), m, n \in N\}"> | Boolean | 14 | 3461 | 29727 | 751509| 
-
 ### Running experiments for the second approach, modification `a`
 | Language | Grammar | N | States | Generators | Relations | 
 |----------|---------|---|------------|-----------| --|
@@ -135,6 +115,17 @@ Here are the tables with some examples of building group presentations by differ
 | <img src="https://render.githubusercontent.com/render/math?math=\{a^{n} b^{n} c^{n} \mid n \in N \}"> | Conjunctive | 14 | 3459 |  79021 | 2416992 | 
 | <img src="https://render.githubusercontent.com/render/math?math=\{ww \mid w \in \{a,b\}*\}">| Boolean| 14 | 2498 | 58358 | 1674930 |
 | <img src="https://render.githubusercontent.com/render/math?math=\{a^{m} b^{n} c^{n} \mid (m != n), m, n \in N\}"> | Boolean | 14 | 3461 |81374 | 2570073| 
+
+### Running experiments for the second approach, modification `b`
+| Language | Grammar | N | States | Generators | Relations | 
+|----------|---------|---|------------|-----------| --|
+| 1 rule | CFG | 1 | 120 | 926 | 8762 |
+| Dyck language without empty word | CFG | 10 | 1471 | 12683 | 271992 |
+| <img src="https://render.githubusercontent.com/render/math?math=\{a^{n} \mid n \in N \}"> | CFG| 2 | 221 |  1780 | 27678 | 
+| <img src="https://render.githubusercontent.com/render/math?math=\{a^{n} b^{n} \mid n \in N \}"> | CFG| 5 | 719 |  6080 | 115450 | 
+| <img src="https://render.githubusercontent.com/render/math?math=\{a^{n} b^{n} c^{n} \mid n \in N \}"> | Conjunctive | 14 | 3459 | 29695 | 727872 | 
+| <img src="https://render.githubusercontent.com/render/math?math=\{ww \mid w \in \{a,b\}*\}">| Boolean| 14 | 2498 | 21649 | 498720 |
+| <img src="https://render.githubusercontent.com/render/math?math=\{a^{m} b^{n} c^{n} \mid (m != n), m, n \in N\}"> | Boolean | 14 | 3461 | 29727 | 751509| 
 
 
 ## Execution 

@@ -31,7 +31,6 @@ dependencies:
 - text
 - bytestring
 - megaparsec
-- parseargs
 - prettyprinter >= 1.7.0
 - pretty-simple
 - hlint
