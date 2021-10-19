@@ -23,7 +23,7 @@ import ShowInfo
 import Containers (fromList, toList)
 import Lens
 import Data.List.Split (splitWhen)
-import Control.Monad (when, (>=>))
+import Control.Monad (when)
 
 import System.Console.GetOpt
 import System.Environment (getArgs)
@@ -165,13 +165,14 @@ normalExecute config = do
                 when (not (config^.infoGr || config^.infoTM || config^.infoGP)) $
                     writeGap gr handle genmap hub
     else do
-        tm2gp <- case config^.approach of
-                Second  -> return $ semigroupGamma   >=> groupBeta
-                SecondA -> return $ semigroupGamma_1 >=> groupBeta_1
-                SecondB -> return $ semigroupGamma_2 >=> groupBeta_1
+        tm2sp <- case config^.approach of
+                Second  -> return $ semigroupGamma
+                SecondA -> return $ semigroupGamma_1
+                SecondB -> return $ semigroupGamma_2
                 _       -> fail "Unreal case"
         tm <- boolean2tm grammar
-        gp <- tm2gp tm
+        sp <- tm2sp tm
+        gp <- groupBeta sp
         safeOpen (config^.outputFile) $ \handle -> do
             when (config^.infoGr) $
                 hPutStr handle $ showTitleAndInfo grammar
