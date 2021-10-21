@@ -21,7 +21,7 @@ presentation is more important than theoretical properties.
 
 This modifications of second approach use modified conversions from Turing machine to semigroup representation (here `G` is set of generators and `R` is set of relations of produced semigroup presentation):
 
-### Origin conversion (in `second` approach)
+### Original conversion (in `second` approach)
 This conversion is represented in [An Introduction to the Theory of Groups](https://doi.org/10.1007/978-1-4612-4176-8)
 
 <img src="https://latex.codecogs.com/png.latex?\\&space;G(T)&space;=&space;\{&space;q,&space;h,&space;s_0,&space;\ldots,&space;s_M,&space;q_0,&space;\ldots,&space;q_N&space;\}&space;\\&space;R(T)&space;=&space;\forall&space;\beta&space;\in&space;0..M&space;:&space;\\&space;\begin{array}{r@{~=~}lc@{~if~}c@{~\in&space;T}}&space;q_i&space;s_j&space;&&space;q_l&space;s_k&space;&&space;&&space;q_i&space;s_j&space;s_k&space;q_l&space;\\&space;q_i&space;s_j&space;s_\beta&space;&&space;s_j&space;q_l&space;s_\beta&space;&&space;&&space;q_i&space;s_i&space;R&space;q_l&space;\\&space;q_i&space;s_j&space;h&space;&&space;s_j&space;q_l&space;s_0&space;h&space;&&space;&&space;q_i&space;s_i&space;R&space;q_l&space;\\&space;s_\beta&space;q_i&space;s_j&space;&&space;q_l&space;s_\beta&space;s_j&space;&&space;&&space;q_i&space;s_i&space;L&space;q_l&space;\\&space;h&space;q_i&space;s_j&space;&&space;h&space;q_l&space;s_0&space;s_j&space;&&space;&&space;q_i&space;s_i&space;L&space;q_l&space;\\&space;q_0&space;s_\beta&space;&&space;q_0&space;\\&space;s_\beta&space;q_0&space;h&space;&&space;q_0&space;h&space;\\&space;h&space;q_0&space;h&space;&&space;q&space;\end{array}" />
@@ -51,7 +51,7 @@ For run the tests:
 
 ## Usage
 ```bash
-stack run -- LangToGroup-cli <options>
+stack run -- LangToGroup-cli
 ```
 
 ```
