@@ -56,18 +56,40 @@ stack run -- LangToGroup-cli <options>
 
 ```
 Usage: LangToGroup-cli <options>
+
 Options:
   -i file_path  --input=file_path    Full path to file with grammar definition
   -o file_path  --output=file_path   Full path to file for printing results
   -e file_path  --error=file_path    Full path to file, where errors should be recorded during parsing
-  -a approach   --approach=approach  Used approach, can be 'first', 'second', 'second_a' or 'second_b'
+  -a approach   --approach=approach  Used approach (see section `Approaches`)
   -L            --LaTeX              Print result in LaTeX format (while doesn't work)
-  -I objects    --info=objects       Print useful information about objects. Objects must be separeted by comma. Every object must be 'grammar', 'turing_machine' or 'group_presentation' string.
+  -I objects    --info=objects       Print useful information about objects (see section `Objects`)
   -h            --help               Print help and exit
+
+Approaches:
+  first
+    Implementation of algorithm from "Isoperimetric and Isodiametric Functions of Groups"
+  second
+    Implementation of algorithms from "Boolean grammars" and "An Introduction to the Theory of Groups"
+  second_a
+    Modifications of `second` approach with modified algorithm from "An Introduction to the Theory of Groups"
+  second_b
+    Modifications of `second` approach with modified algorithm from "An Introduction to the Theory of Groups"
+
+Objects:
+  grammar
+    Input grammar (context-free, conjunctive or boolean)
+  turing_machine, tm
+    Produced Turing machine (its type depends on used approach)
+  group_prsentation, gp
+    Produced group presentation
+Note: When enumerating objects, they must be separated by commas
+
+For more information see https://github.com/YaccConstructor/LangToGroup/blob/master/README.md
 ```
 
 For example, if you want build presentation of grammar via second modification of the second approach and get metrics of produced group presentation, you should type options:
-`-i grammar.txt -a second_b -I group_presentation`
+`-i grammar.txt -a second_b -I gp`
 
 And if you want to build presentation of grammar via first approach and save produced group presentation to file, you should type options:
 `-i grammar.txt -o group_presentation.txt -a first`
