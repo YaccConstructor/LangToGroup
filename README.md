@@ -168,39 +168,3 @@ Here are the tables with some examples of building group presentations by differ
 | <img src="https://render.githubusercontent.com/render/math?math=\{ww \mid w \in \{a,b\}*\}">| Boolean| 14 | 2498 | 20200 | 455220 |
 | <img src="https://render.githubusercontent.com/render/math?math=\{a^{m} b^{n} c^{n} \mid (m != n), m, n \in N\}"> | Boolean | 14 | 3461 | 27655 | 683100 | 
 
-
-## Execution 
-
-For run experiments and print its numerical results you can use ``is_det <bool>`` flag.
-
-So, for print experiments' results using deterministic symmetrization:
-
-``stack exec -- LangToGroup-printer --is_det true``
-
-using nondeterministic symmetrization:
-
-``stack exec -- LangToGroup-printer --is_det false``
-
-
-### Printing example transformations in LaTeX
-Grammar's transformations also can be printed in LaTeX. For this should be used ``--print_example <grammar>`` flag.
-The following grammars can be used as print examples: "one\" --- one rule grammar, \"a*\" --- grammar for regular language 
-<img src="https://render.githubusercontent.com/render/math?math=L = \{a*\}">
-, \"dyck\" --- Dyck language grammar. 
-
-For example,
-
-``stack exec -- LangToGroup-printer --is_det true --print_example one``
-
-Output filename can be specified by ``-o <filename>`` flag.
-
-### Printing example group presentation in Gap-format file
-For this you can use ``-G`` flag without a parameter, but with ``--is_det <bool>`` and ``--print_example <grammar>`` flags.
-Also, output filename can be specified by ``-o <filename>`` flag, if it does not speccified it been printing with default filename "out.txt".
-
-For example, following prints in "out.txt" a group presentation, which obtained from Dyck language grammar using nondeterministic symmetrization: 
-
-``stack exec -- LangToGroup-printer -G --is_det false --print_example dyck``
-
-
-    
