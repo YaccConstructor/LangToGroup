@@ -8,7 +8,6 @@ module Object (
 
 import Containers
 
-import Control.Monad (forM)
 import Data.List (find, intercalate)
 import Data.List.Split (splitWhen)
 
@@ -49,4 +48,4 @@ objectsInfo = unlines $
         object <- objects
         [ "  " ++ intercalate ", " (names object), "    " ++ descr object ]
       ) ++
-    [ "Note: When enumerating objects, they must be separated by commas" ]
+    [ "Note: When enumerating objects, they must be separated by commas WITHOUT SPACES!" ]

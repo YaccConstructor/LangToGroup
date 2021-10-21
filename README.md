@@ -34,7 +34,7 @@ This conversion uses the same set of generators as the original, but smaller siz
 ### Second modified conversion (in `second_b` approach)
 This conversion uses different set of generators as opposed to the first conversion
 
-<img src="https://latex.codecogs.com/png.latex?\\&space;G(T)&space;=&space;\{&space;q,&space;h,&space;s_0,&space;\ldots,&space;s_M,&space;q_0,&space;\ldots,&space;q_N,&space;q^R_0,&space;\ldots,&space;q^R_N&space;\}&space;\\&space;R(T)&space;=&space;\forall&space;\alpha&space;\in&space;0..N,&space;\beta&space;\in&space;0..M&space;:&space;\\&space;\begin{array}{r@{~=~}lc@{~if~}c@{~\in&space;T}}&space;q_i&space;s_j&space;&&space;q_l&space;s_k&space;&&space;&&space;q_i&space;s_j&space;s_k&space;q_l&space;\\&space;q_i&space;h&space;&&space;q_l&space;s_k&space;h&space;&&space;&&space;q_i&space;s_0&space;s_k&space;q_l&space;\\&space;q_i&space;s_j&space;&&space;s_j&space;q_l&space;&&space;&&space;q_i&space;s_i&space;R&space;q_l&space;\\&space;q_i&space;h&space;&&space;s_0&space;q_l&space;h&space;&&space;&&space;q_i&space;s_0&space;R&space;q_l&space;\\&space;s_j&space;q^R_i&space;&&space;q^R_l&space;s_j&space;&&space;&&space;q_i&space;s_i&space;L&space;q_l&space;\\&space;h&space;q^R_i&space;&&space;h&space;q^R_l&space;s_0&space;&&space;&&space;q_i&space;s_0&space;L&space;q_l&space;\\&space;q_\alpha&space;s_\beta&space;&&space;s_\beta&space;q^R_\alpha&space;\\&space;q_\alpha&space;h&space;&&space;s_0&space;q^R_\alpha&space;h&space;\\&space;h&space;q^R_\alpha&space;&&space;h&space;q_\alpha&space;s_0&space;\\&space;q_0&space;s_\beta&space;&&space;q_0&space;\\&space;s_\beta&space;q_0&space;h&space;&&space;q_0&space;h&space;\\&space;h&space;q_0&space;h&space;&&space;q&space;\end{array}" />
+<img src="https://latex.codecogs.com/png.latex?\\&space;G(T)&space;=&space;\{&space;q,&space;h,&space;s_0,&space;\ldots,&space;s_M,&space;q_0,&space;\ldots,&space;q_N,&space;q^R_0,&space;\ldots,&space;q^R_N&space;\}&space;\\&space;R(T)&space;=&space;\forall&space;\alpha&space;\in&space;0..N,&space;\beta&space;\in&space;0..M&space;:&space;\\&space;\begin{array}{r@{~=~}lc@{~if~}c@{~\in&space;T}}&space;q_i&space;s_j&space;&&space;q_l&space;s_k&space;&&space;&&space;q_i&space;s_j&space;s_k&space;q_l&space;\\&space;q_i&space;s_j&space;&&space;s_j&space;q_l&space;&&space;&&space;q_i&space;s_i&space;R&space;q_l&space;\\&space;s_j&space;q^R_i&space;&&space;q^R_l&space;s_j&space;&&space;&&space;q_i&space;s_i&space;L&space;q_l&space;\\&space;q_\alpha&space;s_\beta&space;&&space;s_\beta&space;q^R_\alpha&space;\\&space;q_\alpha&space;h&space;&&space;s_0&space;q^R_\alpha&space;h&space;\\&space;h&space;q^R_\alpha&space;&&space;h&space;q_\alpha&space;s_0&space;\\&space;q_0&space;s_\beta&space;&&space;q_0&space;\\&space;s_\beta&space;q_0&space;h&space;&&space;q_0&space;h&space;\\&space;h&space;q_0&space;h&space;&&space;q&space;\end{array}" />
 
 ## Build status
 [![Build Status](https://travis-ci.org/YaccConstructor/LangToGroup.svg?branch=master)](https://travis-ci.org/YaccConstructor/LangToGroup)
@@ -81,15 +81,15 @@ Objects:
     Input grammar (context-free, conjunctive or boolean)
   turing_machine, tm
     Produced Turing machine (its type depends on used approach)
-  group_prsentation, gp
+  group_presentation, gp
     Produced group presentation
-Note: When enumerating objects, they must be separated by commas
+Note: When enumerating objects, they must be separated by commas WITHOUT SPACES!
 
 For more information see https://github.com/YaccConstructor/LangToGroup/blob/master/README.md
 ```
 
-For example, if you want build presentation of grammar via second modification of the second approach and get metrics of produced group presentation, you should type options:
-`-i grammar.txt -a second_b -I grammar,turing_machine,group_presentation`
+For example, if you want build presentation of grammar via second modification of the second approach and get metrics of produced group presentation and Turing machine, you should type options:
+`-i grammar.txt -a second_b -I tm,gp`
 
 And if you want to build presentation of grammar via first approach and save produced group presentation to file, you should type options:
 `-i grammar.txt -o group_presentation.txt -a first`
