@@ -34,7 +34,7 @@ This conversion uses the same set of generators as the original, but smaller siz
 ### Second modified conversion (in `second_b` approach)
 This conversion uses different set of generators as opposed to the first conversion
 
-<img src="https://latex.codecogs.com/png.latex?\\&space;G(T)&space;=&space;\{&space;q,&space;h,&space;s_0,&space;\ldots,&space;s_M,&space;q_0,&space;\ldots,&space;q_N,&space;q^R_0,&space;\ldots,&space;q^R_N&space;\}&space;\\&space;R(T)&space;=&space;\forall&space;\alpha&space;\in&space;0..N,&space;\beta&space;\in&space;0..M&space;:&space;\\&space;\begin{array}{r@{~=~}lc@{~if~}c@{~\in&space;T}}&space;q_i&space;s_j&space;&&space;q_l&space;s_k&space;&&space;&&space;q_i&space;s_j&space;s_k&space;q_l&space;\\&space;q_i&space;s_j&space;&&space;s_j&space;q_l&space;&&space;&&space;q_i&space;s_i&space;R&space;q_l&space;\\&space;s_j&space;q^R_i&space;&&space;q^R_l&space;s_j&space;&&space;&&space;q_i&space;s_i&space;L&space;q_l&space;\\&space;q_\alpha&space;s_\beta&space;&&space;s_\beta&space;q^R_\alpha&space;\\&space;q_\alpha&space;h&space;&&space;s_0&space;q^R_\alpha&space;h&space;\\&space;h&space;q^R_\alpha&space;&&space;h&space;q_\alpha&space;s_0&space;\\&space;q_0&space;s_\beta&space;&&space;q_0&space;\\&space;s_\beta&space;q_0&space;h&space;&&space;q_0&space;h&space;\\&space;h&space;q_0&space;h&space;&&space;q&space;\end{array}" />
+<img src="https://latex.codecogs.com/png.latex?\\&space;G(T)&space;=&space;\{&space;q,&space;h,&space;s_0,&space;\ldots,&space;s_M,&space;q_0,&space;\ldots,&space;q_N,&space;q^R_0,&space;\ldots,&space;q^R_N&space;\}&space;\\&space;R(T)&space;=&space;\forall&space;\alpha&space;\in&space;0..N,&space;\beta&space;\in&space;0..M&space;:&space;\\&space;\begin{array}{r@{~=~}lc@{~if~}c@{~\in&space;T}}&space;q_i&space;s_j&space;&&space;q_l&space;s_k&space;&&space;&&space;q_i&space;s_j&space;s_k&space;q_l&space;\\&space;q_i&space;h&space;&&space;q_l&space;s_k&space;h&space;&&space;&&space;q_i&space;s_0&space;s_k&space;q_l&space;\\&space;q_i&space;s_j&space;&&space;s_j&space;q_l&space;&&space;&&space;q_i&space;s_i&space;R&space;q_l&space;\\&space;q_i&space;h&space;&&space;s_0&space;q_l&space;h&space;&&space;&&space;q_i&space;s_0&space;R&space;q_l&space;\\&space;s_j&space;q^R_i&space;&&space;q^R_l&space;s_j&space;&&space;&&space;q_i&space;s_i&space;L&space;q_l&space;\\&space;h&space;q^R_i&space;&&space;h&space;q^R_l&space;s_0&space;&&space;&&space;q_i&space;s_0&space;L&space;q_l&space;\\&space;q_\alpha&space;s_\beta&space;&&space;s_\beta&space;q^R_\alpha&space;\\&space;q_\alpha&space;h&space;&&space;s_0&space;q^R_\alpha&space;h&space;\\&space;h&space;q^R_\alpha&space;&&space;h&space;q_\alpha&space;s_0&space;\\&space;q_0&space;s_\beta&space;&&space;q_0&space;\\&space;s_\beta&space;q_0&space;h&space;&&space;q_0&space;h&space;\\&space;h&space;q_0&space;h&space;&&space;q&space;\end{array}" />
 
 ## Build status
 [![Build Status](https://travis-ci.org/YaccConstructor/LangToGroup.svg?branch=master)](https://travis-ci.org/YaccConstructor/LangToGroup)
@@ -62,12 +62,12 @@ Options:
   -e file_path  --error=file_path    Full path to file, where errors should be recorded during parsing
   -a approach   --approach=approach  Used approach, can be 'first', 'second', 'second_a' or 'second_b'
   -L            --LaTeX              Print result in LaTeX format (while doesn't work)
-  -I objects    --info=objects       Print useful information about objects. Objects must be separeted by comma. Every object must be 'grammar', 'turing_machine' or 'group_presentation' string.
+  -I objects    --info=objects       Print useful information about objects. Objects must be separeted by comma without spaces. Every object must be 'grammar', 'turing_machine' or 'group_presentation' string.
   -h            --help               Print help and exit
 ```
 
 For example, if you want build presentation of grammar via second modification of the second approach and get metrics of produced group presentation, you should type options:
-`-i grammar.txt -a second_b -I group_presentation`
+`-i grammar.txt -a second_b -I grammar,turing_machine,group_presentation`
 
 And if you want to build presentation of grammar via first approach and save produced group presentation to file, you should type options:
 `-i grammar.txt -o group_presentation.txt -a first`
@@ -105,9 +105,10 @@ Here are the tables with some examples of building group presentations by differ
 
 | Language | Grammar | N | States | Generators | Relations | 
 | -- | -- |-- | -- | -- | --|
-| 1 rule | CFG |1 | 4 | 56187 |  89508 | 
-| <img src="https://render.githubusercontent.com/render/math?math=\{a^{*} \}"> | CFG |3 | 9 | 204903 | 347370 |
-| Dyck | CFG |6 | 19 | 957619 | 1478859 |
+| 1 rule | CFG | 1 | 6 | 89508 | 56187 |
+| Dyck language without empty word| CFG | 10 | 77 | 2798322 | 1773449 |
+| <img src="https://render.githubusercontent.com/render/math?math=\{a^{n} \mid n \in N \}"> | CFG| 2 | 10 | 228160 | 129611 | 
+| <img src="https://render.githubusercontent.com/render/math?math=\{a^{n} b^{n} \mid n \in N \}"> | CFG| 5 | 63 |  2241518 | 1355357 | 
 
 
 ### Running experiments for the second approach
@@ -115,7 +116,7 @@ Here are the tables with some examples of building group presentations by differ
 | Language | Grammar | N | States | Generators | Relations | 
 |----------|---------|---|------------|-----------| --|
 | 1 rule | CFG | 1 | 120 | 2300 | 28171 |
-| Dyck language without empty word | CFG | 10 | 1471 | 69755 | 1911168 |
+| Dyck language without empty word | CFG | 10 | 943 | 40414 | 1025570 |
 | <img src="https://render.githubusercontent.com/render/math?math=\{a^{n} \mid n \in N \}"> | CFG| 2 | 221 |  7384 | 149982 | 
 | <img src="https://render.githubusercontent.com/render/math?math=\{a^{n} b^{n} \mid n \in N \}"> | CFG| 5 | 719 |  29510 | 719150 | 
 | <img src="https://render.githubusercontent.com/render/math?math=\{a^{n} b^{n} c^{n} \mid n \in N \}"> | Conjunctive | 14 | 3459 |  179112 | 5619872 | 
@@ -125,24 +126,24 @@ Here are the tables with some examples of building group presentations by differ
 ### Running experiments for the second approach, modification `a`
 | Language | Grammar | N | States | Generators | Relations | 
 |----------|---------|---|------------|-----------| --|
-| 1 rule | CFG | 1 | 120 | 1562 | 18590 |
-| Dyck language without empty word| CFG | 10 | 1471 | 31934 | 852208 |
-| <img src="https://render.githubusercontent.com/render/math?math=\{a^{n} \mid n \in N \}"> | CFG| 2 | 221 |  4191 | 82950 | 
-| <img src="https://render.githubusercontent.com/render/math?math=\{a^{n} b^{n} \mid n \in N \}"> | CFG| 5 | 719 |  14348 | 340125 | 
-| <img src="https://render.githubusercontent.com/render/math?math=\{a^{n} b^{n} c^{n} \mid n \in N \}"> | Conjunctive | 14 | 3459 |  79021 | 2416992 | 
-| <img src="https://render.githubusercontent.com/render/math?math=\{ww \mid w \in \{a,b\}*\}">| Boolean| 14 | 2498 | 58358 | 1674930 |
-| <img src="https://render.githubusercontent.com/render/math?math=\{a^{m} b^{n} c^{n} \mid (m != n), m, n \in N\}"> | Boolean | 14 | 3461 |81374 | 2570073| 
+| 1 rule | CFG | 1 | 120 | 1564 | 18603 |
+| Dyck language without empty word| CFG | 10 | 943 | 19221 | 474552 |
+| <img src="https://render.githubusercontent.com/render/math?math=\{a^{n} \mid n \in N \}"> | CFG| 2 | 221 | 4193 | 82971 | 
+| <img src="https://render.githubusercontent.com/render/math?math=\{a^{n} b^{n} \mid n \in N \}"> | CFG| 5 | 719 |  14350 | 340150 | 
+| <img src="https://render.githubusercontent.com/render/math?math=\{a^{n} b^{n} c^{n} \mid n \in N \}"> | Conjunctive | 14 | 3459 |  79023 | 2417024 | 
+| <img src="https://render.githubusercontent.com/render/math?math=\{ww \mid w \in \{a,b\}*\}">| Boolean| 14 | 2498 | 58360 | 1674960 |
+| <img src="https://render.githubusercontent.com/render/math?math=\{a^{m} b^{n} c^{n} \mid (m != n), m, n \in N\}"> | Boolean | 14 | 3461 |81376 | 2570106| 
 
 ### Running experiments for the second approach, modification `b`
 | Language | Grammar | N | States | Generators | Relations | 
 |----------|---------|---|------------|-----------| --|
-| 1 rule | CFG | 1 | 120 | 926 | 8762 |
-| Dyck language without empty word | CFG | 10 | 1471 | 12683 | 271992 |
-| <img src="https://render.githubusercontent.com/render/math?math=\{a^{n} \mid n \in N \}"> | CFG| 2 | 221 |  1780 | 27678 | 
-| <img src="https://render.githubusercontent.com/render/math?math=\{a^{n} b^{n} \mid n \in N \}"> | CFG| 5 | 719 |  6080 | 115450 | 
-| <img src="https://render.githubusercontent.com/render/math?math=\{a^{n} b^{n} c^{n} \mid n \in N \}"> | Conjunctive | 14 | 3459 | 29695 | 727872 | 
-| <img src="https://render.githubusercontent.com/render/math?math=\{ww \mid w \in \{a,b\}*\}">| Boolean| 14 | 2498 | 21649 | 498720 |
-| <img src="https://render.githubusercontent.com/render/math?math=\{a^{m} b^{n} c^{n} \mid (m != n), m, n \in N\}"> | Boolean | 14 | 3461 | 29727 | 751509| 
+| 1 rule | CFG | 1 | 120 | 881 | 8164 |
+| Dyck language without empty word | CFG | 10 | 943 | 7506 | 145444 |
+| <img src="https://render.githubusercontent.com/render/math?math=\{a^{n} \mid n \in N \}"> | CFG| 2 | 221 |  1683 | 25620 | 
+| <img src="https://render.githubusercontent.com/render/math?math=\{a^{n} b^{n} \mid n \in N \}"> | CFG| 5 | 719 |  5701 | 105950 | 
+| <img src="https://render.githubusercontent.com/render/math?math=\{a^{n} b^{n} c^{n} \mid n \in N \}"> | Conjunctive | 14 | 3459 | 27624 | 661568 | 
+| <img src="https://render.githubusercontent.com/render/math?math=\{ww \mid w \in \{a,b\}*\}">| Boolean| 14 | 2498 | 20200 | 455220 |
+| <img src="https://render.githubusercontent.com/render/math?math=\{a^{m} b^{n} c^{n} \mid (m != n), m, n \in N\}"> | Boolean | 14 | 3461 | 27655 | 683100 | 
 
 
 ## Execution 

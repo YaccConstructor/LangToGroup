@@ -30,7 +30,7 @@ objects =
         "Input grammar (context-free, conjunctive or boolean)"
     , Object ["turing_machine", "tm"] TuringMachine
         "Produced Turing machine (its type depends on used approach)"
-    , Object ["group_prsentation", "gp"] GroupPresentation
+    , Object ["group_presentation", "gp"] GroupPresentation
         "Produced group presentation"
     ]
 
