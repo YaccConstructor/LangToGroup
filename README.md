@@ -123,6 +123,7 @@ Here are the tables with some examples of building group presentations by differ
 - **Rel** -- number of relations, 
 - **N** -- number of rules in normal grammar.
 
+
 ### Running experiments for the first approach
 
 | Language | Grammar | N | States | Generators | Relations | 
