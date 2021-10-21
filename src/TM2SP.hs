@@ -142,34 +142,16 @@ semigroupGamma_2 =
                 (strQuadruples.withoutLoops.takeOnly(withoutMove))
               ),
             [
-            "q_i h" === "q_l s_k h"
-              ] & for' (
-                "q_{i} s_0 s_{k} q_{l}" `in'`
-                (strQuadruples.withoutLoops.takeOnly(withoutMove&.fromSymbol(blankSymbol)))
-              ),
-            [
             "q_i s_j" === "s_j q_l"
               ] & for' (
                 "q_{i} s_{j} R q_{l}" `in'`
                 (strQuadruples.takeOnly(withMove toRight))
               ),
             [
-            "q_i h" === "s_0 q_l h"
-              ] & for' (
-                "q_{i} s_0 R q_{l}" `in'`
-                (strQuadruples.takeOnly(withMove(toRight)&.fromSymbol(blankSymbol)))
-              ),
-            [
             "s_j qR_i" === "qR_l s_j"
               ] & for' (
                 "qR_{i} s_{j} L qR_{l}" `in'`
                 (strQuadruples.takeOnly(withMove toLeft))
-              ),
-            [
-            "h qR_i" === "h qR_l s_0"
-              ] & for' (
-                "qR_{i} s_0 L qR_{l}" `in'`
-                (strQuadruples.takeOnly(withMove(toLeft)&.fromSymbol(blankSymbol)))
               ),
             [
             "q_A s_B" === "s_B qR_A"
