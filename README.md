@@ -21,7 +21,7 @@ presentation is more important than theoretical properties.
 
 This modifications of second approach use modified conversions from Turing machine to semigroup representation (here `G` is set of generators and `R` is set of relations of produced semigroup presentation):
 
-### Origin conversion (in `second` approach)
+### Original conversion (in `second` approach)
 This conversion is represented in [An Introduction to the Theory of Groups](https://doi.org/10.1007/978-1-4612-4176-8)
 
 <img src="https://latex.codecogs.com/png.latex?\\&space;G(T)&space;=&space;\{&space;q,&space;h,&space;s_0,&space;\ldots,&space;s_M,&space;q_0,&space;\ldots,&space;q_N&space;\}&space;\\&space;R(T)&space;=&space;\forall&space;\beta&space;\in&space;0..M&space;:&space;\\&space;\begin{array}{r@{~=~}lc@{~if~}c@{~\in&space;T}}&space;q_i&space;s_j&space;&&space;q_l&space;s_k&space;&&space;&&space;q_i&space;s_j&space;s_k&space;q_l&space;\\&space;q_i&space;s_j&space;s_\beta&space;&&space;s_j&space;q_l&space;s_\beta&space;&&space;&&space;q_i&space;s_i&space;R&space;q_l&space;\\&space;q_i&space;s_j&space;h&space;&&space;s_j&space;q_l&space;s_0&space;h&space;&&space;&&space;q_i&space;s_i&space;R&space;q_l&space;\\&space;s_\beta&space;q_i&space;s_j&space;&&space;q_l&space;s_\beta&space;s_j&space;&&space;&&space;q_i&space;s_i&space;L&space;q_l&space;\\&space;h&space;q_i&space;s_j&space;&&space;h&space;q_l&space;s_0&space;s_j&space;&&space;&&space;q_i&space;s_i&space;L&space;q_l&space;\\&space;q_0&space;s_\beta&space;&&space;q_0&space;\\&space;s_\beta&space;q_0&space;h&space;&&space;q_0&space;h&space;\\&space;h&space;q_0&space;h&space;&&space;q&space;\end{array}" />
@@ -51,19 +51,41 @@ For run the tests:
 
 ## Usage
 ```bash
-stack run -- LangToGroup-cli <options>
+stack run -- LangToGroup-cli
 ```
 
 ```
 Usage: LangToGroup-cli <options>
+
 Options:
   -i file_path  --input=file_path    Full path to file with grammar definition
   -o file_path  --output=file_path   Full path to file for printing results
   -e file_path  --error=file_path    Full path to file, where errors should be recorded during parsing
-  -a approach   --approach=approach  Used approach, can be 'first', 'second', 'second_a' or 'second_b'
+  -a approach   --approach=approach  Used approach (see section `Approaches`)
   -L            --LaTeX              Print result in LaTeX format (while doesn't work)
-  -I objects    --info=objects       Print useful information about objects. Objects must be separeted by comma without spaces. Every object must be 'grammar', 'turing_machine' or 'group_presentation' string.
+  -I objects    --info=objects       Print useful information about objects (see section `Objects`)
   -h            --help               Print help and exit
+
+Approaches:
+  first
+    Implementation of algorithm from "Isoperimetric and Isodiametric Functions of Groups"
+  second
+    Implementation of algorithms from "Boolean grammars" and "An Introduction to the Theory of Groups"
+  second_a
+    Modifications of `second` approach with modified algorithm from "An Introduction to the Theory of Groups"
+  second_b
+    Modifications of `second` approach with modified algorithm from "An Introduction to the Theory of Groups"
+
+Objects:
+  grammar
+    Input grammar (context-free, conjunctive or boolean)
+  turing_machine, tm
+    Produced Turing machine (its type depends on used approach)
+  group_prsentation, gp
+    Produced group presentation
+Note: When enumerating objects, they must be separated by commas
+
+For more information see https://github.com/YaccConstructor/LangToGroup/blob/master/README.md
 ```
 
 For example, if you want build presentation of grammar via second modification of the second approach and get metrics of produced group presentation, you should type options:
