@@ -1,0 +1,761 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">SMInterpreter</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-2"></span><span>    </span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="SMType.html"><span class="hs-identifier">SMType</span></a></span><span>
+</span><span id="line-3"></span><span>    </span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Maybe</span></span><span>
+</span><span id="line-4"></span><span>    </span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="TM2SM.html"><span class="hs-identifier">TM2SM</span></a></span><span>
+</span><span id="line-5"></span><span>    </span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Prelude</span></span><span> </span><span class="hs-keyword">hiding</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">Word</span></span><span class="hs-special">)</span><span>
+</span><span id="line-6"></span><span>    </span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.List</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">isInfixOf</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">elemIndex</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">find</span></span><span class="hs-special">)</span><span>
+</span><span id="line-7"></span><span>    </span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Map</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">Map</span></span><span class="hs-special">)</span><span>
+</span><span id="line-8"></span><span>    </span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Map</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">Map</span></span><span>
+</span><span id="line-9"></span><span>    </span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Graph.Inductive.Graph</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">mkGraph</span></span><span class="hs-special">)</span><span>
+</span><span id="line-10"></span><span>    </span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Graph.Inductive.PatriciaTree</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">Gr</span></span><span class="hs-special">)</span><span>
+</span><span id="line-11"></span><span>    </span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Tuple</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">swap</span></span><span class="hs-special">)</span><span>
+</span><span id="line-12"></span><span>
+</span><span id="line-13"></span><span>    </span><span class="annot"><a href="SMInterpreter.html#checkRule"><span class="hs-identifier hs-type">checkRule</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="SMType.html#Word"><span class="hs-identifier hs-type">Word</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="SMType.html#SRule"><span class="hs-identifier hs-type">SRule</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span>
+</span><span id="line-14"></span><span>    </span><span id="checkRule"><span class="annot"><span class="annottext">checkRule :: Word -&gt; SRule -&gt; Bool
+</span><a href="SMInterpreter.html#checkRule"><span class="hs-identifier hs-var hs-var">checkRule</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="SMType.html#Word"><span class="hs-identifier hs-type">Word</span></a></span><span> </span><span id="local-6989586621679335725"><span class="annot"><span class="annottext">[Smb]
+</span><a href="#local-6989586621679335725"><span class="hs-identifier hs-var">word</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="SMType.html#SRule"><span class="hs-identifier hs-type">SRule</span></a></span><span> </span><span id="local-6989586621679335723"><span class="annot"><span class="annottext">[(Word, Word)]
+</span><a href="#local-6989586621679335723"><span class="hs-identifier hs-var">rule</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-15"></span><span>        </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679335722"><span class="annot"><span class="annottext">check :: (Word, b) -&gt; Bool
+</span><a href="#local-6989586621679335722"><span class="hs-identifier hs-var hs-var">check</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="SMType.html#Word"><span class="hs-identifier hs-type">Word</span></a></span><span> </span><span id="local-6989586621679335721"><span class="annot"><span class="annottext">[Smb]
+</span><a href="#local-6989586621679335721"><span class="hs-identifier hs-var">l</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">b
+</span><span class="hs-identifier">_</span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Smb]
+</span><a href="#local-6989586621679335721"><span class="hs-identifier hs-var">l</span></a></span><span> </span><span class="annot"><span class="annottext">[Smb] -&gt; [Smb] -&gt; Bool
+forall a. Eq a =&gt; [a] -&gt; [a] -&gt; Bool
+</span><span class="hs-operator hs-var">`isInfixOf`</span></span><span> </span><span class="annot"><span class="annottext">[Smb]
+</span><a href="#local-6989586621679335725"><span class="hs-identifier hs-var">word</span></a></span><span>
+</span><span id="line-16"></span><span>        </span><span class="annot"><span class="annottext">((Word, Word) -&gt; Bool) -&gt; [(Word, Word)] -&gt; Bool
+forall (t :: * -&gt; *) a. Foldable t =&gt; (a -&gt; Bool) -&gt; t a -&gt; Bool
+</span><span class="hs-identifier hs-var">all</span></span><span> </span><span class="annot"><span class="annottext">(Word, Word) -&gt; Bool
+forall b. (Word, b) -&gt; Bool
+</span><a href="#local-6989586621679335722"><span class="hs-identifier hs-var">check</span></a></span><span> </span><span class="annot"><span class="annottext">[(Word, Word)]
+</span><a href="#local-6989586621679335723"><span class="hs-identifier hs-var">rule</span></a></span><span>
+</span><span id="line-17"></span><span>
+</span><span id="line-18"></span><span>    </span><span class="annot"><a href="SMInterpreter.html#getApplicableRules"><span class="hs-identifier hs-type">getApplicableRules</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="SMType.html#SRule"><span class="hs-identifier hs-type">SRule</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="SMType.html#Word"><span class="hs-identifier hs-type">Word</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="hs-special">[</span><span class="annot"><a href="SMType.html#SRule"><span class="hs-identifier hs-type">SRule</span></a></span><span class="hs-special">]</span><span class="hs-special">]</span><span>
+</span><span id="line-19"></span><span>    </span><span id="getApplicableRules"><span class="annot"><span class="annottext">getApplicableRules :: [SRule] -&gt; [Word] -&gt; [[SRule]]
+</span><a href="SMInterpreter.html#getApplicableRules"><span class="hs-identifier hs-var hs-var">getApplicableRules</span></a></span></span><span> </span><span id="local-6989586621679335718"><span class="annot"><span class="annottext">[SRule]
+</span><a href="#local-6989586621679335718"><span class="hs-identifier hs-var">rules</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(Word -&gt; [SRule]) -&gt; [Word] -&gt; [[SRule]]
+forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679335717"><span class="annot"><span class="annottext">Word
+</span><a href="#local-6989586621679335717"><span class="hs-identifier hs-var">w</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">(SRule -&gt; Bool) -&gt; [SRule] -&gt; [SRule]
+forall a. (a -&gt; Bool) -&gt; [a] -&gt; [a]
+</span><span class="hs-identifier hs-var">filter</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Word -&gt; SRule -&gt; Bool
+</span><a href="SMInterpreter.html#checkRule"><span class="hs-identifier hs-var">checkRule</span></a></span><span> </span><span class="annot"><span class="annottext">Word
+</span><a href="#local-6989586621679335717"><span class="hs-identifier hs-var">w</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[SRule]
+</span><a href="#local-6989586621679335718"><span class="hs-identifier hs-var">rules</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-20"></span><span>
+</span><span id="line-21"></span><span>    </span><span class="annot"><a href="SMInterpreter.html#reduceY"><span class="hs-identifier hs-type">reduceY</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="SMType.html#Smb"><span class="hs-identifier hs-type">Smb</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="SMType.html#Smb"><span class="hs-identifier hs-type">Smb</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-22"></span><span>    </span><span id="reduceY"><span class="annot"><span class="annottext">reduceY :: [Smb] -&gt; [Smb]
+</span><a href="SMInterpreter.html#reduceY"><span class="hs-identifier hs-var hs-var">reduceY</span></a></span></span><span> </span><span id="local-6989586621679335715"><span class="annot"><span class="annottext">[Smb]
+</span><a href="#local-6989586621679335715"><span class="hs-identifier hs-var">word</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-23"></span><span>        </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679335714"><span class="annot"><span class="annottext">reduceInternal :: [Smb] -&gt; [Smb] -&gt; [Smb]
+</span><a href="#local-6989586621679335714"><span class="hs-identifier hs-var hs-var">reduceInternal</span></a></span></span><span> </span><span id="local-6989586621679335713"><span class="annot"><span class="annottext">[Smb]
+</span><a href="#local-6989586621679335713"><span class="hs-identifier hs-var">smbs</span></a></span></span><span> </span><span id="local-6989586621679335712"><span class="annot"><span class="annottext">[Smb]
+</span><a href="#local-6989586621679335712"><span class="hs-identifier hs-var">acc</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-24"></span><span>                </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">[Smb]
+</span><a href="#local-6989586621679335713"><span class="hs-identifier hs-var">smbs</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-25"></span><span>                    </span><span class="hs-special">[</span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">[Smb] -&gt; [Smb]
+forall a. [a] -&gt; [a]
+</span><span class="hs-identifier hs-var">reverse</span></span><span> </span><span class="annot"><span class="annottext">[Smb]
+</span><a href="#local-6989586621679335712"><span class="hs-identifier hs-var">acc</span></a></span><span>
+</span><span id="line-26"></span><span>                    </span><span id="local-6989586621679335710"><span class="annot"><span class="annottext">smbh1 :: Smb
+</span><a href="#local-6989586621679335710"><span class="hs-identifier hs-var">smbh1</span></a></span></span><span class="hs-glyph">@</span><span class="hs-special">(</span><span class="annot"><a href="SMType.html#SmbY"><span class="hs-identifier hs-type">SmbY</span></a></span><span> </span><span id="local-6989586621679335708"><span class="annot"><span class="annottext">Y
+</span><a href="#local-6989586621679335708"><span class="hs-identifier hs-var">h1</span></a></span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span> </span><span id="local-6989586621679335707"><span class="annot"><span class="annottext">smbh2 :: Smb
+</span><a href="#local-6989586621679335707"><span class="hs-identifier hs-var">smbh2</span></a></span></span><span class="hs-glyph">@</span><span class="hs-special">(</span><span class="annot"><a href="SMType.html#SmbY%27"><span class="hs-identifier hs-type">SmbY'</span></a></span><span> </span><span id="local-6989586621679335705"><span class="annot"><span class="annottext">Y
+</span><a href="#local-6989586621679335705"><span class="hs-identifier hs-var">h2</span></a></span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span> </span><span id="local-6989586621679335704"><span class="annot"><span class="annottext">[Smb]
+</span><a href="#local-6989586621679335704"><span class="hs-identifier hs-var">t</span></a></span></span><span>  </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Y
+</span><a href="#local-6989586621679335708"><span class="hs-identifier hs-var">h1</span></a></span><span> </span><span class="annot"><span class="annottext">Y -&gt; Y -&gt; Bool
+forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">==</span></span><span> </span><span class="annot"><span class="annottext">Y
+</span><a href="#local-6989586621679335705"><span class="hs-identifier hs-var">h2</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">[Smb] -&gt; [Smb] -&gt; [Smb]
+</span><a href="#local-6989586621679335714"><span class="hs-identifier hs-var">reduceInternal</span></a></span><span> </span><span class="annot"><span class="annottext">[Smb]
+</span><a href="#local-6989586621679335704"><span class="hs-identifier hs-var">t</span></a></span><span> </span><span class="annot"><span class="annottext">[Smb]
+</span><a href="#local-6989586621679335712"><span class="hs-identifier hs-var">acc</span></a></span><span>
+</span><span id="line-27"></span><span>                                                            </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Bool
+</span><span class="hs-identifier hs-var">otherwise</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">[Smb] -&gt; [Smb] -&gt; [Smb]
+</span><a href="#local-6989586621679335714"><span class="hs-identifier hs-var">reduceInternal</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Smb
+</span><a href="#local-6989586621679335707"><span class="hs-identifier hs-var">smbh2</span></a></span><span> </span><span class="annot"><span class="annottext">Smb -&gt; [Smb] -&gt; [Smb]
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span> </span><span class="annot"><span class="annottext">[Smb]
+</span><a href="#local-6989586621679335704"><span class="hs-identifier hs-var">t</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Smb
+</span><a href="#local-6989586621679335710"><span class="hs-identifier hs-var">smbh1</span></a></span><span> </span><span class="annot"><span class="annottext">Smb -&gt; [Smb] -&gt; [Smb]
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span> </span><span class="annot"><span class="annottext">[Smb]
+</span><a href="#local-6989586621679335712"><span class="hs-identifier hs-var">acc</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-28"></span><span>                    </span><span id="local-6989586621679335703"><span class="annot"><span class="annottext">smbh1 :: Smb
+</span><a href="#local-6989586621679335703"><span class="hs-identifier hs-var">smbh1</span></a></span></span><span class="hs-glyph">@</span><span class="hs-special">(</span><span class="annot"><a href="SMType.html#SmbY%27"><span class="hs-identifier hs-type">SmbY'</span></a></span><span> </span><span id="local-6989586621679335702"><span class="annot"><span class="annottext">Y
+</span><a href="#local-6989586621679335702"><span class="hs-identifier hs-var">h1</span></a></span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span> </span><span id="local-6989586621679335701"><span class="annot"><span class="annottext">smbh2 :: Smb
+</span><a href="#local-6989586621679335701"><span class="hs-identifier hs-var">smbh2</span></a></span></span><span class="hs-glyph">@</span><span class="hs-special">(</span><span class="annot"><a href="SMType.html#SmbY"><span class="hs-identifier hs-type">SmbY</span></a></span><span> </span><span id="local-6989586621679335700"><span class="annot"><span class="annottext">Y
+</span><a href="#local-6989586621679335700"><span class="hs-identifier hs-var">h2</span></a></span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span> </span><span id="local-6989586621679335699"><span class="annot"><span class="annottext">[Smb]
+</span><a href="#local-6989586621679335699"><span class="hs-identifier hs-var">t</span></a></span></span><span>  </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Y
+</span><a href="#local-6989586621679335702"><span class="hs-identifier hs-var">h1</span></a></span><span> </span><span class="annot"><span class="annottext">Y -&gt; Y -&gt; Bool
+forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">==</span></span><span> </span><span class="annot"><span class="annottext">Y
+</span><a href="#local-6989586621679335700"><span class="hs-identifier hs-var">h2</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">[Smb] -&gt; [Smb] -&gt; [Smb]
+</span><a href="#local-6989586621679335714"><span class="hs-identifier hs-var">reduceInternal</span></a></span><span> </span><span class="annot"><span class="annottext">[Smb]
+</span><a href="#local-6989586621679335699"><span class="hs-identifier hs-var">t</span></a></span><span> </span><span class="annot"><span class="annottext">[Smb]
+</span><a href="#local-6989586621679335712"><span class="hs-identifier hs-var">acc</span></a></span><span>
+</span><span id="line-29"></span><span>                                                            </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Bool
+</span><span class="hs-identifier hs-var">otherwise</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">[Smb] -&gt; [Smb] -&gt; [Smb]
+</span><a href="#local-6989586621679335714"><span class="hs-identifier hs-var">reduceInternal</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Smb
+</span><a href="#local-6989586621679335701"><span class="hs-identifier hs-var">smbh2</span></a></span><span> </span><span class="annot"><span class="annottext">Smb -&gt; [Smb] -&gt; [Smb]
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span> </span><span class="annot"><span class="annottext">[Smb]
+</span><a href="#local-6989586621679335699"><span class="hs-identifier hs-var">t</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Smb
+</span><a href="#local-6989586621679335703"><span class="hs-identifier hs-var">smbh1</span></a></span><span> </span><span class="annot"><span class="annottext">Smb -&gt; [Smb] -&gt; [Smb]
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span> </span><span class="annot"><span class="annottext">[Smb]
+</span><a href="#local-6989586621679335712"><span class="hs-identifier hs-var">acc</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-30"></span><span>                    </span><span id="local-6989586621679335698"><span class="annot"><span class="annottext">Smb
+</span><a href="#local-6989586621679335698"><span class="hs-identifier hs-var">h</span></a></span></span><span> </span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span> </span><span id="local-6989586621679335697"><span class="annot"><span class="annottext">[Smb]
+</span><a href="#local-6989586621679335697"><span class="hs-identifier hs-var">t</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span>  </span><span class="annot"><span class="annottext">[Smb] -&gt; [Smb] -&gt; [Smb]
+</span><a href="#local-6989586621679335714"><span class="hs-identifier hs-var">reduceInternal</span></a></span><span> </span><span class="annot"><span class="annottext">[Smb]
+</span><a href="#local-6989586621679335697"><span class="hs-identifier hs-var">t</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Smb
+</span><a href="#local-6989586621679335698"><span class="hs-identifier hs-var">h</span></a></span><span> </span><span class="annot"><span class="annottext">Smb -&gt; [Smb] -&gt; [Smb]
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span> </span><span class="annot"><span class="annottext">[Smb]
+</span><a href="#local-6989586621679335712"><span class="hs-identifier hs-var">acc</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-31"></span><span>        </span><span class="hs-keyword">in</span><span>
+</span><span id="line-32"></span><span>            </span><span class="annot"><span class="annottext">[Smb] -&gt; [Smb] -&gt; [Smb]
+</span><a href="#local-6989586621679335714"><span class="hs-identifier hs-var">reduceInternal</span></a></span><span> </span><span class="annot"><span class="annottext">[Smb]
+</span><a href="#local-6989586621679335715"><span class="hs-identifier hs-var">word</span></a></span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span>
+</span><span id="line-33"></span><span>
+</span><span id="line-34"></span><span>    </span><span class="annot"><a href="SMInterpreter.html#replaceSublist"><span class="hs-identifier hs-type">replaceSublist</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="SMType.html#Smb"><span class="hs-identifier hs-type">Smb</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="SMType.html#Word"><span class="hs-identifier hs-type">Word</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="SMType.html#Word"><span class="hs-identifier hs-type">Word</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="SMType.html#Smb"><span class="hs-identifier hs-type">Smb</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-35"></span><span>    </span><span id="replaceSublist"><span class="annot"><span class="annottext">replaceSublist :: [Smb] -&gt; (Word, Word) -&gt; [Smb]
+</span><a href="SMInterpreter.html#replaceSublist"><span class="hs-identifier hs-var hs-var">replaceSublist</span></a></span></span><span> </span><span id="local-6989586621679335695"><span class="annot"><span class="annottext">[Smb]
+</span><a href="#local-6989586621679335695"><span class="hs-identifier hs-var">smbs</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="SMType.html#Word"><span class="hs-identifier hs-type">Word</span></a></span><span> </span><span id="local-6989586621679335694"><span class="annot"><span class="annottext">[Smb]
+</span><a href="#local-6989586621679335694"><span class="hs-identifier hs-var">rulel</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="SMType.html#Word"><span class="hs-identifier hs-type">Word</span></a></span><span> </span><span id="local-6989586621679335693"><span class="annot"><span class="annottext">[Smb]
+</span><a href="#local-6989586621679335693"><span class="hs-identifier hs-var">ruler</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Smb]
+</span><a href="#local-6989586621679335692"><span class="hs-identifier hs-var">l</span></a></span><span> </span><span class="annot"><span class="annottext">[Smb] -&gt; [Smb] -&gt; [Smb]
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[Smb]
+</span><a href="#local-6989586621679335693"><span class="hs-identifier hs-var">ruler</span></a></span><span> </span><span class="annot"><span class="annottext">[Smb] -&gt; [Smb] -&gt; [Smb]
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[Smb]
+</span><a href="#local-6989586621679335691"><span class="hs-identifier hs-var">r</span></a></span><span>
+</span><span id="line-36"></span><span>        </span><span class="hs-keyword">where</span><span>
+</span><span id="line-37"></span><span>            </span><span id="local-6989586621679335690"><span class="annot"><span class="annottext">replaceSublistInternal :: [a] -&gt; [a] -&gt; [a] -&gt; ([a], [a])
+</span><a href="#local-6989586621679335690"><span class="hs-identifier hs-var hs-var">replaceSublistInternal</span></a></span></span><span> </span><span id="local-6989586621679335689"><span class="annot"><span class="annottext">[a]
+</span><a href="#local-6989586621679335689"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679335688"><span class="annot"><span class="annottext">[a]
+</span><a href="#local-6989586621679335688"><span class="hs-identifier hs-var">rl</span></a></span></span><span> </span><span id="local-6989586621679335687"><span class="annot"><span class="annottext">[a]
+</span><a href="#local-6989586621679335687"><span class="hs-identifier hs-var">acc</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-38"></span><span>                </span><span class="hs-keyword">case</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[a]
+</span><a href="#local-6989586621679335689"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">[a]
+</span><a href="#local-6989586621679335688"><span class="hs-identifier hs-var">rl</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-39"></span><span>                    </span><span class="hs-special">(</span><span id="local-6989586621679335686"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679335686"><span class="hs-identifier hs-var">hs</span></a></span></span><span> </span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span> </span><span id="local-6989586621679335685"><span class="annot"><span class="annottext">[a]
+</span><a href="#local-6989586621679335685"><span class="hs-identifier hs-var">ts</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679335684"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679335684"><span class="hs-identifier hs-var">hrl</span></a></span></span><span> </span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span> </span><span id="local-6989586621679335683"><span class="annot"><span class="annottext">[a]
+</span><a href="#local-6989586621679335683"><span class="hs-identifier hs-var">trl</span></a></span></span><span class="hs-special">)</span><span>    </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679335686"><span class="hs-identifier hs-var">hs</span></a></span><span> </span><span class="annot"><span class="annottext">a -&gt; a -&gt; Bool
+forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">/=</span></span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679335684"><span class="hs-identifier hs-var">hrl</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">[a] -&gt; [a] -&gt; [a] -&gt; ([a], [a])
+</span><a href="#local-6989586621679335690"><span class="hs-identifier hs-var">replaceSublistInternal</span></a></span><span> </span><span class="annot"><span class="annottext">[a]
+</span><a href="#local-6989586621679335685"><span class="hs-identifier hs-var">ts</span></a></span><span> </span><span class="annot"><span class="annottext">[a]
+</span><a href="#local-6989586621679335688"><span class="hs-identifier hs-var">rl</span></a></span><span> </span><span class="annot"><span class="annottext">([a] -&gt; ([a], [a])) -&gt; [a] -&gt; ([a], [a])
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679335686"><span class="hs-identifier hs-var">hs</span></a></span><span> </span><span class="annot"><span class="annottext">a -&gt; [a] -&gt; [a]
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span> </span><span class="annot"><span class="annottext">[a]
+</span><a href="#local-6989586621679335687"><span class="hs-identifier hs-var">acc</span></a></span><span>
+</span><span id="line-40"></span><span>                                            </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Bool
+</span><span class="hs-identifier hs-var">otherwise</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">[a] -&gt; [a] -&gt; [a] -&gt; ([a], [a])
+</span><a href="#local-6989586621679335690"><span class="hs-identifier hs-var">replaceSublistInternal</span></a></span><span> </span><span class="annot"><span class="annottext">[a]
+</span><a href="#local-6989586621679335685"><span class="hs-identifier hs-var">ts</span></a></span><span> </span><span class="annot"><span class="annottext">[a]
+</span><a href="#local-6989586621679335683"><span class="hs-identifier hs-var">trl</span></a></span><span> </span><span class="annot"><span class="annottext">[a]
+</span><a href="#local-6989586621679335687"><span class="hs-identifier hs-var">acc</span></a></span><span>
+</span><span id="line-41"></span><span>                    </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[a]
+</span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[a] -&gt; [a]
+forall a. [a] -&gt; [a]
+</span><span class="hs-identifier hs-var">reverse</span></span><span> </span><span class="annot"><span class="annottext">[a]
+</span><a href="#local-6989586621679335687"><span class="hs-identifier hs-var">acc</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">[a]
+</span><a href="#local-6989586621679335689"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-42"></span><span>                    </span><span class="hs-special">(</span><span class="hs-special">[</span><span class="hs-special">]</span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">a
+</span><span class="hs-identifier">_</span></span><span> </span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span> </span><span class="annot"><span class="annottext">[a]
+</span><span class="hs-identifier">_</span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">[Char] -&gt; ([a], [a])
+forall a. HasCallStack =&gt; [Char] -&gt; a
+</span><span class="hs-identifier hs-var">error</span></span><span> </span><span class="annot"><span class="annottext">[Char]
+</span><span class="hs-string">&quot;Substitute length more than substituteble&quot;</span></span><span>
+</span><span id="line-43"></span><span>            </span><span class="hs-special">(</span><span id="local-6989586621679335692"><span class="annot"><span class="annottext">[Smb]
+</span><a href="#local-6989586621679335692"><span class="hs-identifier hs-var">l</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679335691"><span class="annot"><span class="annottext">[Smb]
+</span><a href="#local-6989586621679335691"><span class="hs-identifier hs-var">r</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Smb] -&gt; [Smb] -&gt; [Smb] -&gt; ([Smb], [Smb])
+forall a. Eq a =&gt; [a] -&gt; [a] -&gt; [a] -&gt; ([a], [a])
+</span><a href="#local-6989586621679335690"><span class="hs-identifier hs-var">replaceSublistInternal</span></a></span><span> </span><span class="annot"><span class="annottext">[Smb]
+</span><a href="#local-6989586621679335695"><span class="hs-identifier hs-var">smbs</span></a></span><span> </span><span class="annot"><span class="annottext">[Smb]
+</span><a href="#local-6989586621679335694"><span class="hs-identifier hs-var">rulel</span></a></span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span>
+</span><span id="line-44"></span><span>
+</span><span id="line-45"></span><span>    </span><span class="annot"><a href="SMInterpreter.html#applyRule"><span class="hs-identifier hs-type">applyRule</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="SMType.html#Word"><span class="hs-identifier hs-type">Word</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="SMType.html#SRule"><span class="hs-identifier hs-type">SRule</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="SMType.html#Word"><span class="hs-identifier hs-type">Word</span></a></span><span>
+</span><span id="line-46"></span><span>    </span><span id="applyRule"><span class="annot"><span class="annottext">applyRule :: Word -&gt; SRule -&gt; Word
+</span><a href="SMInterpreter.html#applyRule"><span class="hs-identifier hs-var hs-var">applyRule</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="SMType.html#Word"><span class="hs-identifier hs-type">Word</span></a></span><span> </span><span id="local-6989586621679335679"><span class="annot"><span class="annottext">[Smb]
+</span><a href="#local-6989586621679335679"><span class="hs-identifier hs-var">smbs</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="SMType.html#SRule"><span class="hs-identifier hs-type">SRule</span></a></span><span> </span><span id="local-6989586621679335678"><span class="annot"><span class="annottext">[(Word, Word)]
+</span><a href="#local-6989586621679335678"><span class="hs-identifier hs-var">rule</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-47"></span><span>        </span><span class="annot"><span class="annottext">[Smb] -&gt; Word
+</span><a href="SMType.html#Word"><span class="hs-identifier hs-var">Word</span></a></span><span> </span><span class="annot"><span class="annottext">([Smb] -&gt; Word) -&gt; [Smb] -&gt; Word
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">[Smb] -&gt; [Smb]
+</span><a href="SMInterpreter.html#reduceY"><span class="hs-identifier hs-var">reduceY</span></a></span><span> </span><span class="annot"><span class="annottext">([Smb] -&gt; [Smb]) -&gt; [Smb] -&gt; [Smb]
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">([Smb] -&gt; (Word, Word) -&gt; [Smb])
+-&gt; [Smb] -&gt; [(Word, Word)] -&gt; [Smb]
+forall (t :: * -&gt; *) b a.
+Foldable t =&gt;
+(b -&gt; a -&gt; b) -&gt; b -&gt; t a -&gt; b
+</span><span class="hs-identifier hs-var">foldl</span></span><span> </span><span class="annot"><span class="annottext">[Smb] -&gt; (Word, Word) -&gt; [Smb]
+</span><a href="SMInterpreter.html#replaceSublist"><span class="hs-identifier hs-var">replaceSublist</span></a></span><span> </span><span class="annot"><span class="annottext">[Smb]
+</span><a href="#local-6989586621679335679"><span class="hs-identifier hs-var">smbs</span></a></span><span> </span><span class="annot"><span class="annottext">[(Word, Word)]
+</span><a href="#local-6989586621679335678"><span class="hs-identifier hs-var">rule</span></a></span><span>
+</span><span id="line-48"></span><span>
+</span><span id="line-49"></span><span>    </span><span class="annot"><a href="SMInterpreter.html#applyRules"><span class="hs-identifier hs-type">applyRules</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="SMType.html#Word"><span class="hs-identifier hs-type">Word</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="SMType.html#SRule"><span class="hs-identifier hs-type">SRule</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Map</span></span><span> </span><span class="annot"><a href="SMType.html#Word"><span class="hs-identifier hs-type">Word</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="hs-special">[</span><span class="annot"><a href="SMType.html#Word"><span class="hs-identifier hs-type">Word</span></a></span><span class="hs-special">]</span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="hs-special">[</span><span class="hs-special">[</span><span class="annot"><a href="SMType.html#Word"><span class="hs-identifier hs-type">Word</span></a></span><span class="hs-special">]</span><span class="hs-special">]</span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Map</span></span><span> </span><span class="annot"><a href="SMType.html#Word"><span class="hs-identifier hs-type">Word</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span class="hs-special">)</span><span>
+</span><span id="line-50"></span><span>    </span><span id="applyRules"><span class="annot"><span class="annottext">applyRules :: [Word]
+-&gt; [SRule] -&gt; Map Word Int -&gt; [[Word]] -&gt; ([[Word]], Map Word Int)
+</span><a href="SMInterpreter.html#applyRules"><span class="hs-identifier hs-var hs-var">applyRules</span></a></span></span><span> </span><span id="local-6989586621679335675"><span class="annot"><span class="annottext">[Word]
+</span><a href="#local-6989586621679335675"><span class="hs-identifier hs-var">wrds</span></a></span></span><span> </span><span id="local-6989586621679335674"><span class="annot"><span class="annottext">[SRule]
+</span><a href="#local-6989586621679335674"><span class="hs-identifier hs-var">rules</span></a></span></span><span> </span><span id="local-6989586621679335673"><span class="annot"><span class="annottext">Map Word Int
+</span><a href="#local-6989586621679335673"><span class="hs-identifier hs-var">m</span></a></span></span><span> </span><span id="local-6989586621679335672"><span class="annot"><span class="annottext">[[Word]]
+</span><a href="#local-6989586621679335672"><span class="hs-identifier hs-var">acc</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-51"></span><span>        </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">[SRule]
+</span><a href="#local-6989586621679335674"><span class="hs-identifier hs-var">rules</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-52"></span><span>            </span><span class="hs-special">[</span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[[Word]]
+</span><a href="#local-6989586621679335672"><span class="hs-identifier hs-var">acc</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Map Word Int
+</span><a href="#local-6989586621679335673"><span class="hs-identifier hs-var">m</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-53"></span><span>            </span><span id="local-6989586621679335671"><span class="annot"><span class="annottext">SRule
+</span><a href="#local-6989586621679335671"><span class="hs-identifier hs-var">h</span></a></span></span><span> </span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span> </span><span id="local-6989586621679335670"><span class="annot"><span class="annottext">[SRule]
+</span><a href="#local-6989586621679335670"><span class="hs-identifier hs-var">t</span></a></span></span><span>   </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Word -&gt; Map Word Int -&gt; Bool
+forall k a. Ord k =&gt; k -&gt; Map k a -&gt; Bool
+</span><span class="hs-identifier hs-var">Map.member</span></span><span> </span><span class="annot"><span class="annottext">Word
+</span><a href="#local-6989586621679335668"><span class="hs-identifier hs-var">new_word</span></a></span><span> </span><span class="annot"><span class="annottext">Map Word Int
+</span><a href="#local-6989586621679335673"><span class="hs-identifier hs-var">m</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">[Word]
+-&gt; [SRule] -&gt; Map Word Int -&gt; [[Word]] -&gt; ([[Word]], Map Word Int)
+</span><a href="SMInterpreter.html#applyRules"><span class="hs-identifier hs-var">applyRules</span></a></span><span> </span><span class="annot"><span class="annottext">[Word]
+</span><a href="#local-6989586621679335675"><span class="hs-identifier hs-var">wrds</span></a></span><span> </span><span class="annot"><span class="annottext">[SRule]
+</span><a href="#local-6989586621679335670"><span class="hs-identifier hs-var">t</span></a></span><span> </span><span class="annot"><span class="annottext">Map Word Int
+</span><a href="#local-6989586621679335667"><span class="hs-identifier hs-var">new_m</span></a></span><span> </span><span class="annot"><span class="annottext">[[Word]]
+</span><a href="#local-6989586621679335672"><span class="hs-identifier hs-var">acc</span></a></span><span>
+</span><span id="line-54"></span><span>                    </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Bool
+</span><span class="hs-identifier hs-var">otherwise</span></span><span>             </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">[Word]
+-&gt; [SRule] -&gt; Map Word Int -&gt; [[Word]] -&gt; ([[Word]], Map Word Int)
+</span><a href="SMInterpreter.html#applyRules"><span class="hs-identifier hs-var">applyRules</span></a></span><span> </span><span class="annot"><span class="annottext">[Word]
+</span><a href="#local-6989586621679335675"><span class="hs-identifier hs-var">wrds</span></a></span><span> </span><span class="annot"><span class="annottext">[SRule]
+</span><a href="#local-6989586621679335670"><span class="hs-identifier hs-var">t</span></a></span><span> </span><span class="annot"><span class="annottext">Map Word Int
+</span><a href="#local-6989586621679335667"><span class="hs-identifier hs-var">new_m</span></a></span><span> </span><span class="annot"><span class="annottext">([[Word]] -&gt; ([[Word]], Map Word Int))
+-&gt; [[Word]] -&gt; ([[Word]], Map Word Int)
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[Word]
+</span><a href="#local-6989586621679335675"><span class="hs-identifier hs-var">wrds</span></a></span><span> </span><span class="annot"><span class="annottext">[Word] -&gt; [Word] -&gt; [Word]
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">Word
+</span><a href="#local-6989586621679335668"><span class="hs-identifier hs-var">new_word</span></a></span><span class="hs-special">]</span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[Word] -&gt; [[Word]] -&gt; [[Word]]
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span> </span><span class="annot"><span class="annottext">[[Word]]
+</span><a href="#local-6989586621679335672"><span class="hs-identifier hs-var">acc</span></a></span><span>
+</span><span id="line-55"></span><span>                                                </span><span class="hs-keyword">where</span><span>
+</span><span id="line-56"></span><span>                                                    </span><span id="local-6989586621679335668"><span class="annot"><span class="annottext">new_word :: Word
+</span><a href="#local-6989586621679335668"><span class="hs-identifier hs-var hs-var">new_word</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Word -&gt; SRule -&gt; Word
+</span><a href="SMInterpreter.html#applyRule"><span class="hs-identifier hs-var">applyRule</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[Word] -&gt; Word
+forall a. [a] -&gt; a
+</span><span class="hs-identifier hs-var">last</span></span><span> </span><span class="annot"><span class="annottext">[Word]
+</span><a href="#local-6989586621679335675"><span class="hs-identifier hs-var">wrds</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">SRule
+</span><a href="#local-6989586621679335671"><span class="hs-identifier hs-var">h</span></a></span><span>
+</span><span id="line-57"></span><span>                                                    </span><span id="local-6989586621679335667"><span class="annot"><span class="annottext">new_m :: Map Word Int
+</span><a href="#local-6989586621679335667"><span class="hs-identifier hs-var hs-var">new_m</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(Int -&gt; Int -&gt; Int) -&gt; Word -&gt; Int -&gt; Map Word Int -&gt; Map Word Int
+forall k a. Ord k =&gt; (a -&gt; a -&gt; a) -&gt; k -&gt; a -&gt; Map k a -&gt; Map k a
+</span><span class="hs-identifier hs-var">Map.insertWith</span></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
+forall a. Num a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">(+)</span></span><span> </span><span class="annot"><span class="annottext">Word
+</span><a href="#local-6989586621679335668"><span class="hs-identifier hs-var">new_word</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">1</span></span><span> </span><span class="annot"><span class="annottext">Map Word Int
+</span><a href="#local-6989586621679335673"><span class="hs-identifier hs-var">m</span></a></span><span>
+</span><span id="line-58"></span><span>
+</span><span id="line-59"></span><span>    </span><span class="annot"><a href="SMInterpreter.html#applyRuless"><span class="hs-identifier hs-type">applyRuless</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">[</span><span class="hs-special">[</span><span class="annot"><a href="SMType.html#Word"><span class="hs-identifier hs-type">Word</span></a></span><span class="hs-special">]</span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="hs-special">[</span><span class="annot"><a href="SMType.html#SRule"><span class="hs-identifier hs-type">SRule</span></a></span><span class="hs-special">]</span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Map</span></span><span> </span><span class="annot"><a href="SMType.html#Word"><span class="hs-identifier hs-type">Word</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="hs-special">[</span><span class="annot"><a href="SMType.html#Word"><span class="hs-identifier hs-type">Word</span></a></span><span class="hs-special">]</span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="hs-special">[</span><span class="hs-special">[</span><span class="annot"><a href="SMType.html#Word"><span class="hs-identifier hs-type">Word</span></a></span><span class="hs-special">]</span><span class="hs-special">]</span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Map</span></span><span> </span><span class="annot"><a href="SMType.html#Word"><span class="hs-identifier hs-type">Word</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span class="hs-special">)</span><span>
+</span><span id="line-60"></span><span>    </span><span id="applyRuless"><span class="annot"><span class="annottext">applyRuless :: [[Word]]
+-&gt; [[SRule]]
+-&gt; Map Word Int
+-&gt; [[Word]]
+-&gt; ([[Word]], Map Word Int)
+</span><a href="SMInterpreter.html#applyRuless"><span class="hs-identifier hs-var hs-var">applyRuless</span></a></span></span><span> </span><span id="local-6989586621679335662"><span class="annot"><span class="annottext">[[Word]]
+</span><a href="#local-6989586621679335662"><span class="hs-identifier hs-var">wordss</span></a></span></span><span> </span><span id="local-6989586621679335661"><span class="annot"><span class="annottext">[[SRule]]
+</span><a href="#local-6989586621679335661"><span class="hs-identifier hs-var">ruless</span></a></span></span><span> </span><span id="local-6989586621679335660"><span class="annot"><span class="annottext">Map Word Int
+</span><a href="#local-6989586621679335660"><span class="hs-identifier hs-var">m</span></a></span></span><span> </span><span id="local-6989586621679335659"><span class="annot"><span class="annottext">[[Word]]
+</span><a href="#local-6989586621679335659"><span class="hs-identifier hs-var">acc</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-61"></span><span>        </span><span class="hs-keyword">case</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[[Word]]
+</span><a href="#local-6989586621679335662"><span class="hs-identifier hs-var">wordss</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">[[SRule]]
+</span><a href="#local-6989586621679335661"><span class="hs-identifier hs-var">ruless</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-62"></span><span>            </span><span class="hs-special">(</span><span class="hs-special">[</span><span class="hs-special">]</span><span class="hs-special">,</span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[[Word]]
+</span><a href="#local-6989586621679335659"><span class="hs-identifier hs-var">acc</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Map Word Int
+</span><a href="#local-6989586621679335660"><span class="hs-identifier hs-var">m</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-63"></span><span>            </span><span class="hs-special">(</span><span id="local-6989586621679335658"><span class="annot"><span class="annottext">[Word]
+</span><a href="#local-6989586621679335658"><span class="hs-identifier hs-var">wrds</span></a></span></span><span> </span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span> </span><span id="local-6989586621679335657"><span class="annot"><span class="annottext">[[Word]]
+</span><a href="#local-6989586621679335657"><span class="hs-identifier hs-var">t1</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679335656"><span class="annot"><span class="annottext">[SRule]
+</span><a href="#local-6989586621679335656"><span class="hs-identifier hs-var">rules</span></a></span></span><span> </span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span> </span><span id="local-6989586621679335655"><span class="annot"><span class="annottext">[[SRule]]
+</span><a href="#local-6989586621679335655"><span class="hs-identifier hs-var">t2</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">[[Word]]
+-&gt; [[SRule]]
+-&gt; Map Word Int
+-&gt; [[Word]]
+-&gt; ([[Word]], Map Word Int)
+</span><a href="SMInterpreter.html#applyRuless"><span class="hs-identifier hs-var">applyRuless</span></a></span><span> </span><span class="annot"><span class="annottext">[[Word]]
+</span><a href="#local-6989586621679335657"><span class="hs-identifier hs-var">t1</span></a></span><span> </span><span class="annot"><span class="annottext">[[SRule]]
+</span><a href="#local-6989586621679335655"><span class="hs-identifier hs-var">t2</span></a></span><span> </span><span class="annot"><span class="annottext">Map Word Int
+</span><a href="#local-6989586621679335654"><span class="hs-identifier hs-var">new_m</span></a></span><span> </span><span class="annot"><span class="annottext">([[Word]] -&gt; ([[Word]], Map Word Int))
+-&gt; [[Word]] -&gt; ([[Word]], Map Word Int)
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">[[Word]]
+</span><a href="#local-6989586621679335653"><span class="hs-identifier hs-var">acc_apply</span></a></span><span> </span><span class="annot"><span class="annottext">[[Word]] -&gt; [[Word]] -&gt; [[Word]]
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[[Word]]
+</span><a href="#local-6989586621679335659"><span class="hs-identifier hs-var">acc</span></a></span><span>
+</span><span id="line-64"></span><span>                                        </span><span class="hs-keyword">where</span><span>
+</span><span id="line-65"></span><span>                                            </span><span class="hs-special">(</span><span id="local-6989586621679335653"><span class="annot"><span class="annottext">[[Word]]
+</span><a href="#local-6989586621679335653"><span class="hs-identifier hs-var">acc_apply</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679335654"><span class="annot"><span class="annottext">Map Word Int
+</span><a href="#local-6989586621679335654"><span class="hs-identifier hs-var">new_m</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Word]
+-&gt; [SRule] -&gt; Map Word Int -&gt; [[Word]] -&gt; ([[Word]], Map Word Int)
+</span><a href="SMInterpreter.html#applyRules"><span class="hs-identifier hs-var">applyRules</span></a></span><span> </span><span class="annot"><span class="annottext">[Word]
+</span><a href="#local-6989586621679335658"><span class="hs-identifier hs-var">wrds</span></a></span><span> </span><span class="annot"><span class="annottext">[SRule]
+</span><a href="#local-6989586621679335656"><span class="hs-identifier hs-var">rules</span></a></span><span> </span><span class="annot"><span class="annottext">Map Word Int
+</span><a href="#local-6989586621679335660"><span class="hs-identifier hs-var">m</span></a></span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span>
+</span><span id="line-66"></span><span>            </span><span class="annot"><span class="annottext">([[Word]], [[SRule]])
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">[Char] -&gt; ([[Word]], Map Word Int)
+forall a. HasCallStack =&gt; [Char] -&gt; a
+</span><span class="hs-identifier hs-var">error</span></span><span> </span><span class="annot"><span class="annottext">[Char]
+</span><span class="hs-string">&quot;Commandss and configss don't match&quot;</span></span><span>
+</span><span id="line-67"></span><span>
+</span><span id="line-68"></span><span>    </span><span class="annot"><a href="SMInterpreter.html#getFront"><span class="hs-identifier hs-type">getFront</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">[</span><span class="hs-special">[</span><span class="annot"><a href="SMType.html#Word"><span class="hs-identifier hs-type">Word</span></a></span><span class="hs-special">]</span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="SMType.html#Word"><span class="hs-identifier hs-type">Word</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-69"></span><span>    </span><span id="getFront"><span class="annot"><span class="annottext">getFront :: [[Word]] -&gt; [Word]
+</span><a href="SMInterpreter.html#getFront"><span class="hs-identifier hs-var hs-var">getFront</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">([Word] -&gt; Word) -&gt; [[Word]] -&gt; [Word]
+forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="annot"><span class="annottext">[Word] -&gt; Word
+forall a. [a] -&gt; a
+</span><span class="hs-identifier hs-var">last</span></span><span>
+</span><span id="line-70"></span><span>
+</span><span id="line-71"></span><span>    </span><span class="annot"><a href="SMInterpreter.html#startInterpreting"><span class="hs-identifier hs-type">startInterpreting</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="SMType.html#Word"><span class="hs-identifier hs-type">Word</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="hs-special">[</span><span class="annot"><a href="SMType.html#Word"><span class="hs-identifier hs-type">Word</span></a></span><span class="hs-special">]</span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="SMType.html#SRule"><span class="hs-identifier hs-type">SRule</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Map</span></span><span> </span><span class="annot"><a href="SMType.html#Word"><span class="hs-identifier hs-type">Word</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="hs-special">[</span><span class="annot"><a href="SMType.html#Word"><span class="hs-identifier hs-type">Word</span></a></span><span class="hs-special">]</span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Map</span></span><span> </span><span class="annot"><a href="SMType.html#Word"><span class="hs-identifier hs-type">Word</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span class="hs-special">)</span><span>
+</span><span id="line-72"></span><span>    </span><span id="startInterpreting"><span class="annot"><span class="annottext">startInterpreting :: Word
+-&gt; [[Word]] -&gt; [SRule] -&gt; Map Word Int -&gt; ([Word], Map Word Int)
+</span><a href="SMInterpreter.html#startInterpreting"><span class="hs-identifier hs-var hs-var">startInterpreting</span></a></span></span><span> </span><span id="local-6989586621679335650"><span class="annot"><span class="annottext">Word
+</span><a href="#local-6989586621679335650"><span class="hs-identifier hs-var">accessWord</span></a></span></span><span> </span><span id="local-6989586621679335649"><span class="annot"><span class="annottext">[[Word]]
+</span><a href="#local-6989586621679335649"><span class="hs-identifier hs-var">wordss</span></a></span></span><span> </span><span id="local-6989586621679335648"><span class="annot"><span class="annottext">[SRule]
+</span><a href="#local-6989586621679335648"><span class="hs-identifier hs-var">rules</span></a></span></span><span> </span><span id="local-6989586621679335647"><span class="annot"><span class="annottext">Map Word Int
+</span><a href="#local-6989586621679335647"><span class="hs-identifier hs-var">m</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-73"></span><span>        </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">([Word] -&gt; Bool) -&gt; [[Word]] -&gt; Maybe [Word]
+forall (t :: * -&gt; *) a. Foldable t =&gt; (a -&gt; Bool) -&gt; t a -&gt; Maybe a
+</span><span class="hs-identifier hs-var">find</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679335646"><span class="annot"><span class="annottext">[Word]
+</span><a href="#local-6989586621679335646"><span class="hs-identifier hs-var">w</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">[Word] -&gt; Word
+forall a. [a] -&gt; a
+</span><span class="hs-identifier hs-var">last</span></span><span> </span><span class="annot"><span class="annottext">[Word]
+</span><a href="#local-6989586621679335646"><span class="hs-identifier hs-var">w</span></a></span><span> </span><span class="annot"><span class="annottext">Word -&gt; Word -&gt; Bool
+forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">==</span></span><span> </span><span class="annot"><span class="annottext">Word
+</span><a href="#local-6989586621679335650"><span class="hs-identifier hs-var">accessWord</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[[Word]]
+</span><a href="#local-6989586621679335649"><span class="hs-identifier hs-var">wordss</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-74"></span><span>            </span><span class="annot"><span class="hs-identifier hs-type">Just</span></span><span> </span><span id="local-6989586621679335645"><span class="annot"><span class="annottext">[Word]
+</span><a href="#local-6989586621679335645"><span class="hs-identifier hs-var">path</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[Word]
+</span><a href="#local-6989586621679335645"><span class="hs-identifier hs-var">path</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Map Word Int
+</span><a href="#local-6989586621679335647"><span class="hs-identifier hs-var">m</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-75"></span><span>            </span><span class="annot"><span class="annottext">Maybe [Word]
+</span><span class="hs-identifier hs-var">Nothing</span></span><span> </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">[[SRule]]
+</span><a href="#local-6989586621679335644"><span class="hs-identifier hs-var">ruless</span></a></span><span> </span><span class="annot"><span class="annottext">[[SRule]] -&gt; [[SRule]] -&gt; Bool
+forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">==</span></span><span> </span><span class="hs-special">[</span><span class="hs-special">[</span><span class="hs-special">]</span><span class="hs-special">]</span><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">[Char] -&gt; ([Word], Map Word Int)
+forall a. HasCallStack =&gt; [Char] -&gt; a
+</span><span class="hs-identifier hs-var">error</span></span><span> </span><span class="annot"><span class="annottext">[Char]
+</span><span class="hs-string">&quot;No rule is applicable&quot;</span></span><span>
+</span><span id="line-76"></span><span>                    </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Bool
+</span><span class="hs-identifier hs-var">otherwise</span></span><span>         </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Word
+-&gt; [[Word]] -&gt; [SRule] -&gt; Map Word Int -&gt; ([Word], Map Word Int)
+</span><a href="SMInterpreter.html#startInterpreting"><span class="hs-identifier hs-var">startInterpreting</span></a></span><span> </span><span class="annot"><span class="annottext">Word
+</span><a href="#local-6989586621679335650"><span class="hs-identifier hs-var">accessWord</span></a></span><span> </span><span class="annot"><span class="annottext">[[Word]]
+</span><a href="#local-6989586621679335643"><span class="hs-identifier hs-var">acc_apply</span></a></span><span> </span><span class="annot"><span class="annottext">[SRule]
+</span><a href="#local-6989586621679335648"><span class="hs-identifier hs-var">rules</span></a></span><span> </span><span class="annot"><span class="annottext">Map Word Int
+</span><a href="#local-6989586621679335642"><span class="hs-identifier hs-var">new_m</span></a></span><span>
+</span><span id="line-77"></span><span>        </span><span class="hs-keyword">where</span><span>
+</span><span id="line-78"></span><span>            </span><span id="local-6989586621679335644"><span class="annot"><span class="annottext">ruless :: [[SRule]]
+</span><a href="#local-6989586621679335644"><span class="hs-identifier hs-var hs-var">ruless</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[SRule] -&gt; [Word] -&gt; [[SRule]]
+</span><a href="SMInterpreter.html#getApplicableRules"><span class="hs-identifier hs-var">getApplicableRules</span></a></span><span> </span><span class="annot"><span class="annottext">[SRule]
+</span><a href="#local-6989586621679335648"><span class="hs-identifier hs-var">rules</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[[Word]] -&gt; [Word]
+</span><a href="SMInterpreter.html#getFront"><span class="hs-identifier hs-var">getFront</span></a></span><span> </span><span class="annot"><span class="annottext">[[Word]]
+</span><a href="#local-6989586621679335649"><span class="hs-identifier hs-var">wordss</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-79"></span><span>            </span><span class="hs-special">(</span><span id="local-6989586621679335643"><span class="annot"><span class="annottext">[[Word]]
+</span><a href="#local-6989586621679335643"><span class="hs-identifier hs-var">acc_apply</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679335642"><span class="annot"><span class="annottext">Map Word Int
+</span><a href="#local-6989586621679335642"><span class="hs-identifier hs-var">new_m</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[[Word]]
+-&gt; [[SRule]]
+-&gt; Map Word Int
+-&gt; [[Word]]
+-&gt; ([[Word]], Map Word Int)
+</span><a href="SMInterpreter.html#applyRuless"><span class="hs-identifier hs-var">applyRuless</span></a></span><span> </span><span class="annot"><span class="annottext">[[Word]]
+</span><a href="#local-6989586621679335649"><span class="hs-identifier hs-var">wordss</span></a></span><span> </span><span class="annot"><span class="annottext">[[SRule]]
+</span><a href="#local-6989586621679335644"><span class="hs-identifier hs-var">ruless</span></a></span><span> </span><span class="annot"><span class="annottext">Map Word Int
+</span><a href="#local-6989586621679335647"><span class="hs-identifier hs-var">m</span></a></span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span>
+</span><span id="line-80"></span><span>
+</span><span id="line-81"></span><span>    </span><span class="annot"><a href="SMInterpreter.html#interpretSM"><span class="hs-identifier hs-type">interpretSM</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="SMType.html#Word"><span class="hs-identifier hs-type">Word</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="SMType.html#SM"><span class="hs-identifier hs-type">SM</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="SMType.html#Word"><span class="hs-identifier hs-type">Word</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="SMType.html#Word"><span class="hs-identifier hs-type">Word</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-82"></span><span>    </span><span id="interpretSM"><span class="annot"><span class="annottext">interpretSM :: Word -&gt; SM -&gt; Word -&gt; [Word]
+</span><a href="SMInterpreter.html#interpretSM"><span class="hs-identifier hs-var hs-var">interpretSM</span></a></span></span><span> </span><span id="local-6989586621679335640"><span class="annot"><span class="annottext">Word
+</span><a href="#local-6989586621679335640"><span class="hs-identifier hs-var">startWord</span></a></span></span><span> </span><span id="local-6989586621679335639"><span class="annot"><span class="annottext">SM
+</span><a href="#local-6989586621679335639"><span class="hs-identifier hs-var">sm</span></a></span></span><span> </span><span id="local-6989586621679335638"><span class="annot"><span class="annottext">Word
+</span><a href="#local-6989586621679335638"><span class="hs-identifier hs-var">accessWord</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-83"></span><span>            </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679335637"><span class="annot"><span class="annottext">m :: Map Word Int
+</span><a href="#local-6989586621679335637"><span class="hs-identifier hs-var hs-var">m</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[(Word, Int)] -&gt; Map Word Int
+forall k a. Ord k =&gt; [(k, a)] -&gt; Map k a
+</span><span class="hs-identifier hs-var">Map.fromList</span></span><span> </span><span class="hs-special">[</span><span class="hs-special">(</span><span class="annot"><span class="annottext">Word
+</span><a href="#local-6989586621679335640"><span class="hs-identifier hs-var">startWord</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">1</span></span><span class="hs-special">)</span><span class="hs-special">]</span><span>
+</span><span id="line-84"></span><span>            </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679335635"><span class="annot"><span class="annottext">symmSmRules :: [SRule]
+</span><a href="#local-6989586621679335635"><span class="hs-identifier hs-var hs-var">symmSmRules</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[SRule] -&gt; [SRule] -&gt; [SRule]
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">(++)</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">SM -&gt; [SRule]
+</span><a href="SMType.html#srs"><span class="hs-identifier hs-var hs-var">srs</span></a></span><span> </span><span class="annot"><span class="annottext">SM
+</span><a href="#local-6989586621679335639"><span class="hs-identifier hs-var">sm</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">([SRule] -&gt; [SRule]) -&gt; [SRule] -&gt; [SRule]
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">(SRule -&gt; SRule) -&gt; [SRule] -&gt; [SRule]
+forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="annot"><span class="annottext">SRule -&gt; SRule
+</span><a href="TM2SM.html#symSM"><span class="hs-identifier hs-var">symSM</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">SM -&gt; [SRule]
+</span><a href="SMType.html#srs"><span class="hs-identifier hs-var hs-var">srs</span></a></span><span> </span><span class="annot"><span class="annottext">SM
+</span><a href="#local-6989586621679335639"><span class="hs-identifier hs-var">sm</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-85"></span><span>            </span><span class="hs-keyword">let</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679335632"><span class="annot"><span class="annottext">[Word]
+</span><a href="#local-6989586621679335632"><span class="hs-identifier hs-var">path</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Map Word Int
+</span><span class="hs-identifier">_</span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Word
+-&gt; [[Word]] -&gt; [SRule] -&gt; Map Word Int -&gt; ([Word], Map Word Int)
+</span><a href="SMInterpreter.html#startInterpreting"><span class="hs-identifier hs-var">startInterpreting</span></a></span><span> </span><span class="annot"><span class="annottext">Word
+</span><a href="#local-6989586621679335638"><span class="hs-identifier hs-var">accessWord</span></a></span><span> </span><span class="hs-special">[</span><span class="hs-special">[</span><span class="annot"><span class="annottext">Word
+</span><a href="#local-6989586621679335640"><span class="hs-identifier hs-var">startWord</span></a></span><span class="hs-special">]</span><span class="hs-special">]</span><span> </span><span class="annot"><span class="annottext">[SRule]
+</span><a href="#local-6989586621679335635"><span class="hs-identifier hs-var">symmSmRules</span></a></span><span> </span><span class="annot"><span class="annottext">Map Word Int
+</span><a href="#local-6989586621679335637"><span class="hs-identifier hs-var">m</span></a></span><span>
+</span><span id="line-86"></span><span>            </span><span class="annot"><span class="annottext">[Word]
+</span><a href="#local-6989586621679335632"><span class="hs-identifier hs-var">path</span></a></span><span>
+</span><span id="line-87"></span><span>
+</span><span id="line-88"></span><span>    </span><span class="annot"><a href="SMInterpreter.html#getRestrictedGraph"><span class="hs-identifier hs-type">getRestrictedGraph</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="SMType.html#Word"><span class="hs-identifier hs-type">Word</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="SMType.html#SM"><span class="hs-identifier hs-type">SM</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Gr</span></span><span> </span><span class="annot"><a href="SMType.html#Word"><span class="hs-identifier hs-type">Word</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Map</span></span><span> </span><span class="annot"><a href="SMType.html#Word"><span class="hs-identifier hs-type">Word</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span class="hs-special">)</span><span>
+</span><span id="line-89"></span><span>    </span><span id="getRestrictedGraph"><span class="annot"><span class="annottext">getRestrictedGraph :: Word -&gt; SM -&gt; Int -&gt; (Gr Word Int, Map Word Int)
+</span><a href="SMInterpreter.html#getRestrictedGraph"><span class="hs-identifier hs-var hs-var">getRestrictedGraph</span></a></span></span><span> </span><span id="local-6989586621679335630"><span class="annot"><span class="annottext">Word
+</span><a href="#local-6989586621679335630"><span class="hs-identifier hs-var">startWord</span></a></span></span><span> </span><span id="local-6989586621679335629"><span class="annot"><span class="annottext">SM
+</span><a href="#local-6989586621679335629"><span class="hs-identifier hs-var">sm</span></a></span></span><span> </span><span id="local-6989586621679335628"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679335628"><span class="hs-identifier hs-var">height</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-90"></span><span>            </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679335627"><span class="annot"><span class="annottext">m :: Map Word Int
+</span><a href="#local-6989586621679335627"><span class="hs-identifier hs-var hs-var">m</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[(Word, Int)] -&gt; Map Word Int
+forall k a. Ord k =&gt; [(k, a)] -&gt; Map k a
+</span><span class="hs-identifier hs-var">Map.fromList</span></span><span> </span><span class="hs-special">[</span><span class="hs-special">(</span><span class="annot"><span class="annottext">Word
+</span><a href="#local-6989586621679335630"><span class="hs-identifier hs-var">startWord</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">1</span></span><span class="hs-special">)</span><span class="hs-special">]</span><span>
+</span><span id="line-91"></span><span>            </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679335626"><span class="annot"><span class="annottext">symmSmRules :: [SRule]
+</span><a href="#local-6989586621679335626"><span class="hs-identifier hs-var hs-var">symmSmRules</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">SM -&gt; [SRule]
+</span><a href="SMType.html#srs"><span class="hs-identifier hs-var hs-var">srs</span></a></span><span> </span><span class="annot"><span class="annottext">SM
+</span><a href="#local-6989586621679335629"><span class="hs-identifier hs-var">sm</span></a></span><span> </span><span class="annot"><span class="annottext">[SRule] -&gt; [SRule] -&gt; [SRule]
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">(SRule -&gt; SRule) -&gt; [SRule] -&gt; [SRule]
+forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="annot"><span class="annottext">SRule -&gt; SRule
+</span><a href="TM2SM.html#symSM"><span class="hs-identifier hs-var">symSM</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">SM -&gt; [SRule]
+</span><a href="SMType.html#srs"><span class="hs-identifier hs-var hs-var">srs</span></a></span><span> </span><span class="annot"><span class="annottext">SM
+</span><a href="#local-6989586621679335629"><span class="hs-identifier hs-var">sm</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-92"></span><span>            </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679335625"><span class="annot"><span class="annottext">getRuleNumber :: SRule -&gt; Int
+</span><a href="#local-6989586621679335625"><span class="hs-identifier hs-var hs-var">getRuleNumber</span></a></span></span><span> </span><span id="local-6989586621679335624"><span class="annot"><span class="annottext">SRule
+</span><a href="#local-6989586621679335624"><span class="hs-identifier hs-var">rule</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-93"></span><span>                    </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">SRule -&gt; [SRule] -&gt; Maybe Int
+forall a. Eq a =&gt; a -&gt; [a] -&gt; Maybe Int
+</span><span class="hs-identifier hs-var">elemIndex</span></span><span> </span><span class="annot"><span class="annottext">SRule
+</span><a href="#local-6989586621679335624"><span class="hs-identifier hs-var">rule</span></a></span><span> </span><span class="annot"><span class="annottext">([SRule] -&gt; Maybe Int) -&gt; [SRule] -&gt; Maybe Int
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">[SRule] -&gt; [SRule]
+forall a. [a] -&gt; [a]
+</span><span class="hs-identifier hs-var">reverse</span></span><span> </span><span class="annot"><span class="annottext">[SRule]
+</span><a href="#local-6989586621679335626"><span class="hs-identifier hs-var">symmSmRules</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-94"></span><span>                        </span><span class="annot"><span class="annottext">Maybe Int
+</span><span class="hs-identifier hs-var">Nothing</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">[Char] -&gt; Int
+forall a. HasCallStack =&gt; [Char] -&gt; a
+</span><span class="hs-identifier hs-var">error</span></span><span> </span><span class="annot"><span class="annottext">[Char]
+</span><span class="hs-string">&quot;Can't found the rule in set&quot;</span></span><span>
+</span><span id="line-95"></span><span>                        </span><span class="annot"><span class="hs-identifier hs-type">Just</span></span><span> </span><span id="local-6989586621679335623"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679335623"><span class="hs-identifier hs-var">i</span></a></span></span><span>  </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679335623"><span class="hs-identifier hs-var">i</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
+forall a. Integral a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">`mod`</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679335621"><span class="hs-identifier hs-var">l</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
+forall a. Num a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">+</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">1</span></span><span>
+</span><span id="line-96"></span><span>                    </span><span class="hs-keyword">where</span><span>
+</span><span id="line-97"></span><span>                        </span><span id="local-6989586621679335621"><span class="annot"><span class="annottext">l :: Int
+</span><a href="#local-6989586621679335621"><span class="hs-identifier hs-var hs-var">l</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[SRule] -&gt; Int
+forall (t :: * -&gt; *) a. Foldable t =&gt; t a -&gt; Int
+</span><span class="hs-identifier hs-var">length</span></span><span> </span><span class="annot"><span class="annottext">([SRule] -&gt; Int) -&gt; [SRule] -&gt; Int
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">SM -&gt; [SRule]
+</span><a href="SMType.html#srs"><span class="hs-identifier hs-var hs-var">srs</span></a></span><span> </span><span class="annot"><span class="annottext">SM
+</span><a href="#local-6989586621679335629"><span class="hs-identifier hs-var">sm</span></a></span><span>
+</span><span id="line-98"></span><span>            </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679335619"><span class="annot"><span class="annottext">applyRs :: Word
+-&gt; [SRule]
+-&gt; Map Word a
+-&gt; [Word]
+-&gt; [(Word, Int, Word)]
+-&gt; ([(Word, Int, Word)], Map Word a, [Word])
+</span><a href="#local-6989586621679335619"><span class="hs-identifier hs-var hs-var">applyRs</span></a></span></span><span> </span><span id="local-6989586621679335618"><span class="annot"><span class="annottext">Word
+</span><a href="#local-6989586621679335618"><span class="hs-identifier hs-var">old_word</span></a></span></span><span> </span><span id="local-6989586621679335617"><span class="annot"><span class="annottext">[SRule]
+</span><a href="#local-6989586621679335617"><span class="hs-identifier hs-var">rules</span></a></span></span><span> </span><span id="local-6989586621679335616"><span class="annot"><span class="annottext">Map Word a
+</span><a href="#local-6989586621679335616"><span class="hs-identifier hs-var">nm</span></a></span></span><span> </span><span id="local-6989586621679335615"><span class="annot"><span class="annottext">[Word]
+</span><a href="#local-6989586621679335615"><span class="hs-identifier hs-var">front_acc</span></a></span></span><span> </span><span id="local-6989586621679335614"><span class="annot"><span class="annottext">[(Word, Int, Word)]
+</span><a href="#local-6989586621679335614"><span class="hs-identifier hs-var">acc</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-99"></span><span>                    </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">[SRule]
+</span><a href="#local-6989586621679335617"><span class="hs-identifier hs-var">rules</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-100"></span><span>                        </span><span class="hs-special">[</span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[(Word, Int, Word)]
+</span><a href="#local-6989586621679335614"><span class="hs-identifier hs-var">acc</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Map Word a
+</span><a href="#local-6989586621679335616"><span class="hs-identifier hs-var">nm</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">[Word]
+</span><a href="#local-6989586621679335615"><span class="hs-identifier hs-var">front_acc</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-101"></span><span>                        </span><span id="local-6989586621679335613"><span class="annot"><span class="annottext">SRule
+</span><a href="#local-6989586621679335613"><span class="hs-identifier hs-var">h</span></a></span></span><span> </span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span> </span><span id="local-6989586621679335612"><span class="annot"><span class="annottext">[SRule]
+</span><a href="#local-6989586621679335612"><span class="hs-identifier hs-var">t</span></a></span></span><span>   </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Word -&gt; Map Word a -&gt; Bool
+forall k a. Ord k =&gt; k -&gt; Map k a -&gt; Bool
+</span><span class="hs-identifier hs-var">Map.member</span></span><span> </span><span class="annot"><span class="annottext">Word
+</span><a href="#local-6989586621679335611"><span class="hs-identifier hs-var">new_word</span></a></span><span> </span><span class="annot"><span class="annottext">Map Word a
+</span><a href="#local-6989586621679335616"><span class="hs-identifier hs-var">nm</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Word
+-&gt; [SRule]
+-&gt; Map Word a
+-&gt; [Word]
+-&gt; [(Word, Int, Word)]
+-&gt; ([(Word, Int, Word)], Map Word a, [Word])
+</span><a href="#local-6989586621679335619"><span class="hs-identifier hs-var">applyRs</span></a></span><span> </span><span class="annot"><span class="annottext">Word
+</span><a href="#local-6989586621679335618"><span class="hs-identifier hs-var">old_word</span></a></span><span> </span><span class="annot"><span class="annottext">[SRule]
+</span><a href="#local-6989586621679335612"><span class="hs-identifier hs-var">t</span></a></span><span> </span><span class="annot"><span class="annottext">Map Word a
+</span><a href="#local-6989586621679335610"><span class="hs-identifier hs-var">new_m</span></a></span><span> </span><span class="annot"><span class="annottext">[Word]
+</span><a href="#local-6989586621679335615"><span class="hs-identifier hs-var">front_acc</span></a></span><span> </span><span class="annot"><span class="annottext">[(Word, Int, Word)]
+</span><a href="#local-6989586621679335614"><span class="hs-identifier hs-var">acc</span></a></span><span>
+</span><span id="line-102"></span><span>                                </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Bool
+</span><span class="hs-identifier hs-var">otherwise</span></span><span>             </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Word
+-&gt; [SRule]
+-&gt; Map Word a
+-&gt; [Word]
+-&gt; [(Word, Int, Word)]
+-&gt; ([(Word, Int, Word)], Map Word a, [Word])
+</span><a href="#local-6989586621679335619"><span class="hs-identifier hs-var">applyRs</span></a></span><span> </span><span class="annot"><span class="annottext">Word
+</span><a href="#local-6989586621679335618"><span class="hs-identifier hs-var">old_word</span></a></span><span> </span><span class="annot"><span class="annottext">[SRule]
+</span><a href="#local-6989586621679335612"><span class="hs-identifier hs-var">t</span></a></span><span> </span><span class="annot"><span class="annottext">Map Word a
+</span><a href="#local-6989586621679335610"><span class="hs-identifier hs-var">new_m</span></a></span><span> </span><span class="annot"><span class="annottext">[Word]
+</span><a href="#local-6989586621679335609"><span class="hs-identifier hs-var">new_front_acc</span></a></span><span> </span><span class="annot"><span class="annottext">([(Word, Int, Word)] -&gt; ([(Word, Int, Word)], Map Word a, [Word]))
+-&gt; [(Word, Int, Word)] -&gt; ([(Word, Int, Word)], Map Word a, [Word])
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Word
+</span><a href="#local-6989586621679335618"><span class="hs-identifier hs-var">old_word</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">SRule -&gt; Int
+</span><a href="#local-6989586621679335625"><span class="hs-identifier hs-var">getRuleNumber</span></a></span><span> </span><span class="annot"><span class="annottext">SRule
+</span><a href="#local-6989586621679335613"><span class="hs-identifier hs-var">h</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Word
+</span><a href="#local-6989586621679335611"><span class="hs-identifier hs-var">new_word</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">(Word, Int, Word) -&gt; [(Word, Int, Word)] -&gt; [(Word, Int, Word)]
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span> </span><span class="annot"><span class="annottext">[(Word, Int, Word)]
+</span><a href="#local-6989586621679335614"><span class="hs-identifier hs-var">acc</span></a></span><span>
+</span><span id="line-103"></span><span>                                                            </span><span class="hs-keyword">where</span><span>
+</span><span id="line-104"></span><span>                                                                </span><span id="local-6989586621679335611"><span class="annot"><span class="annottext">new_word :: Word
+</span><a href="#local-6989586621679335611"><span class="hs-identifier hs-var hs-var">new_word</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Word -&gt; SRule -&gt; Word
+</span><a href="SMInterpreter.html#applyRule"><span class="hs-identifier hs-var">applyRule</span></a></span><span> </span><span class="annot"><span class="annottext">Word
+</span><a href="#local-6989586621679335618"><span class="hs-identifier hs-var">old_word</span></a></span><span> </span><span class="annot"><span class="annottext">SRule
+</span><a href="#local-6989586621679335613"><span class="hs-identifier hs-var">h</span></a></span><span>
+</span><span id="line-105"></span><span>                                                                </span><span id="local-6989586621679335610"><span class="annot"><span class="annottext">new_m :: Map Word a
+</span><a href="#local-6989586621679335610"><span class="hs-identifier hs-var hs-var">new_m</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(a -&gt; a -&gt; a) -&gt; Word -&gt; a -&gt; Map Word a -&gt; Map Word a
+forall k a. Ord k =&gt; (a -&gt; a -&gt; a) -&gt; k -&gt; a -&gt; Map k a -&gt; Map k a
+</span><span class="hs-identifier hs-var">Map.insertWith</span></span><span> </span><span class="annot"><span class="annottext">a -&gt; a -&gt; a
+forall a. Num a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">(+)</span></span><span> </span><span class="annot"><span class="annottext">Word
+</span><a href="#local-6989586621679335611"><span class="hs-identifier hs-var">new_word</span></a></span><span> </span><span class="annot"><span class="annottext">a
+</span><span class="hs-number">1</span></span><span> </span><span class="annot"><span class="annottext">Map Word a
+</span><a href="#local-6989586621679335616"><span class="hs-identifier hs-var">nm</span></a></span><span>
+</span><span id="line-106"></span><span>                                                                </span><span id="local-6989586621679335609"><span class="annot"><span class="annottext">new_front_acc :: [Word]
+</span><a href="#local-6989586621679335609"><span class="hs-identifier hs-var hs-var">new_front_acc</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Word
+</span><a href="#local-6989586621679335611"><span class="hs-identifier hs-var">new_word</span></a></span><span> </span><span class="annot"><span class="annottext">Word -&gt; [Word] -&gt; [Word]
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span> </span><span class="annot"><span class="annottext">[Word]
+</span><a href="#local-6989586621679335615"><span class="hs-identifier hs-var">front_acc</span></a></span><span>
+</span><span id="line-107"></span><span>
+</span><span id="line-108"></span><span>            </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679335608"><span class="annot"><span class="annottext">applyRss :: [Word]
+-&gt; [[SRule]]
+-&gt; Map Word a
+-&gt; [Word]
+-&gt; [(Word, Int, Word)]
+-&gt; ([(Word, Int, Word)], Map Word a, [Word])
+</span><a href="#local-6989586621679335608"><span class="hs-identifier hs-var hs-var">applyRss</span></a></span></span><span> </span><span id="local-6989586621679335607"><span class="annot"><span class="annottext">[Word]
+</span><a href="#local-6989586621679335607"><span class="hs-identifier hs-var">wrds</span></a></span></span><span> </span><span id="local-6989586621679335606"><span class="annot"><span class="annottext">[[SRule]]
+</span><a href="#local-6989586621679335606"><span class="hs-identifier hs-var">ruless</span></a></span></span><span> </span><span id="local-6989586621679335605"><span class="annot"><span class="annottext">Map Word a
+</span><a href="#local-6989586621679335605"><span class="hs-identifier hs-var">nm</span></a></span></span><span> </span><span id="local-6989586621679335604"><span class="annot"><span class="annottext">[Word]
+</span><a href="#local-6989586621679335604"><span class="hs-identifier hs-var">front_acc</span></a></span></span><span> </span><span id="local-6989586621679335603"><span class="annot"><span class="annottext">[(Word, Int, Word)]
+</span><a href="#local-6989586621679335603"><span class="hs-identifier hs-var">acc</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-109"></span><span>                    </span><span class="hs-keyword">case</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[Word]
+</span><a href="#local-6989586621679335607"><span class="hs-identifier hs-var">wrds</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">[[SRule]]
+</span><a href="#local-6989586621679335606"><span class="hs-identifier hs-var">ruless</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-110"></span><span>                        </span><span class="hs-special">(</span><span class="hs-special">[</span><span class="hs-special">]</span><span class="hs-special">,</span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[(Word, Int, Word)]
+</span><a href="#local-6989586621679335603"><span class="hs-identifier hs-var">acc</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Map Word a
+</span><a href="#local-6989586621679335605"><span class="hs-identifier hs-var">nm</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">[Word]
+</span><a href="#local-6989586621679335604"><span class="hs-identifier hs-var">front_acc</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-111"></span><span>                        </span><span class="hs-special">(</span><span id="local-6989586621679335602"><span class="annot"><span class="annottext">Word
+</span><a href="#local-6989586621679335602"><span class="hs-identifier hs-var">word</span></a></span></span><span> </span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span> </span><span id="local-6989586621679335601"><span class="annot"><span class="annottext">[Word]
+</span><a href="#local-6989586621679335601"><span class="hs-identifier hs-var">t1</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679335600"><span class="annot"><span class="annottext">[SRule]
+</span><a href="#local-6989586621679335600"><span class="hs-identifier hs-var">rules</span></a></span></span><span> </span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span> </span><span id="local-6989586621679335599"><span class="annot"><span class="annottext">[[SRule]]
+</span><a href="#local-6989586621679335599"><span class="hs-identifier hs-var">t2</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">[Word]
+-&gt; [[SRule]]
+-&gt; Map Word a
+-&gt; [Word]
+-&gt; [(Word, Int, Word)]
+-&gt; ([(Word, Int, Word)], Map Word a, [Word])
+</span><a href="#local-6989586621679335608"><span class="hs-identifier hs-var">applyRss</span></a></span><span> </span><span class="annot"><span class="annottext">[Word]
+</span><a href="#local-6989586621679335601"><span class="hs-identifier hs-var">t1</span></a></span><span> </span><span class="annot"><span class="annottext">[[SRule]]
+</span><a href="#local-6989586621679335599"><span class="hs-identifier hs-var">t2</span></a></span><span> </span><span class="annot"><span class="annottext">Map Word a
+</span><a href="#local-6989586621679335598"><span class="hs-identifier hs-var">new_m</span></a></span><span> </span><span class="annot"><span class="annottext">[Word]
+</span><a href="#local-6989586621679335597"><span class="hs-identifier hs-var">new_front_acc</span></a></span><span> </span><span class="annot"><span class="annottext">[(Word, Int, Word)]
+</span><a href="#local-6989586621679335596"><span class="hs-identifier hs-var">acc_apply</span></a></span><span>
+</span><span id="line-112"></span><span>                                                    </span><span class="hs-keyword">where</span><span>
+</span><span id="line-113"></span><span>                                                        </span><span class="hs-special">(</span><span id="local-6989586621679335596"><span class="annot"><span class="annottext">[(Word, Int, Word)]
+</span><a href="#local-6989586621679335596"><span class="hs-identifier hs-var">acc_apply</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679335598"><span class="annot"><span class="annottext">Map Word a
+</span><a href="#local-6989586621679335598"><span class="hs-identifier hs-var">new_m</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679335597"><span class="annot"><span class="annottext">[Word]
+</span><a href="#local-6989586621679335597"><span class="hs-identifier hs-var">new_front_acc</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Word
+-&gt; [SRule]
+-&gt; Map Word a
+-&gt; [Word]
+-&gt; [(Word, Int, Word)]
+-&gt; ([(Word, Int, Word)], Map Word a, [Word])
+forall a.
+Num a =&gt;
+Word
+-&gt; [SRule]
+-&gt; Map Word a
+-&gt; [Word]
+-&gt; [(Word, Int, Word)]
+-&gt; ([(Word, Int, Word)], Map Word a, [Word])
+</span><a href="#local-6989586621679335619"><span class="hs-identifier hs-var">applyRs</span></a></span><span> </span><span class="annot"><span class="annottext">Word
+</span><a href="#local-6989586621679335602"><span class="hs-identifier hs-var">word</span></a></span><span> </span><span class="annot"><span class="annottext">[SRule]
+</span><a href="#local-6989586621679335600"><span class="hs-identifier hs-var">rules</span></a></span><span> </span><span class="annot"><span class="annottext">Map Word a
+</span><a href="#local-6989586621679335605"><span class="hs-identifier hs-var">nm</span></a></span><span> </span><span class="annot"><span class="annottext">[Word]
+</span><a href="#local-6989586621679335604"><span class="hs-identifier hs-var">front_acc</span></a></span><span> </span><span class="annot"><span class="annottext">[(Word, Int, Word)]
+</span><a href="#local-6989586621679335603"><span class="hs-identifier hs-var">acc</span></a></span><span>
+</span><span id="line-114"></span><span>                        </span><span class="annot"><span class="annottext">([Word], [[SRule]])
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">[Char] -&gt; ([(Word, Int, Word)], Map Word a, [Word])
+forall a. HasCallStack =&gt; [Char] -&gt; a
+</span><span class="hs-identifier hs-var">error</span></span><span> </span><span class="annot"><span class="annottext">[Char]
+</span><span class="hs-string">&quot;Commandss and configss don't match&quot;</span></span><span>
+</span><span id="line-115"></span><span>            </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679335595"><span class="annot"><span class="annottext">interpret :: [Word]
+-&gt; Map Word a
+-&gt; Int
+-&gt; [(Word, Int, Word)]
+-&gt; ([(Word, Int, Word)], Map Word a)
+</span><a href="#local-6989586621679335595"><span class="hs-identifier hs-var hs-var">interpret</span></a></span></span><span> </span><span id="local-6989586621679335594"><span class="annot"><span class="annottext">[Word]
+</span><a href="#local-6989586621679335594"><span class="hs-identifier hs-var">wrds</span></a></span></span><span> </span><span id="local-6989586621679335593"><span class="annot"><span class="annottext">Map Word a
+</span><a href="#local-6989586621679335593"><span class="hs-identifier hs-var">nm</span></a></span></span><span> </span><span id="local-6989586621679335592"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679335592"><span class="hs-identifier hs-var">i</span></a></span></span><span> </span><span id="local-6989586621679335591"><span class="annot"><span class="annottext">[(Word, Int, Word)]
+</span><a href="#local-6989586621679335591"><span class="hs-identifier hs-var">acc</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">if</span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679335628"><span class="hs-identifier hs-var">height</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Bool
+forall a. Ord a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">&gt;</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679335592"><span class="hs-identifier hs-var">i</span></a></span><span> </span><span class="hs-keyword">then</span><span> </span><span class="annot"><span class="annottext">[Word]
+-&gt; Map Word a
+-&gt; Int
+-&gt; [(Word, Int, Word)]
+-&gt; ([(Word, Int, Word)], Map Word a)
+</span><a href="#local-6989586621679335595"><span class="hs-identifier hs-var">interpret</span></a></span><span> </span><span class="annot"><span class="annottext">[Word]
+</span><a href="#local-6989586621679335589"><span class="hs-identifier hs-var">new_front</span></a></span><span> </span><span class="annot"><span class="annottext">Map Word a
+</span><a href="#local-6989586621679335588"><span class="hs-identifier hs-var">new_m</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679335592"><span class="hs-identifier hs-var">i</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
+forall a. Num a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">+</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">1</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[(Word, Int, Word)]
+</span><a href="#local-6989586621679335587"><span class="hs-identifier hs-var">acc_apply</span></a></span><span> </span><span class="hs-keyword">else</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[(Word, Int, Word)]
+</span><a href="#local-6989586621679335591"><span class="hs-identifier hs-var">acc</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Map Word a
+</span><a href="#local-6989586621679335593"><span class="hs-identifier hs-var">nm</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-116"></span><span>                    </span><span class="hs-keyword">where</span><span>
+</span><span id="line-117"></span><span>                        </span><span class="hs-special">(</span><span id="local-6989586621679335587"><span class="annot"><span class="annottext">[(Word, Int, Word)]
+</span><a href="#local-6989586621679335587"><span class="hs-identifier hs-var">acc_apply</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679335588"><span class="annot"><span class="annottext">Map Word a
+</span><a href="#local-6989586621679335588"><span class="hs-identifier hs-var">new_m</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679335589"><span class="annot"><span class="annottext">[Word]
+</span><a href="#local-6989586621679335589"><span class="hs-identifier hs-var">new_front</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Word]
+-&gt; [[SRule]]
+-&gt; Map Word a
+-&gt; [Word]
+-&gt; [(Word, Int, Word)]
+-&gt; ([(Word, Int, Word)], Map Word a, [Word])
+forall a.
+Num a =&gt;
+[Word]
+-&gt; [[SRule]]
+-&gt; Map Word a
+-&gt; [Word]
+-&gt; [(Word, Int, Word)]
+-&gt; ([(Word, Int, Word)], Map Word a, [Word])
+</span><a href="#local-6989586621679335608"><span class="hs-identifier hs-var">applyRss</span></a></span><span> </span><span class="annot"><span class="annottext">[Word]
+</span><a href="#local-6989586621679335594"><span class="hs-identifier hs-var">wrds</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[SRule] -&gt; [Word] -&gt; [[SRule]]
+</span><a href="SMInterpreter.html#getApplicableRules"><span class="hs-identifier hs-var">getApplicableRules</span></a></span><span> </span><span class="annot"><span class="annottext">[SRule]
+</span><a href="#local-6989586621679335626"><span class="hs-identifier hs-var">symmSmRules</span></a></span><span> </span><span class="annot"><span class="annottext">[Word]
+</span><a href="#local-6989586621679335594"><span class="hs-identifier hs-var">wrds</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Map Word a
+</span><a href="#local-6989586621679335593"><span class="hs-identifier hs-var">nm</span></a></span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span> </span><span class="annot"><span class="annottext">[(Word, Int, Word)]
+</span><a href="#local-6989586621679335591"><span class="hs-identifier hs-var">acc</span></a></span><span>
+</span><span id="line-118"></span><span>
+</span><span id="line-119"></span><span>            </span><span class="hs-keyword">let</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679335586"><span class="annot"><span class="annottext">[(Word, Int, Word)]
+</span><a href="#local-6989586621679335586"><span class="hs-identifier hs-var">acc</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679335585"><span class="annot"><span class="annottext">Map Word Int
+</span><a href="#local-6989586621679335585"><span class="hs-identifier hs-var">nm</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Word]
+-&gt; Map Word Int
+-&gt; Int
+-&gt; [(Word, Int, Word)]
+-&gt; ([(Word, Int, Word)], Map Word Int)
+forall a.
+Num a =&gt;
+[Word]
+-&gt; Map Word a
+-&gt; Int
+-&gt; [(Word, Int, Word)]
+-&gt; ([(Word, Int, Word)], Map Word a)
+</span><a href="#local-6989586621679335595"><span class="hs-identifier hs-var">interpret</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">Word
+</span><a href="#local-6989586621679335630"><span class="hs-identifier hs-var">startWord</span></a></span><span class="hs-special">]</span><span> </span><span class="annot"><span class="annottext">Map Word Int
+</span><a href="#local-6989586621679335627"><span class="hs-identifier hs-var">m</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">0</span></span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span>
+</span><span id="line-120"></span><span>            </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679335584"><span class="annot"><span class="annottext">m_nodes :: Map Word Int
+</span><a href="#local-6989586621679335584"><span class="hs-identifier hs-var hs-var">m_nodes</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(Int, Map Word Int) -&gt; Map Word Int
+forall a b. (a, b) -&gt; b
+</span><span class="hs-identifier hs-var">snd</span></span><span> </span><span class="annot"><span class="annottext">((Int, Map Word Int) -&gt; Map Word Int)
+-&gt; (Int, Map Word Int) -&gt; Map Word Int
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">(Int -&gt; Int -&gt; (Int, Int))
+-&gt; Int -&gt; Map Word Int -&gt; (Int, Map Word Int)
+forall a b c k. (a -&gt; b -&gt; (a, c)) -&gt; a -&gt; Map k b -&gt; (a, Map k c)
+</span><span class="hs-identifier hs-var">Map.mapAccum</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679335582"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679335582"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679335582"><span class="hs-identifier hs-var">a</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
+forall a. Num a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">+</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">1</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679335582"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">1</span></span><span> </span><span class="annot"><span class="annottext">Map Word Int
+</span><a href="#local-6989586621679335585"><span class="hs-identifier hs-var">nm</span></a></span><span>
+</span><span id="line-121"></span><span>            </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679335581"><span class="annot"><span class="annottext">get_node :: Word -&gt; Int
+</span><a href="#local-6989586621679335581"><span class="hs-identifier hs-var hs-var">get_node</span></a></span></span><span> </span><span id="local-6989586621679335580"><span class="annot"><span class="annottext">Word
+</span><a href="#local-6989586621679335580"><span class="hs-identifier hs-var">w</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int -&gt; Int
+forall a. HasCallStack =&gt; Maybe a -&gt; a
+</span><span class="hs-identifier hs-var">fromJust</span></span><span> </span><span class="annot"><span class="annottext">(Maybe Int -&gt; Int) -&gt; Maybe Int -&gt; Int
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Word -&gt; Map Word Int -&gt; Maybe Int
+forall k a. Ord k =&gt; k -&gt; Map k a -&gt; Maybe a
+</span><span class="hs-identifier hs-var">Map.lookup</span></span><span> </span><span class="annot"><span class="annottext">Word
+</span><a href="#local-6989586621679335580"><span class="hs-identifier hs-var">w</span></a></span><span> </span><span class="annot"><span class="annottext">Map Word Int
+</span><a href="#local-6989586621679335584"><span class="hs-identifier hs-var">m_nodes</span></a></span><span>
+</span><span id="line-122"></span><span>            </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679335577"><span class="annot"><span class="annottext">g :: Gr Word Int
+</span><a href="#local-6989586621679335577"><span class="hs-identifier hs-var hs-var">g</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[LNode Word] -&gt; [LEdge Int] -&gt; Gr Word Int
+forall (gr :: * -&gt; * -&gt; *) a b.
+Graph gr =&gt;
+[LNode a] -&gt; [LEdge b] -&gt; gr a b
+</span><span class="hs-identifier hs-var">mkGraph</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">((Word, Int) -&gt; LNode Word) -&gt; [(Word, Int)] -&gt; [LNode Word]
+forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="annot"><span class="annottext">(Word, Int) -&gt; LNode Word
+forall a b. (a, b) -&gt; (b, a)
+</span><span class="hs-identifier hs-var">swap</span></span><span> </span><span class="annot"><span class="annottext">([(Word, Int)] -&gt; [LNode Word]) -&gt; [(Word, Int)] -&gt; [LNode Word]
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Map Word Int -&gt; [(Word, Int)]
+forall k a. Map k a -&gt; [(k, a)]
+</span><span class="hs-identifier hs-var">Map.toList</span></span><span> </span><span class="annot"><span class="annottext">Map Word Int
+</span><a href="#local-6989586621679335584"><span class="hs-identifier hs-var">m_nodes</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-123"></span><span>                                </span><span class="hs-special">(</span><span class="annot"><span class="annottext">((Word, Int, Word) -&gt; LEdge Int)
+-&gt; [(Word, Int, Word)] -&gt; [LEdge Int]
+forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span class="hs-special">(</span><span id="local-6989586621679335575"><span class="annot"><span class="annottext">Word
+</span><a href="#local-6989586621679335575"><span class="hs-identifier hs-var">from_part</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679335574"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679335574"><span class="hs-identifier hs-var">rule_i</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679335573"><span class="annot"><span class="annottext">Word
+</span><a href="#local-6989586621679335573"><span class="hs-identifier hs-var">to_part</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Word -&gt; Int
+</span><a href="#local-6989586621679335581"><span class="hs-identifier hs-var">get_node</span></a></span><span> </span><span class="annot"><span class="annottext">Word
+</span><a href="#local-6989586621679335575"><span class="hs-identifier hs-var">from_part</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Word -&gt; Int
+</span><a href="#local-6989586621679335581"><span class="hs-identifier hs-var">get_node</span></a></span><span> </span><span class="annot"><span class="annottext">Word
+</span><a href="#local-6989586621679335573"><span class="hs-identifier hs-var">to_part</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679335574"><span class="hs-identifier hs-var">rule_i</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[(Word, Int, Word)]
+</span><a href="#local-6989586621679335586"><span class="hs-identifier hs-var">acc</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-124"></span><span>            </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Gr Word Int
+</span><a href="#local-6989586621679335577"><span class="hs-identifier hs-var">g</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Map Word Int
+</span><a href="#local-6989586621679335585"><span class="hs-identifier hs-var">nm</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-125"></span><span>
+</span><span id="line-126"></span></pre></body></html>

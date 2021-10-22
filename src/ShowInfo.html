@@ -1,0 +1,710 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE MultiParamTypeClasses, OverloadedStrings #-}</span><span>
+</span><span id="line-2"></span><span>
+</span><span id="line-3"></span><span class="hs-comment">-- |Module `ShowInfo` include class `ShowInfo` for pretty printing of objects</span><span>
+</span><span id="line-4"></span><span class="hs-comment">--  in this project.</span><span>
+</span><span id="line-5"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">ShowInfo</span><span> </span><span class="hs-special">(</span><span>
+</span><span id="line-6"></span><span>    </span><span class="annot"><a href="ShowInfo.html#Title"><span class="hs-identifier">Title</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="ShowInfo.html#Title"><span class="hs-identifier">Title</span></a></span><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><span id="line-7"></span><span>    </span><span class="annot"><a href="ShowInfo.html#WithTitle"><span class="hs-identifier">WithTitle</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-8"></span><span>    </span><span class="annot"><a href="ShowInfo.html#withTitle"><span class="hs-identifier">withTitle</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-9"></span><span>    </span><span class="annot"><a href="ShowInfo.html#title"><span class="hs-identifier">title</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-10"></span><span>    </span><span class="annot"><a href="ShowInfo.html#withoutTitle"><span class="hs-identifier">withoutTitle</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-11"></span><span>    </span><span class="annot"><a href="ShowInfo.html#ShowInfo"><span class="hs-identifier">ShowInfo</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><span id="line-12"></span><span>  </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-13"></span><span>
+</span><span id="line-14"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="TuringMachine.html"><span class="hs-identifier">TuringMachine</span></a></span><span>
+</span><span id="line-15"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="SemigroupPresentation.html"><span class="hs-identifier">SemigroupPresentation</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">SP</span></span><span>
+</span><span id="line-16"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="GroupPresentation.html"><span class="hs-identifier">GroupPresentation</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">GP</span></span><span>
+</span><span id="line-17"></span><span>
+</span><span id="line-18"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Control.Lens</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">imap</span></span><span class="hs-special">)</span><span>
+</span><span id="line-19"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.List</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">intercalate</span></span><span class="hs-special">)</span><span>
+</span><span id="line-20"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.String</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">IsString</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">fromString</span></span><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><span id="line-21"></span><span>
+</span><span id="line-22"></span><span class="hs-keyword">newtype</span><span> </span><span id="Title"><span class="annot"><a href="ShowInfo.html#Title"><span class="hs-identifier hs-var">Title</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="Title"><span class="annot"><a href="ShowInfo.html#Title"><span class="hs-identifier hs-var">Title</span></a></span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-23"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679340031"><span id="local-6989586621679340033"><span class="annot"><span class="annottext">Title -&gt; Title -&gt; Bool
+(Title -&gt; Title -&gt; Bool) -&gt; (Title -&gt; Title -&gt; Bool) -&gt; Eq Title
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+/= :: Title -&gt; Title -&gt; Bool
+$c/= :: Title -&gt; Title -&gt; Bool
+== :: Title -&gt; Title -&gt; Bool
+$c== :: Title -&gt; Title -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679340015"><span id="local-6989586621679340017"><span id="local-6989586621679340019"><span id="local-6989586621679340021"><span id="local-6989586621679340023"><span id="local-6989586621679340025"><span id="local-6989586621679340027"><span class="annot"><span class="annottext">Eq Title
+Eq Title
+-&gt; (Title -&gt; Title -&gt; Ordering)
+-&gt; (Title -&gt; Title -&gt; Bool)
+-&gt; (Title -&gt; Title -&gt; Bool)
+-&gt; (Title -&gt; Title -&gt; Bool)
+-&gt; (Title -&gt; Title -&gt; Bool)
+-&gt; (Title -&gt; Title -&gt; Title)
+-&gt; (Title -&gt; Title -&gt; Title)
+-&gt; Ord Title
+Title -&gt; Title -&gt; Bool
+Title -&gt; Title -&gt; Ordering
+Title -&gt; Title -&gt; Title
+forall a.
+Eq a
+-&gt; (a -&gt; a -&gt; Ordering)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; Ord a
+min :: Title -&gt; Title -&gt; Title
+$cmin :: Title -&gt; Title -&gt; Title
+max :: Title -&gt; Title -&gt; Title
+$cmax :: Title -&gt; Title -&gt; Title
+&gt;= :: Title -&gt; Title -&gt; Bool
+$c&gt;= :: Title -&gt; Title -&gt; Bool
+&gt; :: Title -&gt; Title -&gt; Bool
+$c&gt; :: Title -&gt; Title -&gt; Bool
+&lt;= :: Title -&gt; Title -&gt; Bool
+$c&lt;= :: Title -&gt; Title -&gt; Bool
+&lt; :: Title -&gt; Title -&gt; Bool
+$c&lt; :: Title -&gt; Title -&gt; Bool
+compare :: Title -&gt; Title -&gt; Ordering
+$ccompare :: Title -&gt; Title -&gt; Ordering
+$cp1Ord :: Eq Title
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Ord</span></span></span></span></span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-24"></span><span>
+</span><span id="line-25"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679340009"><span id="local-6989586621679340012"><span class="annot"><span class="hs-identifier hs-type">Show</span></span><span> </span><span class="annot"><a href="ShowInfo.html#Title"><span class="hs-identifier hs-type">Title</span></a></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-26"></span><span>    </span><span id="local-6989586621679340007"><span class="annot"><span class="annottext">show :: Title -&gt; String
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">show</span></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="ShowInfo.html#Title"><span class="hs-identifier hs-type">Title</span></a></span><span> </span><span id="local-6989586621679340005"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679340005"><span class="hs-identifier hs-var">t</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679340005"><span class="hs-identifier hs-var">t</span></a></span><span>
+</span><span id="line-27"></span><span>
+</span><span id="line-28"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><span class="hs-identifier hs-type">IsString</span></span><span> </span><span class="annot"><a href="ShowInfo.html#Title"><span class="hs-identifier hs-type">Title</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-29"></span><span>    </span><span id="local-6989586621679340002"><span class="annot"><span class="annottext">fromString :: String -&gt; Title
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">fromString</span></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; Title
+</span><a href="ShowInfo.html#Title"><span class="hs-identifier hs-var">Title</span></a></span><span>
+</span><span id="line-30"></span><span>
+</span><span id="line-31"></span><span class="hs-keyword">newtype</span><span> </span><span id="WithTitle"><span class="annot"><a href="ShowInfo.html#WithTitle"><span class="hs-identifier hs-var">WithTitle</span></a></span></span><span> </span><span id="local-6989586621679340108"><span class="annot"><a href="#local-6989586621679340108"><span class="hs-identifier hs-type">a</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="WT"><span class="annot"><a href="ShowInfo.html#WT"><span class="hs-identifier hs-var">WT</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="ShowInfo.html#Title"><span class="hs-identifier hs-type">Title</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="#local-6989586621679340108"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-32"></span><span>
+</span><span id="line-33"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679339992"><span id="local-6989586621679339994"><span id="local-6989586621679339997"><span class="annot"><a href="Containers.html#Insertable"><span class="hs-identifier hs-type">Insertable</span></a></span><span> </span><span class="annot"><a href="ShowInfo.html#Title"><span class="hs-identifier hs-type">Title</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Char</span></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-34"></span><span>    </span><span id="local-6989586621679339990"><span class="annot"><span class="annottext">insert :: Char -&gt; Title -&gt; m Title
+</span><a href="Containers.html#insert"><span class="hs-identifier hs-var hs-var hs-var hs-var">insert</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">((Title -&gt; Title) -&gt; Title -&gt; m Title)
+-&gt; (Char -&gt; Title -&gt; Title) -&gt; Char -&gt; Title -&gt; m Title
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-identifier hs-var">fmap</span></span><span class="annot"><span class="annottext">(((Title -&gt; Title) -&gt; Title -&gt; m Title)
+ -&gt; (Char -&gt; Title -&gt; Title) -&gt; Char -&gt; Title -&gt; m Title)
+-&gt; ((Title -&gt; m Title) -&gt; (Title -&gt; Title) -&gt; Title -&gt; m Title)
+-&gt; (Title -&gt; m Title)
+-&gt; (Char -&gt; Title -&gt; Title)
+-&gt; Char
+-&gt; Title
+-&gt; m Title
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span class="annot"><span class="annottext">(Title -&gt; m Title) -&gt; (Title -&gt; Title) -&gt; Title -&gt; m Title
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-identifier hs-var">fmap</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Title -&gt; m Title
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">Char -&gt; Title -&gt; Title
+forall c v. Insertable c v =&gt; v -&gt; c -&gt; c
+</span><a href="Containers.html#unsafeInsert"><span class="hs-identifier hs-var">unsafeInsert</span></a></span><span>
+</span><span id="line-35"></span><span>    </span><span id="local-6989586621679339986"><span class="annot"><span class="annottext">unsafeInsert :: Char -&gt; Title -&gt; Title
+</span><a href="#local-6989586621679339986"><span class="hs-identifier hs-var hs-var hs-var hs-var">unsafeInsert</span></a></span></span><span> </span><span id="local-6989586621679339985"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679339985"><span class="hs-identifier hs-var">c</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="ShowInfo.html#Title"><span class="hs-identifier hs-type">Title</span></a></span><span> </span><span id="local-6989586621679339984"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679339984"><span class="hs-identifier hs-var">t</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; Title
+</span><a href="ShowInfo.html#Title"><span class="hs-identifier hs-var">Title</span></a></span><span> </span><span class="annot"><span class="annottext">(String -&gt; Title) -&gt; String -&gt; Title
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679339985"><span class="hs-identifier hs-var">c</span></a></span><span> </span><span class="annot"><span class="annottext">Char -&gt; ShowS
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679339984"><span class="hs-identifier hs-var">t</span></a></span><span>
+</span><span id="line-36"></span><span>    </span><span class="hs-special">(</span><span class="annot"><a href="ShowInfo.html#Title"><span class="hs-identifier hs-type">Title</span></a></span><span> </span><span id="local-6989586621679339983"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679339983"><span class="hs-identifier hs-var">t</span></a></span></span><span class="hs-special">)</span><span> </span><span id="local-6989586621679339982"><span class="annot"><span class="annottext">&lt;+ :: Title -&gt; Char -&gt; Title
+</span><a href="Containers.html#%3C%2B"><span class="hs-operator hs-var hs-var hs-var hs-var">&lt;+</span></a></span></span><span> </span><span id="local-6989586621679339980"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679339980"><span class="hs-identifier hs-var">c</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; Title
+</span><a href="ShowInfo.html#Title"><span class="hs-identifier hs-var">Title</span></a></span><span> </span><span class="annot"><span class="annottext">(String -&gt; Title) -&gt; String -&gt; Title
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679339983"><span class="hs-identifier hs-var">t</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679339980"><span class="hs-identifier hs-var">c</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-37"></span><span>
+</span><span id="line-38"></span><span id="local-6989586621679339979"><span class="annot"><a href="ShowInfo.html#withTitle"><span class="hs-identifier hs-type">withTitle</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="ShowInfo.html#Title"><span class="hs-identifier hs-type">Title</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679339979"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="ShowInfo.html#WithTitle"><span class="hs-identifier hs-type">WithTitle</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679339979"><span class="hs-identifier hs-type">a</span></a></span></span><span>
+</span><span id="line-39"></span><span id="withTitle"><span class="annot"><span class="annottext">withTitle :: Title -&gt; a -&gt; WithTitle a
+</span><a href="ShowInfo.html#withTitle"><span class="hs-identifier hs-var hs-var">withTitle</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">((Title, a) -&gt; WithTitle a) -&gt; Title -&gt; a -&gt; WithTitle a
+forall a b c. ((a, b) -&gt; c) -&gt; a -&gt; b -&gt; c
+</span><span class="hs-identifier hs-var">curry</span></span><span> </span><span class="annot"><span class="annottext">(Title, a) -&gt; WithTitle a
+forall a. (Title, a) -&gt; WithTitle a
+</span><a href="ShowInfo.html#WT"><span class="hs-identifier hs-var">WT</span></a></span><span>
+</span><span id="line-40"></span><span>
+</span><span id="line-41"></span><span id="local-6989586621679339977"><span class="annot"><a href="ShowInfo.html#title"><span class="hs-identifier hs-type">title</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="ShowInfo.html#WithTitle"><span class="hs-identifier hs-type">WithTitle</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679339977"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="ShowInfo.html#Title"><span class="hs-identifier hs-type">Title</span></a></span></span><span>
+</span><span id="line-42"></span><span id="title"><span class="annot"><span class="annottext">title :: WithTitle a -&gt; Title
+</span><a href="ShowInfo.html#title"><span class="hs-identifier hs-var hs-var">title</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="ShowInfo.html#WT"><span class="hs-identifier hs-type">WT</span></a></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679339976"><span class="annot"><span class="annottext">Title
+</span><a href="#local-6989586621679339976"><span class="hs-identifier hs-var">t</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">a
+</span><span class="hs-identifier">_</span></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Title
+</span><a href="#local-6989586621679339976"><span class="hs-identifier hs-var">t</span></a></span><span>
+</span><span id="line-43"></span><span>
+</span><span id="line-44"></span><span id="local-6989586621679339975"><span class="annot"><a href="ShowInfo.html#withoutTitle"><span class="hs-identifier hs-type">withoutTitle</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="ShowInfo.html#WithTitle"><span class="hs-identifier hs-type">WithTitle</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679339975"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679339975"><span class="hs-identifier hs-type">a</span></a></span></span><span>
+</span><span id="line-45"></span><span id="withoutTitle"><span class="annot"><span class="annottext">withoutTitle :: WithTitle a -&gt; a
+</span><a href="ShowInfo.html#withoutTitle"><span class="hs-identifier hs-var hs-var">withoutTitle</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="ShowInfo.html#WT"><span class="hs-identifier hs-type">WT</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Title
+</span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679339974"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679339974"><span class="hs-identifier hs-var">a</span></a></span></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679339974"><span class="hs-identifier hs-var">a</span></a></span><span>
+</span><span id="line-46"></span><span>
+</span><span id="line-47"></span><span class="hs-keyword">class</span><span> </span><span id="ShowInfo"><span class="annot"><a href="ShowInfo.html#ShowInfo"><span class="hs-identifier hs-var">ShowInfo</span></a></span></span><span> </span><span id="local-6989586621679340105"><span class="annot"><a href="#local-6989586621679340105"><span class="hs-identifier hs-type">a</span></a></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-48"></span><span>    </span><span id="showTitle"><span class="annot"><a href="ShowInfo.html#showTitle"><span class="hs-identifier hs-type">showTitle</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="#local-6989586621679340105"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="ShowInfo.html#Title"><span class="hs-identifier hs-type">Title</span></a></span><span>
+</span><span id="line-49"></span><span>    </span><span id="showInfo"><span class="annot"><a href="ShowInfo.html#showInfo"><span class="hs-identifier hs-type">showInfo</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="#local-6989586621679340105"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-50"></span><span>    </span><span id="showTitleAndInfo"><span class="annot"><a href="ShowInfo.html#showTitleAndInfo"><span class="hs-identifier hs-type">showTitleAndInfo</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="#local-6989586621679340105"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-51"></span><span>    </span><span id="local-6989586621679339970"><span class="annot"><a href="ShowInfo.html#showTitleAndInfo"><span class="hs-identifier hs-var hs-var">showTitleAndInfo</span></a></span><span> </span><span id="local-6989586621679339969"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679339969"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-52"></span><span>        </span><span class="annot"><span class="annottext">Title -&gt; ShowS
+</span><a href="ShowInfo.html#addTitleWithNewLine"><span class="hs-identifier hs-var">addTitleWithNewLine</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">a -&gt; Title
+forall a. ShowInfo a =&gt; a -&gt; Title
+</span><a href="ShowInfo.html#showTitle"><span class="hs-identifier hs-var">showTitle</span></a></span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679339969"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">a -&gt; String
+forall a. ShowInfo a =&gt; a -&gt; String
+</span><a href="ShowInfo.html#showInfo"><span class="hs-identifier hs-var">showInfo</span></a></span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679339969"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">)</span></span><span>
+</span><span id="line-53"></span><span>    </span><span id="showListTitle"><span class="annot"><a href="ShowInfo.html#showListTitle"><span class="hs-identifier hs-type">showListTitle</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="#local-6989586621679340105"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="ShowInfo.html#Title"><span class="hs-identifier hs-type">Title</span></a></span><span>
+</span><span id="line-54"></span><span>    </span><span id="local-6989586621679339966"><span class="annot"><a href="ShowInfo.html#showListTitle"><span class="hs-identifier hs-var hs-var">showListTitle</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Title -&gt; [a] -&gt; Title
+forall a b. a -&gt; b -&gt; a
+</span><span class="hs-identifier hs-var">const</span></span><span> </span><span class="annot"><span class="annottext">Title
+</span><span class="hs-string">&quot;List&quot;</span></span></span><span>
+</span><span id="line-55"></span><span>    </span><span id="showListInfo"><span class="annot"><a href="ShowInfo.html#showListInfo"><span class="hs-identifier hs-type">showListInfo</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="#local-6989586621679340105"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-56"></span><span>    </span><span id="local-6989586621679339963"><span class="annot"><a href="ShowInfo.html#showListInfo"><span class="hs-identifier hs-var hs-var">showListInfo</span></a></span><span> </span><span id="local-6989586621679339962"><span class="annot"><span class="annottext">[a]
+</span><a href="#local-6989586621679339962"><span class="hs-keyword hs-var">as</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-57"></span><span>        </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679339961"><span class="annot"><span class="annottext">titleLength :: Int
+</span><a href="#local-6989586621679339961"><span class="hs-identifier hs-var hs-var">titleLength</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; Int
+forall (t :: * -&gt; *) a. Foldable t =&gt; t a -&gt; Int
+</span><span class="hs-identifier hs-var">length</span></span><span> </span><span class="annot"><span class="annottext">(String -&gt; Int) -&gt; String -&gt; Int
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Int -&gt; String
+forall a. Show a =&gt; a -&gt; String
+</span><span class="hs-identifier hs-var">show</span></span><span> </span><span class="annot"><span class="annottext">(Int -&gt; String) -&gt; Int -&gt; String
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">[a] -&gt; Int
+forall (t :: * -&gt; *) a. Foldable t =&gt; t a -&gt; Int
+</span><span class="hs-identifier hs-var">length</span></span><span> </span><span class="annot"><span class="annottext">[a]
+</span><a href="#local-6989586621679339962"><span class="hs-keyword hs-var">as</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
+forall a. Num a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-glyph hs-var">-</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">1</span></span><span>
+</span><span id="line-58"></span><span>            </span><span id="local-6989586621679339959"><span class="annot"><span class="annottext">prettyShowNum :: a -&gt; Title
+</span><a href="#local-6989586621679339959"><span class="hs-identifier hs-var hs-var">prettyShowNum</span></a></span></span><span> </span><span id="local-6989586621679339958"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679339958"><span class="hs-identifier hs-var">n</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-59"></span><span>                </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679339957"><span class="annot"><span class="annottext">nAsStr :: String
+</span><a href="#local-6989586621679339957"><span class="hs-identifier hs-var hs-var">nAsStr</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">a -&gt; String
+forall a. Show a =&gt; a -&gt; String
+</span><span class="hs-identifier hs-var">show</span></span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679339958"><span class="hs-identifier hs-var">n</span></a></span><span>
+</span><span id="line-60"></span><span>                </span><span class="hs-keyword">in</span><span>  </span><span class="annot"><span class="annottext">String -&gt; Title
+</span><a href="ShowInfo.html#Title"><span class="hs-identifier hs-var">Title</span></a></span><span> </span><span class="annot"><span class="annottext">(String -&gt; Title) -&gt; String -&gt; Title
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span>
+</span><span id="line-61"></span><span>                        </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679339957"><span class="hs-identifier hs-var">nAsStr</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Char -&gt; String
+forall a. Int -&gt; a -&gt; [a]
+</span><span class="hs-identifier hs-var">replicate</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679339961"><span class="hs-identifier hs-var">titleLength</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
+forall a. Num a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-glyph hs-var">-</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Int
+forall (t :: * -&gt; *) a. Foldable t =&gt; t a -&gt; Int
+</span><span class="hs-identifier hs-var">length</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679339957"><span class="hs-identifier hs-var">nAsStr</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Char
+</span><span class="hs-char">' '</span></span><span>
+</span><span id="line-62"></span><span>        </span><span class="hs-keyword">in</span><span>  </span><span class="annot"><span class="annottext">[String] -&gt; String
+forall (t :: * -&gt; *) a. Foldable t =&gt; t [a] -&gt; [a]
+</span><span class="hs-identifier hs-var">concat</span></span><span> </span><span class="annot"><span class="annottext">([String] -&gt; String) -&gt; [String] -&gt; String
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span>
+</span><span id="line-63"></span><span>                </span><span class="annot"><span class="annottext">(Int -&gt; a -&gt; String) -&gt; [a] -&gt; [String]
+forall i (f :: * -&gt; *) a b.
+FunctorWithIndex i f =&gt;
+(i -&gt; a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-identifier hs-var">imap</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679339954"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679339954"><span class="hs-identifier hs-var">i</span></a></span></span><span> </span><span id="local-6989586621679339953"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679339953"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span>
+</span><span id="line-64"></span><span>                    </span><span class="annot"><span class="annottext">Title -&gt; ShowS
+</span><a href="ShowInfo.html#addTitleWithoutNewLine"><span class="hs-identifier hs-var">addTitleWithoutNewLine</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Int -&gt; Title
+forall a. Show a =&gt; a -&gt; Title
+</span><a href="#local-6989586621679339959"><span class="hs-identifier hs-var">prettyShowNum</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679339954"><span class="hs-identifier hs-var">i</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">a -&gt; String
+forall a. ShowInfo a =&gt; a -&gt; String
+</span><a href="ShowInfo.html#showInfo"><span class="hs-identifier hs-var">showInfo</span></a></span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679339953"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-65"></span><span>                  </span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[a]
+</span><a href="#local-6989586621679339962"><span class="hs-keyword hs-var">as</span></a></span></span><span>
+</span><span id="line-66"></span><span>
+</span><span id="line-67"></span><span class="annot"><a href="ShowInfo.html#addTitleWithNewLine"><span class="hs-identifier hs-type">addTitleWithNewLine</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="ShowInfo.html#Title"><span class="hs-identifier hs-type">Title</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-68"></span><span id="addTitleWithNewLine"><span class="annot"><span class="annottext">addTitleWithNewLine :: Title -&gt; ShowS
+</span><a href="ShowInfo.html#addTitleWithNewLine"><span class="hs-identifier hs-var hs-var">addTitleWithNewLine</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="ShowInfo.html#Title"><span class="hs-identifier hs-type">Title</span></a></span><span> </span><span id="local-6989586621679339951"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679339951"><span class="hs-identifier hs-var">t</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-69"></span><span>    </span><span class="hs-special">(</span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679339951"><span class="hs-identifier hs-var">t</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;:\n&quot;</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">ShowS -&gt; ShowS -&gt; ShowS
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><span class="hs-identifier hs-var">unlines</span></span><span> </span><span class="annot"><span class="annottext">([String] -&gt; String) -&gt; (String -&gt; [String]) -&gt; ShowS
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">ShowS -&gt; [String] -&gt; [String]
+forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;    &quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">([String] -&gt; [String])
+-&gt; (String -&gt; [String]) -&gt; String -&gt; [String]
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; [String]
+</span><span class="hs-identifier hs-var">lines</span></span><span>
+</span><span id="line-70"></span><span>
+</span><span id="line-71"></span><span class="annot"><a href="ShowInfo.html#addTitleWithoutNewLine"><span class="hs-identifier hs-type">addTitleWithoutNewLine</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="ShowInfo.html#Title"><span class="hs-identifier hs-type">Title</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-72"></span><span id="addTitleWithoutNewLine"><span class="annot"><span class="annottext">addTitleWithoutNewLine :: Title -&gt; ShowS
+</span><a href="ShowInfo.html#addTitleWithoutNewLine"><span class="hs-identifier hs-var hs-var">addTitleWithoutNewLine</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="ShowInfo.html#Title"><span class="hs-identifier hs-type">Title</span></a></span><span> </span><span id="local-6989586621679339948"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679339948"><span class="hs-identifier hs-var">t</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-73"></span><span>    </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><span class="hs-identifier hs-var">unlines</span></span><span> </span><span class="annot"><span class="annottext">([String] -&gt; String) -&gt; (String -&gt; [String]) -&gt; ShowS
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span>
+</span><span id="line-74"></span><span>    </span><span class="annot"><span class="annottext">(Int -&gt; ShowS) -&gt; [String] -&gt; [String]
+forall i (f :: * -&gt; *) a b.
+FunctorWithIndex i f =&gt;
+(i -&gt; a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-identifier hs-var">imap</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679339947"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679339947"><span class="hs-identifier hs-var">i</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">(++)</span></span><span> </span><span class="hs-special">(</span><span>
+</span><span id="line-75"></span><span>        </span><span class="hs-keyword">if</span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679339947"><span class="hs-identifier hs-var">i</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Bool
+forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">==</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">0</span></span><span>
+</span><span id="line-76"></span><span>        </span><span class="hs-keyword">then</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679339948"><span class="hs-identifier hs-var">t</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;: &quot;</span></span><span>
+</span><span id="line-77"></span><span>        </span><span class="hs-keyword">else</span><span> </span><span class="annot"><span class="annottext">Int -&gt; Char -&gt; String
+forall a. Int -&gt; a -&gt; [a]
+</span><span class="hs-identifier hs-var">replicate</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String -&gt; Int
+forall (t :: * -&gt; *) a. Foldable t =&gt; t a -&gt; Int
+</span><span class="hs-identifier hs-var">length</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679339948"><span class="hs-identifier hs-var">t</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
+forall a. Num a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">+</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">2</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Char
+</span><span class="hs-char">' '</span></span><span>
+</span><span id="line-78"></span><span>      </span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">([String] -&gt; [String])
+-&gt; (String -&gt; [String]) -&gt; String -&gt; [String]
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span>
+</span><span id="line-79"></span><span>    </span><span class="annot"><span class="annottext">String -&gt; [String]
+</span><span class="hs-identifier hs-var">lines</span></span><span>
+</span><span id="line-80"></span><span>
+</span><span id="line-81"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679339942"><span class="annot"><a href="ShowInfo.html#ShowInfo"><span class="hs-identifier hs-type">ShowInfo</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Char</span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-82"></span><span>    </span><span id="local-6989586621679339938"><span class="annot"><span class="annottext">showTitle :: Char -&gt; Title
+</span><a href="#local-6989586621679339938"><span class="hs-identifier hs-var hs-var hs-var hs-var">showTitle</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Title -&gt; Char -&gt; Title
+forall a b. a -&gt; b -&gt; a
+</span><span class="hs-identifier hs-var">const</span></span><span> </span><span class="annot"><span class="annottext">Title
+</span><span class="hs-string">&quot;Char&quot;</span></span><span>
+</span><span id="line-83"></span><span>    </span><span id="local-6989586621679339937"><span class="annot"><span class="annottext">showInfo :: Char -&gt; String
+</span><a href="#local-6989586621679339937"><span class="hs-identifier hs-var hs-var hs-var hs-var">showInfo</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Char -&gt; String
+forall a. Show a =&gt; a -&gt; String
+</span><span class="hs-identifier hs-var">show</span></span><span>
+</span><span id="line-84"></span><span>    </span><span id="local-6989586621679339936"><span class="annot"><span class="annottext">showListTitle :: String -&gt; Title
+</span><a href="#local-6989586621679339936"><span class="hs-identifier hs-var hs-var hs-var hs-var">showListTitle</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Title -&gt; String -&gt; Title
+forall a b. a -&gt; b -&gt; a
+</span><span class="hs-identifier hs-var">const</span></span><span> </span><span class="annot"><span class="annottext">Title
+</span><span class="hs-string">&quot;String&quot;</span></span><span>
+</span><span id="line-85"></span><span>    </span><span id="local-6989586621679339935"><span class="annot"><span class="annottext">showListInfo :: ShowS
+</span><a href="#local-6989586621679339935"><span class="hs-identifier hs-var hs-var hs-var hs-var">showListInfo</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">ShowS
+forall a. a -&gt; a
+</span><span class="hs-identifier hs-var">id</span></span><span>
+</span><span id="line-86"></span><span>
+</span><span id="line-87"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679339927"><span id="local-6989586621679339930"><span class="annot"><a href="ShowInfo.html#ShowInfo"><span class="hs-identifier hs-type">ShowInfo</span></a></span><span> </span><span class="annot"><a href="TuringMachine.html#TuringMachine"><span class="hs-identifier hs-type">TuringMachine</span></a></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-88"></span><span>    </span><span id="local-6989586621679339926"><span class="annot"><span class="annottext">showTitle :: TuringMachine -&gt; Title
+</span><a href="#local-6989586621679339926"><span class="hs-identifier hs-var hs-var hs-var hs-var">showTitle</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Title -&gt; TuringMachine -&gt; Title
+forall a b. a -&gt; b -&gt; a
+</span><span class="hs-identifier hs-var">const</span></span><span> </span><span class="annot"><span class="annottext">Title
+</span><span class="hs-string">&quot;Turing Machine&quot;</span></span><span>
+</span><span id="line-89"></span><span>    </span><span id="local-6989586621679339925"><span class="annot"><span class="annottext">showInfo :: TuringMachine -&gt; String
+</span><a href="#local-6989586621679339925"><span class="hs-identifier hs-var hs-var hs-var hs-var">showInfo</span></a></span></span><span> </span><span id="local-6989586621679339924"><span class="annot"><span class="annottext">TuringMachine
+</span><a href="#local-6989586621679339924"><span class="hs-identifier hs-var">tm</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">ShowS -&gt; [String] -&gt; String
+forall (t :: * -&gt; *) a b. Foldable t =&gt; (a -&gt; [b]) -&gt; t a -&gt; [b]
+</span><span class="hs-identifier hs-var">concatMap</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;\n&quot;</span></span><span class="hs-special">)</span><span> </span><span class="hs-special">[</span><span>
+</span><span id="line-90"></span><span>        </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;states: &quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">Int -&gt; String
+forall a. Show a =&gt; a -&gt; String
+</span><span class="hs-identifier hs-var">show</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">TuringMachine
+</span><a href="#local-6989586621679339924"><span class="hs-identifier hs-var">tm</span></a></span><span class="annot"><span class="annottext">TuringMachine -&gt; Getting Int TuringMachine Int -&gt; Int
+forall s a. s -&gt; Getting a s a -&gt; a
+</span><span class="hs-operator hs-var">^.</span></span><span class="annot"><span class="annottext">(Set State -&gt; Const Int (Set State))
+-&gt; TuringMachine -&gt; Const Int TuringMachine
+TMGetter (Set State)
+</span><a href="TuringMachine.html#allStates"><span class="hs-identifier hs-var">allStates</span></a></span><span class="annot"><span class="annottext">((Set State -&gt; Const Int (Set State))
+ -&gt; TuringMachine -&gt; Const Int TuringMachine)
+-&gt; ((Int -&gt; Const Int Int) -&gt; Set State -&gt; Const Int (Set State))
+-&gt; Getting Int TuringMachine Int
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span class="annot"><span class="annottext">(Set State -&gt; Int)
+-&gt; (Int -&gt; Const Int Int) -&gt; Set State -&gt; Const Int (Set State)
+forall (p :: * -&gt; * -&gt; *) (f :: * -&gt; *) s a.
+(Profunctor p, Contravariant f) =&gt;
+(s -&gt; a) -&gt; Optic' p f s a
+</span><span class="hs-identifier hs-var">to</span></span><span class="hs-special">(</span><span class="annot"><span class="annottext">Set State -&gt; Int
+forall c. Sizable c =&gt; c -&gt; Int
+</span><a href="Containers.html#size"><span class="hs-identifier hs-var">size</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><span id="line-91"></span><span>        </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;symbols: &quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">Int -&gt; String
+forall a. Show a =&gt; a -&gt; String
+</span><span class="hs-identifier hs-var">show</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">TuringMachine
+</span><a href="#local-6989586621679339924"><span class="hs-identifier hs-var">tm</span></a></span><span class="annot"><span class="annottext">TuringMachine -&gt; Getting Int TuringMachine Int -&gt; Int
+forall s a. s -&gt; Getting a s a -&gt; a
+</span><span class="hs-operator hs-var">^.</span></span><span class="annot"><span class="annottext">(Set Symbol -&gt; Const Int (Set Symbol))
+-&gt; TuringMachine -&gt; Const Int TuringMachine
+TMGetter (Set Symbol)
+</span><a href="TuringMachine.html#allSymbols"><span class="hs-identifier hs-var">allSymbols</span></a></span><span class="annot"><span class="annottext">((Set Symbol -&gt; Const Int (Set Symbol))
+ -&gt; TuringMachine -&gt; Const Int TuringMachine)
+-&gt; ((Int -&gt; Const Int Int) -&gt; Set Symbol -&gt; Const Int (Set Symbol))
+-&gt; Getting Int TuringMachine Int
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span class="annot"><span class="annottext">(Set Symbol -&gt; Int)
+-&gt; (Int -&gt; Const Int Int) -&gt; Set Symbol -&gt; Const Int (Set Symbol)
+forall (p :: * -&gt; * -&gt; *) (f :: * -&gt; *) s a.
+(Profunctor p, Contravariant f) =&gt;
+(s -&gt; a) -&gt; Optic' p f s a
+</span><span class="hs-identifier hs-var">to</span></span><span class="hs-special">(</span><span class="annot"><span class="annottext">Set Symbol -&gt; Int
+forall c. Sizable c =&gt; c -&gt; Int
+</span><a href="Containers.html#size"><span class="hs-identifier hs-var">size</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span>
+</span><span id="line-92"></span><span>            </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot; (&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; [String] -&gt; String
+forall a. [a] -&gt; [[a]] -&gt; [a]
+</span><span class="hs-identifier hs-var">intercalate</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;, &quot;</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Set String -&gt; [String]
+forall c v. Listable c v =&gt; c -&gt; [v]
+</span><a href="Containers.html#toList"><span class="hs-identifier hs-var">toList</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">TuringMachine
+</span><a href="#local-6989586621679339924"><span class="hs-identifier hs-var">tm</span></a></span><span class="annot"><span class="annottext">TuringMachine
+-&gt; Getting (Set String) TuringMachine (Set String) -&gt; Set String
+forall s a. s -&gt; Getting a s a -&gt; a
+</span><span class="hs-operator hs-var">^.</span></span><span class="annot"><span class="annottext">Getting (Set String) TuringMachine (Set String)
+TMGetter (Set String)
+</span><a href="TuringMachine.html#strSymbols"><span class="hs-identifier hs-var">strSymbols</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;)&quot;</span></span><span class="hs-special">,</span><span>
+</span><span id="line-93"></span><span>        </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;quadruples: &quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">Int -&gt; String
+forall a. Show a =&gt; a -&gt; String
+</span><span class="hs-identifier hs-var">show</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">TuringMachine
+</span><a href="#local-6989586621679339924"><span class="hs-identifier hs-var">tm</span></a></span><span class="annot"><span class="annottext">TuringMachine -&gt; Getting Int TuringMachine Int -&gt; Int
+forall s a. s -&gt; Getting a s a -&gt; a
+</span><span class="hs-operator hs-var">^.</span></span><span class="annot"><span class="annottext">(Quadruples -&gt; Const Int Quadruples)
+-&gt; TuringMachine -&gt; Const Int TuringMachine
+Lens' TuringMachine Quadruples
+</span><a href="TuringMachine.html#quadruples"><span class="hs-identifier hs-var">quadruples</span></a></span><span class="annot"><span class="annottext">((Quadruples -&gt; Const Int Quadruples)
+ -&gt; TuringMachine -&gt; Const Int TuringMachine)
+-&gt; ((Int -&gt; Const Int Int) -&gt; Quadruples -&gt; Const Int Quadruples)
+-&gt; Getting Int TuringMachine Int
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span class="annot"><span class="annottext">(Quadruples -&gt; Int)
+-&gt; (Int -&gt; Const Int Int) -&gt; Quadruples -&gt; Const Int Quadruples
+forall (p :: * -&gt; * -&gt; *) (f :: * -&gt; *) s a.
+(Profunctor p, Contravariant f) =&gt;
+(s -&gt; a) -&gt; Optic' p f s a
+</span><span class="hs-identifier hs-var">to</span></span><span class="hs-special">(</span><span class="annot"><span class="annottext">Quadruples -&gt; Int
+forall c. Sizable c =&gt; c -&gt; Int
+</span><a href="Containers.html#size"><span class="hs-identifier hs-var">size</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><span id="line-94"></span><span>      </span><span class="hs-special">]</span><span>
+</span><span id="line-95"></span><span>    </span><span id="local-6989586621679339914"><span class="annot"><span class="annottext">showListTitle :: [TuringMachine] -&gt; Title
+</span><a href="#local-6989586621679339914"><span class="hs-identifier hs-var hs-var hs-var hs-var">showListTitle</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Title -&gt; [TuringMachine] -&gt; Title
+forall a b. a -&gt; b -&gt; a
+</span><span class="hs-identifier hs-var">const</span></span><span> </span><span class="annot"><span class="annottext">Title
+</span><span class="hs-string">&quot;List of Turing Machines&quot;</span></span><span>
+</span><span id="line-96"></span><span>
+</span><span id="line-97"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679339907"><span id="local-6989586621679339910"><span class="annot"><a href="ShowInfo.html#ShowInfo"><span class="hs-identifier hs-type">ShowInfo</span></a></span><span> </span><span class="annot"><a href="SemigroupPresentation.html#SemigroupPresentation"><span class="hs-identifier hs-type">SemigroupPresentation</span></a></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-98"></span><span>    </span><span id="local-6989586621679339906"><span class="annot"><span class="annottext">showTitle :: SemigroupPresentation -&gt; Title
+</span><a href="#local-6989586621679339906"><span class="hs-identifier hs-var hs-var hs-var hs-var">showTitle</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Title -&gt; SemigroupPresentation -&gt; Title
+forall a b. a -&gt; b -&gt; a
+</span><span class="hs-identifier hs-var">const</span></span><span> </span><span class="annot"><span class="annottext">Title
+</span><span class="hs-string">&quot;Semigroup Presentation&quot;</span></span><span>
+</span><span id="line-99"></span><span>    </span><span id="local-6989586621679339905"><span class="annot"><span class="annottext">showInfo :: SemigroupPresentation -&gt; String
+</span><a href="#local-6989586621679339905"><span class="hs-identifier hs-var hs-var hs-var hs-var">showInfo</span></a></span></span><span> </span><span id="local-6989586621679339904"><span class="annot"><span class="annottext">SemigroupPresentation
+</span><a href="#local-6989586621679339904"><span class="hs-identifier hs-var">sp</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">ShowS -&gt; [String] -&gt; String
+forall (t :: * -&gt; *) a b. Foldable t =&gt; (a -&gt; [b]) -&gt; t a -&gt; [b]
+</span><span class="hs-identifier hs-var">concatMap</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;\n&quot;</span></span><span class="hs-special">)</span><span> </span><span class="hs-special">[</span><span>
+</span><span id="line-100"></span><span>        </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;generators: &quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">Int -&gt; String
+forall a. Show a =&gt; a -&gt; String
+</span><span class="hs-identifier hs-var">show</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">SemigroupPresentation
+</span><a href="#local-6989586621679339904"><span class="hs-identifier hs-var">sp</span></a></span><span class="annot"><span class="annottext">SemigroupPresentation
+-&gt; Getting Int SemigroupPresentation Int -&gt; Int
+forall s a. s -&gt; Getting a s a -&gt; a
+</span><span class="hs-operator hs-var">^.</span></span><span class="annot"><span class="annottext">(Set Generator -&gt; Const Int (Set Generator))
+-&gt; SemigroupPresentation -&gt; Const Int SemigroupPresentation
+SPGetter (Set Generator)
+</span><a href="SemigroupPresentation.html#allGenerators"><span class="hs-identifier hs-var">SP.allGenerators</span></a></span><span class="annot"><span class="annottext">((Set Generator -&gt; Const Int (Set Generator))
+ -&gt; SemigroupPresentation -&gt; Const Int SemigroupPresentation)
+-&gt; ((Int -&gt; Const Int Int)
+    -&gt; Set Generator -&gt; Const Int (Set Generator))
+-&gt; Getting Int SemigroupPresentation Int
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span class="annot"><span class="annottext">(Set Generator -&gt; Int)
+-&gt; (Int -&gt; Const Int Int)
+-&gt; Set Generator
+-&gt; Const Int (Set Generator)
+forall (p :: * -&gt; * -&gt; *) (f :: * -&gt; *) s a.
+(Profunctor p, Contravariant f) =&gt;
+(s -&gt; a) -&gt; Optic' p f s a
+</span><span class="hs-identifier hs-var">to</span></span><span class="hs-special">(</span><span class="annot"><span class="annottext">Set Generator -&gt; Int
+forall c. Sizable c =&gt; c -&gt; Int
+</span><a href="Containers.html#size"><span class="hs-identifier hs-var">size</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><span id="line-101"></span><span>        </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;relations: &quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">Int -&gt; String
+forall a. Show a =&gt; a -&gt; String
+</span><span class="hs-identifier hs-var">show</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">SemigroupPresentation
+</span><a href="#local-6989586621679339904"><span class="hs-identifier hs-var">sp</span></a></span><span class="annot"><span class="annottext">SemigroupPresentation
+-&gt; Getting Int SemigroupPresentation Int -&gt; Int
+forall s a. s -&gt; Getting a s a -&gt; a
+</span><span class="hs-operator hs-var">^.</span></span><span class="annot"><span class="annottext">(Relations -&gt; Const Int Relations)
+-&gt; SemigroupPresentation -&gt; Const Int SemigroupPresentation
+Lens' SemigroupPresentation Relations
+</span><a href="SemigroupPresentation.html#relations"><span class="hs-identifier hs-var">SP.relations</span></a></span><span class="annot"><span class="annottext">((Relations -&gt; Const Int Relations)
+ -&gt; SemigroupPresentation -&gt; Const Int SemigroupPresentation)
+-&gt; ((Int -&gt; Const Int Int) -&gt; Relations -&gt; Const Int Relations)
+-&gt; Getting Int SemigroupPresentation Int
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span class="annot"><span class="annottext">(Relations -&gt; Int)
+-&gt; (Int -&gt; Const Int Int) -&gt; Relations -&gt; Const Int Relations
+forall (p :: * -&gt; * -&gt; *) (f :: * -&gt; *) s a.
+(Profunctor p, Contravariant f) =&gt;
+(s -&gt; a) -&gt; Optic' p f s a
+</span><span class="hs-identifier hs-var">to</span></span><span class="hs-special">(</span><span class="annot"><span class="annottext">Relations -&gt; Int
+forall c. Sizable c =&gt; c -&gt; Int
+</span><a href="Containers.html#size"><span class="hs-identifier hs-var">size</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><span id="line-102"></span><span>      </span><span class="hs-special">]</span><span>
+</span><span id="line-103"></span><span>    </span><span id="local-6989586621679339901"><span class="annot"><span class="annottext">showListTitle :: [SemigroupPresentation] -&gt; Title
+</span><a href="#local-6989586621679339901"><span class="hs-identifier hs-var hs-var hs-var hs-var">showListTitle</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Title -&gt; [SemigroupPresentation] -&gt; Title
+forall a b. a -&gt; b -&gt; a
+</span><span class="hs-identifier hs-var">const</span></span><span> </span><span class="annot"><span class="annottext">Title
+</span><span class="hs-string">&quot;List of Semigroup Presentations&quot;</span></span><span>
+</span><span id="line-104"></span><span>
+</span><span id="line-105"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679339894"><span id="local-6989586621679339897"><span class="annot"><a href="ShowInfo.html#ShowInfo"><span class="hs-identifier hs-type">ShowInfo</span></a></span><span> </span><span class="annot"><a href="GroupPresentation.html#GroupPresentation"><span class="hs-identifier hs-type">GroupPresentation</span></a></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-106"></span><span>    </span><span id="local-6989586621679339893"><span class="annot"><span class="annottext">showTitle :: GroupPresentation -&gt; Title
+</span><a href="#local-6989586621679339893"><span class="hs-identifier hs-var hs-var hs-var hs-var">showTitle</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Title -&gt; GroupPresentation -&gt; Title
+forall a b. a -&gt; b -&gt; a
+</span><span class="hs-identifier hs-var">const</span></span><span> </span><span class="annot"><span class="annottext">Title
+</span><span class="hs-string">&quot;Group Presentation&quot;</span></span><span>
+</span><span id="line-107"></span><span>    </span><span id="local-6989586621679339892"><span class="annot"><span class="annottext">showInfo :: GroupPresentation -&gt; String
+</span><a href="#local-6989586621679339892"><span class="hs-identifier hs-var hs-var hs-var hs-var">showInfo</span></a></span></span><span> </span><span id="local-6989586621679339891"><span class="annot"><span class="annottext">GroupPresentation
+</span><a href="#local-6989586621679339891"><span class="hs-identifier hs-var">gp</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">ShowS -&gt; [String] -&gt; String
+forall (t :: * -&gt; *) a b. Foldable t =&gt; (a -&gt; [b]) -&gt; t a -&gt; [b]
+</span><span class="hs-identifier hs-var">concatMap</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;\n&quot;</span></span><span class="hs-special">)</span><span> </span><span class="hs-special">[</span><span>
+</span><span id="line-108"></span><span>        </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;generators: &quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">Int -&gt; String
+forall a. Show a =&gt; a -&gt; String
+</span><span class="hs-identifier hs-var">show</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">GroupPresentation
+</span><a href="#local-6989586621679339891"><span class="hs-identifier hs-var">gp</span></a></span><span class="annot"><span class="annottext">GroupPresentation -&gt; Getting Int GroupPresentation Int -&gt; Int
+forall s a. s -&gt; Getting a s a -&gt; a
+</span><span class="hs-operator hs-var">^.</span></span><span class="annot"><span class="annottext">(Set Generator -&gt; Const Int (Set Generator))
+-&gt; GroupPresentation -&gt; Const Int GroupPresentation
+GPGetter (Set Generator)
+</span><a href="GroupPresentation.html#allGenerators"><span class="hs-identifier hs-var">GP.allGenerators</span></a></span><span class="annot"><span class="annottext">((Set Generator -&gt; Const Int (Set Generator))
+ -&gt; GroupPresentation -&gt; Const Int GroupPresentation)
+-&gt; ((Int -&gt; Const Int Int)
+    -&gt; Set Generator -&gt; Const Int (Set Generator))
+-&gt; Getting Int GroupPresentation Int
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span class="annot"><span class="annottext">(Set Generator -&gt; Int)
+-&gt; (Int -&gt; Const Int Int)
+-&gt; Set Generator
+-&gt; Const Int (Set Generator)
+forall (p :: * -&gt; * -&gt; *) (f :: * -&gt; *) s a.
+(Profunctor p, Contravariant f) =&gt;
+(s -&gt; a) -&gt; Optic' p f s a
+</span><span class="hs-identifier hs-var">to</span></span><span class="hs-special">(</span><span class="annot"><span class="annottext">Set Generator -&gt; Int
+forall c. Sizable c =&gt; c -&gt; Int
+</span><a href="Containers.html#size"><span class="hs-identifier hs-var">size</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><span id="line-109"></span><span>        </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;relations: &quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">Int -&gt; String
+forall a. Show a =&gt; a -&gt; String
+</span><span class="hs-identifier hs-var">show</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">GroupPresentation
+</span><a href="#local-6989586621679339891"><span class="hs-identifier hs-var">gp</span></a></span><span class="annot"><span class="annottext">GroupPresentation -&gt; Getting Int GroupPresentation Int -&gt; Int
+forall s a. s -&gt; Getting a s a -&gt; a
+</span><span class="hs-operator hs-var">^.</span></span><span class="annot"><span class="annottext">(Relations -&gt; Const Int Relations)
+-&gt; GroupPresentation -&gt; Const Int GroupPresentation
+Lens' GroupPresentation Relations
+</span><a href="GroupPresentation.html#relations"><span class="hs-identifier hs-var">GP.relations</span></a></span><span class="annot"><span class="annottext">((Relations -&gt; Const Int Relations)
+ -&gt; GroupPresentation -&gt; Const Int GroupPresentation)
+-&gt; ((Int -&gt; Const Int Int) -&gt; Relations -&gt; Const Int Relations)
+-&gt; Getting Int GroupPresentation Int
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span class="annot"><span class="annottext">(Relations -&gt; Int)
+-&gt; (Int -&gt; Const Int Int) -&gt; Relations -&gt; Const Int Relations
+forall (p :: * -&gt; * -&gt; *) (f :: * -&gt; *) s a.
+(Profunctor p, Contravariant f) =&gt;
+(s -&gt; a) -&gt; Optic' p f s a
+</span><span class="hs-identifier hs-var">to</span></span><span class="hs-special">(</span><span class="annot"><span class="annottext">Relations -&gt; Int
+forall c. Sizable c =&gt; c -&gt; Int
+</span><a href="Containers.html#size"><span class="hs-identifier hs-var">size</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><span id="line-110"></span><span>      </span><span class="hs-special">]</span><span>
+</span><span id="line-111"></span><span>    </span><span id="local-6989586621679339888"><span class="annot"><span class="annottext">showListTitle :: [GroupPresentation] -&gt; Title
+</span><a href="#local-6989586621679339888"><span class="hs-identifier hs-var hs-var hs-var hs-var">showListTitle</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Title -&gt; [GroupPresentation] -&gt; Title
+forall a b. a -&gt; b -&gt; a
+</span><span class="hs-identifier hs-var">const</span></span><span> </span><span class="annot"><span class="annottext">Title
+</span><span class="hs-string">&quot;List of Group Presentations&quot;</span></span><span>
+</span><span id="line-112"></span><span>
+</span><span id="line-113"></span><span id="local-6989586621679339887"><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679339880"><span id="local-6989586621679339882"><span class="annot"><a href="ShowInfo.html#ShowInfo"><span class="hs-identifier hs-type">ShowInfo</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679339887"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><a href="ShowInfo.html#ShowInfo"><span class="hs-identifier hs-type">ShowInfo</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="ShowInfo.html#WithTitle"><span class="hs-identifier hs-type">WithTitle</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679339887"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">)</span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-114"></span><span>    </span><span id="local-6989586621679339879"><span class="annot"><span class="annottext">showTitle :: WithTitle a -&gt; Title
+</span><a href="#local-6989586621679339879"><span class="hs-identifier hs-var hs-var hs-var hs-var">showTitle</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="ShowInfo.html#WT"><span class="hs-identifier hs-type">WT</span></a></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679339878"><span class="annot"><span class="annottext">Title
+</span><a href="#local-6989586621679339878"><span class="hs-identifier hs-var">t</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">a
+</span><span class="hs-identifier">_</span></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Title
+</span><a href="#local-6989586621679339878"><span class="hs-identifier hs-var">t</span></a></span><span>
+</span><span id="line-115"></span><span>    </span><span id="local-6989586621679339877"><span class="annot"><span class="annottext">showInfo :: WithTitle a -&gt; String
+</span><a href="#local-6989586621679339877"><span class="hs-identifier hs-var hs-var hs-var hs-var">showInfo</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="ShowInfo.html#WT"><span class="hs-identifier hs-type">WT</span></a></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679339876"><span class="annot"><span class="annottext">Title
+</span><a href="#local-6989586621679339876"><span class="hs-identifier hs-var">t</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679339875"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679339875"><span class="hs-identifier hs-var">a</span></a></span></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Title -&gt; ShowS
+</span><a href="ShowInfo.html#addTitleWithNewLine"><span class="hs-identifier hs-var">addTitleWithNewLine</span></a></span><span> </span><span class="annot"><span class="annottext">Title
+</span><a href="#local-6989586621679339876"><span class="hs-identifier hs-var">t</span></a></span><span> </span><span class="annot"><span class="annottext">ShowS -&gt; ShowS
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">a -&gt; String
+forall a. ShowInfo a =&gt; a -&gt; String
+</span><a href="ShowInfo.html#showInfo"><span class="hs-identifier hs-var">showInfo</span></a></span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679339875"><span class="hs-identifier hs-var">a</span></a></span><span>
+</span><span id="line-116"></span><span>    </span><span id="local-6989586621679339874"><span class="annot"><span class="annottext">showTitleAndInfo :: WithTitle a -&gt; String
+</span><a href="#local-6989586621679339874"><span class="hs-identifier hs-var hs-var hs-var hs-var">showTitleAndInfo</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">WithTitle a -&gt; String
+forall a. ShowInfo a =&gt; a -&gt; String
+</span><a href="ShowInfo.html#showInfo"><span class="hs-identifier hs-var">showInfo</span></a></span></span><span>
+</span><span id="line-117"></span><span>
+</span><span id="line-118"></span><span id="local-6989586621679339873"><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679339865"><span id="local-6989586621679339867"><span id="local-6989586621679339869"><span class="annot"><a href="ShowInfo.html#ShowInfo"><span class="hs-identifier hs-type">ShowInfo</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679339873"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><a href="ShowInfo.html#ShowInfo"><span class="hs-identifier hs-type">ShowInfo</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><a href="#local-6989586621679339873"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">]</span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-119"></span><span>    </span><span id="local-6989586621679339864"><span class="annot"><span class="annottext">showTitle :: [a] -&gt; Title
+</span><a href="#local-6989586621679339864"><span class="hs-identifier hs-var hs-var hs-var hs-var">showTitle</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[a] -&gt; Title
+forall a. ShowInfo a =&gt; [a] -&gt; Title
+</span><a href="ShowInfo.html#showListTitle"><span class="hs-identifier hs-var">showListTitle</span></a></span><span>
+</span><span id="line-120"></span><span>    </span><span id="local-6989586621679339863"><span class="annot"><span class="annottext">showInfo :: [a] -&gt; String
+</span><a href="#local-6989586621679339863"><span class="hs-identifier hs-var hs-var hs-var hs-var">showInfo</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[a] -&gt; String
+forall a. ShowInfo a =&gt; [a] -&gt; String
+</span><a href="ShowInfo.html#showListInfo"><span class="hs-identifier hs-var">showListInfo</span></a></span></span><span>
+</span><span id="line-121"></span><span>
+</span><span id="line-122"></span><span id="local-6989586621679339861"><span id="local-6989586621679339862"><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679339854"><span id="local-6989586621679339857"><span class="hs-special">(</span><span class="annot"><a href="ShowInfo.html#ShowInfo"><span class="hs-identifier hs-type">ShowInfo</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679339862"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="ShowInfo.html#ShowInfo"><span class="hs-identifier hs-type">ShowInfo</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679339861"><span class="hs-identifier hs-type">b</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><a href="ShowInfo.html#ShowInfo"><span class="hs-identifier hs-type">ShowInfo</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="#local-6989586621679339862"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="#local-6989586621679339861"><span class="hs-identifier hs-type">b</span></a></span><span class="hs-special">)</span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-123"></span><span>    </span><span id="local-6989586621679339853"><span class="annot"><span class="annottext">showTitle :: (a, b) -&gt; Title
+</span><a href="#local-6989586621679339853"><span class="hs-identifier hs-var hs-var hs-var hs-var">showTitle</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Title -&gt; (a, b) -&gt; Title
+forall a b. a -&gt; b -&gt; a
+</span><span class="hs-identifier hs-var">const</span></span><span> </span><span class="annot"><span class="annottext">Title
+</span><span class="hs-string">&quot;Pair&quot;</span></span><span>
+</span><span id="line-124"></span><span>    </span><span id="local-6989586621679339852"><span class="annot"><span class="annottext">showInfo :: (a, b) -&gt; String
+</span><a href="#local-6989586621679339852"><span class="hs-identifier hs-var hs-var hs-var hs-var">showInfo</span></a></span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679339851"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679339851"><span class="hs-identifier hs-var">a</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679339850"><span class="annot"><span class="annottext">b
+</span><a href="#local-6989586621679339850"><span class="hs-identifier hs-var">b</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">a -&gt; String
+forall a. ShowInfo a =&gt; a -&gt; String
+</span><a href="ShowInfo.html#showTitleAndInfo"><span class="hs-identifier hs-var">showTitleAndInfo</span></a></span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679339851"><span class="hs-identifier hs-var">a</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">b -&gt; String
+forall a. ShowInfo a =&gt; a -&gt; String
+</span><a href="ShowInfo.html#showTitleAndInfo"><span class="hs-identifier hs-var">showTitleAndInfo</span></a></span><span> </span><span class="annot"><span class="annottext">b
+</span><a href="#local-6989586621679339850"><span class="hs-identifier hs-var">b</span></a></span><span>
+</span><span id="line-125"></span><span>    </span><span id="local-6989586621679339849"><span class="annot"><span class="annottext">showListTitle :: [(a, b)] -&gt; Title
+</span><a href="#local-6989586621679339849"><span class="hs-identifier hs-var hs-var hs-var hs-var">showListTitle</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Title -&gt; [(a, b)] -&gt; Title
+forall a b. a -&gt; b -&gt; a
+</span><span class="hs-identifier hs-var">const</span></span><span> </span><span class="annot"><span class="annottext">Title
+</span><span class="hs-string">&quot;List of Pairs&quot;</span></span></span></span><span>
+</span><span id="line-126"></span><span>
+</span><span id="line-127"></span><span id="local-6989586621679339846"><span id="local-6989586621679339847"><span id="local-6989586621679339848"><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679339839"><span id="local-6989586621679339842"><span class="hs-special">(</span><span class="annot"><a href="ShowInfo.html#ShowInfo"><span class="hs-identifier hs-type">ShowInfo</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679339848"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="ShowInfo.html#ShowInfo"><span class="hs-identifier hs-type">ShowInfo</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679339847"><span class="hs-identifier hs-type">b</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="ShowInfo.html#ShowInfo"><span class="hs-identifier hs-type">ShowInfo</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679339846"><span class="hs-identifier hs-type">c</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><a href="ShowInfo.html#ShowInfo"><span class="hs-identifier hs-type">ShowInfo</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="#local-6989586621679339848"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="#local-6989586621679339847"><span class="hs-identifier hs-type">b</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="#local-6989586621679339846"><span class="hs-identifier hs-type">c</span></a></span><span class="hs-special">)</span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-128"></span><span>    </span><span id="local-6989586621679339838"><span class="annot"><span class="annottext">showTitle :: (a, b, c) -&gt; Title
+</span><a href="#local-6989586621679339838"><span class="hs-identifier hs-var hs-var hs-var hs-var">showTitle</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Title -&gt; (a, b, c) -&gt; Title
+forall a b. a -&gt; b -&gt; a
+</span><span class="hs-identifier hs-var">const</span></span><span> </span><span class="annot"><span class="annottext">Title
+</span><span class="hs-string">&quot;Triple&quot;</span></span><span>
+</span><span id="line-129"></span><span>    </span><span id="local-6989586621679339837"><span class="annot"><span class="annottext">showInfo :: (a, b, c) -&gt; String
+</span><a href="#local-6989586621679339837"><span class="hs-identifier hs-var hs-var hs-var hs-var">showInfo</span></a></span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679339836"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679339836"><span class="hs-identifier hs-var">a</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679339835"><span class="annot"><span class="annottext">b
+</span><a href="#local-6989586621679339835"><span class="hs-identifier hs-var">b</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679339834"><span class="annot"><span class="annottext">c
+</span><a href="#local-6989586621679339834"><span class="hs-identifier hs-var">c</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-130"></span><span>        </span><span class="annot"><span class="annottext">a -&gt; String
+forall a. ShowInfo a =&gt; a -&gt; String
+</span><a href="ShowInfo.html#showTitleAndInfo"><span class="hs-identifier hs-var">showTitleAndInfo</span></a></span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679339836"><span class="hs-identifier hs-var">a</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">b -&gt; String
+forall a. ShowInfo a =&gt; a -&gt; String
+</span><a href="ShowInfo.html#showTitleAndInfo"><span class="hs-identifier hs-var">showTitleAndInfo</span></a></span><span> </span><span class="annot"><span class="annottext">b
+</span><a href="#local-6989586621679339835"><span class="hs-identifier hs-var">b</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">c -&gt; String
+forall a. ShowInfo a =&gt; a -&gt; String
+</span><a href="ShowInfo.html#showTitleAndInfo"><span class="hs-identifier hs-var">showTitleAndInfo</span></a></span><span> </span><span class="annot"><span class="annottext">c
+</span><a href="#local-6989586621679339834"><span class="hs-identifier hs-var">c</span></a></span><span>
+</span><span id="line-131"></span><span>    </span><span id="local-6989586621679339833"><span class="annot"><span class="annottext">showListTitle :: [(a, b, c)] -&gt; Title
+</span><a href="#local-6989586621679339833"><span class="hs-identifier hs-var hs-var hs-var hs-var">showListTitle</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Title -&gt; [(a, b, c)] -&gt; Title
+forall a b. a -&gt; b -&gt; a
+</span><span class="hs-identifier hs-var">const</span></span><span> </span><span class="annot"><span class="annottext">Title
+</span><span class="hs-string">&quot;List of Triples&quot;</span></span></span></span></span><span>
+</span><span id="line-132"></span><span>
+</span><span id="line-133"></span><span id="local-6989586621679339829"><span id="local-6989586621679339830"><span id="local-6989586621679339831"><span id="local-6989586621679339832"><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679339822"><span id="local-6989586621679339825"><span class="hs-special">(</span><span class="annot"><a href="ShowInfo.html#ShowInfo"><span class="hs-identifier hs-type">ShowInfo</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679339832"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="ShowInfo.html#ShowInfo"><span class="hs-identifier hs-type">ShowInfo</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679339831"><span class="hs-identifier hs-type">b</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="ShowInfo.html#ShowInfo"><span class="hs-identifier hs-type">ShowInfo</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679339830"><span class="hs-identifier hs-type">c</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="ShowInfo.html#ShowInfo"><span class="hs-identifier hs-type">ShowInfo</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679339829"><span class="hs-identifier hs-type">d</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=&gt;</span><span>
+</span><span id="line-134"></span><span>        </span><span class="annot"><a href="ShowInfo.html#ShowInfo"><span class="hs-identifier hs-type">ShowInfo</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="#local-6989586621679339832"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="#local-6989586621679339831"><span class="hs-identifier hs-type">b</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="#local-6989586621679339830"><span class="hs-identifier hs-type">c</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="#local-6989586621679339829"><span class="hs-identifier hs-type">d</span></a></span><span class="hs-special">)</span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-135"></span><span>    </span><span id="local-6989586621679339821"><span class="annot"><span class="annottext">showTitle :: (a, b, c, d) -&gt; Title
+</span><a href="#local-6989586621679339821"><span class="hs-identifier hs-var hs-var hs-var hs-var">showTitle</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Title -&gt; (a, b, c, d) -&gt; Title
+forall a b. a -&gt; b -&gt; a
+</span><span class="hs-identifier hs-var">const</span></span><span> </span><span class="annot"><span class="annottext">Title
+</span><span class="hs-string">&quot;Quadruple&quot;</span></span><span>
+</span><span id="line-136"></span><span>    </span><span id="local-6989586621679339820"><span class="annot"><span class="annottext">showInfo :: (a, b, c, d) -&gt; String
+</span><a href="#local-6989586621679339820"><span class="hs-identifier hs-var hs-var hs-var hs-var">showInfo</span></a></span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679339819"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679339819"><span class="hs-identifier hs-var">a</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679339818"><span class="annot"><span class="annottext">b
+</span><a href="#local-6989586621679339818"><span class="hs-identifier hs-var">b</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679339817"><span class="annot"><span class="annottext">c
+</span><a href="#local-6989586621679339817"><span class="hs-identifier hs-var">c</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679339816"><span class="annot"><span class="annottext">d
+</span><a href="#local-6989586621679339816"><span class="hs-identifier hs-var">d</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-137"></span><span>        </span><span class="annot"><span class="annottext">a -&gt; String
+forall a. ShowInfo a =&gt; a -&gt; String
+</span><a href="ShowInfo.html#showTitleAndInfo"><span class="hs-identifier hs-var">showTitleAndInfo</span></a></span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679339819"><span class="hs-identifier hs-var">a</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span>
+</span><span id="line-138"></span><span>        </span><span class="annot"><span class="annottext">b -&gt; String
+forall a. ShowInfo a =&gt; a -&gt; String
+</span><a href="ShowInfo.html#showTitleAndInfo"><span class="hs-identifier hs-var">showTitleAndInfo</span></a></span><span> </span><span class="annot"><span class="annottext">b
+</span><a href="#local-6989586621679339818"><span class="hs-identifier hs-var">b</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span>
+</span><span id="line-139"></span><span>        </span><span class="annot"><span class="annottext">c -&gt; String
+forall a. ShowInfo a =&gt; a -&gt; String
+</span><a href="ShowInfo.html#showTitleAndInfo"><span class="hs-identifier hs-var">showTitleAndInfo</span></a></span><span> </span><span class="annot"><span class="annottext">c
+</span><a href="#local-6989586621679339817"><span class="hs-identifier hs-var">c</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span>
+</span><span id="line-140"></span><span>        </span><span class="annot"><span class="annottext">d -&gt; String
+forall a. ShowInfo a =&gt; a -&gt; String
+</span><a href="ShowInfo.html#showTitleAndInfo"><span class="hs-identifier hs-var">showTitleAndInfo</span></a></span><span> </span><span class="annot"><span class="annottext">d
+</span><a href="#local-6989586621679339816"><span class="hs-identifier hs-var">d</span></a></span><span>
+</span><span id="line-141"></span><span>    </span><span id="local-6989586621679339815"><span class="annot"><span class="annottext">showListTitle :: [(a, b, c, d)] -&gt; Title
+</span><a href="#local-6989586621679339815"><span class="hs-identifier hs-var hs-var hs-var hs-var">showListTitle</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Title -&gt; [(a, b, c, d)] -&gt; Title
+forall a b. a -&gt; b -&gt; a
+</span><span class="hs-identifier hs-var">const</span></span><span> </span><span class="annot"><span class="annottext">Title
+</span><span class="hs-string">&quot;List of Quadruples&quot;</span></span></span></span></span></span><span>
+</span><span id="line-142"></span></pre></body></html>

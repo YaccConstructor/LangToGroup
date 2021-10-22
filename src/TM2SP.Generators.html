@@ -1,0 +1,162 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE RankNTypes, ScopedTypeVariables #-}</span><span>
+</span><span id="line-2"></span><span>
+</span><span id="line-3"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">TM2SP.Generators</span><span> </span><span class="hs-special">(</span><span>
+</span><span id="line-4"></span><span>    </span><span class="annot"><a href="TM2SP.Generators.html#Gens"><span class="hs-identifier">Gens</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-5"></span><span>    </span><span class="annot"><a href="TM2SP.Generators.html#simple"><span class="hs-identifier">simple</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-6"></span><span>    </span><span class="annot"><a href="TM2SP.Generators.html#from"><span class="hs-identifier">from</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-7"></span><span>    </span><span class="annot"><a href="TM2SP.Generators.html#gens"><span class="hs-identifier">gens</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-8"></span><span>  </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-9"></span><span>
+</span><span id="line-10"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TuringMachine.html"><span class="hs-identifier">TuringMachine</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">TM</span></span><span>
+</span><span id="line-11"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="SemigroupPresentation.html"><span class="hs-identifier">SemigroupPresentation</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">SP</span></span><span>
+</span><span id="line-12"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Format.html"><span class="hs-identifier">Format</span></a></span><span>
+</span><span id="line-13"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Containers.html"><span class="hs-identifier">Containers</span></a></span><span>
+</span><span id="line-14"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Lens.html"><span class="hs-identifier">Lens</span></a></span><span>
+</span><span id="line-15"></span><span>
+</span><span id="line-16"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Control.Monad.Reader</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">R</span></span><span>
+</span><span id="line-17"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Control.Monad.Trans</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">lift</span></span><span class="hs-special">)</span><span>
+</span><span id="line-18"></span><span>
+</span><span id="line-19"></span><span class="hs-keyword">type</span><span> </span><span id="Gens"><span class="annot"><a href="TM2SP.Generators.html#Gens"><span class="hs-identifier hs-var">Gens</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="TM2SP.Generators.html#Gen"><span class="hs-identifier hs-type">Gen</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-20"></span><span>
+</span><span id="line-21"></span><span class="hs-keyword">data</span><span> </span><span id="Gen"><span class="annot"><a href="TM2SP.Generators.html#Gen"><span class="hs-identifier hs-var">Gen</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-22"></span><span>      </span><span id="JustGens"><span class="annot"><a href="TM2SP.Generators.html#JustGens"><span class="hs-identifier hs-var">JustGens</span></a></span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-23"></span><span>    </span><span class="hs-glyph">|</span><span> </span><span id="GroupGens"><span class="annot"><a href="TM2SP.Generators.html#GroupGens"><span class="hs-identifier hs-var">GroupGens</span></a></span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="annot"><a href="TM2SP.Generators.html#StrGetter"><span class="hs-identifier hs-type">StrGetter</span></a></span><span>
+</span><span id="line-24"></span><span>
+</span><span id="line-25"></span><span class="hs-keyword">type</span><span> </span><span id="StrGetter"><span class="annot"><a href="TM2SP.Generators.html#StrGetter"><span class="hs-identifier hs-var">StrGetter</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><a href="TuringMachine.html#TMGetter"><span class="hs-identifier hs-type">TM.TMGetter</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Set</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span class="hs-special">)</span><span>
+</span><span id="line-26"></span><span>
+</span><span id="line-27"></span><span class="annot"><a href="TM2SP.Generators.html#simple"><span class="hs-identifier hs-type">simple</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TM2SP.Generators.html#Gen"><span class="hs-identifier hs-type">Gen</span></a></span><span>
+</span><span id="line-28"></span><span id="simple"><span class="annot"><span class="annottext">simple :: String -&gt; Gen
+</span><a href="TM2SP.Generators.html#simple"><span class="hs-identifier hs-var hs-var">simple</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; Gen
+</span><a href="TM2SP.Generators.html#JustGens"><span class="hs-identifier hs-var">JustGens</span></a></span><span>
+</span><span id="line-29"></span><span>
+</span><span id="line-30"></span><span class="annot"><a href="TM2SP.Generators.html#from"><span class="hs-identifier hs-type">from</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TM2SP.Generators.html#StrGetter"><span class="hs-identifier hs-type">StrGetter</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TM2SP.Generators.html#Gen"><span class="hs-identifier hs-type">Gen</span></a></span><span>
+</span><span id="line-31"></span><span id="from"><span class="annot"><span class="annottext">from :: String -&gt; StrGetter -&gt; Gen
+</span><a href="TM2SP.Generators.html#from"><span class="hs-identifier hs-var hs-var">from</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; StrGetter -&gt; Gen
+</span><a href="TM2SP.Generators.html#GroupGens"><span class="hs-identifier hs-var">GroupGens</span></a></span><span>
+</span><span id="line-32"></span><span>
+</span><span id="line-33"></span><span class="hs-keyword">type</span><span> </span><span id="LocalReader"><span class="annot"><a href="TM2SP.Generators.html#LocalReader"><span class="hs-identifier hs-var">LocalReader</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="hs-identifier hs-type">R.ReaderT</span></span><span> </span><span class="annot"><a href="TuringMachine.html#TuringMachine"><span class="hs-identifier hs-type">TM.TuringMachine</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span>
+</span><span id="line-34"></span><span>
+</span><span id="line-35"></span><span id="local-6989586621679339749"><span class="annot"><a href="TM2SP.Generators.html#gens"><span class="hs-identifier hs-type">gens</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">MonadFail</span></span><span> </span><span class="annot"><a href="#local-6989586621679339749"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><a href="TM2SP.Generators.html#Gens"><span class="hs-identifier hs-type">Gens</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TuringMachine.html#TuringMachine"><span class="hs-identifier hs-type">TM.TuringMachine</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679339749"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="annot"><a href="SemigroupPresentation.html#GeneratorsDescr"><span class="hs-identifier hs-type">SP.GeneratorsDescr</span></a></span></span><span>
+</span><span id="line-36"></span><span id="gens"><span class="annot"><span class="annottext">gens :: Gens -&gt; TuringMachine -&gt; m GeneratorsDescr
+</span><a href="TM2SP.Generators.html#gens"><span class="hs-identifier hs-var hs-var">gens</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">m GeneratorsDescr
+-&gt; (GeneratorsDescr -&gt; m GeneratorsDescr)
+-&gt; Maybe GeneratorsDescr
+-&gt; m GeneratorsDescr
+forall b a. b -&gt; (a -&gt; b) -&gt; Maybe a -&gt; b
+</span><span class="hs-identifier hs-var">maybe</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String -&gt; m GeneratorsDescr
+forall (m :: * -&gt; *) a. MonadFail m =&gt; String -&gt; m a
+</span><span class="hs-identifier hs-var">fail</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;Can't create generators&quot;</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">GeneratorsDescr -&gt; m GeneratorsDescr
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">(Maybe GeneratorsDescr -&gt; m GeneratorsDescr)
+-&gt; (TuringMachine -&gt; Maybe GeneratorsDescr)
+-&gt; TuringMachine
+-&gt; m GeneratorsDescr
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">((TuringMachine -&gt; Maybe GeneratorsDescr)
+ -&gt; TuringMachine -&gt; m GeneratorsDescr)
+-&gt; (Gens -&gt; TuringMachine -&gt; Maybe GeneratorsDescr)
+-&gt; Gens
+-&gt; TuringMachine
+-&gt; m GeneratorsDescr
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">ReaderT TuringMachine Maybe GeneratorsDescr
+-&gt; TuringMachine -&gt; Maybe GeneratorsDescr
+forall r (m :: * -&gt; *) a. ReaderT r m a -&gt; r -&gt; m a
+</span><span class="hs-identifier hs-var hs-var">R.runReaderT</span></span><span> </span><span class="annot"><span class="annottext">(ReaderT TuringMachine Maybe GeneratorsDescr
+ -&gt; TuringMachine -&gt; Maybe GeneratorsDescr)
+-&gt; (Gens -&gt; ReaderT TuringMachine Maybe GeneratorsDescr)
+-&gt; Gens
+-&gt; TuringMachine
+-&gt; Maybe GeneratorsDescr
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">Gens -&gt; ReaderT TuringMachine Maybe GeneratorsDescr
+</span><a href="TM2SP.Generators.html#gens_"><span class="hs-identifier hs-var">gens_</span></a></span><span>
+</span><span id="line-37"></span><span>
+</span><span id="line-38"></span><span class="annot"><a href="TM2SP.Generators.html#gens_"><span class="hs-identifier hs-type">gens_</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TM2SP.Generators.html#Gens"><span class="hs-identifier hs-type">Gens</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TM2SP.Generators.html#LocalReader"><span class="hs-identifier hs-type">LocalReader</span></a></span><span> </span><span class="annot"><a href="SemigroupPresentation.html#GeneratorsDescr"><span class="hs-identifier hs-type">SP.GeneratorsDescr</span></a></span><span>
+</span><span id="line-39"></span><span id="gens_"><span class="annot"><span class="annottext">gens_ :: Gens -&gt; ReaderT TuringMachine Maybe GeneratorsDescr
+</span><a href="TM2SP.Generators.html#gens_"><span class="hs-identifier hs-var hs-var">gens_</span></a></span></span><span> </span><span id="local-6989586621679339744"><span class="annot"><span class="annottext">Gens
+</span><a href="#local-6989586621679339744"><span class="hs-identifier hs-var">gs</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-40"></span><span>    </span><span id="local-6989586621679339743"><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679339743"><span class="hs-identifier hs-var">genNames</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">[[String]] -&gt; [String]
+forall (t :: * -&gt; *) a. Foldable t =&gt; t [a] -&gt; [a]
+</span><span class="hs-identifier hs-var">concat</span></span><span> </span><span class="annot"><span class="annottext">([[String]] -&gt; [String])
+-&gt; ReaderT TuringMachine Maybe [[String]]
+-&gt; ReaderT TuringMachine Maybe [String]
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">(Gen -&gt; ReaderT TuringMachine Maybe [String])
+-&gt; Gens -&gt; ReaderT TuringMachine Maybe [[String]]
+forall (t :: * -&gt; *) (f :: * -&gt; *) a b.
+(Traversable t, Applicative f) =&gt;
+(a -&gt; f b) -&gt; t a -&gt; f (t b)
+</span><span class="hs-identifier hs-var">traverse</span></span><span> </span><span class="annot"><span class="annottext">Gen -&gt; ReaderT TuringMachine Maybe [String]
+</span><a href="TM2SP.Generators.html#gen_"><span class="hs-identifier hs-var">gen_</span></a></span><span> </span><span class="annot"><span class="annottext">Gens
+</span><a href="#local-6989586621679339744"><span class="hs-identifier hs-var">gs</span></a></span><span>
+</span><span id="line-41"></span><span>    </span><span class="annot"><span class="annottext">[(Generator, String)]
+-&gt; ReaderT TuringMachine Maybe GeneratorsDescr
+forall c v (m :: * -&gt; *). (Listable c v, MonadFail m) =&gt; [v] -&gt; m c
+</span><a href="Containers.html#fromList_"><span class="hs-identifier hs-var">fromList_</span></a></span><span> </span><span class="annot"><span class="annottext">([(Generator, String)]
+ -&gt; ReaderT TuringMachine Maybe GeneratorsDescr)
+-&gt; [(Generator, String)]
+-&gt; ReaderT TuringMachine Maybe GeneratorsDescr
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">[Generator] -&gt; [String] -&gt; [(Generator, String)]
+forall a b. [a] -&gt; [b] -&gt; [(a, b)]
+</span><span class="hs-identifier hs-var">zip</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">Generator
+forall a. Bounded a =&gt; a
+</span><span class="hs-identifier hs-var">minBound</span></span><span class="hs-glyph">..</span><span class="hs-special">]</span><span> </span><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679339743"><span class="hs-identifier hs-var">genNames</span></a></span><span>
+</span><span id="line-42"></span><span>
+</span><span id="line-43"></span><span class="annot"><a href="TM2SP.Generators.html#gen_"><span class="hs-identifier hs-type">gen_</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TM2SP.Generators.html#Gen"><span class="hs-identifier hs-type">Gen</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TM2SP.Generators.html#LocalReader"><span class="hs-identifier hs-type">LocalReader</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span class="hs-special">]</span><span>
+</span><span id="line-44"></span><span id="gen_"><span class="annot"><span class="annottext">gen_ :: Gen -&gt; ReaderT TuringMachine Maybe [String]
+</span><a href="TM2SP.Generators.html#gen_"><span class="hs-identifier hs-var hs-var">gen_</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="TM2SP.Generators.html#JustGens"><span class="hs-identifier hs-type">JustGens</span></a></span><span> </span><span id="local-6989586621679339736"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679339736"><span class="hs-identifier hs-var">gs</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-45"></span><span>    </span><span class="annot"><span class="annottext">[String] -&gt; ReaderT TuringMachine Maybe [String]
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">([String] -&gt; ReaderT TuringMachine Maybe [String])
+-&gt; [String] -&gt; ReaderT TuringMachine Maybe [String]
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; [String]
+</span><span class="hs-identifier hs-var">words</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679339736"><span class="hs-identifier hs-var">gs</span></a></span><span>
+</span><span id="line-46"></span><span class="annot"><a href="TM2SP.Generators.html#gen_"><span class="hs-identifier hs-var">gen_</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="TM2SP.Generators.html#GroupGens"><span class="hs-identifier hs-type">GroupGens</span></a></span><span> </span><span id="local-6989586621679339734"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679339734"><span class="hs-identifier hs-var">str</span></a></span></span><span> </span><span id="local-6989586621679339733"><span class="annot"><span class="annottext">StrGetter
+</span><a href="#local-6989586621679339733"><span class="hs-identifier hs-var">strGetter</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-47"></span><span>    </span><span id="local-6989586621679339732"><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679339732"><span class="hs-identifier hs-var">stateNames</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Set String -&gt; [String]
+forall c v. Listable c v =&gt; c -&gt; [v]
+</span><a href="Containers.html#toList"><span class="hs-identifier hs-var">toList</span></a></span><span> </span><span class="annot"><span class="annottext">(Set String -&gt; [String])
+-&gt; ReaderT TuringMachine Maybe (Set String)
+-&gt; ReaderT TuringMachine Maybe [String]
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">Getting (Set String) TuringMachine (Set String)
+-&gt; ReaderT TuringMachine Maybe (Set String)
+forall s (m :: * -&gt; *) a. MonadReader s m =&gt; Getting a s a -&gt; m a
+</span><span class="hs-identifier hs-var">view</span></span><span> </span><span class="annot"><span class="annottext">Getting (Set String) TuringMachine (Set String)
+StrGetter
+</span><a href="#local-6989586621679339733"><span class="hs-identifier hs-var">strGetter</span></a></span><span>
+</span><span id="line-48"></span><span>    </span><span id="local-6989586621679339729"><span class="annot"><span class="annottext">SimpleFormat
+</span><a href="#local-6989586621679339729"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Format.html#SimpleFormat"><span class="hs-identifier hs-type">SimpleFormat</span></a></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Maybe SimpleFormat -&gt; ReaderT TuringMachine Maybe SimpleFormat
+forall (t :: (* -&gt; *) -&gt; * -&gt; *) (m :: * -&gt; *) a.
+(MonadTrans t, Monad m) =&gt;
+m a -&gt; t m a
+</span><span class="hs-identifier hs-var">lift</span></span><span> </span><span class="annot"><span class="annottext">(Maybe SimpleFormat -&gt; ReaderT TuringMachine Maybe SimpleFormat)
+-&gt; Maybe SimpleFormat -&gt; ReaderT TuringMachine Maybe SimpleFormat
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe SimpleFormat
+forall f (m :: * -&gt; *). (Format f, MonadFail m) =&gt; String -&gt; m f
+</span><a href="Format.html#format"><span class="hs-identifier hs-var">format</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679339734"><span class="hs-identifier hs-var">str</span></a></span><span>
+</span><span id="line-49"></span><span>    </span><span class="annot"><span class="annottext">[String] -&gt; ReaderT TuringMachine Maybe [String]
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">([String] -&gt; ReaderT TuringMachine Maybe [String])
+-&gt; [String] -&gt; ReaderT TuringMachine Maybe [String]
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">SimpleFormat -&gt; String -&gt; String
+forall f i. Apply f i =&gt; f -&gt; i -&gt; String
+</span><a href="Format.html#apply"><span class="hs-identifier hs-var">apply</span></a></span><span> </span><span class="annot"><span class="annottext">SimpleFormat
+</span><a href="#local-6989586621679339729"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">(String -&gt; String) -&gt; [String] -&gt; [String]
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679339732"><span class="hs-identifier hs-var">stateNames</span></a></span><span>
+</span><span id="line-50"></span></pre></body></html>

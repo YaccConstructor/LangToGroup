@@ -1,0 +1,1640 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE ScopedTypeVariables, ExistentialQuantification, RankNTypes, MultiParamTypeClasses, TypeSynonymInstances, FlexibleInstances, FlexibleContexts #-}</span><span>
+</span><span id="line-2"></span><span>
+</span><span id="line-3"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">SP2GP.Relations</span><span> </span><span class="hs-special">(</span><span>
+</span><span id="line-4"></span><span>    </span><span class="annot"><a href="SP2GP.Relations.html#Rels"><span class="hs-identifier">Rels</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-5"></span><span>    </span><span class="annot"><a href="SP2GP.Relations.html#%3D%3D%3D"><span class="hs-operator">(===)</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-6"></span><span>    </span><span class="annot"><a href="SP2GP.Relations.html#for%27"><span class="hs-identifier">for'</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-7"></span><span>    </span><span class="annot"><a href="SP2GP.Relations.html#in%27"><span class="hs-identifier">in'</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-8"></span><span>    </span><span class="annot"><a href="SP2GP.Relations.html#rels"><span class="hs-identifier">rels</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-9"></span><span>  </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-10"></span><span>
+</span><span id="line-11"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="SemigroupPresentation.html"><span class="hs-identifier">SemigroupPresentation</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">SP</span></span><span>
+</span><span id="line-12"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="GroupPresentation.html"><span class="hs-identifier">GroupPresentation</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">GP</span></span><span>
+</span><span id="line-13"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Format.html"><span class="hs-identifier">Format</span></a></span><span>
+</span><span id="line-14"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Containers.html"><span class="hs-identifier">Containers</span></a></span><span>
+</span><span id="line-15"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Lens.html"><span class="hs-identifier">Lens</span></a></span><span>
+</span><span id="line-16"></span><span>
+</span><span id="line-17"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Control.Monad.Reader</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">R</span></span><span>
+</span><span id="line-18"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Control.Monad.List</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">LT</span></span><span>
+</span><span id="line-19"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Control.Monad</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">guard</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">forM</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">forM_</span></span><span class="hs-special">)</span><span>
+</span><span id="line-20"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Control.Monad.Trans</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">lift</span></span><span class="hs-special">)</span><span>
+</span><span id="line-21"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Control.Lens</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">each</span></span><span class="hs-special">)</span><span>
+</span><span id="line-22"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.List</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">find</span></span><span class="hs-special">)</span><span>
+</span><span id="line-23"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Foldable</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">fold</span></span><span class="hs-special">)</span><span>
+</span><span id="line-24"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Semigroup</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">stimes</span></span><span class="hs-special">)</span><span>
+</span><span id="line-25"></span><span>
+</span><span id="line-26"></span><span class="hs-keyword">type</span><span> </span><span id="Rels"><span class="annot"><a href="SP2GP.Relations.html#Rels"><span class="hs-identifier hs-var">Rels</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="SP2GP.Relations.html#Rel"><span class="hs-identifier hs-type">Rel</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-27"></span><span>
+</span><span id="line-28"></span><span class="hs-keyword">data</span><span> </span><span id="Rel"><span class="annot"><a href="SP2GP.Relations.html#Rel"><span class="hs-identifier hs-var">Rel</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-29"></span><span>      </span><span id="JustRel"><span class="annot"><a href="SP2GP.Relations.html#JustRel"><span class="hs-identifier hs-var">JustRel</span></a></span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-30"></span><span>    </span><span class="hs-glyph">|</span><span> </span><span class="hs-keyword">forall</span><span> </span><span id="local-6989586621679332163"><span class="annot"><a href="#local-6989586621679332163"><span class="hs-identifier hs-type">v</span></a></span></span><span> </span><span id="local-6989586621679332162"><span class="annot"><a href="#local-6989586621679332162"><span class="hs-identifier hs-type">c</span></a></span></span><span class="hs-operator">.</span><span> </span><span class="annot"><a href="SP2GP.Relations.html#RangeClass"><span class="hs-identifier hs-type">RangeClass</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679332163"><span class="hs-identifier hs-type">v</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679332162"><span class="hs-identifier hs-type">c</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span id="ForBlock"><span class="annot"><a href="SP2GP.Relations.html#ForBlock"><span class="hs-identifier hs-var">ForBlock</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="SP2GP.Relations.html#Range"><span class="hs-identifier hs-type">Range</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679332163"><span class="hs-identifier hs-type">v</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679332162"><span class="hs-identifier hs-type">c</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><a href="SP2GP.Relations.html#Rels"><span class="hs-identifier hs-type">Rels</span></a></span><span>
+</span><span id="line-31"></span><span>
+</span><span id="line-32"></span><span class="hs-keyword">data</span><span> </span><span id="Range"><span class="annot"><a href="SP2GP.Relations.html#Range"><span class="hs-identifier hs-var">Range</span></a></span></span><span> </span><span id="local-6989586621679332158"><span class="annot"><a href="#local-6989586621679332158"><span class="hs-identifier hs-type">v</span></a></span></span><span> </span><span id="local-6989586621679332157"><span class="annot"><a href="#local-6989586621679332157"><span class="hs-identifier hs-type">c</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="Range"><span class="annot"><a href="SP2GP.Relations.html#Range"><span class="hs-identifier hs-var">Range</span></a></span></span><span> </span><span class="annot"><a href="#local-6989586621679332158"><span class="hs-identifier hs-type">v</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679332157"><span class="hs-identifier hs-type">c</span></a></span><span>
+</span><span id="line-33"></span><span>
+</span><span id="line-34"></span><span class="hs-keyword">type</span><span> </span><span id="SetGetter"><span class="annot"><a href="SP2GP.Relations.html#SetGetter"><span class="hs-identifier hs-var">SetGetter</span></a></span></span><span> </span><span id="local-6989586621679331972"><span class="annot"><a href="#local-6989586621679331972"><span class="hs-identifier hs-type">a</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><a href="SemigroupPresentation.html#SPGetting"><span class="hs-identifier hs-type">SP.SPGetting</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Set</span></span><span> </span><span class="annot"><a href="#local-6989586621679331972"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-35"></span><span>
+</span><span id="line-36"></span><span class="annot"><a href="SP2GP.Relations.html#%3D%3D%3D"><span class="hs-operator hs-type">(===)</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="SP2GP.Relations.html#Rel"><span class="hs-identifier hs-type">Rel</span></a></span><span>
+</span><span id="line-37"></span><span id="%3D%3D%3D"><span class="annot"><span class="annottext">=== :: String -&gt; String -&gt; Rel
+</span><a href="SP2GP.Relations.html#%3D%3D%3D"><span class="hs-operator hs-var hs-var">(===)</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; Rel
+</span><a href="SP2GP.Relations.html#JustRel"><span class="hs-identifier hs-var">JustRel</span></a></span><span>
+</span><span id="line-38"></span><span>
+</span><span id="line-39"></span><span id="local-6989586621679331969"><span id="local-6989586621679331970"><span class="annot"><a href="SP2GP.Relations.html#for%27"><span class="hs-identifier hs-type">for'</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="SP2GP.Relations.html#RangeClass"><span class="hs-identifier hs-type">RangeClass</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679331970"><span class="hs-identifier hs-type">v</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679331969"><span class="hs-identifier hs-type">c</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><a href="SP2GP.Relations.html#Range"><span class="hs-identifier hs-type">Range</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679331970"><span class="hs-identifier hs-type">v</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679331969"><span class="hs-identifier hs-type">c</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="SP2GP.Relations.html#Rels"><span class="hs-identifier hs-type">Rels</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="SP2GP.Relations.html#Rel"><span class="hs-identifier hs-type">Rel</span></a></span></span></span><span>
+</span><span id="line-40"></span><span id="for%27"><span class="annot"><span class="annottext">for' :: Range v c -&gt; Rels -&gt; Rel
+</span><a href="SP2GP.Relations.html#for%27"><span class="hs-identifier hs-var hs-var">for'</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Range v c -&gt; Rels -&gt; Rel
+forall v c. RangeClass v c =&gt; Range v c -&gt; Rels -&gt; Rel
+</span><a href="SP2GP.Relations.html#ForBlock"><span class="hs-identifier hs-var">ForBlock</span></a></span><span>
+</span><span id="line-41"></span><span>
+</span><span id="line-42"></span><span id="local-6989586621679331967"><span id="local-6989586621679331968"><span class="annot"><a href="SP2GP.Relations.html#in%27"><span class="hs-identifier hs-type">in'</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="SP2GP.Relations.html#RangeClass"><span class="hs-identifier hs-type">RangeClass</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679331968"><span class="hs-identifier hs-type">v</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679331967"><span class="hs-identifier hs-type">c</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679331968"><span class="hs-identifier hs-type">v</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679331967"><span class="hs-identifier hs-type">c</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="SP2GP.Relations.html#Range"><span class="hs-identifier hs-type">Range</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679331968"><span class="hs-identifier hs-type">v</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679331967"><span class="hs-identifier hs-type">c</span></a></span></span></span><span>
+</span><span id="line-43"></span><span id="in%27"><span class="annot"><span class="annottext">in' :: v -&gt; c -&gt; Range v c
+</span><a href="SP2GP.Relations.html#in%27"><span class="hs-identifier hs-var hs-var">in'</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">v -&gt; c -&gt; Range v c
+forall v c. v -&gt; c -&gt; Range v c
+</span><a href="SP2GP.Relations.html#Range"><span class="hs-identifier hs-var">Range</span></a></span><span>
+</span><span id="line-44"></span><span>
+</span><span id="line-45"></span><span class="hs-keyword">type</span><span> </span><span id="LocalReader"><span class="annot"><a href="SP2GP.Relations.html#LocalReader"><span class="hs-identifier hs-var">LocalReader</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-46"></span><span>    </span><span class="annot"><span class="hs-identifier hs-type">R.ReaderT</span></span><span> </span><span class="annot"><a href="SP2GP.Relations.html#ReplaceRules"><span class="hs-identifier hs-type">ReplaceRules</span></a></span><span> </span><span class="hs-special">(</span><span>
+</span><span id="line-47"></span><span>        </span><span class="annot"><span class="hs-identifier hs-type">R.ReaderT</span></span><span> </span><span class="annot"><a href="GroupPresentation.html#GeneratorsDescr"><span class="hs-identifier hs-type">GP.GeneratorsDescr</span></a></span><span> </span><span class="hs-special">(</span><span>
+</span><span id="line-48"></span><span>            </span><span class="annot"><span class="hs-identifier hs-type">R.ReaderT</span></span><span> </span><span class="annot"><a href="SemigroupPresentation.html#SemigroupPresentation"><span class="hs-identifier hs-type">SP.SemigroupPresentation</span></a></span><span>
+</span><span id="line-49"></span><span>                </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span>
+</span><span id="line-50"></span><span>          </span><span class="hs-special">)</span><span>
+</span><span id="line-51"></span><span>      </span><span class="hs-special">)</span><span>
+</span><span id="line-52"></span><span>
+</span><span id="line-53"></span><span id="local-6989586621679332079"><span class="annot"><a href="SP2GP.Relations.html#liftSP"><span class="hs-identifier hs-type">liftSP</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">R.ReaderT</span></span><span> </span><span class="annot"><a href="SemigroupPresentation.html#SemigroupPresentation"><span class="hs-identifier hs-type">SP.SemigroupPresentation</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="#local-6989586621679332079"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="SP2GP.Relations.html#LocalReader"><span class="hs-identifier hs-type">LocalReader</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679332079"><span class="hs-identifier hs-type">a</span></a></span></span><span>
+</span><span id="line-54"></span><span id="liftSP"><span class="annot"><span class="annottext">liftSP :: ReaderT SemigroupPresentation Maybe a -&gt; LocalReader a
+</span><a href="SP2GP.Relations.html#liftSP"><span class="hs-identifier hs-var hs-var">liftSP</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe) a
+-&gt; LocalReader a
+forall (t :: (* -&gt; *) -&gt; * -&gt; *) (m :: * -&gt; *) a.
+(MonadTrans t, Monad m) =&gt;
+m a -&gt; t m a
+</span><span class="hs-identifier hs-var">lift</span></span><span> </span><span class="annot"><span class="annottext">(ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe) a
+ -&gt; LocalReader a)
+-&gt; (ReaderT SemigroupPresentation Maybe a
+    -&gt; ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe) a)
+-&gt; ReaderT SemigroupPresentation Maybe a
+-&gt; LocalReader a
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">ReaderT SemigroupPresentation Maybe a
+-&gt; ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe) a
+forall (t :: (* -&gt; *) -&gt; * -&gt; *) (m :: * -&gt; *) a.
+(MonadTrans t, Monad m) =&gt;
+m a -&gt; t m a
+</span><span class="hs-identifier hs-var">lift</span></span><span>
+</span><span id="line-55"></span><span>
+</span><span id="line-56"></span><span class="hs-keyword">type</span><span> </span><span id="ReplaceRules"><span class="annot"><a href="SP2GP.Relations.html#ReplaceRules"><span class="hs-identifier hs-var">ReplaceRules</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="SP2GP.Relations.html#ReplaceRule"><span class="hs-identifier hs-type">ReplaceRule</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-57"></span><span>
+</span><span id="line-58"></span><span class="hs-keyword">type</span><span> </span><span id="ReplaceRule"><span class="annot"><a href="SP2GP.Relations.html#ReplaceRule"><span class="hs-identifier hs-var">ReplaceRule</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span class="hs-special">]</span><span class="hs-special">,</span><span> </span><span class="hs-special">[</span><span class="hs-special">[</span><span class="annot"><a href="GroupPresentation.Generator.html#GWord"><span class="hs-identifier hs-type">GP.GWord</span></a></span><span class="hs-special">]</span><span class="hs-special">]</span><span class="hs-special">)</span><span>
+</span><span id="line-59"></span><span>
+</span><span id="line-60"></span><span class="annot"><a href="SP2GP.Relations.html#consistRR"><span class="hs-identifier hs-type">consistRR</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="SP2GP.Relations.html#ReplaceRule"><span class="hs-identifier hs-type">ReplaceRule</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span>
+</span><span id="line-61"></span><span id="consistRR"><span class="annot"><span class="annottext">consistRR :: String -&gt; ReplaceRule -&gt; Bool
+</span><a href="SP2GP.Relations.html#consistRR"><span class="hs-identifier hs-var hs-var">consistRR</span></a></span></span><span> </span><span id="local-6989586621679331961"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679331961"><span class="hs-identifier hs-var">g</span></a></span></span><span> </span><span id="local-6989586621679331960"><span class="annot"><span class="annottext">ReplaceRule
+</span><a href="#local-6989586621679331960"><span class="hs-identifier hs-var">rr</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679331961"><span class="hs-identifier hs-var">g</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; [String] -&gt; Bool
+forall (t :: * -&gt; *) a. (Foldable t, Eq a) =&gt; a -&gt; t a -&gt; Bool
+</span><span class="hs-operator hs-var">`elem`</span></span><span> </span><span class="annot"><span class="annottext">ReplaceRule -&gt; [String]
+forall a b. (a, b) -&gt; a
+</span><span class="hs-identifier hs-var">fst</span></span><span> </span><span class="annot"><span class="annottext">ReplaceRule
+</span><a href="#local-6989586621679331960"><span class="hs-identifier hs-var">rr</span></a></span><span>
+</span><span id="line-62"></span><span>
+</span><span id="line-63"></span><span class="hs-keyword">type</span><span> </span><span id="ReplaceAtom"><span class="annot"><a href="SP2GP.Relations.html#ReplaceAtom"><span class="hs-identifier hs-var">ReplaceAtom</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="GroupPresentation.Generator.html#GWord"><span class="hs-identifier hs-type">GP.GWord</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-64"></span><span>
+</span><span id="line-65"></span><span class="annot"><a href="SP2GP.Relations.html#consistRA"><span class="hs-identifier hs-type">consistRA</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="SP2GP.Relations.html#ReplaceAtom"><span class="hs-identifier hs-type">ReplaceAtom</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span>
+</span><span id="line-66"></span><span id="consistRA"><span class="annot"><span class="annottext">consistRA :: String -&gt; ReplaceAtom -&gt; Bool
+</span><a href="SP2GP.Relations.html#consistRA"><span class="hs-identifier hs-var hs-var">consistRA</span></a></span></span><span> </span><span id="local-6989586621679331957"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679331957"><span class="hs-identifier hs-var">g</span></a></span></span><span> </span><span id="local-6989586621679331956"><span class="annot"><span class="annottext">ReplaceAtom
+</span><a href="#local-6989586621679331956"><span class="hs-identifier hs-var">ra</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">ReplaceAtom -&gt; String
+forall a b. (a, b) -&gt; a
+</span><span class="hs-identifier hs-var">fst</span></span><span> </span><span class="annot"><span class="annottext">ReplaceAtom
+</span><a href="#local-6989586621679331956"><span class="hs-identifier hs-var">ra</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; Bool
+forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">==</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679331957"><span class="hs-identifier hs-var">g</span></a></span><span>
+</span><span id="line-67"></span><span>
+</span><span id="line-68"></span><span id="local-6989586621679331955"><span class="annot"><a href="SP2GP.Relations.html#rels"><span class="hs-identifier hs-type">rels</span></a></span><span> </span><span class="hs-glyph">::</span><span>
+</span><span id="line-69"></span><span>    </span><span class="annot"><span class="hs-identifier hs-type">MonadFail</span></span><span> </span><span class="annot"><a href="#local-6989586621679331955"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span>
+</span><span id="line-70"></span><span>    </span><span class="annot"><a href="SP2GP.Relations.html#Rels"><span class="hs-identifier hs-type">Rels</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span>
+</span><span id="line-71"></span><span>    </span><span class="annot"><a href="GroupPresentation.html#GeneratorsDescr"><span class="hs-identifier hs-type">GP.GeneratorsDescr</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span>
+</span><span id="line-72"></span><span>    </span><span class="annot"><a href="SemigroupPresentation.html#SemigroupPresentation"><span class="hs-identifier hs-type">SP.SemigroupPresentation</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span>
+</span><span id="line-73"></span><span>    </span><span class="annot"><a href="#local-6989586621679331955"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="annot"><a href="GroupPresentation.Relation.html#Relations"><span class="hs-identifier hs-type">GP.Relations</span></a></span></span><span>
+</span><span id="line-74"></span><span id="rels"><span class="annot"><span class="annottext">rels :: Rels -&gt; GeneratorsDescr -&gt; SemigroupPresentation -&gt; m Relations
+</span><a href="SP2GP.Relations.html#rels"><span class="hs-identifier hs-var hs-var">rels</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-75"></span><span>    </span><span class="hs-special">(</span><span class="hs-special">(</span><span class="annot"><span class="annottext">m Relations
+-&gt; (Relations -&gt; m Relations) -&gt; Maybe Relations -&gt; m Relations
+forall b a. b -&gt; (a -&gt; b) -&gt; Maybe a -&gt; b
+</span><span class="hs-identifier hs-var">maybe</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String -&gt; m Relations
+forall (m :: * -&gt; *) a. MonadFail m =&gt; String -&gt; m a
+</span><span class="hs-identifier hs-var">fail</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;Can't create relations&quot;</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Relations -&gt; m Relations
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">(Maybe Relations -&gt; m Relations)
+-&gt; (SemigroupPresentation -&gt; Maybe Relations)
+-&gt; SemigroupPresentation
+-&gt; m Relations
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">((SemigroupPresentation -&gt; Maybe Relations)
+ -&gt; SemigroupPresentation -&gt; m Relations)
+-&gt; (GeneratorsDescr -&gt; SemigroupPresentation -&gt; Maybe Relations)
+-&gt; GeneratorsDescr
+-&gt; SemigroupPresentation
+-&gt; m Relations
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">((GeneratorsDescr -&gt; SemigroupPresentation -&gt; Maybe Relations)
+ -&gt; GeneratorsDescr -&gt; SemigroupPresentation -&gt; m Relations)
+-&gt; (Rels
+    -&gt; GeneratorsDescr -&gt; SemigroupPresentation -&gt; Maybe Relations)
+-&gt; Rels
+-&gt; GeneratorsDescr
+-&gt; SemigroupPresentation
+-&gt; m Relations
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span>
+</span><span id="line-76"></span><span>    </span><span class="hs-special">(</span><span class="annot"><span class="annottext">ReaderT SemigroupPresentation Maybe Relations
+-&gt; SemigroupPresentation -&gt; Maybe Relations
+forall r (m :: * -&gt; *) a. ReaderT r m a -&gt; r -&gt; m a
+</span><span class="hs-identifier hs-var hs-var">R.runReaderT</span></span><span> </span><span class="annot"><span class="annottext">(ReaderT SemigroupPresentation Maybe Relations
+ -&gt; SemigroupPresentation -&gt; Maybe Relations)
+-&gt; (GeneratorsDescr
+    -&gt; ReaderT SemigroupPresentation Maybe Relations)
+-&gt; GeneratorsDescr
+-&gt; SemigroupPresentation
+-&gt; Maybe Relations
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">((GeneratorsDescr -&gt; ReaderT SemigroupPresentation Maybe Relations)
+ -&gt; GeneratorsDescr -&gt; SemigroupPresentation -&gt; Maybe Relations)
+-&gt; (Rels
+    -&gt; GeneratorsDescr
+    -&gt; ReaderT SemigroupPresentation Maybe Relations)
+-&gt; Rels
+-&gt; GeneratorsDescr
+-&gt; SemigroupPresentation
+-&gt; Maybe Relations
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span>
+</span><span id="line-77"></span><span>    </span><span class="annot"><span class="annottext">ReaderT
+  GeneratorsDescr (ReaderT SemigroupPresentation Maybe) Relations
+-&gt; GeneratorsDescr -&gt; ReaderT SemigroupPresentation Maybe Relations
+forall r (m :: * -&gt; *) a. ReaderT r m a -&gt; r -&gt; m a
+</span><span class="hs-identifier hs-var hs-var">R.runReaderT</span></span><span> </span><span class="annot"><span class="annottext">(ReaderT
+   GeneratorsDescr (ReaderT SemigroupPresentation Maybe) Relations
+ -&gt; GeneratorsDescr
+ -&gt; ReaderT SemigroupPresentation Maybe Relations)
+-&gt; (Rels
+    -&gt; ReaderT
+         GeneratorsDescr (ReaderT SemigroupPresentation Maybe) Relations)
+-&gt; Rels
+-&gt; GeneratorsDescr
+-&gt; ReaderT SemigroupPresentation Maybe Relations
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span>
+</span><span id="line-78"></span><span>    </span><span class="annot"><span class="annottext">(ReaderT
+   [ReplaceRule]
+   (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+   Relations
+ -&gt; [ReplaceRule]
+ -&gt; ReaderT
+      GeneratorsDescr (ReaderT SemigroupPresentation Maybe) Relations)
+-&gt; [ReplaceRule]
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     Relations
+-&gt; ReaderT
+     GeneratorsDescr (ReaderT SemigroupPresentation Maybe) Relations
+forall a b c. (a -&gt; b -&gt; c) -&gt; b -&gt; a -&gt; c
+</span><span class="hs-identifier hs-var">flip</span></span><span> </span><span class="annot"><span class="annottext">ReaderT
+  [ReplaceRule]
+  (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+  Relations
+-&gt; [ReplaceRule]
+-&gt; ReaderT
+     GeneratorsDescr (ReaderT SemigroupPresentation Maybe) Relations
+forall r (m :: * -&gt; *) a. ReaderT r m a -&gt; r -&gt; m a
+</span><span class="hs-identifier hs-var hs-var">R.runReaderT</span></span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span> </span><span class="annot"><span class="annottext">(ReaderT
+   [ReplaceRule]
+   (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+   Relations
+ -&gt; ReaderT
+      GeneratorsDescr (ReaderT SemigroupPresentation Maybe) Relations)
+-&gt; (Rels
+    -&gt; ReaderT
+         [ReplaceRule]
+         (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+         Relations)
+-&gt; Rels
+-&gt; ReaderT
+     GeneratorsDescr (ReaderT SemigroupPresentation Maybe) Relations
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span>
+</span><span id="line-79"></span><span>    </span><span class="annot"><span class="annottext">Rels
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     Relations
+</span><a href="SP2GP.Relations.html#rels_"><span class="hs-identifier hs-var">rels_</span></a></span><span>
+</span><span id="line-80"></span><span>
+</span><span id="line-81"></span><span class="annot"><a href="SP2GP.Relations.html#rels_"><span class="hs-identifier hs-type">rels_</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="SP2GP.Relations.html#Rels"><span class="hs-identifier hs-type">Rels</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="SP2GP.Relations.html#LocalReader"><span class="hs-identifier hs-type">LocalReader</span></a></span><span> </span><span class="annot"><a href="GroupPresentation.Relation.html#Relations"><span class="hs-identifier hs-type">GP.Relations</span></a></span><span>
+</span><span id="line-82"></span><span id="rels_"><span class="annot"><span class="annottext">rels_ :: Rels
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     Relations
+</span><a href="SP2GP.Relations.html#rels_"><span class="hs-identifier hs-var hs-var">rels_</span></a></span></span><span> </span><span id="local-6989586621679331950"><span class="annot"><span class="annottext">Rels
+</span><a href="#local-6989586621679331950"><span class="hs-identifier hs-var">rs</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-83"></span><span>    </span><span class="annot"><span class="annottext">[Relation] -&gt; Relations
+forall c v. UnsafeListable c v =&gt; [v] -&gt; c
+</span><a href="Containers.html#fromList"><span class="hs-identifier hs-var">fromList</span></a></span><span> </span><span class="annot"><span class="annottext">([Relation] -&gt; Relations)
+-&gt; ([[Relation]] -&gt; [Relation]) -&gt; [[Relation]] -&gt; Relations
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">[[Relation]] -&gt; [Relation]
+forall (t :: * -&gt; *) a. Foldable t =&gt; t [a] -&gt; [a]
+</span><span class="hs-identifier hs-var">concat</span></span><span> </span><span class="annot"><span class="annottext">([[Relation]] -&gt; Relations)
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     [[Relation]]
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     Relations
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">(Rel
+ -&gt; ReaderT
+      [ReplaceRule]
+      (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+      [Relation])
+-&gt; Rels
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     [[Relation]]
+forall (t :: * -&gt; *) (f :: * -&gt; *) a b.
+(Traversable t, Applicative f) =&gt;
+(a -&gt; f b) -&gt; t a -&gt; f (t b)
+</span><span class="hs-identifier hs-var">traverse</span></span><span> </span><span class="annot"><span class="annottext">Rel
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     [Relation]
+</span><a href="SP2GP.Relations.html#rel_"><span class="hs-identifier hs-var">rel_</span></a></span><span> </span><span class="annot"><span class="annottext">Rels
+</span><a href="#local-6989586621679331950"><span class="hs-identifier hs-var">rs</span></a></span><span>
+</span><span id="line-84"></span><span>
+</span><span id="line-85"></span><span class="annot"><a href="SP2GP.Relations.html#rel_"><span class="hs-identifier hs-type">rel_</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="SP2GP.Relations.html#Rel"><span class="hs-identifier hs-type">Rel</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="SP2GP.Relations.html#LocalReader"><span class="hs-identifier hs-type">LocalReader</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><a href="GroupPresentation.Relation.html#Relation"><span class="hs-identifier hs-type">GP.Relation</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-86"></span><span id="rel_"><span class="annot"><span class="annottext">rel_ :: Rel
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     [Relation]
+</span><a href="SP2GP.Relations.html#rel_"><span class="hs-identifier hs-var hs-var">rel_</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="SP2GP.Relations.html#JustRel"><span class="hs-identifier hs-type">JustRel</span></a></span><span> </span><span id="local-6989586621679331944"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679331944"><span class="hs-identifier hs-var">ew1</span></a></span></span><span> </span><span id="local-6989586621679331943"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679331943"><span class="hs-identifier hs-var">ew2</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">ListT
+  (ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe)))
+  Relation
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     [Relation]
+forall (m :: * -&gt; *) a. ListT m a -&gt; m [a]
+</span><span class="hs-identifier hs-var hs-var">LT.runListT</span></span><span> </span><span class="annot"><span class="annottext">(ListT
+   (ReaderT
+      [ReplaceRule]
+      (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe)))
+   Relation
+ -&gt; ReaderT
+      [ReplaceRule]
+      (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+      [Relation])
+-&gt; ListT
+     (ReaderT
+        [ReplaceRule]
+        (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe)))
+     Relation
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     [Relation]
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-87"></span><span>    </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679331941"><span class="annot"><span class="annottext">es1 :: [String]
+</span><a href="#local-6989586621679331941"><span class="hs-identifier hs-var hs-var">es1</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; [String]
+</span><span class="hs-identifier hs-var">words</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679331944"><span class="hs-identifier hs-var">ew1</span></a></span><span>
+</span><span id="line-88"></span><span>        </span><span id="local-6989586621679331939"><span class="annot"><span class="annottext">es2 :: [String]
+</span><a href="#local-6989586621679331939"><span class="hs-identifier hs-var hs-var">es2</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; [String]
+</span><span class="hs-identifier hs-var">words</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679331943"><span class="hs-identifier hs-var">ew2</span></a></span><span>
+</span><span id="line-89"></span><span>    </span><span class="hs-special">(</span><span id="local-6989586621679331938"><span class="annot"><span class="annottext">EWord
+</span><a href="#local-6989586621679331938"><span class="hs-identifier hs-var">ews1</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679331937"><span class="annot"><span class="annottext">[ReplaceAtom]
+</span><a href="#local-6989586621679331937"><span class="hs-identifier hs-var">srrs</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">ReaderT
+  [ReplaceRule]
+  (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+  [(EWord, [ReplaceAtom])]
+-&gt; ListT
+     (ReaderT
+        [ReplaceRule]
+        (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe)))
+     (EWord, [ReplaceAtom])
+forall (m :: * -&gt; *) a. m [a] -&gt; ListT m a
+</span><span class="hs-identifier hs-var">LT.ListT</span></span><span> </span><span class="annot"><span class="annottext">(ReaderT
+   [ReplaceRule]
+   (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+   [(EWord, [ReplaceAtom])]
+ -&gt; ListT
+      (ReaderT
+         [ReplaceRule]
+         (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe)))
+      (EWord, [ReplaceAtom]))
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     [(EWord, [ReplaceAtom])]
+-&gt; ListT
+     (ReaderT
+        [ReplaceRule]
+        (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe)))
+     (EWord, [ReplaceAtom])
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">[String]
+-&gt; [ReplaceAtom]
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     [(EWord, [ReplaceAtom])]
+</span><a href="SP2GP.Relations.html#elems_"><span class="hs-identifier hs-var">elems_</span></a></span><span> </span><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679331941"><span class="hs-identifier hs-var">es1</span></a></span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span>
+</span><span id="line-90"></span><span>    </span><span class="hs-special">(</span><span id="local-6989586621679331934"><span class="annot"><span class="annottext">EWord
+</span><a href="#local-6989586621679331934"><span class="hs-identifier hs-var">ews2</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">[ReplaceAtom]
+</span><span class="hs-identifier">_</span></span><span class="hs-special">)</span><span>    </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">ReaderT
+  [ReplaceRule]
+  (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+  [(EWord, [ReplaceAtom])]
+-&gt; ListT
+     (ReaderT
+        [ReplaceRule]
+        (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe)))
+     (EWord, [ReplaceAtom])
+forall (m :: * -&gt; *) a. m [a] -&gt; ListT m a
+</span><span class="hs-identifier hs-var">LT.ListT</span></span><span> </span><span class="annot"><span class="annottext">(ReaderT
+   [ReplaceRule]
+   (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+   [(EWord, [ReplaceAtom])]
+ -&gt; ListT
+      (ReaderT
+         [ReplaceRule]
+         (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe)))
+      (EWord, [ReplaceAtom]))
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     [(EWord, [ReplaceAtom])]
+-&gt; ListT
+     (ReaderT
+        [ReplaceRule]
+        (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe)))
+     (EWord, [ReplaceAtom])
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">[String]
+-&gt; [ReplaceAtom]
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     [(EWord, [ReplaceAtom])]
+</span><a href="SP2GP.Relations.html#elems_"><span class="hs-identifier hs-var">elems_</span></a></span><span> </span><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679331939"><span class="hs-identifier hs-var">es2</span></a></span><span> </span><span class="annot"><span class="annottext">[ReplaceAtom]
+</span><a href="#local-6989586621679331937"><span class="hs-identifier hs-var">srrs</span></a></span><span>
+</span><span id="line-91"></span><span>    </span><span class="annot"><span class="annottext">Relation
+-&gt; ListT
+     (ReaderT
+        [ReplaceRule]
+        (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe)))
+     Relation
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">(Relation
+ -&gt; ListT
+      (ReaderT
+         [ReplaceRule]
+         (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe)))
+      Relation)
+-&gt; Relation
+-&gt; ListT
+     (ReaderT
+        [ReplaceRule]
+        (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe)))
+     Relation
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">EWord -&gt; EWord -&gt; Relation
+</span><a href="GroupPresentation.Relation.html#relation"><span class="hs-identifier hs-var">GP.relation</span></a></span><span> </span><span class="annot"><span class="annottext">EWord
+</span><a href="#local-6989586621679331938"><span class="hs-identifier hs-var">ews1</span></a></span><span> </span><span class="annot"><span class="annottext">EWord
+</span><a href="#local-6989586621679331934"><span class="hs-identifier hs-var">ews2</span></a></span><span>
+</span><span id="line-92"></span><span class="annot"><a href="SP2GP.Relations.html#rel_"><span class="hs-identifier hs-var">rel_</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="SP2GP.Relations.html#ForBlock"><span class="hs-identifier hs-type">ForBlock</span></a></span><span> </span><span id="local-6989586621679331932"><span class="annot"><span class="annottext">Range v c
+</span><a href="#local-6989586621679331932"><span class="hs-identifier hs-var">rg</span></a></span></span><span> </span><span id="local-6989586621679331931"><span class="annot"><span class="annottext">Rels
+</span><a href="#local-6989586621679331931"><span class="hs-identifier hs-var">rs</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-93"></span><span>    </span><span id="local-6989586621679331930"><span class="annot"><span class="annottext">ReplaceRule
+</span><a href="#local-6989586621679331930"><span class="hs-identifier hs-var">newRule</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Range v c -&gt; LocalReader ReplaceRule
+forall v c. RangeClass v c =&gt; Range v c -&gt; LocalReader ReplaceRule
+</span><a href="SP2GP.Relations.html#range_"><span class="hs-identifier hs-var">range_</span></a></span><span> </span><span class="annot"><span class="annottext">Range v c
+</span><a href="#local-6989586621679331932"><span class="hs-identifier hs-var">rg</span></a></span><span>
+</span><span id="line-94"></span><span>    </span><span class="annot"><span class="annottext">([ReplaceRule] -&gt; [ReplaceRule])
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     [Relation]
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     [Relation]
+forall r (m :: * -&gt; *) a. MonadReader r m =&gt; (r -&gt; r) -&gt; m a -&gt; m a
+</span><span class="hs-identifier hs-var">R.local</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">ReplaceRule
+</span><a href="#local-6989586621679331930"><span class="hs-identifier hs-var">newRule</span></a></span><span class="annot"><span class="annottext">ReplaceRule -&gt; [ReplaceRule] -&gt; [ReplaceRule]
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">(ReaderT
+   [ReplaceRule]
+   (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+   [Relation]
+ -&gt; ReaderT
+      [ReplaceRule]
+      (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+      [Relation])
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     [Relation]
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     [Relation]
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Relations -&gt; [Relation]
+forall c v. Listable c v =&gt; c -&gt; [v]
+</span><a href="Containers.html#toList"><span class="hs-identifier hs-var">toList</span></a></span><span> </span><span class="annot"><span class="annottext">(Relations -&gt; [Relation])
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     Relations
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     [Relation]
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">Rels
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     Relations
+</span><a href="SP2GP.Relations.html#rels_"><span class="hs-identifier hs-var">rels_</span></a></span><span> </span><span class="annot"><span class="annottext">Rels
+</span><a href="#local-6989586621679331931"><span class="hs-identifier hs-var">rs</span></a></span><span>
+</span><span id="line-95"></span><span>
+</span><span id="line-96"></span><span class="hs-keyword">class</span><span> </span><span id="RangeClass"><span class="annot"><a href="SP2GP.Relations.html#RangeClass"><span class="hs-identifier hs-var">RangeClass</span></a></span></span><span> </span><span id="local-6989586621679332098"><span class="annot"><a href="#local-6989586621679332098"><span class="hs-identifier hs-type">v</span></a></span></span><span> </span><span id="local-6989586621679332097"><span class="annot"><a href="#local-6989586621679332097"><span class="hs-identifier hs-type">c</span></a></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-97"></span><span>    </span><span id="range_"><span class="annot"><a href="SP2GP.Relations.html#range_"><span class="hs-identifier hs-type">range_</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="SP2GP.Relations.html#Range"><span class="hs-identifier hs-type">Range</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679332098"><span class="hs-identifier hs-type">v</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679332097"><span class="hs-identifier hs-type">c</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="SP2GP.Relations.html#LocalReader"><span class="hs-identifier hs-type">LocalReader</span></a></span><span> </span><span class="annot"><a href="SP2GP.Relations.html#ReplaceRule"><span class="hs-identifier hs-type">ReplaceRule</span></a></span><span>
+</span><span id="line-98"></span><span>
+</span><span id="line-99"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="SP2GP.Relations.html#RangeClass"><span class="hs-identifier hs-type">RangeClass</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="SP2GP.Relations.html#SetGetter"><span class="hs-identifier hs-type">SetGetter</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-100"></span><span>    </span><span id="local-6989586621679331924"><span class="annot"><span class="annottext">range_ :: Range String (SetGetter String) -&gt; LocalReader ReplaceRule
+</span><a href="#local-6989586621679331924"><span class="hs-identifier hs-var hs-var hs-var hs-var">range_</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="SP2GP.Relations.html#Range"><span class="hs-identifier hs-type">Range</span></a></span><span> </span><span id="local-6989586621679331923"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679331923"><span class="hs-identifier hs-var">str</span></a></span></span><span> </span><span id="local-6989586621679331922"><span class="annot"><span class="annottext">SetGetter String
+</span><a href="#local-6989586621679331922"><span class="hs-identifier hs-var">strGetter</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-101"></span><span>        </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679331921"><span class="annot"><span class="annottext">fs' :: [String]
+</span><a href="#local-6989586621679331921"><span class="hs-identifier hs-var hs-var">fs'</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; [String]
+</span><span class="hs-identifier hs-var">words</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679331923"><span class="hs-identifier hs-var">str</span></a></span><span>
+</span><span id="line-102"></span><span>        </span><span class="annot"><span class="annottext">Bool
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     ()
+forall (f :: * -&gt; *). Alternative f =&gt; Bool -&gt; f ()
+</span><span class="hs-identifier hs-var">guard</span></span><span> </span><span class="annot"><span class="annottext">(Bool
+ -&gt; ReaderT
+      [ReplaceRule]
+      (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+      ())
+-&gt; Bool
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; Int
+forall (t :: * -&gt; *) a. Foldable t =&gt; t a -&gt; Int
+</span><span class="hs-identifier hs-var">length</span></span><span> </span><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679331921"><span class="hs-identifier hs-var">fs'</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Bool
+forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">==</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">1</span></span><span>
+</span><span id="line-103"></span><span>        </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679331919"><span class="annot"><span class="annottext">f' :: String
+</span><a href="#local-6989586621679331919"><span class="hs-identifier hs-var hs-var">f'</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+forall a. [a] -&gt; a
+</span><span class="hs-identifier hs-var">head</span></span><span> </span><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679331921"><span class="hs-identifier hs-var">fs'</span></a></span><span>
+</span><span id="line-104"></span><span>        </span><span id="local-6989586621679331917"><span class="annot"><span class="annottext">TaggedFormat
+</span><a href="#local-6989586621679331917"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Format.html#TaggedFormat"><span class="hs-identifier hs-type">TaggedFormat</span></a></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">String
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     TaggedFormat
+forall f (m :: * -&gt; *). (Format f, MonadFail m) =&gt; String -&gt; m f
+</span><a href="Format.html#format"><span class="hs-identifier hs-var">format</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679331919"><span class="hs-identifier hs-var">f'</span></a></span><span>
+</span><span id="line-105"></span><span>        </span><span id="local-6989586621679331915"><span class="annot"><span class="annottext">Set String
+</span><a href="#local-6989586621679331915"><span class="hs-identifier hs-var">strSet</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">ReaderT SemigroupPresentation Maybe (Set String)
+-&gt; LocalReader (Set String)
+forall a. ReaderT SemigroupPresentation Maybe a -&gt; LocalReader a
+</span><a href="SP2GP.Relations.html#liftSP"><span class="hs-identifier hs-var">liftSP</span></a></span><span> </span><span class="annot"><span class="annottext">(ReaderT SemigroupPresentation Maybe (Set String)
+ -&gt; LocalReader (Set String))
+-&gt; ReaderT SemigroupPresentation Maybe (Set String)
+-&gt; LocalReader (Set String)
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">SetGetter String
+-&gt; ReaderT SemigroupPresentation Maybe (Set String)
+forall s (m :: * -&gt; *) a. MonadReader s m =&gt; Getting a s a -&gt; m a
+</span><span class="hs-identifier hs-var">view</span></span><span> </span><span class="annot"><span class="annottext">SetGetter String
+</span><a href="#local-6989586621679331922"><span class="hs-identifier hs-var">strGetter</span></a></span><span>
+</span><span id="line-106"></span><span>        </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679331913"><span class="annot"><span class="annottext">strList :: [String]
+</span><a href="#local-6989586621679331913"><span class="hs-identifier hs-var hs-var">strList</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Set String -&gt; [String]
+forall c v. Listable c v =&gt; c -&gt; [v]
+</span><a href="Containers.html#toList"><span class="hs-identifier hs-var">toList</span></a></span><span> </span><span class="annot"><span class="annottext">Set String
+</span><a href="#local-6989586621679331915"><span class="hs-identifier hs-var">strSet</span></a></span><span>
+</span><span id="line-107"></span><span>        </span><span id="local-6989586621679331912"><span class="annot"><span class="annottext">[Generator]
+</span><a href="#local-6989586621679331912"><span class="hs-identifier hs-var">gs</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">(String
+ -&gt; ReaderT
+      [ReplaceRule]
+      (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+      Generator)
+-&gt; [String]
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     [Generator]
+forall (t :: * -&gt; *) (f :: * -&gt; *) a b.
+(Traversable t, Applicative f) =&gt;
+(a -&gt; f b) -&gt; t a -&gt; f (t b)
+</span><span class="hs-identifier hs-var">traverse</span></span><span> </span><span class="annot"><span class="annottext">String
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     Generator
+</span><a href="SP2GP.Relations.html#gen_"><span class="hs-identifier hs-var">gen_</span></a></span><span> </span><span class="annot"><span class="annottext">([String]
+ -&gt; ReaderT
+      [ReplaceRule]
+      (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+      [Generator])
+-&gt; [String]
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     [Generator]
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">TaggedFormat -&gt; String -&gt; String
+forall f i. Apply f i =&gt; f -&gt; i -&gt; String
+</span><a href="Format.html#apply"><span class="hs-identifier hs-var">apply</span></a></span><span> </span><span class="annot"><span class="annottext">TaggedFormat
+</span><a href="#local-6989586621679331917"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">(String -&gt; String) -&gt; [String] -&gt; [String]
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679331913"><span class="hs-identifier hs-var">strList</span></a></span><span>
+</span><span id="line-108"></span><span>        </span><span class="annot"><span class="annottext">ReplaceRule -&gt; LocalReader ReplaceRule
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">[</span><span class="annot"><span class="annottext">TaggedFormat -&gt; String
+forall f. Apply f () =&gt; f -&gt; String
+</span><a href="Format.html#format2str"><span class="hs-identifier hs-var">format2str</span></a></span><span> </span><span class="annot"><span class="annottext">TaggedFormat
+</span><a href="#local-6989586621679331917"><span class="hs-identifier hs-var">f</span></a></span><span class="hs-special">]</span><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[Generator] -&gt; [[Generator]]
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span class="annot"><span class="annottext">([Generator] -&gt; [[Generator]])
+-&gt; (Generator -&gt; [Generator]) -&gt; Generator -&gt; [[Generator]]
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span class="annot"><span class="annottext">Generator -&gt; [Generator]
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">(Generator -&gt; [[Generator]]) -&gt; [Generator] -&gt; [[[Generator]]]
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">[Generator]
+</span><a href="#local-6989586621679331912"><span class="hs-identifier hs-var">gs</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-109"></span><span>
+</span><span id="line-110"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="SP2GP.Relations.html#RangeClass"><span class="hs-identifier hs-type">RangeClass</span></a></span><span> </span><span class="annot"><a href="SP2GP.Relations.html#Rel"><span class="hs-identifier hs-type">Rel</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="SP2GP.Relations.html#SetGetter"><span class="hs-identifier hs-type">SetGetter</span></a></span><span> </span><span class="annot"><a href="SemigroupPresentation.Relation.html#StrRelation"><span class="hs-identifier hs-type">SP.StrRelation</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-111"></span><span>    </span><span id="local-6989586621679331907"><span class="annot"><span class="annottext">range_ :: Range Rel (SetGetter StrRelation) -&gt; LocalReader ReplaceRule
+</span><a href="#local-6989586621679331907"><span class="hs-identifier hs-var hs-var hs-var hs-var">range_</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="SP2GP.Relations.html#Range"><span class="hs-identifier hs-type">Range</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="SP2GP.Relations.html#ForBlock"><span class="hs-identifier hs-type">ForBlock</span></a></span><span> </span><span class="annot"><span class="annottext">Range v c
+</span><span class="hs-identifier">_</span></span><span> </span><span class="annot"><span class="annottext">Rels
+</span><span class="hs-identifier">_</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">SetGetter StrRelation
+</span><span class="hs-identifier">_</span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-112"></span><span>        </span><span class="annot"><span class="annottext">String -&gt; LocalReader ReplaceRule
+forall (m :: * -&gt; *) a. MonadFail m =&gt; String -&gt; m a
+</span><span class="hs-identifier hs-var">fail</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;ForBlock can't be used into Range definition&quot;</span></span><span>
+</span><span id="line-113"></span><span>    </span><span class="annot"><a href="SP2GP.Relations.html#range_"><span class="hs-identifier hs-var">range_</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="SP2GP.Relations.html#Range"><span class="hs-identifier hs-type">Range</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="SP2GP.Relations.html#JustRel"><span class="hs-identifier hs-type">JustRel</span></a></span><span> </span><span id="local-6989586621679331906"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679331906"><span class="hs-identifier hs-var">gw1</span></a></span></span><span> </span><span id="local-6989586621679331905"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679331905"><span class="hs-identifier hs-var">gw2</span></a></span></span><span class="hs-special">)</span><span> </span><span id="local-6989586621679331904"><span class="annot"><span class="annottext">SetGetter StrRelation
+</span><a href="#local-6989586621679331904"><span class="hs-identifier hs-var">relGetter</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-114"></span><span>        </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679331903"><span class="annot"><span class="annottext">pgw :: Pair String
+</span><a href="#local-6989586621679331903"><span class="hs-identifier hs-var hs-var">pgw</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(String, String) -&gt; Pair String
+forall a. (a, a) -&gt; Pair a
+</span><a href="Containers.Pair.html#Pair"><span class="hs-identifier hs-var">Pair</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679331906"><span class="hs-identifier hs-var">gw1</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679331905"><span class="hs-identifier hs-var">gw2</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-115"></span><span>        </span><span id="local-6989586621679331901"><span class="annot"><span class="annottext">Pair [MaybeTaggedFormat]
+</span><a href="#local-6989586621679331901"><span class="hs-identifier hs-var">pfs</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Containers.Pair.html#Pair"><span class="hs-identifier hs-type">Pair</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><a href="Format.html#MaybeTaggedFormat"><span class="hs-identifier hs-type">MaybeTaggedFormat</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">&lt;-</span><span>
+</span><span id="line-116"></span><span>            </span><span class="annot"><span class="annottext">(String
+ -&gt; ReaderT
+      [ReplaceRule]
+      (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+      [MaybeTaggedFormat])
+-&gt; Pair String
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     (Pair [MaybeTaggedFormat])
+forall (t :: * -&gt; *) (f :: * -&gt; *) a b.
+(Traversable t, Applicative f) =&gt;
+(a -&gt; f b) -&gt; t a -&gt; f (t b)
+</span><span class="hs-identifier hs-var">traverse</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">(String
+ -&gt; ReaderT
+      [ReplaceRule]
+      (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+      MaybeTaggedFormat)
+-&gt; [String]
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     [MaybeTaggedFormat]
+forall (t :: * -&gt; *) (f :: * -&gt; *) a b.
+(Traversable t, Applicative f) =&gt;
+(a -&gt; f b) -&gt; t a -&gt; f (t b)
+</span><span class="hs-identifier hs-var">traverse</span></span><span> </span><span class="annot"><span class="annottext">String
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     MaybeTaggedFormat
+forall f (m :: * -&gt; *). (Format f, MonadFail m) =&gt; String -&gt; m f
+</span><a href="Format.html#format"><span class="hs-identifier hs-var">format</span></a></span><span> </span><span class="annot"><span class="annottext">([String]
+ -&gt; ReaderT
+      [ReplaceRule]
+      (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+      [MaybeTaggedFormat])
+-&gt; (String -&gt; [String])
+-&gt; String
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     [MaybeTaggedFormat]
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; [String]
+</span><span class="hs-identifier hs-var">words</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Pair String
+</span><a href="#local-6989586621679331903"><span class="hs-identifier hs-var">pgw</span></a></span><span>
+</span><span id="line-117"></span><span>        </span><span class="annot"><span class="annottext">Pair [MaybeTaggedFormat]
+-&gt; ([MaybeTaggedFormat]
+    -&gt; ReaderT
+         [ReplaceRule]
+         (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+         ())
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     ()
+forall (t :: * -&gt; *) (m :: * -&gt; *) a b.
+(Foldable t, Monad m) =&gt;
+t a -&gt; (a -&gt; m b) -&gt; m ()
+</span><span class="hs-identifier hs-var">forM_</span></span><span> </span><span class="annot"><span class="annottext">Pair [MaybeTaggedFormat]
+</span><a href="#local-6989586621679331901"><span class="hs-identifier hs-var">pfs</span></a></span><span> </span><span class="annot"><span class="annottext">(([MaybeTaggedFormat]
+  -&gt; ReaderT
+       [ReplaceRule]
+       (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+       ())
+ -&gt; ReaderT
+      [ReplaceRule]
+      (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+      ())
+-&gt; ([MaybeTaggedFormat]
+    -&gt; ReaderT
+         [ReplaceRule]
+         (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+         ())
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679331900"><span class="annot"><span class="annottext">[MaybeTaggedFormat]
+</span><a href="#local-6989586621679331900"><span class="hs-identifier hs-var">fs</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span>
+</span><span id="line-118"></span><span>            </span><span class="annot"><span class="annottext">Bool
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     ()
+forall (f :: * -&gt; *). Alternative f =&gt; Bool -&gt; f ()
+</span><span class="hs-identifier hs-var">guard</span></span><span> </span><span class="annot"><span class="annottext">(Bool
+ -&gt; ReaderT
+      [ReplaceRule]
+      (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+      ())
+-&gt; Bool
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span>
+</span><span id="line-119"></span><span>                </span><span class="annot"><span class="annottext">((MaybeTaggedFormat, MaybeTaggedFormat) -&gt; Bool)
+-&gt; [(MaybeTaggedFormat, MaybeTaggedFormat)] -&gt; Bool
+forall (t :: * -&gt; *) a. Foldable t =&gt; (a -&gt; Bool) -&gt; t a -&gt; Bool
+</span><span class="hs-identifier hs-var">all</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span class="hs-special">(</span><span id="local-6989586621679331898"><span class="annot"><span class="annottext">MaybeTaggedFormat
+</span><a href="#local-6989586621679331898"><span class="hs-identifier hs-var">f1</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679331897"><span class="annot"><span class="annottext">MaybeTaggedFormat
+</span><a href="#local-6989586621679331897"><span class="hs-identifier hs-var">f2</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">MaybeTaggedFormat -&gt; Bool
+forall f. MaybeFormat f -&gt; Bool
+</span><a href="Format.html#isFormat"><span class="hs-identifier hs-var">isFormat</span></a></span><span> </span><span class="annot"><span class="annottext">MaybeTaggedFormat
+</span><a href="#local-6989586621679331898"><span class="hs-identifier hs-var">f1</span></a></span><span> </span><span class="annot"><span class="annottext">Bool -&gt; Bool -&gt; Bool
+</span><span class="hs-operator hs-var">||</span></span><span> </span><span class="annot"><span class="annottext">MaybeTaggedFormat -&gt; Bool
+forall f. MaybeFormat f -&gt; Bool
+</span><a href="Format.html#isFormat"><span class="hs-identifier hs-var">isFormat</span></a></span><span> </span><span class="annot"><span class="annottext">MaybeTaggedFormat
+</span><a href="#local-6989586621679331897"><span class="hs-identifier hs-var">f2</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">([(MaybeTaggedFormat, MaybeTaggedFormat)] -&gt; Bool)
+-&gt; [(MaybeTaggedFormat, MaybeTaggedFormat)] -&gt; Bool
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span>
+</span><span id="line-120"></span><span>                    </span><span class="annot"><span class="annottext">[MaybeTaggedFormat]
+-&gt; [MaybeTaggedFormat] -&gt; [(MaybeTaggedFormat, MaybeTaggedFormat)]
+forall a b. [a] -&gt; [b] -&gt; [(a, b)]
+</span><span class="hs-identifier hs-var">zip</span></span><span> </span><span class="annot"><span class="annottext">[MaybeTaggedFormat]
+</span><a href="#local-6989586621679331900"><span class="hs-identifier hs-var">fs</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[MaybeTaggedFormat] -&gt; [MaybeTaggedFormat]
+forall a. [a] -&gt; [a]
+</span><span class="hs-identifier hs-var">tail</span></span><span> </span><span class="annot"><span class="annottext">[MaybeTaggedFormat]
+</span><a href="#local-6989586621679331900"><span class="hs-identifier hs-var">fs</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-121"></span><span>        </span><span id="local-6989586621679331893"><span class="annot"><span class="annottext">Set StrRelation
+</span><a href="#local-6989586621679331893"><span class="hs-identifier hs-var">relSet</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">ReaderT SemigroupPresentation Maybe (Set StrRelation)
+-&gt; LocalReader (Set StrRelation)
+forall a. ReaderT SemigroupPresentation Maybe a -&gt; LocalReader a
+</span><a href="SP2GP.Relations.html#liftSP"><span class="hs-identifier hs-var">liftSP</span></a></span><span> </span><span class="annot"><span class="annottext">(ReaderT SemigroupPresentation Maybe (Set StrRelation)
+ -&gt; LocalReader (Set StrRelation))
+-&gt; ReaderT SemigroupPresentation Maybe (Set StrRelation)
+-&gt; LocalReader (Set StrRelation)
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">SetGetter StrRelation
+-&gt; ReaderT SemigroupPresentation Maybe (Set StrRelation)
+forall s (m :: * -&gt; *) a. MonadReader s m =&gt; Getting a s a -&gt; m a
+</span><span class="hs-identifier hs-var">view</span></span><span> </span><span class="annot"><span class="annottext">SetGetter StrRelation
+</span><a href="#local-6989586621679331904"><span class="hs-identifier hs-var">relGetter</span></a></span><span>
+</span><span id="line-122"></span><span>        </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679331892"><span class="annot"><span class="annottext">relList :: [StrRelation]
+</span><a href="#local-6989586621679331892"><span class="hs-identifier hs-var hs-var">relList</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Set StrRelation -&gt; [StrRelation]
+forall c v. Listable c v =&gt; c -&gt; [v]
+</span><a href="Containers.html#toList"><span class="hs-identifier hs-var">toList</span></a></span><span> </span><span class="annot"><span class="annottext">Set StrRelation
+</span><a href="#local-6989586621679331893"><span class="hs-identifier hs-var">relSet</span></a></span><span>
+</span><span id="line-123"></span><span>        </span><span id="local-6989586621679331891"><span class="annot"><span class="annottext">[[[Generator]]]
+</span><a href="#local-6989586621679331891"><span class="hs-identifier hs-var">gws</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">[StrRelation]
+-&gt; (StrRelation
+    -&gt; ReaderT
+         [ReplaceRule]
+         (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+         [[Generator]])
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     [[[Generator]]]
+forall (t :: * -&gt; *) (m :: * -&gt; *) a b.
+(Traversable t, Monad m) =&gt;
+t a -&gt; (a -&gt; m b) -&gt; m (t b)
+</span><span class="hs-identifier hs-var">forM</span></span><span> </span><span class="annot"><span class="annottext">[StrRelation]
+</span><a href="#local-6989586621679331892"><span class="hs-identifier hs-var">relList</span></a></span><span> </span><span class="annot"><span class="annottext">((StrRelation
+  -&gt; ReaderT
+       [ReplaceRule]
+       (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+       [[Generator]])
+ -&gt; ReaderT
+      [ReplaceRule]
+      (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+      [[[Generator]]])
+-&gt; (StrRelation
+    -&gt; ReaderT
+         [ReplaceRule]
+         (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+         [[Generator]])
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     [[[Generator]]]
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679331890"><span class="annot"><span class="annottext">StrRelation
+</span><a href="#local-6989586621679331890"><span class="hs-identifier hs-var">rel</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span>
+</span><span id="line-124"></span><span>            </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679331889"><span class="annot"><span class="annottext">[MaybeTaggedFormat]
+-&gt; [String]
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     [[Generator]]
+</span><a href="#local-6989586621679331889"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">(Pair [[Generator]] -&gt; [[Generator]])
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     (Pair [[Generator]])
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     [[Generator]]
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-identifier hs-var">fmap</span></span><span> </span><span class="annot"><span class="annottext">Pair [[Generator]] -&gt; [[Generator]]
+forall (t :: * -&gt; *) m. (Foldable t, Monoid m) =&gt; t m -&gt; m
+</span><span class="hs-identifier hs-var">fold</span></span><span> </span><span class="annot"><span class="annottext">(ReaderT
+   [ReplaceRule]
+   (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+   (Pair [[Generator]])
+ -&gt; ReaderT
+      [ReplaceRule]
+      (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+      [[Generator]])
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     (Pair [[Generator]])
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     [[Generator]]
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Pair
+  (ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     [[Generator]])
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     (Pair [[Generator]])
+forall (t :: * -&gt; *) (m :: * -&gt; *) a.
+(Traversable t, Monad m) =&gt;
+t (m a) -&gt; m (t a)
+</span><span class="hs-identifier hs-var">sequence</span></span><span> </span><span class="annot"><span class="annottext">(Pair
+   (ReaderT
+      [ReplaceRule]
+      (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+      [[Generator]])
+ -&gt; ReaderT
+      [ReplaceRule]
+      (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+      (Pair [[Generator]]))
+-&gt; Pair
+     (ReaderT
+        [ReplaceRule]
+        (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+        [[Generator]])
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     (Pair [[Generator]])
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">[MaybeTaggedFormat]
+-&gt; [String]
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     [[Generator]]
+</span><a href="#local-6989586621679331889"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">([MaybeTaggedFormat]
+ -&gt; [String]
+ -&gt; ReaderT
+      [ReplaceRule]
+      (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+      [[Generator]])
+-&gt; Pair [MaybeTaggedFormat]
+-&gt; Pair
+     ([String]
+      -&gt; ReaderT
+           [ReplaceRule]
+           (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+           [[Generator]])
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">Pair [MaybeTaggedFormat]
+</span><a href="#local-6989586621679331901"><span class="hs-identifier hs-var">pfs</span></a></span><span> </span><span class="annot"><span class="annottext">Pair
+  ([String]
+   -&gt; ReaderT
+        [ReplaceRule]
+        (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+        [[Generator]])
+-&gt; StrRelation
+-&gt; Pair
+     (ReaderT
+        [ReplaceRule]
+        (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+        [[Generator]])
+forall (f :: * -&gt; *) a b. Applicative f =&gt; f (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;*&gt;</span></span><span> </span><span class="annot"><span class="annottext">StrRelation
+</span><a href="#local-6989586621679331890"><span class="hs-identifier hs-var">rel</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">(([MaybeTaggedFormat]
+  -&gt; [String]
+  -&gt; ReaderT
+       [ReplaceRule]
+       (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+       [[Generator]])
+ -&gt; ReaderT
+      [ReplaceRule]
+      (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+      [[Generator]])
+-&gt; ([MaybeTaggedFormat]
+    -&gt; [String]
+    -&gt; ReaderT
+         [ReplaceRule]
+         (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+         [[Generator]])
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     [[Generator]]
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679331887"><span class="annot"><span class="annottext">[MaybeTaggedFormat]
+</span><a href="#local-6989586621679331887"><span class="hs-identifier hs-var">fs'</span></a></span></span><span> </span><span id="local-6989586621679331886"><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679331886"><span class="hs-identifier hs-var">gs'</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span>
+</span><span id="line-125"></span><span>                </span><span class="annot"><span class="annottext">[String]
+-&gt; [MaybeTaggedFormat]
+-&gt; [String]
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     [[Generator]]
+</span><a href="#local-6989586621679331885"><span class="hs-identifier hs-var">go</span></a></span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span> </span><span class="annot"><span class="annottext">[MaybeTaggedFormat]
+</span><a href="#local-6989586621679331887"><span class="hs-identifier hs-var">fs'</span></a></span><span> </span><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679331886"><span class="hs-identifier hs-var">gs'</span></a></span><span>
+</span><span id="line-126"></span><span>        </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679331884"><span class="annot"><span class="annottext">fs :: [String]
+</span><a href="#local-6989586621679331884"><span class="hs-identifier hs-var hs-var">fs</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">StrRelation -&gt; [String]
+forall (t :: * -&gt; *) m. (Foldable t, Monoid m) =&gt; t m -&gt; m
+</span><span class="hs-identifier hs-var">fold</span></span><span> </span><span class="annot"><span class="annottext">(StrRelation -&gt; [String]) -&gt; StrRelation -&gt; [String]
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">([MaybeTaggedFormat] -&gt; [String])
+-&gt; Pair [MaybeTaggedFormat] -&gt; StrRelation
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-identifier hs-var">fmap</span></span><span class="annot"><span class="annottext">(([MaybeTaggedFormat] -&gt; [String])
+ -&gt; Pair [MaybeTaggedFormat] -&gt; StrRelation)
+-&gt; ((MaybeTaggedFormat -&gt; String)
+    -&gt; [MaybeTaggedFormat] -&gt; [String])
+-&gt; (MaybeTaggedFormat -&gt; String)
+-&gt; Pair [MaybeTaggedFormat]
+-&gt; StrRelation
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span class="annot"><span class="annottext">(MaybeTaggedFormat -&gt; String) -&gt; [MaybeTaggedFormat] -&gt; [String]
+forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">MaybeTaggedFormat -&gt; String
+forall f. Apply f () =&gt; f -&gt; String
+</span><a href="Format.html#format2str"><span class="hs-identifier hs-var">format2str</span></a></span><span> </span><span class="annot"><span class="annottext">Pair [MaybeTaggedFormat]
+</span><a href="#local-6989586621679331901"><span class="hs-identifier hs-var">pfs</span></a></span><span>
+</span><span id="line-127"></span><span>        </span><span class="annot"><span class="annottext">ReplaceRule -&gt; LocalReader ReplaceRule
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679331884"><span class="hs-identifier hs-var">fs</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">[[[Generator]]]
+</span><a href="#local-6989586621679331891"><span class="hs-identifier hs-var">gws</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-128"></span><span>      </span><span class="hs-keyword">where</span><span>
+</span><span id="line-129"></span><span>        </span><span class="annot"><a href="#local-6989586621679331885"><span class="hs-identifier hs-type">go</span></a></span><span> </span><span class="hs-glyph">::</span><span>
+</span><span id="line-130"></span><span>            </span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span>
+</span><span id="line-131"></span><span>            </span><span class="hs-special">[</span><span class="annot"><a href="Format.html#MaybeTaggedFormat"><span class="hs-identifier hs-type">MaybeTaggedFormat</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span>
+</span><span id="line-132"></span><span>            </span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span>
+</span><span id="line-133"></span><span>            </span><span class="annot"><a href="SP2GP.Relations.html#LocalReader"><span class="hs-identifier hs-type">LocalReader</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><a href="GroupPresentation.Generator.html#GWord"><span class="hs-identifier hs-type">GP.GWord</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-134"></span><span>        </span><span id="local-6989586621679331885"><span class="annot"><span class="annottext">go :: [String]
+-&gt; [MaybeTaggedFormat]
+-&gt; [String]
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     [[Generator]]
+</span><a href="#local-6989586621679331885"><span class="hs-identifier hs-var hs-var">go</span></a></span></span><span> </span><span class="annot"><span class="annottext">[String]
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[[Generator]]
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     [[Generator]]
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span>
+</span><span id="line-135"></span><span>        </span><span class="annot"><a href="#local-6989586621679331885"><span class="hs-identifier hs-var">go</span></a></span><span> </span><span class="annot"><span class="annottext">[String]
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-special">[</span><span class="annot"><a href="Format.html#JustString"><span class="hs-identifier hs-type">JustString</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-identifier">_</span></span><span class="hs-special">]</span><span> </span><span id="local-6989586621679331882"><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679331882"><span class="hs-identifier hs-var">gs</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-136"></span><span>            </span><span id="local-6989586621679331881"><span class="annot"><span class="annottext">[Generator]
+</span><a href="#local-6989586621679331881"><span class="hs-identifier hs-var">gw</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">(String
+ -&gt; ReaderT
+      [ReplaceRule]
+      (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+      Generator)
+-&gt; [String]
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     [Generator]
+forall (t :: * -&gt; *) (f :: * -&gt; *) a b.
+(Traversable t, Applicative f) =&gt;
+(a -&gt; f b) -&gt; t a -&gt; f (t b)
+</span><span class="hs-identifier hs-var">traverse</span></span><span> </span><span class="annot"><span class="annottext">String
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     Generator
+</span><a href="SP2GP.Relations.html#gen_"><span class="hs-identifier hs-var">gen_</span></a></span><span> </span><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679331882"><span class="hs-identifier hs-var">gs</span></a></span><span>
+</span><span id="line-137"></span><span>            </span><span class="annot"><span class="annottext">[[Generator]]
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     [[Generator]]
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">[Generator]
+</span><a href="#local-6989586621679331881"><span class="hs-identifier hs-var">gw</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-138"></span><span>        </span><span class="annot"><a href="#local-6989586621679331885"><span class="hs-identifier hs-var">go</span></a></span><span> </span><span id="local-6989586621679331880"><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679331880"><span class="hs-identifier hs-var">acc</span></a></span></span><span> </span><span id="local-6989586621679331879"><span class="annot"><span class="annottext">fs :: [MaybeTaggedFormat]
+</span><a href="#local-6989586621679331879"><span class="hs-identifier hs-var">fs</span></a></span></span><span class="hs-glyph">@</span><span class="hs-special">(</span><span class="hs-special">(</span><span class="annot"><a href="Format.html#JustString"><span class="hs-identifier hs-type">JustString</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-identifier">_</span></span><span class="hs-special">)</span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span class="hs-special">(</span><span class="annot"><a href="Format.html#JustFormat"><span class="hs-identifier hs-type">JustFormat</span></a></span><span> </span><span id="local-6989586621679331877"><span class="annot"><span class="annottext">TaggedFormat
+</span><a href="#local-6989586621679331877"><span class="hs-identifier hs-var">f</span></a></span></span><span class="hs-special">)</span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679331876"><span class="annot"><span class="annottext">[MaybeTaggedFormat]
+</span><a href="#local-6989586621679331876"><span class="hs-identifier hs-var">fs_</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679331875"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679331875"><span class="hs-identifier hs-var">g</span></a></span></span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679331874"><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679331874"><span class="hs-identifier hs-var">gs</span></a></span></span><span class="hs-special">)</span><span>
+</span><span id="line-139"></span><span>            </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">TaggedFormat -&gt; String -&gt; Bool
+forall f r. Match f r =&gt; f -&gt; String -&gt; r
+</span><a href="Format.html#match"><span class="hs-identifier hs-var">match</span></a></span><span> </span><span class="annot"><span class="annottext">TaggedFormat
+</span><a href="#local-6989586621679331877"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679331875"><span class="hs-identifier hs-var">g</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-140"></span><span>                </span><span id="local-6989586621679331872"><span class="annot"><span class="annottext">[Generator]
+</span><a href="#local-6989586621679331872"><span class="hs-identifier hs-var">gw1'</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">(String
+ -&gt; ReaderT
+      [ReplaceRule]
+      (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+      Generator)
+-&gt; [String]
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     [Generator]
+forall (t :: * -&gt; *) (f :: * -&gt; *) a b.
+(Traversable t, Applicative f) =&gt;
+(a -&gt; f b) -&gt; t a -&gt; f (t b)
+</span><span class="hs-identifier hs-var">traverse</span></span><span> </span><span class="annot"><span class="annottext">String
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     Generator
+</span><a href="SP2GP.Relations.html#gen_"><span class="hs-identifier hs-var">gen_</span></a></span><span> </span><span class="annot"><span class="annottext">([String]
+ -&gt; ReaderT
+      [ReplaceRule]
+      (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+      [Generator])
+-&gt; [String]
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     [Generator]
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; [String]
+forall a. [a] -&gt; [a]
+</span><span class="hs-identifier hs-var">reverse</span></span><span> </span><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679331880"><span class="hs-identifier hs-var">acc</span></a></span><span>
+</span><span id="line-141"></span><span>                </span><span id="local-6989586621679331870"><span class="annot"><span class="annottext">[Generator]
+</span><a href="#local-6989586621679331870"><span class="hs-identifier hs-var">gw2'</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Generator -&gt; [Generator]
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">(Generator -&gt; [Generator])
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     Generator
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     [Generator]
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">String
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     Generator
+</span><a href="SP2GP.Relations.html#gen_"><span class="hs-identifier hs-var">gen_</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679331875"><span class="hs-identifier hs-var">g</span></a></span><span>
+</span><span id="line-142"></span><span>                </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[Generator]
+</span><a href="#local-6989586621679331872"><span class="hs-identifier hs-var">gw1'</span></a></span><span class="annot"><span class="annottext">[Generator] -&gt; [[Generator]] -&gt; [[Generator]]
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">([[Generator]] -&gt; [[Generator]])
+-&gt; ([[Generator]] -&gt; [[Generator]])
+-&gt; [[Generator]]
+-&gt; [[Generator]]
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[Generator]
+</span><a href="#local-6989586621679331870"><span class="hs-identifier hs-var">gw2'</span></a></span><span class="annot"><span class="annottext">[Generator] -&gt; [[Generator]] -&gt; [[Generator]]
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">([[Generator]] -&gt; [[Generator]])
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     [[Generator]]
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     [[Generator]]
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">[String]
+-&gt; [MaybeTaggedFormat]
+-&gt; [String]
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     [[Generator]]
+</span><a href="#local-6989586621679331885"><span class="hs-identifier hs-var">go</span></a></span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span> </span><span class="annot"><span class="annottext">[MaybeTaggedFormat]
+</span><a href="#local-6989586621679331876"><span class="hs-identifier hs-var">fs_</span></a></span><span> </span><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679331874"><span class="hs-identifier hs-var">gs</span></a></span><span>
+</span><span id="line-143"></span><span>            </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Bool
+</span><span class="hs-identifier hs-var">otherwise</span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-144"></span><span>                </span><span class="annot"><span class="annottext">[String]
+-&gt; [MaybeTaggedFormat]
+-&gt; [String]
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     [[Generator]]
+</span><a href="#local-6989586621679331885"><span class="hs-identifier hs-var">go</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679331875"><span class="hs-identifier hs-var">g</span></a></span><span class="annot"><span class="annottext">String -&gt; [String] -&gt; [String]
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679331880"><span class="hs-identifier hs-var">acc</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[MaybeTaggedFormat]
+</span><a href="#local-6989586621679331879"><span class="hs-identifier hs-var">fs</span></a></span><span> </span><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679331874"><span class="hs-identifier hs-var">gs</span></a></span><span>
+</span><span id="line-145"></span><span>        </span><span class="annot"><a href="#local-6989586621679331885"><span class="hs-identifier hs-var">go</span></a></span><span> </span><span class="annot"><span class="annottext">[String]
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">(</span><span class="annot"><a href="Format.html#JustFormat"><span class="hs-identifier hs-type">JustFormat</span></a></span><span> </span><span id="local-6989586621679331869"><span class="annot"><span class="annottext">TaggedFormat
+</span><a href="#local-6989586621679331869"><span class="hs-identifier hs-var">f</span></a></span></span><span class="hs-special">)</span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679331868"><span class="annot"><span class="annottext">[MaybeTaggedFormat]
+</span><a href="#local-6989586621679331868"><span class="hs-identifier hs-var">fs</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679331867"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679331867"><span class="hs-identifier hs-var">g</span></a></span></span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679331866"><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679331866"><span class="hs-identifier hs-var">gs</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-146"></span><span>            </span><span class="annot"><span class="annottext">Bool
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     ()
+forall (f :: * -&gt; *). Alternative f =&gt; Bool -&gt; f ()
+</span><span class="hs-identifier hs-var">guard</span></span><span> </span><span class="annot"><span class="annottext">(Bool
+ -&gt; ReaderT
+      [ReplaceRule]
+      (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+      ())
+-&gt; Bool
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">TaggedFormat -&gt; String -&gt; Bool
+forall f r. Match f r =&gt; f -&gt; String -&gt; r
+</span><a href="Format.html#match"><span class="hs-identifier hs-var">match</span></a></span><span> </span><span class="annot"><span class="annottext">TaggedFormat
+</span><a href="#local-6989586621679331869"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679331867"><span class="hs-identifier hs-var">g</span></a></span><span>
+</span><span id="line-147"></span><span>            </span><span id="local-6989586621679331865"><span class="annot"><span class="annottext">[Generator]
+</span><a href="#local-6989586621679331865"><span class="hs-identifier hs-var">gw</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Generator -&gt; [Generator]
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">(Generator -&gt; [Generator])
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     Generator
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     [Generator]
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">String
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     Generator
+</span><a href="SP2GP.Relations.html#gen_"><span class="hs-identifier hs-var">gen_</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679331867"><span class="hs-identifier hs-var">g</span></a></span><span>
+</span><span id="line-148"></span><span>            </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[Generator]
+</span><a href="#local-6989586621679331865"><span class="hs-identifier hs-var">gw</span></a></span><span class="annot"><span class="annottext">[Generator] -&gt; [[Generator]] -&gt; [[Generator]]
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">([[Generator]] -&gt; [[Generator]])
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     [[Generator]]
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     [[Generator]]
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">[String]
+-&gt; [MaybeTaggedFormat]
+-&gt; [String]
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     [[Generator]]
+</span><a href="#local-6989586621679331885"><span class="hs-identifier hs-var">go</span></a></span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span> </span><span class="annot"><span class="annottext">[MaybeTaggedFormat]
+</span><a href="#local-6989586621679331868"><span class="hs-identifier hs-var">fs</span></a></span><span> </span><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679331866"><span class="hs-identifier hs-var">gs</span></a></span><span>
+</span><span id="line-149"></span><span>        </span><span class="annot"><a href="#local-6989586621679331885"><span class="hs-identifier hs-var">go</span></a></span><span> </span><span class="annot"><span class="annottext">[String]
+</span><span class="hs-identifier">_</span></span><span> </span><span class="annot"><span class="annottext">[MaybeTaggedFormat]
+</span><span class="hs-identifier">_</span></span><span> </span><span class="annot"><span class="annottext">[String]
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     [[Generator]]
+forall (m :: * -&gt; *) a. MonadFail m =&gt; String -&gt; m a
+</span><span class="hs-identifier hs-var">fail</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;Something goes wrong&quot;</span></span><span>
+</span><span id="line-150"></span><span>
+</span><span id="line-151"></span><span id="local-6989586621679331861"><span id="local-6989586621679331862"><span id="local-6989586621679331863"><span id="local-6989586621679331864"><span class="hs-keyword">instance</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="SP2GP.Relations.html#RangeClass"><span class="hs-identifier hs-type">RangeClass</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679331864"><span class="hs-identifier hs-type">v1</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679331863"><span class="hs-identifier hs-type">c1</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="SP2GP.Relations.html#RangeClass"><span class="hs-identifier hs-type">RangeClass</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679331862"><span class="hs-identifier hs-type">v2</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679331861"><span class="hs-identifier hs-type">c2</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><a href="SP2GP.Relations.html#RangeClass"><span class="hs-identifier hs-type">RangeClass</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="#local-6989586621679331864"><span class="hs-identifier hs-type">v1</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="#local-6989586621679331862"><span class="hs-identifier hs-type">v2</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="#local-6989586621679331863"><span class="hs-identifier hs-type">c1</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="#local-6989586621679331861"><span class="hs-identifier hs-type">c2</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-152"></span><span>    </span><span id="local-6989586621679331859"><span class="annot"><span class="annottext">range_ :: Range (v1, v2) (c1, c2) -&gt; LocalReader ReplaceRule
+</span><a href="#local-6989586621679331859"><span class="hs-identifier hs-var hs-var hs-var hs-var">range_</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="SP2GP.Relations.html#Range"><span class="hs-identifier hs-type">Range</span></a></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679331858"><span class="annot"><span class="annottext">v1
+</span><a href="#local-6989586621679331858"><span class="hs-identifier hs-var">v1</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679331857"><span class="annot"><span class="annottext">v2
+</span><a href="#local-6989586621679331857"><span class="hs-identifier hs-var">v2</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679331856"><span class="annot"><span class="annottext">c1
+</span><a href="#local-6989586621679331856"><span class="hs-identifier hs-var">c1</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679331855"><span class="annot"><span class="annottext">c2
+</span><a href="#local-6989586621679331855"><span class="hs-identifier hs-var">c2</span></a></span></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-153"></span><span>        </span><span class="hs-special">(</span><span id="local-6989586621679331854"><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679331854"><span class="hs-identifier hs-var">gs1</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679331853"><span class="annot"><span class="annottext">[[[Generator]]]
+</span><a href="#local-6989586621679331853"><span class="hs-identifier hs-var">gwss1</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Range v1 c1 -&gt; LocalReader ReplaceRule
+forall v c. RangeClass v c =&gt; Range v c -&gt; LocalReader ReplaceRule
+</span><a href="SP2GP.Relations.html#range_"><span class="hs-identifier hs-var">range_</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">v1 -&gt; c1 -&gt; Range v1 c1
+forall v c. v -&gt; c -&gt; Range v c
+</span><a href="SP2GP.Relations.html#Range"><span class="hs-identifier hs-var">Range</span></a></span><span> </span><span class="annot"><span class="annottext">v1
+</span><a href="#local-6989586621679331858"><span class="hs-identifier hs-var">v1</span></a></span><span> </span><span class="annot"><span class="annottext">c1
+</span><a href="#local-6989586621679331856"><span class="hs-identifier hs-var">c1</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-154"></span><span>        </span><span class="hs-special">(</span><span id="local-6989586621679331852"><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679331852"><span class="hs-identifier hs-var">gs2</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679331851"><span class="annot"><span class="annottext">[[[Generator]]]
+</span><a href="#local-6989586621679331851"><span class="hs-identifier hs-var">gwss2</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Range v2 c2 -&gt; LocalReader ReplaceRule
+forall v c. RangeClass v c =&gt; Range v c -&gt; LocalReader ReplaceRule
+</span><a href="SP2GP.Relations.html#range_"><span class="hs-identifier hs-var">range_</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">v2 -&gt; c2 -&gt; Range v2 c2
+forall v c. v -&gt; c -&gt; Range v c
+</span><a href="SP2GP.Relations.html#Range"><span class="hs-identifier hs-var">Range</span></a></span><span> </span><span class="annot"><span class="annottext">v2
+</span><a href="#local-6989586621679331857"><span class="hs-identifier hs-var">v2</span></a></span><span> </span><span class="annot"><span class="annottext">c2
+</span><a href="#local-6989586621679331855"><span class="hs-identifier hs-var">c2</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-155"></span><span>        </span><span class="annot"><span class="annottext">ReplaceRule -&gt; LocalReader ReplaceRule
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">(ReplaceRule -&gt; LocalReader ReplaceRule)
+-&gt; ReplaceRule -&gt; LocalReader ReplaceRule
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679331854"><span class="hs-identifier hs-var">gs1</span></a></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; [String] -&gt; [String]
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679331852"><span class="hs-identifier hs-var">gs2</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">([[Generator]] -&gt; [[Generator]] -&gt; [[Generator]])
+-&gt; [[[Generator]]] -&gt; [[[Generator]]] -&gt; [[[Generator]]]
+forall a b c. (a -&gt; b -&gt; c) -&gt; [a] -&gt; [b] -&gt; [c]
+</span><span class="hs-identifier hs-var">zipWith</span></span><span> </span><span class="annot"><span class="annottext">[[Generator]] -&gt; [[Generator]] -&gt; [[Generator]]
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">(++)</span></span><span> </span><span class="annot"><span class="annottext">[[[Generator]]]
+</span><a href="#local-6989586621679331853"><span class="hs-identifier hs-var">gwss1</span></a></span><span> </span><span class="annot"><span class="annottext">[[[Generator]]]
+</span><a href="#local-6989586621679331851"><span class="hs-identifier hs-var">gwss2</span></a></span><span class="hs-special">)</span></span></span></span></span><span>
+</span><span id="line-156"></span><span>
+</span><span id="line-157"></span><span class="annot"><a href="SP2GP.Relations.html#elems_"><span class="hs-identifier hs-type">elems_</span></a></span><span> </span><span class="hs-glyph">::</span><span>
+</span><span id="line-158"></span><span>    </span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span>
+</span><span id="line-159"></span><span>    </span><span class="hs-special">[</span><span class="annot"><a href="SP2GP.Relations.html#ReplaceAtom"><span class="hs-identifier hs-type">ReplaceAtom</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span>
+</span><span id="line-160"></span><span>    </span><span class="annot"><a href="SP2GP.Relations.html#LocalReader"><span class="hs-identifier hs-type">LocalReader</span></a></span><span> </span><span class="hs-special">[</span><span class="hs-special">(</span><span class="annot"><a href="GroupPresentation.Element.html#EWord"><span class="hs-identifier hs-type">GP.EWord</span></a></span><span class="hs-special">,</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="SP2GP.Relations.html#ReplaceAtom"><span class="hs-identifier hs-type">ReplaceAtom</span></a></span><span class="hs-special">]</span><span class="hs-special">)</span><span class="hs-special">]</span><span>
+</span><span id="line-161"></span><span id="elems_"><span class="annot"><span class="annottext">elems_ :: [String]
+-&gt; [ReplaceAtom]
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     [(EWord, [ReplaceAtom])]
+</span><a href="SP2GP.Relations.html#elems_"><span class="hs-identifier hs-var hs-var">elems_</span></a></span></span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span> </span><span id="local-6989586621679331849"><span class="annot"><span class="annottext">[ReplaceAtom]
+</span><a href="#local-6989586621679331849"><span class="hs-identifier hs-var">replaceAtoms</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[(EWord, [ReplaceAtom])]
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     [(EWord, [ReplaceAtom])]
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="hs-special">[</span><span class="hs-special">(</span><span class="hs-special">[</span><span class="hs-special">]</span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">[ReplaceAtom]
+</span><a href="#local-6989586621679331849"><span class="hs-identifier hs-var">replaceAtoms</span></a></span><span class="hs-special">)</span><span class="hs-special">]</span><span>
+</span><span id="line-162"></span><span class="annot"><a href="SP2GP.Relations.html#elems_"><span class="hs-identifier hs-var">elems_</span></a></span><span> </span><span id="local-6989586621679331848"><span class="annot"><span class="annottext">allEs :: [String]
+</span><a href="#local-6989586621679331848"><span class="hs-identifier hs-var">allEs</span></a></span></span><span class="hs-glyph">@</span><span class="hs-special">(</span><span id="local-6989586621679331847"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679331847"><span class="hs-identifier hs-var">e</span></a></span></span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679331846"><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679331846"><span class="hs-identifier hs-var">es</span></a></span></span><span class="hs-special">)</span><span> </span><span id="local-6989586621679331845"><span class="annot"><span class="annottext">[ReplaceAtom]
+</span><a href="#local-6989586621679331845"><span class="hs-identifier hs-var">replaceAtoms</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-163"></span><span>    </span><span class="hs-keyword">let</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679331844"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679331844"><span class="hs-identifier hs-var">g</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679331843"><span class="annot"><span class="annottext">GenPow
+</span><a href="#local-6989586621679331843"><span class="hs-identifier hs-var">p</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; (String, GenPow)
+</span><a href="SP2GP.Relations.html#elem2gen"><span class="hs-identifier hs-var">elem2gen</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679331847"><span class="hs-identifier hs-var">e</span></a></span><span>
+</span><span id="line-164"></span><span>    </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">(ReplaceAtom -&gt; Bool) -&gt; [ReplaceAtom] -&gt; Maybe ReplaceAtom
+forall (t :: * -&gt; *) a. Foldable t =&gt; (a -&gt; Bool) -&gt; t a -&gt; Maybe a
+</span><span class="hs-identifier hs-var">find</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String -&gt; ReplaceAtom -&gt; Bool
+</span><a href="SP2GP.Relations.html#consistRA"><span class="hs-identifier hs-var">consistRA</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679331844"><span class="hs-identifier hs-var">g</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[ReplaceAtom]
+</span><a href="#local-6989586621679331845"><span class="hs-identifier hs-var">replaceAtoms</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-165"></span><span>        </span><span class="annot"><span class="hs-identifier hs-type">Just</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
+</span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679331841"><span class="annot"><span class="annottext">[Generator]
+</span><a href="#local-6989586621679331841"><span class="hs-identifier hs-var">gw</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-166"></span><span>            </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679331840"><span class="annot"><span class="annottext">ew :: EWord
+</span><a href="#local-6989586621679331840"><span class="hs-identifier hs-var hs-var">ew</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Generator] -&gt; GenPow -&gt; EWord
+</span><a href="SP2GP.Relations.html#powGWord"><span class="hs-identifier hs-var">powGWord</span></a></span><span> </span><span class="annot"><span class="annottext">[Generator]
+</span><a href="#local-6989586621679331841"><span class="hs-identifier hs-var">gw</span></a></span><span> </span><span class="annot"><span class="annottext">GenPow
+</span><a href="#local-6989586621679331843"><span class="hs-identifier hs-var">p</span></a></span><span>
+</span><span id="line-167"></span><span>            </span><span class="annot"><span class="annottext">EWord -&gt; [(EWord, [ReplaceAtom])] -&gt; [(EWord, [ReplaceAtom])]
+forall s t a b a.
+(Each s t a b, Field1 a b [a] [a]) =&gt;
+[a] -&gt; s -&gt; t
+</span><a href="#local-6989586621679331838"><span class="hs-identifier hs-var">add</span></a></span><span> </span><span class="annot"><span class="annottext">EWord
+</span><a href="#local-6989586621679331840"><span class="hs-identifier hs-var">ew</span></a></span><span> </span><span class="annot"><span class="annottext">([(EWord, [ReplaceAtom])] -&gt; [(EWord, [ReplaceAtom])])
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     [(EWord, [ReplaceAtom])]
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     [(EWord, [ReplaceAtom])]
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">[String]
+-&gt; [ReplaceAtom]
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     [(EWord, [ReplaceAtom])]
+</span><a href="SP2GP.Relations.html#elems_"><span class="hs-identifier hs-var">elems_</span></a></span><span> </span><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679331846"><span class="hs-identifier hs-var">es</span></a></span><span> </span><span class="annot"><span class="annottext">[ReplaceAtom]
+</span><a href="#local-6989586621679331845"><span class="hs-identifier hs-var">replaceAtoms</span></a></span><span>
+</span><span id="line-168"></span><span>        </span><span class="annot"><span class="annottext">Maybe ReplaceAtom
+</span><span class="hs-identifier hs-var">Nothing</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-169"></span><span>            </span><span id="local-6989586621679331837"><span class="annot"><span class="annottext">[ReplaceRule]
+</span><a href="#local-6989586621679331837"><span class="hs-identifier hs-var">replaceRules</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">ReaderT
+  [ReplaceRule]
+  (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+  [ReplaceRule]
+forall r (m :: * -&gt; *). MonadReader r m =&gt; m r
+</span><span class="hs-identifier hs-var">R.ask</span></span><span>
+</span><span id="line-170"></span><span>            </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">(ReplaceRule -&gt; Bool) -&gt; [ReplaceRule] -&gt; Maybe ReplaceRule
+forall (t :: * -&gt; *) a. Foldable t =&gt; (a -&gt; Bool) -&gt; t a -&gt; Maybe a
+</span><span class="hs-identifier hs-var">find</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String -&gt; ReplaceRule -&gt; Bool
+</span><a href="SP2GP.Relations.html#consistRR"><span class="hs-identifier hs-var">consistRR</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679331844"><span class="hs-identifier hs-var">g</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[ReplaceRule]
+</span><a href="#local-6989586621679331837"><span class="hs-identifier hs-var">replaceRules</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-171"></span><span>                </span><span class="annot"><span class="annottext">Maybe ReplaceRule
+</span><span class="hs-identifier hs-var">Nothing</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-172"></span><span>                    </span><span id="local-6989586621679331835"><span class="annot"><span class="annottext">EWord
+</span><a href="#local-6989586621679331835"><span class="hs-identifier hs-var">ew</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">(String, GenPow) -&gt; LocalReader EWord
+</span><a href="SP2GP.Relations.html#elem_"><span class="hs-identifier hs-var">elem_</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679331844"><span class="hs-identifier hs-var">g</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">GenPow
+</span><a href="#local-6989586621679331843"><span class="hs-identifier hs-var">p</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-173"></span><span>                    </span><span class="annot"><span class="annottext">EWord -&gt; [(EWord, [ReplaceAtom])] -&gt; [(EWord, [ReplaceAtom])]
+forall s t a b a.
+(Each s t a b, Field1 a b [a] [a]) =&gt;
+[a] -&gt; s -&gt; t
+</span><a href="#local-6989586621679331838"><span class="hs-identifier hs-var">add</span></a></span><span> </span><span class="annot"><span class="annottext">EWord
+</span><a href="#local-6989586621679331835"><span class="hs-identifier hs-var">ew</span></a></span><span> </span><span class="annot"><span class="annottext">([(EWord, [ReplaceAtom])] -&gt; [(EWord, [ReplaceAtom])])
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     [(EWord, [ReplaceAtom])]
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     [(EWord, [ReplaceAtom])]
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">[String]
+-&gt; [ReplaceAtom]
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     [(EWord, [ReplaceAtom])]
+</span><a href="SP2GP.Relations.html#elems_"><span class="hs-identifier hs-var">elems_</span></a></span><span> </span><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679331846"><span class="hs-identifier hs-var">es</span></a></span><span> </span><span class="annot"><span class="annottext">[ReplaceAtom]
+</span><a href="#local-6989586621679331845"><span class="hs-identifier hs-var">replaceAtoms</span></a></span><span>
+</span><span id="line-174"></span><span>                </span><span class="annot"><span class="hs-identifier hs-type">Just</span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679331833"><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679331833"><span class="hs-identifier hs-var">gs</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679331832"><span class="annot"><span class="annottext">[[[Generator]]]
+</span><a href="#local-6989586621679331832"><span class="hs-identifier hs-var">gwss</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span>
+</span><span id="line-175"></span><span>                    </span><span class="annot"><span class="annottext">([[(EWord, [ReplaceAtom])]] -&gt; [(EWord, [ReplaceAtom])])
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     [[(EWord, [ReplaceAtom])]]
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     [(EWord, [ReplaceAtom])]
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-identifier hs-var">fmap</span></span><span> </span><span class="annot"><span class="annottext">[[(EWord, [ReplaceAtom])]] -&gt; [(EWord, [ReplaceAtom])]
+forall (t :: * -&gt; *) a. Foldable t =&gt; t [a] -&gt; [a]
+</span><span class="hs-identifier hs-var">concat</span></span><span> </span><span class="annot"><span class="annottext">(ReaderT
+   [ReplaceRule]
+   (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+   [[(EWord, [ReplaceAtom])]]
+ -&gt; ReaderT
+      [ReplaceRule]
+      (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+      [(EWord, [ReplaceAtom])])
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     [[(EWord, [ReplaceAtom])]]
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     [(EWord, [ReplaceAtom])]
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span>
+</span><span id="line-176"></span><span>                        </span><span class="annot"><span class="annottext">([ReplaceAtom]
+ -&gt; ReaderT
+      [ReplaceRule]
+      (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+      [(EWord, [ReplaceAtom])])
+-&gt; [[ReplaceAtom]]
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     [[(EWord, [ReplaceAtom])]]
+forall (t :: * -&gt; *) (f :: * -&gt; *) a b.
+(Traversable t, Applicative f) =&gt;
+(a -&gt; f b) -&gt; t a -&gt; f (t b)
+</span><span class="hs-identifier hs-var">traverse</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[String]
+-&gt; [ReplaceAtom]
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     [(EWord, [ReplaceAtom])]
+</span><a href="SP2GP.Relations.html#elems_"><span class="hs-identifier hs-var">elems_</span></a></span><span> </span><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679331848"><span class="hs-identifier hs-var">allEs</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">([[ReplaceAtom]]
+ -&gt; ReaderT
+      [ReplaceRule]
+      (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+      [[(EWord, [ReplaceAtom])]])
+-&gt; [[ReplaceAtom]]
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     [[(EWord, [ReplaceAtom])]]
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span>
+</span><span id="line-177"></span><span>                            </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">[String] -&gt; [[Generator]] -&gt; [ReplaceAtom]
+forall a b. [a] -&gt; [b] -&gt; [(a, b)]
+</span><span class="hs-identifier hs-var">zip</span></span><span> </span><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679331833"><span class="hs-identifier hs-var">gs</span></a></span><span> </span><span class="annot"><span class="annottext">[[Generator]]
+</span><a href="#local-6989586621679331831"><span class="hs-identifier hs-var">gws</span></a></span><span> </span><span class="annot"><span class="annottext">[ReplaceAtom] -&gt; [ReplaceAtom] -&gt; [ReplaceAtom]
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[ReplaceAtom]
+</span><a href="#local-6989586621679331845"><span class="hs-identifier hs-var">replaceAtoms</span></a></span><span>
+</span><span id="line-178"></span><span>                            </span><span class="hs-glyph">|</span><span> </span><span id="local-6989586621679331831"><span class="annot"><span class="annottext">[[Generator]]
+</span><a href="#local-6989586621679331831"><span class="hs-identifier hs-var">gws</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">[[[Generator]]]
+</span><a href="#local-6989586621679331832"><span class="hs-identifier hs-var">gwss</span></a></span><span>
+</span><span id="line-179"></span><span>                            </span><span class="hs-special">]</span><span>
+</span><span id="line-180"></span><span>      </span><span class="hs-keyword">where</span><span>
+</span><span id="line-181"></span><span>        </span><span id="local-6989586621679331838"><span class="annot"><span class="annottext">add :: [a] -&gt; s -&gt; t
+</span><a href="#local-6989586621679331838"><span class="hs-identifier hs-var hs-var">add</span></a></span></span><span> </span><span id="local-6989586621679331830"><span class="annot"><span class="annottext">[a]
+</span><a href="#local-6989586621679331830"><span class="hs-identifier hs-var">ew</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(a -&gt; Identity b) -&gt; s -&gt; Identity t
+forall s t a b. Each s t a b =&gt; Traversal s t a b
+</span><span class="hs-identifier hs-var">each</span></span><span class="annot"><span class="annottext">((a -&gt; Identity b) -&gt; s -&gt; Identity t)
+-&gt; (([a] -&gt; Identity [a]) -&gt; a -&gt; Identity b)
+-&gt; ([a] -&gt; Identity [a])
+-&gt; s
+-&gt; Identity t
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span class="annot"><span class="annottext">([a] -&gt; Identity [a]) -&gt; a -&gt; Identity b
+forall s t a b. Field1 s t a b =&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">_1</span></span><span> </span><span class="annot"><span class="annottext">(([a] -&gt; Identity [a]) -&gt; s -&gt; Identity t)
+-&gt; ([a] -&gt; [a]) -&gt; s -&gt; t
+forall s t a b. ASetter s t a b -&gt; (a -&gt; b) -&gt; s -&gt; t
+</span><span class="hs-operator hs-var">%~</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[a]
+</span><a href="#local-6989586621679331830"><span class="hs-identifier hs-var">ew</span></a></span><span> </span><span class="annot"><span class="annottext">[a] -&gt; [a] -&gt; [a]
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span class="hs-special">)</span><span>
+</span><span id="line-182"></span><span>
+</span><span id="line-183"></span><span class="hs-keyword">data</span><span> </span><span id="GenPow"><span class="annot"><a href="SP2GP.Relations.html#GenPow"><span class="hs-identifier hs-var">GenPow</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-184"></span><span>      </span><span id="JustPow"><span class="annot"><a href="SP2GP.Relations.html#JustPow"><span class="hs-identifier hs-var">JustPow</span></a></span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>
+</span><span id="line-185"></span><span>    </span><span class="hs-glyph">|</span><span> </span><span id="Sharp"><span class="annot"><a href="SP2GP.Relations.html#Sharp"><span class="hs-identifier hs-var">Sharp</span></a></span></span><span>
+</span><span id="line-186"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span id="local-6989586621679331820"><span id="local-6989586621679331822"><span id="local-6989586621679331824"><span class="annot"><span class="annottext">Int -&gt; GenPow -&gt; String -&gt; String
+[GenPow] -&gt; String -&gt; String
+GenPow -&gt; String
+(Int -&gt; GenPow -&gt; String -&gt; String)
+-&gt; (GenPow -&gt; String)
+-&gt; ([GenPow] -&gt; String -&gt; String)
+-&gt; Show GenPow
+forall a.
+(Int -&gt; a -&gt; String -&gt; String)
+-&gt; (a -&gt; String) -&gt; ([a] -&gt; String -&gt; String) -&gt; Show a
+showList :: [GenPow] -&gt; String -&gt; String
+$cshowList :: [GenPow] -&gt; String -&gt; String
+show :: GenPow -&gt; String
+$cshow :: GenPow -&gt; String
+showsPrec :: Int -&gt; GenPow -&gt; String -&gt; String
+$cshowsPrec :: Int -&gt; GenPow -&gt; String -&gt; String
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span>
+</span><span id="line-187"></span><span>
+</span><span id="line-188"></span><span class="annot"><a href="SP2GP.Relations.html#elem2gen"><span class="hs-identifier hs-type">elem2gen</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="SP2GP.Relations.html#GenPow"><span class="hs-identifier hs-type">GenPow</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-189"></span><span id="elem2gen"><span class="annot"><span class="annottext">elem2gen :: String -&gt; (String, GenPow)
+</span><a href="SP2GP.Relations.html#elem2gen"><span class="hs-identifier hs-var hs-var">elem2gen</span></a></span></span><span> </span><span id="local-6989586621679331818"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679331818"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-190"></span><span>    </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">(Char -&gt; Bool) -&gt; String -&gt; (String, String)
+forall a. (a -&gt; Bool) -&gt; [a] -&gt; ([a], [a])
+</span><span class="hs-identifier hs-var">span</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Char -&gt; Char -&gt; Bool
+forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">/=</span></span><span> </span><span class="annot"><span class="annottext">Char
+</span><span class="hs-char">'^'</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679331818"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-191"></span><span>        </span><span class="hs-special">(</span><span id="local-6989586621679331815"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679331815"><span class="hs-identifier hs-var">g</span></a></span></span><span class="hs-special">,</span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span class="hs-special">)</span><span>   </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679331815"><span class="hs-identifier hs-var">g</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Int -&gt; GenPow
+</span><a href="SP2GP.Relations.html#JustPow"><span class="hs-identifier hs-var">JustPow</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">1</span></span><span class="hs-special">)</span><span>
+</span><span id="line-192"></span><span>        </span><span class="hs-special">(</span><span id="local-6989586621679331814"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679331814"><span class="hs-identifier hs-var">g</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;^#&quot;</span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679331814"><span class="hs-identifier hs-var">g</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">GenPow
+</span><a href="SP2GP.Relations.html#Sharp"><span class="hs-identifier hs-var">Sharp</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-193"></span><span>        </span><span class="hs-special">(</span><span id="local-6989586621679331813"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679331813"><span class="hs-identifier hs-var">g</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Char
+</span><span class="hs-identifier">_</span></span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679331812"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679331812"><span class="hs-identifier hs-var">p</span></a></span></span><span class="hs-special">)</span><span>  </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679331813"><span class="hs-identifier hs-var">g</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Int -&gt; GenPow
+</span><a href="SP2GP.Relations.html#JustPow"><span class="hs-identifier hs-var">JustPow</span></a></span><span> </span><span class="annot"><span class="annottext">(Int -&gt; GenPow) -&gt; Int -&gt; GenPow
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Int
+forall a. Read a =&gt; String -&gt; a
+</span><span class="hs-identifier hs-var">read</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679331812"><span class="hs-identifier hs-var">p</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-194"></span><span>
+</span><span id="line-195"></span><span class="annot"><a href="SP2GP.Relations.html#powGWord"><span class="hs-identifier hs-type">powGWord</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="GroupPresentation.Generator.html#GWord"><span class="hs-identifier hs-type">GP.GWord</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="SP2GP.Relations.html#GenPow"><span class="hs-identifier hs-type">GenPow</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="GroupPresentation.Element.html#EWord"><span class="hs-identifier hs-type">GP.EWord</span></a></span><span>
+</span><span id="line-196"></span><span id="powGWord"><span class="annot"><span class="annottext">powGWord :: [Generator] -&gt; GenPow -&gt; EWord
+</span><a href="SP2GP.Relations.html#powGWord"><span class="hs-identifier hs-var hs-var">powGWord</span></a></span></span><span> </span><span id="local-6989586621679331810"><span class="annot"><span class="annottext">[Generator]
+</span><a href="#local-6989586621679331810"><span class="hs-identifier hs-var">gw</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="SP2GP.Relations.html#JustPow"><span class="hs-identifier hs-type">JustPow</span></a></span><span> </span><span id="local-6989586621679331809"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679331809"><span class="hs-identifier hs-var">p</span></a></span></span><span class="hs-special">)</span><span>
+</span><span id="line-197"></span><span>    </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679331809"><span class="hs-identifier hs-var">p</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Bool
+forall a. Ord a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">&gt;</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">0</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Int -&gt; EWord -&gt; EWord
+forall a b. (Semigroup a, Integral b) =&gt; b -&gt; a -&gt; a
+</span><span class="hs-identifier hs-var">stimes</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679331809"><span class="hs-identifier hs-var">p</span></a></span><span> </span><span class="annot"><span class="annottext">(EWord -&gt; EWord) -&gt; EWord -&gt; EWord
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Generator -&gt; Signed Generator
+forall a. a -&gt; Signed a
+</span><a href="GroupPresentation.Element.html#Positive"><span class="hs-identifier hs-var">GP.Positive</span></a></span><span> </span><span class="annot"><span class="annottext">(Generator -&gt; Signed Generator) -&gt; [Generator] -&gt; EWord
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">[Generator]
+</span><a href="#local-6989586621679331810"><span class="hs-identifier hs-var">gw</span></a></span><span>
+</span><span id="line-198"></span><span>    </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679331809"><span class="hs-identifier hs-var">p</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Bool
+forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">==</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">0</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span>
+</span><span id="line-199"></span><span>    </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Bool
+</span><span class="hs-identifier hs-var">otherwise</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Int -&gt; EWord -&gt; EWord
+forall a b. (Semigroup a, Integral b) =&gt; b -&gt; a -&gt; a
+</span><span class="hs-identifier hs-var">stimes</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">-</span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679331809"><span class="hs-identifier hs-var">p</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">(EWord -&gt; EWord) -&gt; EWord -&gt; EWord
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Generator -&gt; Signed Generator
+forall a. a -&gt; Signed a
+</span><a href="GroupPresentation.Element.html#Negative"><span class="hs-identifier hs-var">GP.Negative</span></a></span><span> </span><span class="annot"><span class="annottext">(Generator -&gt; Signed Generator) -&gt; [Generator] -&gt; EWord
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">[Generator] -&gt; [Generator]
+forall a. [a] -&gt; [a]
+</span><span class="hs-identifier hs-var">reverse</span></span><span> </span><span class="annot"><span class="annottext">[Generator]
+</span><a href="#local-6989586621679331810"><span class="hs-identifier hs-var">gw</span></a></span><span>
+</span><span id="line-200"></span><span class="annot"><a href="SP2GP.Relations.html#powGWord"><span class="hs-identifier hs-var">powGWord</span></a></span><span> </span><span id="local-6989586621679331805"><span class="annot"><span class="annottext">[Generator]
+</span><a href="#local-6989586621679331805"><span class="hs-identifier hs-var">gw</span></a></span></span><span> </span><span class="annot"><span class="annottext">GenPow
+</span><a href="SP2GP.Relations.html#Sharp"><span class="hs-identifier hs-var">Sharp</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Generator -&gt; Signed Generator
+forall a. a -&gt; Signed a
+</span><a href="GroupPresentation.Element.html#Negative"><span class="hs-identifier hs-var">GP.Negative</span></a></span><span> </span><span class="annot"><span class="annottext">(Generator -&gt; Signed Generator) -&gt; [Generator] -&gt; EWord
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">[Generator]
+</span><a href="#local-6989586621679331805"><span class="hs-identifier hs-var">gw</span></a></span><span>
+</span><span id="line-201"></span><span>
+</span><span id="line-202"></span><span class="annot"><a href="SP2GP.Relations.html#elem_"><span class="hs-identifier hs-type">elem_</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="SP2GP.Relations.html#GenPow"><span class="hs-identifier hs-type">GenPow</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="SP2GP.Relations.html#LocalReader"><span class="hs-identifier hs-type">LocalReader</span></a></span><span> </span><span class="annot"><a href="GroupPresentation.Element.html#EWord"><span class="hs-identifier hs-type">GP.EWord</span></a></span><span>
+</span><span id="line-203"></span><span id="elem_"><span class="annot"><span class="annottext">elem_ :: (String, GenPow) -&gt; LocalReader EWord
+</span><a href="SP2GP.Relations.html#elem_"><span class="hs-identifier hs-var hs-var">elem_</span></a></span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679331804"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679331804"><span class="hs-identifier hs-var">g</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679331803"><span class="annot"><span class="annottext">GenPow
+</span><a href="#local-6989586621679331803"><span class="hs-identifier hs-var">p</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-204"></span><span>    </span><span id="local-6989586621679331802"><span class="annot"><span class="annottext">Generator
+</span><a href="#local-6989586621679331802"><span class="hs-identifier hs-var">g'</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">String
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     Generator
+</span><a href="SP2GP.Relations.html#gen_"><span class="hs-identifier hs-var">gen_</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679331804"><span class="hs-identifier hs-var">g</span></a></span><span>
+</span><span id="line-205"></span><span>    </span><span class="annot"><span class="annottext">EWord -&gt; LocalReader EWord
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">(EWord -&gt; LocalReader EWord) -&gt; EWord -&gt; LocalReader EWord
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">[Generator] -&gt; GenPow -&gt; EWord
+</span><a href="SP2GP.Relations.html#powGWord"><span class="hs-identifier hs-var">powGWord</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">Generator
+</span><a href="#local-6989586621679331802"><span class="hs-identifier hs-var">g'</span></a></span><span class="hs-special">]</span><span> </span><span class="annot"><span class="annottext">GenPow
+</span><a href="#local-6989586621679331803"><span class="hs-identifier hs-var">p</span></a></span><span>
+</span><span id="line-206"></span><span>
+</span><span id="line-207"></span><span class="annot"><a href="SP2GP.Relations.html#gen_"><span class="hs-identifier hs-type">gen_</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="SP2GP.Relations.html#LocalReader"><span class="hs-identifier hs-type">LocalReader</span></a></span><span> </span><span class="annot"><a href="GroupPresentation.Generator.html#Generator"><span class="hs-identifier hs-type">GP.Generator</span></a></span><span>
+</span><span id="line-208"></span><span id="gen_"><span class="annot"><span class="annottext">gen_ :: String
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     Generator
+</span><a href="SP2GP.Relations.html#gen_"><span class="hs-identifier hs-var hs-var">gen_</span></a></span></span><span> </span><span id="local-6989586621679331801"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679331801"><span class="hs-identifier hs-var">g</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-209"></span><span>    </span><span id="local-6989586621679331800"><span class="annot"><span class="annottext">GeneratorsDescr
+</span><a href="#local-6989586621679331800"><span class="hs-identifier hs-var">gsd</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">ReaderT
+  GeneratorsDescr
+  (ReaderT SemigroupPresentation Maybe)
+  GeneratorsDescr
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     GeneratorsDescr
+forall (t :: (* -&gt; *) -&gt; * -&gt; *) (m :: * -&gt; *) a.
+(MonadTrans t, Monad m) =&gt;
+m a -&gt; t m a
+</span><span class="hs-identifier hs-var">lift</span></span><span> </span><span class="annot"><span class="annottext">ReaderT
+  GeneratorsDescr
+  (ReaderT SemigroupPresentation Maybe)
+  GeneratorsDescr
+forall r (m :: * -&gt; *). MonadReader r m =&gt; m r
+</span><span class="hs-identifier hs-var">R.ask</span></span><span>
+</span><span id="line-210"></span><span>    </span><span class="annot"><span class="annottext">GeneratorsDescr
+</span><a href="#local-6989586621679331800"><span class="hs-identifier hs-var">gsd</span></a></span><span> </span><span class="annot"><span class="annottext">GeneratorsDescr
+-&gt; String
+-&gt; ReaderT
+     [ReplaceRule]
+     (ReaderT GeneratorsDescr (ReaderT SemigroupPresentation Maybe))
+     Generator
+forall c k v (m :: * -&gt; *).
+(Indexable c k v, MonadFail m) =&gt;
+c -&gt; k -&gt; m v
+</span><a href="Containers.html#%21%3F"><span class="hs-operator hs-var">!?</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679331801"><span class="hs-identifier hs-var">g</span></a></span><span>
+</span><span id="line-211"></span></pre></body></html>

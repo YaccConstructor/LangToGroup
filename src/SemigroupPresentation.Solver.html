@@ -1,0 +1,527 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span id="%24con2tag_DrlAJSStYBW83V4aEhgml4"></span><span class="hs-pragma">{-# LANGUAGE TupleSections, ScopedTypeVariables #-}</span><span>
+</span><span id="line-2"></span><span>
+</span><span id="line-3"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">SemigroupPresentation.Solver</span><span> </span><span class="hs-special">(</span><span>
+</span><span id="line-4"></span><span>    </span><span class="annot"><a href="SemigroupPresentation.Solver.html#Depth"><span class="hs-identifier">Depth</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-5"></span><span>    </span><span class="annot"><a href="SemigroupPresentation.Solver.html#Rule"><span class="hs-identifier">Rule</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-6"></span><span>    </span><span class="annot"><a href="SemigroupPresentation.Solver.html#solve"><span class="hs-identifier">solve</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-7"></span><span>    </span><span class="hs-keyword">module</span><span> </span><span class="annot"><a href="SemigroupPresentation.html"><span class="hs-identifier">SemigroupPresentation</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-8"></span><span>  </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-9"></span><span>
+</span><span id="line-10"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="SemigroupPresentation.html"><span class="hs-identifier">SemigroupPresentation</span></a></span><span>
+</span><span id="line-11"></span><span>
+</span><span id="line-12"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Containers.Pair.html"><span class="hs-identifier">Containers.Pair</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Containers.Pair.html#swap"><span class="hs-identifier">swap</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-13"></span><span>
+</span><span id="line-14"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.List</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">find</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">sortBy</span></span><span class="hs-special">)</span><span>
+</span><span id="line-15"></span><span>
+</span><span id="line-16"></span><span class="hs-keyword">type</span><span> </span><span id="Depth"><span class="annot"><a href="SemigroupPresentation.Solver.html#Depth"><span class="hs-identifier hs-var">Depth</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>
+</span><span id="line-17"></span><span>
+</span><span id="line-18"></span><span class="hs-keyword">data</span><span> </span><span id="RuleType"><span class="annot"><a href="SemigroupPresentation.Solver.html#RuleType"><span class="hs-identifier hs-var">RuleType</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-19"></span><span>      </span><span id="Direct"><span class="annot"><a href="SemigroupPresentation.Solver.html#Direct"><span class="hs-identifier hs-var">Direct</span></a></span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>
+</span><span id="line-20"></span><span>    </span><span class="hs-glyph">|</span><span> </span><span id="Inverse"><span class="annot"><a href="SemigroupPresentation.Solver.html#Inverse"><span class="hs-identifier hs-var">Inverse</span></a></span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>
+</span><span id="line-21"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679332464"><span id="local-6989586621679332466"><span class="annot"><span class="annottext">RuleType -&gt; RuleType -&gt; Bool
+(RuleType -&gt; RuleType -&gt; Bool)
+-&gt; (RuleType -&gt; RuleType -&gt; Bool) -&gt; Eq RuleType
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+/= :: RuleType -&gt; RuleType -&gt; Bool
+$c/= :: RuleType -&gt; RuleType -&gt; Bool
+== :: RuleType -&gt; RuleType -&gt; Bool
+$c== :: RuleType -&gt; RuleType -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679332448"><span id="local-6989586621679332450"><span id="local-6989586621679332452"><span id="local-6989586621679332454"><span id="local-6989586621679332456"><span id="local-6989586621679332458"><span id="local-6989586621679332460"><span class="annot"><span class="annottext">Eq RuleType
+Eq RuleType
+-&gt; (RuleType -&gt; RuleType -&gt; Ordering)
+-&gt; (RuleType -&gt; RuleType -&gt; Bool)
+-&gt; (RuleType -&gt; RuleType -&gt; Bool)
+-&gt; (RuleType -&gt; RuleType -&gt; Bool)
+-&gt; (RuleType -&gt; RuleType -&gt; Bool)
+-&gt; (RuleType -&gt; RuleType -&gt; RuleType)
+-&gt; (RuleType -&gt; RuleType -&gt; RuleType)
+-&gt; Ord RuleType
+RuleType -&gt; RuleType -&gt; Bool
+RuleType -&gt; RuleType -&gt; Ordering
+RuleType -&gt; RuleType -&gt; RuleType
+forall a.
+Eq a
+-&gt; (a -&gt; a -&gt; Ordering)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; Ord a
+min :: RuleType -&gt; RuleType -&gt; RuleType
+$cmin :: RuleType -&gt; RuleType -&gt; RuleType
+max :: RuleType -&gt; RuleType -&gt; RuleType
+$cmax :: RuleType -&gt; RuleType -&gt; RuleType
+&gt;= :: RuleType -&gt; RuleType -&gt; Bool
+$c&gt;= :: RuleType -&gt; RuleType -&gt; Bool
+&gt; :: RuleType -&gt; RuleType -&gt; Bool
+$c&gt; :: RuleType -&gt; RuleType -&gt; Bool
+&lt;= :: RuleType -&gt; RuleType -&gt; Bool
+$c&lt;= :: RuleType -&gt; RuleType -&gt; Bool
+&lt; :: RuleType -&gt; RuleType -&gt; Bool
+$c&lt; :: RuleType -&gt; RuleType -&gt; Bool
+compare :: RuleType -&gt; RuleType -&gt; Ordering
+$ccompare :: RuleType -&gt; RuleType -&gt; Ordering
+$cp1Ord :: Eq RuleType
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Ord</span></span></span></span></span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-22"></span><span>
+</span><span id="line-23"></span><span class="hs-keyword">type</span><span> </span><span id="Rule"><span class="annot"><a href="SemigroupPresentation.Solver.html#Rule"><span class="hs-identifier hs-var">Rule</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="SemigroupPresentation.Generator.html#GWord"><span class="hs-identifier hs-type">GWord</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="SemigroupPresentation.Generator.html#GWord"><span class="hs-identifier hs-type">GWord</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-24"></span><span>
+</span><span id="line-25"></span><span id="local-6989586621679332445"><span class="annot"><a href="SemigroupPresentation.Solver.html#solve"><span class="hs-identifier hs-type">solve</span></a></span><span> </span><span class="hs-glyph">::</span><span>
+</span><span id="line-26"></span><span>    </span><span class="annot"><span class="hs-identifier hs-type">MonadFail</span></span><span> </span><span class="annot"><a href="#local-6989586621679332445"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span>
+</span><span id="line-27"></span><span>    </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span>
+</span><span id="line-28"></span><span>    </span><span class="annot"><a href="SemigroupPresentation.html#SemigroupPresentation"><span class="hs-identifier hs-type">SemigroupPresentation</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span>
+</span><span id="line-29"></span><span>    </span><span class="annot"><a href="SemigroupPresentation.Solver.html#Depth"><span class="hs-identifier hs-type">Depth</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span>
+</span><span id="line-30"></span><span>    </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span>
+</span><span id="line-31"></span><span>    </span><span class="annot"><a href="#local-6989586621679332445"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><a href="SemigroupPresentation.Solver.html#Rule"><span class="hs-identifier hs-type">Rule</span></a></span><span class="hs-special">]</span></span><span>
+</span><span id="line-32"></span><span id="solve"><span class="annot"><span class="annottext">solve :: String -&gt; SemigroupPresentation -&gt; Depth -&gt; String -&gt; m [Rule]
+</span><a href="SemigroupPresentation.Solver.html#solve"><span class="hs-identifier hs-var hs-var">solve</span></a></span></span><span> </span><span id="local-6989586621679332444"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679332444"><span class="hs-identifier hs-var">strRes</span></a></span></span><span> </span><span id="local-6989586621679332443"><span class="annot"><span class="annottext">SemigroupPresentation
+</span><a href="#local-6989586621679332443"><span class="hs-identifier hs-var">sp</span></a></span></span><span> </span><span id="local-6989586621679332442"><span class="annot"><span class="annottext">Depth
+</span><a href="#local-6989586621679332442"><span class="hs-identifier hs-var">depth</span></a></span></span><span> </span><span id="local-6989586621679332441"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679332441"><span class="hs-identifier hs-var">strIni</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-33"></span><span>    </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679332440"><span class="annot"><span class="annottext">gd :: GeneratorsDescr
+</span><a href="#local-6989586621679332440"><span class="hs-identifier hs-var hs-var">gd</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">SemigroupPresentation
+</span><a href="#local-6989586621679332443"><span class="hs-identifier hs-var">sp</span></a></span><span class="annot"><span class="annottext">SemigroupPresentation
+-&gt; Getting GeneratorsDescr SemigroupPresentation GeneratorsDescr
+-&gt; GeneratorsDescr
+forall s a. s -&gt; Getting a s a -&gt; a
+</span><span class="hs-operator hs-var">^.</span></span><span class="annot"><span class="annottext">Getting GeneratorsDescr SemigroupPresentation GeneratorsDescr
+Lens' SemigroupPresentation GeneratorsDescr
+</span><a href="SemigroupPresentation.html#generatorsDescr"><span class="hs-identifier hs-var">generatorsDescr</span></a></span><span>
+</span><span id="line-34"></span><span>    </span><span id="local-6989586621679332437"><span class="annot"><span class="annottext">[Generator]
+</span><a href="#local-6989586621679332437"><span class="hs-identifier hs-var">gwRes</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">(String -&gt; m Generator) -&gt; [String] -&gt; m [Generator]
+forall (t :: * -&gt; *) (f :: * -&gt; *) a b.
+(Traversable t, Applicative f) =&gt;
+(a -&gt; f b) -&gt; t a -&gt; f (t b)
+</span><span class="hs-identifier hs-var">traverse</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">GeneratorsDescr
+</span><a href="#local-6989586621679332440"><span class="hs-identifier hs-var">gd</span></a></span><span> </span><span class="annot"><span class="annottext">GeneratorsDescr -&gt; String -&gt; m Generator
+forall c k v (m :: * -&gt; *).
+(Indexable c k v, MonadFail m) =&gt;
+c -&gt; k -&gt; m v
+</span><a href="Containers.html#%21%3F"><span class="hs-operator hs-var">!?</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">([String] -&gt; m [Generator]) -&gt; [String] -&gt; m [Generator]
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; [String]
+</span><span class="hs-identifier hs-var">words</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679332444"><span class="hs-identifier hs-var">strRes</span></a></span><span>
+</span><span id="line-35"></span><span>    </span><span id="local-6989586621679332433"><span class="annot"><span class="annottext">[Generator]
+</span><a href="#local-6989586621679332433"><span class="hs-identifier hs-var">gwIni</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">(String -&gt; m Generator) -&gt; [String] -&gt; m [Generator]
+forall (t :: * -&gt; *) (f :: * -&gt; *) a b.
+(Traversable t, Applicative f) =&gt;
+(a -&gt; f b) -&gt; t a -&gt; f (t b)
+</span><span class="hs-identifier hs-var">traverse</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">GeneratorsDescr
+</span><a href="#local-6989586621679332440"><span class="hs-identifier hs-var">gd</span></a></span><span> </span><span class="annot"><span class="annottext">GeneratorsDescr -&gt; String -&gt; m Generator
+forall c k v (m :: * -&gt; *).
+(Indexable c k v, MonadFail m) =&gt;
+c -&gt; k -&gt; m v
+</span><a href="Containers.html#%21%3F"><span class="hs-operator hs-var">!?</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">([String] -&gt; m [Generator]) -&gt; [String] -&gt; m [Generator]
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; [String]
+</span><span class="hs-identifier hs-var">words</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679332441"><span class="hs-identifier hs-var">strIni</span></a></span><span>
+</span><span id="line-36"></span><span>    </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679332432"><span class="annot"><span class="annottext">rels :: [Pair [Generator]]
+</span><a href="#local-6989586621679332432"><span class="hs-identifier hs-var hs-var">rels</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">SemigroupPresentation
+</span><a href="#local-6989586621679332443"><span class="hs-identifier hs-var">sp</span></a></span><span class="annot"><span class="annottext">SemigroupPresentation
+-&gt; Getting Relations SemigroupPresentation Relations -&gt; Relations
+forall s a. s -&gt; Getting a s a -&gt; a
+</span><span class="hs-operator hs-var">^.</span></span><span class="annot"><span class="annottext">Getting Relations SemigroupPresentation Relations
+Lens' SemigroupPresentation Relations
+</span><a href="SemigroupPresentation.html#relations"><span class="hs-identifier hs-var">relations</span></a></span><span> </span><span class="annot"><span class="annottext">Relations
+-&gt; (Relations -&gt; [Pair [Generator]]) -&gt; [Pair [Generator]]
+forall a b. a -&gt; (a -&gt; b) -&gt; b
+</span><span class="hs-operator hs-var">&amp;</span></span><span> </span><span class="annot"><span class="annottext">Relations -&gt; [Pair [Generator]]
+forall c v. Listable c v =&gt; c -&gt; [v]
+</span><a href="Containers.html#toList"><span class="hs-identifier hs-var">toList</span></a></span><span>
+</span><span id="line-37"></span><span>        </span><span id="local-6989586621679332428"><span class="annot"><span class="annottext">rules :: Map RuleType Rule
+</span><a href="#local-6989586621679332428"><span class="hs-identifier hs-var hs-var">rules</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[(RuleType, Rule)] -&gt; Map RuleType Rule
+forall c v. FastUnsafeListable c v =&gt; [v] -&gt; c
+</span><a href="Containers.html#fromDistinctAscList"><span class="hs-identifier hs-var">fromDistinctAscList</span></a></span><span> </span><span class="annot"><span class="annottext">([(RuleType, Rule)] -&gt; Map RuleType Rule)
+-&gt; [(RuleType, Rule)] -&gt; Map RuleType Rule
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span>
+</span><span id="line-38"></span><span>            </span><span class="annot"><span class="annottext">[RuleType] -&gt; [Rule] -&gt; [(RuleType, Rule)]
+forall a b. [a] -&gt; [b] -&gt; [(a, b)]
+</span><span class="hs-identifier hs-var">zip</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Int -&gt; RuleType
+</span><a href="SemigroupPresentation.Solver.html#Direct"><span class="hs-identifier hs-var">Direct</span></a></span><span>  </span><span class="annot"><span class="annottext">(Int -&gt; RuleType) -&gt; [Int] -&gt; [RuleType]
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">0</span></span><span class="hs-glyph">..</span><span class="hs-special">]</span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Pair [Generator] -&gt; Rule
+forall a. Pair a -&gt; (a, a)
+</span><a href="Containers.Pair.html#unPair"><span class="hs-identifier hs-var hs-var">unPair</span></a></span><span> </span><span class="annot"><span class="annottext">(Pair [Generator] -&gt; Rule) -&gt; [Pair [Generator]] -&gt; [Rule]
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span>          </span><span class="annot"><span class="annottext">[Pair [Generator]]
+</span><a href="#local-6989586621679332432"><span class="hs-identifier hs-var">rels</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[(RuleType, Rule)] -&gt; [(RuleType, Rule)] -&gt; [(RuleType, Rule)]
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span>
+</span><span id="line-39"></span><span>            </span><span class="annot"><span class="annottext">[RuleType] -&gt; [Rule] -&gt; [(RuleType, Rule)]
+forall a b. [a] -&gt; [b] -&gt; [(a, b)]
+</span><span class="hs-identifier hs-var">zip</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Int -&gt; RuleType
+</span><a href="SemigroupPresentation.Solver.html#Inverse"><span class="hs-identifier hs-var">Inverse</span></a></span><span> </span><span class="annot"><span class="annottext">(Int -&gt; RuleType) -&gt; [Int] -&gt; [RuleType]
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">0</span></span><span class="hs-glyph">..</span><span class="hs-special">]</span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Pair [Generator] -&gt; Rule
+forall a. Pair a -&gt; (a, a)
+</span><a href="Containers.Pair.html#unPair"><span class="hs-identifier hs-var hs-var">unPair</span></a></span><span> </span><span class="annot"><span class="annottext">(Pair [Generator] -&gt; Rule)
+-&gt; (Pair [Generator] -&gt; Pair [Generator])
+-&gt; Pair [Generator]
+-&gt; Rule
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">Pair [Generator] -&gt; Pair [Generator]
+forall a. Pair a -&gt; Pair a
+</span><a href="Containers.Pair.html#swap"><span class="hs-identifier hs-var">swap</span></a></span><span> </span><span class="annot"><span class="annottext">(Pair [Generator] -&gt; Rule) -&gt; [Pair [Generator]] -&gt; [Rule]
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">[Pair [Generator]]
+</span><a href="#local-6989586621679332432"><span class="hs-identifier hs-var">rels</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-40"></span><span>        </span><span id="local-6989586621679332424"><span class="annot"><span class="annottext">fs :: [([RuleType], [Generator])]
+</span><a href="#local-6989586621679332424"><span class="hs-identifier hs-var hs-var">fs</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Map RuleType Rule -&gt; [Generator] -&gt; [([RuleType], [Generator])]
+</span><a href="SemigroupPresentation.Solver.html#firstStep"><span class="hs-identifier hs-var">firstStep</span></a></span><span> </span><span class="annot"><span class="annottext">Map RuleType Rule
+</span><a href="#local-6989586621679332428"><span class="hs-identifier hs-var">rules</span></a></span><span> </span><span class="annot"><span class="annottext">[Generator]
+</span><a href="#local-6989586621679332433"><span class="hs-identifier hs-var">gwIni</span></a></span><span>
+</span><span id="line-41"></span><span>        </span><span id="local-6989586621679332422"><span class="annot"><span class="annottext">gwsNext :: [[Generator]]
+</span><a href="#local-6989586621679332422"><span class="hs-identifier hs-var hs-var">gwsNext</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(([RuleType], [Generator]) -&gt; [Generator])
+-&gt; [([RuleType], [Generator])] -&gt; [[Generator]]
+forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="annot"><span class="annottext">([RuleType], [Generator]) -&gt; [Generator]
+forall a b. (a, b) -&gt; b
+</span><span class="hs-identifier hs-var">snd</span></span><span> </span><span class="annot"><span class="annottext">[([RuleType], [Generator])]
+</span><a href="#local-6989586621679332424"><span class="hs-identifier hs-var">fs</span></a></span><span>
+</span><span id="line-42"></span><span>    </span><span class="annot"><span class="annottext">[Generator]
+-&gt; Set [Generator]
+-&gt; Map RuleType Rule
+-&gt; Depth
+-&gt; [([RuleType], [Generator])]
+-&gt; m [Rule]
+forall (m :: * -&gt; *).
+MonadFail m =&gt;
+[Generator]
+-&gt; Set [Generator]
+-&gt; Map RuleType Rule
+-&gt; Depth
+-&gt; [([RuleType], [Generator])]
+-&gt; m [Rule]
+</span><a href="SemigroupPresentation.Solver.html#solve%27"><span class="hs-identifier hs-var">solve'</span></a></span><span> </span><span class="annot"><span class="annottext">[Generator]
+</span><a href="#local-6989586621679332437"><span class="hs-identifier hs-var">gwRes</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[[Generator]] -&gt; Set [Generator]
+forall c v. UnsafeListable c v =&gt; [v] -&gt; c
+</span><a href="Containers.html#fromList"><span class="hs-identifier hs-var">fromList</span></a></span><span> </span><span class="annot"><span class="annottext">([[Generator]] -&gt; Set [Generator])
+-&gt; [[Generator]] -&gt; Set [Generator]
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">[Generator]
+</span><a href="#local-6989586621679332433"><span class="hs-identifier hs-var">gwIni</span></a></span><span> </span><span class="annot"><span class="annottext">[Generator] -&gt; [[Generator]] -&gt; [[Generator]]
+forall c v. Insertable c v =&gt; v -&gt; c -&gt; c
+</span><a href="Containers.html#%2B%3E"><span class="hs-operator hs-var">+&gt;</span></a></span><span> </span><span class="annot"><span class="annottext">[[Generator]]
+</span><a href="#local-6989586621679332422"><span class="hs-identifier hs-var">gwsNext</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Map RuleType Rule
+</span><a href="#local-6989586621679332428"><span class="hs-identifier hs-var">rules</span></a></span><span> </span><span class="annot"><span class="annottext">Depth
+</span><a href="#local-6989586621679332442"><span class="hs-identifier hs-var">depth</span></a></span><span> </span><span class="annot"><span class="annottext">[([RuleType], [Generator])]
+</span><a href="#local-6989586621679332424"><span class="hs-identifier hs-var">fs</span></a></span><span>
+</span><span id="line-43"></span><span>
+</span><span id="line-44"></span><span id="local-6989586621679332512"><span class="annot"><a href="SemigroupPresentation.Solver.html#solve%27"><span class="hs-identifier hs-type">solve'</span></a></span><span> </span><span class="hs-glyph">::</span><span>
+</span><span id="line-45"></span><span>    </span><span class="annot"><span class="hs-identifier hs-type">MonadFail</span></span><span> </span><span class="annot"><a href="#local-6989586621679332512"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span>
+</span><span id="line-46"></span><span>    </span><span class="annot"><a href="SemigroupPresentation.Generator.html#GWord"><span class="hs-identifier hs-type">GWord</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span>
+</span><span id="line-47"></span><span>    </span><span class="annot"><span class="hs-identifier hs-type">Set</span></span><span> </span><span class="annot"><a href="SemigroupPresentation.Generator.html#GWord"><span class="hs-identifier hs-type">GWord</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span>
+</span><span id="line-48"></span><span>    </span><span class="annot"><span class="hs-identifier hs-type">Map</span></span><span> </span><span class="annot"><a href="SemigroupPresentation.Solver.html#RuleType"><span class="hs-identifier hs-type">RuleType</span></a></span><span> </span><span class="annot"><a href="SemigroupPresentation.Solver.html#Rule"><span class="hs-identifier hs-type">Rule</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span>
+</span><span id="line-49"></span><span>    </span><span class="annot"><a href="SemigroupPresentation.Solver.html#Depth"><span class="hs-identifier hs-type">Depth</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span>
+</span><span id="line-50"></span><span>    </span><span class="hs-special">[</span><span class="hs-special">(</span><span class="hs-special">[</span><span class="annot"><a href="SemigroupPresentation.Solver.html#RuleType"><span class="hs-identifier hs-type">RuleType</span></a></span><span class="hs-special">]</span><span class="hs-special">,</span><span> </span><span class="annot"><a href="SemigroupPresentation.Generator.html#GWord"><span class="hs-identifier hs-type">GWord</span></a></span><span class="hs-special">)</span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span>
+</span><span id="line-51"></span><span>    </span><span class="annot"><a href="#local-6989586621679332512"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><a href="SemigroupPresentation.Solver.html#Rule"><span class="hs-identifier hs-type">Rule</span></a></span><span class="hs-special">]</span></span><span>
+</span><span id="line-52"></span><span id="solve%27"><span class="annot"><span class="annottext">solve' :: [Generator]
+-&gt; Set [Generator]
+-&gt; Map RuleType Rule
+-&gt; Depth
+-&gt; [([RuleType], [Generator])]
+-&gt; m [Rule]
+</span><a href="SemigroupPresentation.Solver.html#solve%27"><span class="hs-identifier hs-var hs-var">solve'</span></a></span></span><span> </span><span class="annot"><span class="annottext">[Generator]
+</span><span class="hs-identifier">_</span></span><span> </span><span class="annot"><span class="annottext">Set [Generator]
+</span><span class="hs-identifier">_</span></span><span> </span><span class="annot"><span class="annottext">Map RuleType Rule
+</span><span class="hs-identifier">_</span></span><span> </span><span class="annot"><span class="annottext">Depth
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-53"></span><span>    </span><span class="annot"><span class="annottext">String -&gt; m [Rule]
+forall (m :: * -&gt; *) a. MonadFail m =&gt; String -&gt; m a
+</span><span class="hs-identifier hs-var">fail</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;Analysis depth limit reached&quot;</span></span><span>
+</span><span id="line-54"></span><span class="annot"><a href="SemigroupPresentation.Solver.html#solve%27"><span class="hs-identifier hs-var">solve'</span></a></span><span> </span><span id="local-6989586621679332418"><span class="annot"><span class="annottext">[Generator]
+</span><a href="#local-6989586621679332418"><span class="hs-identifier hs-var">res</span></a></span></span><span> </span><span id="local-6989586621679332417"><span class="annot"><span class="annottext">Set [Generator]
+</span><a href="#local-6989586621679332417"><span class="hs-identifier hs-var">rgws</span></a></span></span><span> </span><span id="local-6989586621679332416"><span class="annot"><span class="annottext">Map RuleType Rule
+</span><a href="#local-6989586621679332416"><span class="hs-identifier hs-var">rs</span></a></span></span><span> </span><span id="local-6989586621679332415"><span class="annot"><span class="annottext">Depth
+</span><a href="#local-6989586621679332415"><span class="hs-identifier hs-var">d</span></a></span></span><span> </span><span id="local-6989586621679332414"><span class="annot"><span class="annottext">[([RuleType], [Generator])]
+</span><a href="#local-6989586621679332414"><span class="hs-identifier hs-var">gws</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-55"></span><span>    </span><span class="hs-keyword">let</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679332413"><span class="annot"><span class="annottext">[([RuleType], [Generator])]
+</span><a href="#local-6989586621679332413"><span class="hs-identifier hs-var">gwsOth</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679332412"><span class="annot"><span class="annottext">[([RuleType], [Generator])]
+</span><a href="#local-6989586621679332412"><span class="hs-identifier hs-var">gwsNew</span></a></span></span><span class="hs-special">)</span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Map RuleType Rule
+-&gt; Depth
+-&gt; [([RuleType], [Generator])]
+-&gt; ([([RuleType], [Generator])], [([RuleType], [Generator])])
+</span><a href="SemigroupPresentation.Solver.html#minStep"><span class="hs-identifier hs-var">minStep</span></a></span><span> </span><span class="annot"><span class="annottext">Map RuleType Rule
+</span><a href="#local-6989586621679332416"><span class="hs-identifier hs-var">rs</span></a></span><span> </span><span class="annot"><span class="annottext">Depth
+</span><a href="#local-6989586621679332415"><span class="hs-identifier hs-var">d</span></a></span><span> </span><span class="annot"><span class="annottext">[([RuleType], [Generator])]
+</span><a href="#local-6989586621679332414"><span class="hs-identifier hs-var">gws</span></a></span><span>
+</span><span id="line-56"></span><span>    </span><span class="hs-keyword">in</span><span>  </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">(([RuleType], [Generator]) -&gt; Bool)
+-&gt; [([RuleType], [Generator])] -&gt; Maybe ([RuleType], [Generator])
+forall (t :: * -&gt; *) a. Foldable t =&gt; (a -&gt; Bool) -&gt; t a -&gt; Maybe a
+</span><span class="hs-identifier hs-var">find</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">(</span><span class="annot"><span class="annottext">[Generator] -&gt; [Generator] -&gt; Bool
+forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">==</span></span><span> </span><span class="annot"><span class="annottext">[Generator]
+</span><a href="#local-6989586621679332418"><span class="hs-identifier hs-var">res</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">([Generator] -&gt; Bool)
+-&gt; (([RuleType], [Generator]) -&gt; [Generator])
+-&gt; ([RuleType], [Generator])
+-&gt; Bool
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">([RuleType], [Generator]) -&gt; [Generator]
+forall a b. (a, b) -&gt; b
+</span><span class="hs-identifier hs-var">snd</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[([RuleType], [Generator])]
+</span><a href="#local-6989586621679332412"><span class="hs-identifier hs-var">gwsNew</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-57"></span><span>            </span><span class="annot"><span class="hs-identifier hs-type">Just</span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679332409"><span class="annot"><span class="annottext">[RuleType]
+</span><a href="#local-6989586621679332409"><span class="hs-identifier hs-var">rts</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">[Generator]
+</span><span class="hs-identifier">_</span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span>
+</span><span id="line-58"></span><span>                </span><span class="annot"><span class="annottext">(RuleType -&gt; m Rule) -&gt; [RuleType] -&gt; m [Rule]
+forall (t :: * -&gt; *) (f :: * -&gt; *) a b.
+(Traversable t, Applicative f) =&gt;
+(a -&gt; f b) -&gt; t a -&gt; f (t b)
+</span><span class="hs-identifier hs-var">traverse</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Map RuleType Rule
+</span><a href="#local-6989586621679332416"><span class="hs-identifier hs-var">rs</span></a></span><span> </span><span class="annot"><span class="annottext">Map RuleType Rule -&gt; RuleType -&gt; m Rule
+forall c k v (m :: * -&gt; *).
+(Indexable c k v, MonadFail m) =&gt;
+c -&gt; k -&gt; m v
+</span><a href="Containers.html#%21%3F"><span class="hs-operator hs-var">!?</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">([RuleType] -&gt; m [Rule]) -&gt; [RuleType] -&gt; m [Rule]
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">[RuleType] -&gt; [RuleType]
+forall a. [a] -&gt; [a]
+</span><span class="hs-identifier hs-var">reverse</span></span><span> </span><span class="annot"><span class="annottext">[RuleType]
+</span><a href="#local-6989586621679332409"><span class="hs-identifier hs-var">rts</span></a></span><span>
+</span><span id="line-59"></span><span>            </span><span class="annot"><span class="annottext">Maybe ([RuleType], [Generator])
+</span><span class="hs-identifier hs-var">Nothing</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-60"></span><span>                </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679332407"><span class="annot"><span class="annottext">gws' :: [([RuleType], [Generator])]
+</span><a href="#local-6989586621679332407"><span class="hs-identifier hs-var hs-var">gws'</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[([RuleType], [Generator])]
+</span><a href="#local-6989586621679332413"><span class="hs-identifier hs-var">gwsOth</span></a></span><span> </span><span class="annot"><span class="annottext">[([RuleType], [Generator])]
+-&gt; [([RuleType], [Generator])] -&gt; [([RuleType], [Generator])]
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">(([RuleType], [Generator]) -&gt; Bool)
+-&gt; [([RuleType], [Generator])] -&gt; [([RuleType], [Generator])]
+forall a. (a -&gt; Bool) -&gt; [a] -&gt; [a]
+</span><span class="hs-identifier hs-var">filter</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">(</span><span class="annot"><span class="annottext">[Generator] -&gt; Set [Generator] -&gt; Bool
+forall c v. Containable c v =&gt; v -&gt; c -&gt; Bool
+</span><a href="Containers.html#notMember"><span class="hs-operator hs-var">`notMember`</span></a></span><span> </span><span class="annot"><span class="annottext">Set [Generator]
+</span><a href="#local-6989586621679332417"><span class="hs-identifier hs-var">rgws</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">([Generator] -&gt; Bool)
+-&gt; (([RuleType], [Generator]) -&gt; [Generator])
+-&gt; ([RuleType], [Generator])
+-&gt; Bool
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">([RuleType], [Generator]) -&gt; [Generator]
+forall a b. (a, b) -&gt; b
+</span><span class="hs-identifier hs-var">snd</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[([RuleType], [Generator])]
+</span><a href="#local-6989586621679332412"><span class="hs-identifier hs-var">gwsNew</span></a></span><span>
+</span><span id="line-61"></span><span>                    </span><span id="local-6989586621679332405"><span class="annot"><span class="annottext">rgws' :: Set [Generator]
+</span><a href="#local-6989586621679332405"><span class="hs-identifier hs-var hs-var">rgws'</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Set [Generator]
+</span><a href="#local-6989586621679332417"><span class="hs-identifier hs-var">rgws</span></a></span><span> </span><span class="annot"><span class="annottext">Set [Generator] -&gt; Set [Generator] -&gt; Set [Generator]
+forall c. Operable c =&gt; c -&gt; c -&gt; c
+</span><a href="Containers.html#%5C%2F"><span class="hs-operator hs-var">\/</span></a></span><span> </span><span class="annot"><span class="annottext">[[Generator]] -&gt; Set [Generator]
+forall c v. UnsafeListable c v =&gt; [v] -&gt; c
+</span><a href="Containers.html#fromList"><span class="hs-identifier hs-var">fromList</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">([RuleType], [Generator]) -&gt; [Generator]
+forall a b. (a, b) -&gt; b
+</span><span class="hs-identifier hs-var">snd</span></span><span> </span><span class="annot"><span class="annottext">(([RuleType], [Generator]) -&gt; [Generator])
+-&gt; [([RuleType], [Generator])] -&gt; [[Generator]]
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">[([RuleType], [Generator])]
+</span><a href="#local-6989586621679332412"><span class="hs-identifier hs-var">gwsNew</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-62"></span><span>                </span><span class="annot"><span class="annottext">[Generator]
+-&gt; Set [Generator]
+-&gt; Map RuleType Rule
+-&gt; Depth
+-&gt; [([RuleType], [Generator])]
+-&gt; m [Rule]
+forall (m :: * -&gt; *).
+MonadFail m =&gt;
+[Generator]
+-&gt; Set [Generator]
+-&gt; Map RuleType Rule
+-&gt; Depth
+-&gt; [([RuleType], [Generator])]
+-&gt; m [Rule]
+</span><a href="SemigroupPresentation.Solver.html#solve%27"><span class="hs-identifier hs-var">solve'</span></a></span><span> </span><span class="annot"><span class="annottext">[Generator]
+</span><a href="#local-6989586621679332418"><span class="hs-identifier hs-var">res</span></a></span><span> </span><span class="annot"><span class="annottext">Set [Generator]
+</span><a href="#local-6989586621679332405"><span class="hs-identifier hs-var">rgws'</span></a></span><span> </span><span class="annot"><span class="annottext">Map RuleType Rule
+</span><a href="#local-6989586621679332416"><span class="hs-identifier hs-var">rs</span></a></span><span> </span><span class="annot"><span class="annottext">Depth
+</span><a href="#local-6989586621679332415"><span class="hs-identifier hs-var">d</span></a></span><span> </span><span class="annot"><span class="annottext">[([RuleType], [Generator])]
+</span><a href="#local-6989586621679332407"><span class="hs-identifier hs-var">gws'</span></a></span><span>
+</span><span id="line-63"></span><span>
+</span><span id="line-64"></span><span class="annot"><a href="SemigroupPresentation.Solver.html#firstStep"><span class="hs-identifier hs-type">firstStep</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Map</span></span><span> </span><span class="annot"><a href="SemigroupPresentation.Solver.html#RuleType"><span class="hs-identifier hs-type">RuleType</span></a></span><span> </span><span class="annot"><a href="SemigroupPresentation.Solver.html#Rule"><span class="hs-identifier hs-type">Rule</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="SemigroupPresentation.Generator.html#GWord"><span class="hs-identifier hs-type">GWord</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="hs-special">(</span><span class="hs-special">[</span><span class="annot"><a href="SemigroupPresentation.Solver.html#RuleType"><span class="hs-identifier hs-type">RuleType</span></a></span><span class="hs-special">]</span><span class="hs-special">,</span><span> </span><span class="annot"><a href="SemigroupPresentation.Generator.html#GWord"><span class="hs-identifier hs-type">GWord</span></a></span><span class="hs-special">)</span><span class="hs-special">]</span><span>
+</span><span id="line-65"></span><span id="firstStep"><span class="annot"><span class="annottext">firstStep :: Map RuleType Rule -&gt; [Generator] -&gt; [([RuleType], [Generator])]
+</span><a href="SemigroupPresentation.Solver.html#firstStep"><span class="hs-identifier hs-var hs-var">firstStep</span></a></span></span><span> </span><span id="local-6989586621679332403"><span class="annot"><span class="annottext">Map RuleType Rule
+</span><a href="#local-6989586621679332403"><span class="hs-identifier hs-var">rs</span></a></span></span><span> </span><span id="local-6989586621679332402"><span class="annot"><span class="annottext">[Generator]
+</span><a href="#local-6989586621679332402"><span class="hs-identifier hs-var">gw</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-66"></span><span>    </span><span class="hs-special">(</span><span id="local-6989586621679332401"><span class="annot"><span class="annottext">RuleType
+</span><a href="#local-6989586621679332401"><span class="hs-identifier hs-var">rt</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679332400"><span class="annot"><span class="annottext">[Generator]
+</span><a href="#local-6989586621679332400"><span class="hs-identifier hs-var">gw'</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Map RuleType Rule -&gt; [Generator] -&gt; [(RuleType, [Generator])]
+</span><a href="SemigroupPresentation.Solver.html#step"><span class="hs-identifier hs-var">step</span></a></span><span> </span><span class="annot"><span class="annottext">Map RuleType Rule
+</span><a href="#local-6989586621679332403"><span class="hs-identifier hs-var">rs</span></a></span><span> </span><span class="annot"><span class="annottext">[Generator]
+</span><a href="#local-6989586621679332402"><span class="hs-identifier hs-var">gw</span></a></span><span>
+</span><span id="line-67"></span><span>    </span><span class="annot"><span class="annottext">([RuleType], [Generator]) -&gt; [([RuleType], [Generator])]
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">[</span><span class="annot"><span class="annottext">RuleType
+</span><a href="#local-6989586621679332401"><span class="hs-identifier hs-var">rt</span></a></span><span class="hs-special">]</span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">[Generator]
+</span><a href="#local-6989586621679332400"><span class="hs-identifier hs-var">gw'</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-68"></span><span>
+</span><span id="line-69"></span><span class="annot"><a href="SemigroupPresentation.Solver.html#minStep"><span class="hs-identifier hs-type">minStep</span></a></span><span> </span><span class="hs-glyph">::</span><span>
+</span><span id="line-70"></span><span>    </span><span class="annot"><span class="hs-identifier hs-type">Map</span></span><span> </span><span class="annot"><a href="SemigroupPresentation.Solver.html#RuleType"><span class="hs-identifier hs-type">RuleType</span></a></span><span> </span><span class="annot"><a href="SemigroupPresentation.Solver.html#Rule"><span class="hs-identifier hs-type">Rule</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span>
+</span><span id="line-71"></span><span>    </span><span class="annot"><a href="SemigroupPresentation.Solver.html#Depth"><span class="hs-identifier hs-type">Depth</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span>
+</span><span id="line-72"></span><span>    </span><span class="hs-special">[</span><span class="hs-special">(</span><span class="hs-special">[</span><span class="annot"><a href="SemigroupPresentation.Solver.html#RuleType"><span class="hs-identifier hs-type">RuleType</span></a></span><span class="hs-special">]</span><span class="hs-special">,</span><span> </span><span class="annot"><a href="SemigroupPresentation.Generator.html#GWord"><span class="hs-identifier hs-type">GWord</span></a></span><span class="hs-special">)</span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span>
+</span><span id="line-73"></span><span>    </span><span class="hs-special">(</span><span class="hs-special">[</span><span class="hs-special">(</span><span class="hs-special">[</span><span class="annot"><a href="SemigroupPresentation.Solver.html#RuleType"><span class="hs-identifier hs-type">RuleType</span></a></span><span class="hs-special">]</span><span class="hs-special">,</span><span> </span><span class="annot"><a href="SemigroupPresentation.Generator.html#GWord"><span class="hs-identifier hs-type">GWord</span></a></span><span class="hs-special">)</span><span class="hs-special">]</span><span class="hs-special">,</span><span> </span><span class="hs-special">[</span><span class="hs-special">(</span><span class="hs-special">[</span><span class="annot"><a href="SemigroupPresentation.Solver.html#RuleType"><span class="hs-identifier hs-type">RuleType</span></a></span><span class="hs-special">]</span><span class="hs-special">,</span><span> </span><span class="annot"><a href="SemigroupPresentation.Generator.html#GWord"><span class="hs-identifier hs-type">GWord</span></a></span><span class="hs-special">)</span><span class="hs-special">]</span><span class="hs-special">)</span><span>
+</span><span id="line-74"></span><span id="minStep"><span class="annot"><span class="annottext">minStep :: Map RuleType Rule
+-&gt; Depth
+-&gt; [([RuleType], [Generator])]
+-&gt; ([([RuleType], [Generator])], [([RuleType], [Generator])])
+</span><a href="SemigroupPresentation.Solver.html#minStep"><span class="hs-identifier hs-var hs-var">minStep</span></a></span></span><span> </span><span class="annot"><span class="annottext">Map RuleType Rule
+</span><span class="hs-identifier">_</span></span><span> </span><span class="annot"><span class="annottext">Depth
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><span class="hs-special">[</span><span class="hs-special">]</span><span class="hs-special">,</span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span class="hs-special">)</span><span>
+</span><span id="line-75"></span><span class="annot"><a href="SemigroupPresentation.Solver.html#minStep"><span class="hs-identifier hs-var">minStep</span></a></span><span> </span><span id="local-6989586621679332398"><span class="annot"><span class="annottext">Map RuleType Rule
+</span><a href="#local-6989586621679332398"><span class="hs-identifier hs-var">rs</span></a></span></span><span> </span><span id="local-6989586621679332397"><span class="annot"><span class="annottext">Depth
+</span><a href="#local-6989586621679332397"><span class="hs-identifier hs-var">d</span></a></span></span><span> </span><span id="local-6989586621679332396"><span class="annot"><span class="annottext">[([RuleType], [Generator])]
+</span><a href="#local-6989586621679332396"><span class="hs-identifier hs-var">gws</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-76"></span><span>    </span><span class="hs-keyword">let</span><span> </span><span class="hs-special">(</span><span class="hs-special">(</span><span id="local-6989586621679332395"><span class="annot"><span class="annottext">[RuleType]
+</span><a href="#local-6989586621679332395"><span class="hs-identifier hs-var">rts</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679332394"><span class="annot"><span class="annottext">[Generator]
+</span><a href="#local-6989586621679332394"><span class="hs-identifier hs-var">gw</span></a></span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span> </span><span id="local-6989586621679332393"><span class="annot"><span class="annottext">[([RuleType], [Generator])]
+</span><a href="#local-6989586621679332393"><span class="hs-identifier hs-var">gws'</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(([RuleType], [Generator])
+ -&gt; ([RuleType], [Generator]) -&gt; Ordering)
+-&gt; [([RuleType], [Generator])] -&gt; [([RuleType], [Generator])]
+forall a. (a -&gt; a -&gt; Ordering) -&gt; [a] -&gt; [a]
+</span><span class="hs-identifier hs-var">sortBy</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Ordering
+forall a. Ord a =&gt; a -&gt; a -&gt; Ordering
+</span><span class="hs-identifier hs-var">compare</span></span><span> </span><span class="annot"><span class="annottext">(Int -&gt; Int -&gt; Ordering)
+-&gt; (([RuleType], [Generator]) -&gt; Int)
+-&gt; ([RuleType], [Generator])
+-&gt; ([RuleType], [Generator])
+-&gt; Ordering
+forall b c a. (b -&gt; b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">`on`</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[Generator] -&gt; Int
+forall (t :: * -&gt; *) a. Foldable t =&gt; t a -&gt; Int
+</span><span class="hs-identifier hs-var">length</span></span><span> </span><span class="annot"><span class="annottext">([Generator] -&gt; Int)
+-&gt; (([RuleType], [Generator]) -&gt; [Generator])
+-&gt; ([RuleType], [Generator])
+-&gt; Int
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">([RuleType], [Generator]) -&gt; [Generator]
+forall a b. (a, b) -&gt; b
+</span><span class="hs-identifier hs-var">snd</span></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[([RuleType], [Generator])]
+</span><a href="#local-6989586621679332396"><span class="hs-identifier hs-var">gws</span></a></span><span>
+</span><span id="line-77"></span><span>    </span><span class="hs-keyword">in</span><span>  </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[([RuleType], [Generator])]
+</span><a href="#local-6989586621679332393"><span class="hs-identifier hs-var">gws'</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-78"></span><span>            </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">Depth
+</span><a href="#local-6989586621679332397"><span class="hs-identifier hs-var">d</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-79"></span><span>                </span><span class="annot"><span class="hs-identifier hs-type">Just</span></span><span> </span><span id="local-6989586621679332389"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679332389"><span class="hs-identifier hs-var">d'</span></a></span></span><span> </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">[RuleType] -&gt; Int
+forall (t :: * -&gt; *) a. Foldable t =&gt; t a -&gt; Int
+</span><span class="hs-identifier hs-var">length</span></span><span> </span><span class="annot"><span class="annottext">[RuleType]
+</span><a href="#local-6989586621679332395"><span class="hs-identifier hs-var">rts</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Bool
+forall a. Ord a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">&gt;=</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679332389"><span class="hs-identifier hs-var">d'</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span>
+</span><span id="line-80"></span><span>                </span><span class="annot"><span class="annottext">Depth
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-81"></span><span>                    </span><span class="hs-special">(</span><span id="local-6989586621679332388"><span class="annot"><span class="annottext">RuleType
+</span><a href="#local-6989586621679332388"><span class="hs-identifier hs-var">rt</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679332387"><span class="annot"><span class="annottext">[Generator]
+</span><a href="#local-6989586621679332387"><span class="hs-identifier hs-var">gw'</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Map RuleType Rule -&gt; [Generator] -&gt; [(RuleType, [Generator])]
+</span><a href="SemigroupPresentation.Solver.html#step"><span class="hs-identifier hs-var">step</span></a></span><span> </span><span class="annot"><span class="annottext">Map RuleType Rule
+</span><a href="#local-6989586621679332398"><span class="hs-identifier hs-var">rs</span></a></span><span> </span><span class="annot"><span class="annottext">[Generator]
+</span><a href="#local-6989586621679332394"><span class="hs-identifier hs-var">gw</span></a></span><span>
+</span><span id="line-82"></span><span>                    </span><span class="annot"><span class="annottext">([RuleType], [Generator]) -&gt; [([RuleType], [Generator])]
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">RuleType
+</span><a href="#local-6989586621679332388"><span class="hs-identifier hs-var">rt</span></a></span><span class="annot"><span class="annottext">RuleType -&gt; [RuleType] -&gt; [RuleType]
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span class="annot"><span class="annottext">[RuleType]
+</span><a href="#local-6989586621679332395"><span class="hs-identifier hs-var">rts</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">[Generator]
+</span><a href="#local-6989586621679332387"><span class="hs-identifier hs-var">gw'</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-83"></span><span>          </span><span class="hs-special">)</span><span>
+</span><span id="line-84"></span><span>
+</span><span id="line-85"></span><span class="annot"><a href="SemigroupPresentation.Solver.html#step"><span class="hs-identifier hs-type">step</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Map</span></span><span> </span><span class="annot"><a href="SemigroupPresentation.Solver.html#RuleType"><span class="hs-identifier hs-type">RuleType</span></a></span><span> </span><span class="annot"><a href="SemigroupPresentation.Solver.html#Rule"><span class="hs-identifier hs-type">Rule</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="SemigroupPresentation.Generator.html#GWord"><span class="hs-identifier hs-type">GWord</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="hs-special">(</span><span class="annot"><a href="SemigroupPresentation.Solver.html#RuleType"><span class="hs-identifier hs-type">RuleType</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="SemigroupPresentation.Generator.html#GWord"><span class="hs-identifier hs-type">GWord</span></a></span><span class="hs-special">)</span><span class="hs-special">]</span><span>
+</span><span id="line-86"></span><span id="step"><span class="annot"><span class="annottext">step :: Map RuleType Rule -&gt; [Generator] -&gt; [(RuleType, [Generator])]
+</span><a href="SemigroupPresentation.Solver.html#step"><span class="hs-identifier hs-var hs-var">step</span></a></span></span><span> </span><span id="local-6989586621679332386"><span class="annot"><span class="annottext">Map RuleType Rule
+</span><a href="#local-6989586621679332386"><span class="hs-identifier hs-var">rs</span></a></span></span><span> </span><span id="local-6989586621679332385"><span class="annot"><span class="annottext">[Generator]
+</span><a href="#local-6989586621679332385"><span class="hs-identifier hs-var">gw</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-87"></span><span>    </span><span class="hs-special">(</span><span id="local-6989586621679332384"><span class="annot"><span class="annottext">RuleType
+</span><a href="#local-6989586621679332384"><span class="hs-identifier hs-var">rt</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679332383"><span class="annot"><span class="annottext">Rule
+</span><a href="#local-6989586621679332383"><span class="hs-identifier hs-var">rule</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Map RuleType Rule -&gt; [(RuleType, Rule)]
+forall c v. Listable c v =&gt; c -&gt; [v]
+</span><a href="Containers.html#toList"><span class="hs-identifier hs-var">toList</span></a></span><span> </span><span class="annot"><span class="annottext">Map RuleType Rule
+</span><a href="#local-6989586621679332386"><span class="hs-identifier hs-var">rs</span></a></span><span>
+</span><span id="line-88"></span><span>    </span><span id="local-6989586621679332382"><span class="annot"><span class="annottext">[Generator]
+</span><a href="#local-6989586621679332382"><span class="hs-identifier hs-var">gw'</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Rule -&gt; [Generator] -&gt; [[Generator]]
+forall a. Eq a =&gt; ([a], [a]) -&gt; [a] -&gt; [[a]]
+</span><a href="SemigroupPresentation.Solver.html#allRewrites"><span class="hs-identifier hs-var">allRewrites</span></a></span><span> </span><span class="annot"><span class="annottext">Rule
+</span><a href="#local-6989586621679332383"><span class="hs-identifier hs-var">rule</span></a></span><span> </span><span class="annot"><span class="annottext">[Generator]
+</span><a href="#local-6989586621679332385"><span class="hs-identifier hs-var">gw</span></a></span><span>
+</span><span id="line-89"></span><span>    </span><span class="annot"><span class="annottext">(RuleType, [Generator]) -&gt; [(RuleType, [Generator])]
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">RuleType
+</span><a href="#local-6989586621679332384"><span class="hs-identifier hs-var">rt</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">[Generator]
+</span><a href="#local-6989586621679332382"><span class="hs-identifier hs-var">gw'</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-90"></span><span>
+</span><span id="line-91"></span><span id="local-6989586621679332481"><span class="annot"><a href="SemigroupPresentation.Solver.html#allRewrites"><span class="hs-identifier hs-type">allRewrites</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Eq</span></span><span> </span><span class="annot"><a href="#local-6989586621679332481"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="hs-special">(</span><span class="hs-special">[</span><span class="annot"><a href="#local-6989586621679332481"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">]</span><span class="hs-special">,</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="#local-6989586621679332481"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">]</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="#local-6989586621679332481"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="hs-special">[</span><span class="annot"><a href="#local-6989586621679332481"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">]</span><span class="hs-special">]</span></span><span>
+</span><span id="line-92"></span><span id="allRewrites"><span class="annot"><span class="annottext">allRewrites :: ([a], [a]) -&gt; [a] -&gt; [[a]]
+</span><a href="SemigroupPresentation.Solver.html#allRewrites"><span class="hs-identifier hs-var hs-var">allRewrites</span></a></span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679332380"><span class="annot"><span class="annottext">[a]
+</span><a href="#local-6989586621679332380"><span class="hs-identifier hs-var">from</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679332379"><span class="annot"><span class="annottext">[a]
+</span><a href="#local-6989586621679332379"><span class="hs-identifier hs-var">to</span></a></span></span><span class="hs-special">)</span><span> </span><span id="local-6989586621679332378"><span class="annot"><span class="annottext">[a]
+</span><a href="#local-6989586621679332378"><span class="hs-identifier hs-var">ini</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-93"></span><span>    </span><span id="local-6989586621679332377"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679332377"><span class="hs-identifier hs-var">i</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">0</span></span><span class="hs-glyph">..</span><span class="annot"><span class="annottext">[a] -&gt; Int
+forall (t :: * -&gt; *) a. Foldable t =&gt; t a -&gt; Int
+</span><span class="hs-identifier hs-var">length</span></span><span> </span><span class="annot"><span class="annottext">[a]
+</span><a href="#local-6989586621679332378"><span class="hs-identifier hs-var">ini</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-94"></span><span>    </span><span class="hs-keyword">let</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679332376"><span class="annot"><span class="annottext">[a]
+</span><a href="#local-6989586621679332376"><span class="hs-identifier hs-var">s</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679332375"><span class="annot"><span class="annottext">[a]
+</span><a href="#local-6989586621679332375"><span class="hs-identifier hs-var">f</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Int -&gt; [a] -&gt; ([a], [a])
+forall a. Int -&gt; [a] -&gt; ([a], [a])
+</span><span class="hs-identifier hs-var">splitAt</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679332377"><span class="hs-identifier hs-var">i</span></a></span><span> </span><span class="annot"><span class="annottext">[a]
+</span><a href="#local-6989586621679332378"><span class="hs-identifier hs-var">ini</span></a></span><span>
+</span><span id="line-95"></span><span>    </span><span id="local-6989586621679332373"><span class="annot"><span class="annottext">[a]
+</span><a href="#local-6989586621679332373"><span class="hs-identifier hs-var">f'</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">[a]
+</span><a href="#local-6989586621679332380"><span class="hs-identifier hs-var">from</span></a></span><span> </span><span class="annot"><span class="annottext">[a] -&gt; [a] -&gt; [[a]]
+forall (m :: * -&gt; *) a. (MonadFail m, Eq a) =&gt; [a] -&gt; [a] -&gt; m [a]
+</span><a href="SemigroupPresentation.Solver.html#prefixOf"><span class="hs-operator hs-var">`prefixOf`</span></a></span><span> </span><span class="annot"><span class="annottext">[a]
+</span><a href="#local-6989586621679332375"><span class="hs-identifier hs-var">f</span></a></span><span>
+</span><span id="line-96"></span><span>    </span><span class="annot"><span class="annottext">[a] -&gt; [[a]]
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">([a] -&gt; [[a]]) -&gt; [a] -&gt; [[a]]
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">[a]
+</span><a href="#local-6989586621679332376"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">[a] -&gt; [a] -&gt; [a]
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[a]
+</span><a href="#local-6989586621679332379"><span class="hs-identifier hs-var">to</span></a></span><span> </span><span class="annot"><span class="annottext">[a] -&gt; [a] -&gt; [a]
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[a]
+</span><a href="#local-6989586621679332373"><span class="hs-identifier hs-var">f'</span></a></span><span>
+</span><span id="line-97"></span><span>
+</span><span id="line-98"></span><span id="local-6989586621679332477"><span id="local-6989586621679332478"><span class="annot"><a href="SemigroupPresentation.Solver.html#prefixOf"><span class="hs-identifier hs-type">prefixOf</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">MonadFail</span></span><span> </span><span class="annot"><a href="#local-6989586621679332478"><span class="hs-identifier hs-type">m</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Eq</span></span><span> </span><span class="annot"><a href="#local-6989586621679332477"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="#local-6989586621679332477"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="#local-6989586621679332477"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679332478"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><a href="#local-6989586621679332477"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">]</span></span></span><span>
+</span><span id="line-99"></span><span id="prefixOf"><span class="annot"><span class="annottext">prefixOf :: [a] -&gt; [a] -&gt; m [a]
+</span><a href="SemigroupPresentation.Solver.html#prefixOf"><span class="hs-identifier hs-var hs-var">prefixOf</span></a></span></span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span> </span><span id="local-6989586621679332371"><span class="annot"><span class="annottext">[a]
+</span><a href="#local-6989586621679332371"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[a] -&gt; m [a]
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">[a]
+</span><a href="#local-6989586621679332371"><span class="hs-identifier hs-var">s</span></a></span><span>
+</span><span id="line-100"></span><span class="annot"><a href="SemigroupPresentation.Solver.html#prefixOf"><span class="hs-identifier hs-var">prefixOf</span></a></span><span> </span><span class="annot"><span class="annottext">[a]
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; m [a]
+forall (m :: * -&gt; *) a. MonadFail m =&gt; String -&gt; m a
+</span><span class="hs-identifier hs-var">fail</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;Substring longer than string&quot;</span></span><span>
+</span><span id="line-101"></span><span class="annot"><a href="SemigroupPresentation.Solver.html#prefixOf"><span class="hs-identifier hs-var">prefixOf</span></a></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679332370"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679332370"><span class="hs-identifier hs-var">c1</span></a></span></span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679332369"><span class="annot"><span class="annottext">[a]
+</span><a href="#local-6989586621679332369"><span class="hs-identifier hs-var">t</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679332368"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679332368"><span class="hs-identifier hs-var">c2</span></a></span></span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679332367"><span class="annot"><span class="annottext">[a]
+</span><a href="#local-6989586621679332367"><span class="hs-identifier hs-var">s</span></a></span></span><span class="hs-special">)</span><span>
+</span><span id="line-102"></span><span>    </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679332370"><span class="hs-identifier hs-var">c1</span></a></span><span> </span><span class="annot"><span class="annottext">a -&gt; a -&gt; Bool
+forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">==</span></span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679332368"><span class="hs-identifier hs-var">c2</span></a></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[a] -&gt; [a] -&gt; m [a]
+forall (m :: * -&gt; *) a. (MonadFail m, Eq a) =&gt; [a] -&gt; [a] -&gt; m [a]
+</span><a href="SemigroupPresentation.Solver.html#prefixOf"><span class="hs-identifier hs-var">prefixOf</span></a></span><span> </span><span class="annot"><span class="annottext">[a]
+</span><a href="#local-6989586621679332369"><span class="hs-identifier hs-var">t</span></a></span><span> </span><span class="annot"><span class="annottext">[a]
+</span><a href="#local-6989586621679332367"><span class="hs-identifier hs-var">s</span></a></span><span>
+</span><span id="line-103"></span><span>    </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Bool
+</span><span class="hs-identifier hs-var">otherwise</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; m [a]
+forall (m :: * -&gt; *) a. MonadFail m =&gt; String -&gt; m a
+</span><span class="hs-identifier hs-var">fail</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;Substring is not prefix of string&quot;</span></span><span>
+</span><span id="line-104"></span></pre></body></html>

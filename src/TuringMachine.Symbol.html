@@ -1,0 +1,156 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE GeneralizedNewtypeDeriving #-}</span><span>
+</span><span id="line-2"></span><span>
+</span><span id="line-3"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">TuringMachine.Symbol</span><span> </span><span class="hs-special">(</span><span>
+</span><span id="line-4"></span><span>    </span><span class="annot"><a href="TuringMachine.Symbol.html#Symbol"><span class="hs-identifier">Symbol</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-5"></span><span>    </span><span class="annot"><a href="TuringMachine.Symbol.html#symbol"><span class="hs-identifier">symbol</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-6"></span><span>    </span><span class="annot"><a href="TuringMachine.Symbol.html#numSymbol"><span class="hs-identifier">numSymbol</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-7"></span><span>    </span><span class="annot"><a href="TuringMachine.Symbol.html#blankSymbol"><span class="hs-identifier">blankSymbol</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-8"></span><span>  </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-9"></span><span>
+</span><span id="line-10"></span><span class="hs-keyword">newtype</span><span> </span><span id="Symbol"><span class="annot"><a href="TuringMachine.Symbol.html#Symbol"><span class="hs-identifier hs-var">Symbol</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="S"><span class="annot"><a href="TuringMachine.Symbol.html#S"><span class="hs-identifier hs-var">S</span></a></span></span><span> </span><span class="hs-special">{</span><span> </span><span id="numSymbol"><span class="annot"><span class="annottext">Symbol -&gt; Int
+</span><a href="TuringMachine.Symbol.html#numSymbol"><span class="hs-identifier hs-var hs-var">numSymbol</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-special">}</span><span>
+</span><span id="line-11"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679337619"><span id="local-6989586621679337621"><span class="annot"><span class="annottext">Symbol -&gt; Symbol -&gt; Bool
+(Symbol -&gt; Symbol -&gt; Bool)
+-&gt; (Symbol -&gt; Symbol -&gt; Bool) -&gt; Eq Symbol
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+/= :: Symbol -&gt; Symbol -&gt; Bool
+$c/= :: Symbol -&gt; Symbol -&gt; Bool
+== :: Symbol -&gt; Symbol -&gt; Bool
+$c== :: Symbol -&gt; Symbol -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679337603"><span id="local-6989586621679337605"><span id="local-6989586621679337607"><span id="local-6989586621679337609"><span id="local-6989586621679337611"><span id="local-6989586621679337613"><span id="local-6989586621679337615"><span class="annot"><span class="annottext">Eq Symbol
+Eq Symbol
+-&gt; (Symbol -&gt; Symbol -&gt; Ordering)
+-&gt; (Symbol -&gt; Symbol -&gt; Bool)
+-&gt; (Symbol -&gt; Symbol -&gt; Bool)
+-&gt; (Symbol -&gt; Symbol -&gt; Bool)
+-&gt; (Symbol -&gt; Symbol -&gt; Bool)
+-&gt; (Symbol -&gt; Symbol -&gt; Symbol)
+-&gt; (Symbol -&gt; Symbol -&gt; Symbol)
+-&gt; Ord Symbol
+Symbol -&gt; Symbol -&gt; Bool
+Symbol -&gt; Symbol -&gt; Ordering
+Symbol -&gt; Symbol -&gt; Symbol
+forall a.
+Eq a
+-&gt; (a -&gt; a -&gt; Ordering)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; Ord a
+min :: Symbol -&gt; Symbol -&gt; Symbol
+$cmin :: Symbol -&gt; Symbol -&gt; Symbol
+max :: Symbol -&gt; Symbol -&gt; Symbol
+$cmax :: Symbol -&gt; Symbol -&gt; Symbol
+&gt;= :: Symbol -&gt; Symbol -&gt; Bool
+$c&gt;= :: Symbol -&gt; Symbol -&gt; Bool
+&gt; :: Symbol -&gt; Symbol -&gt; Bool
+$c&gt; :: Symbol -&gt; Symbol -&gt; Bool
+&lt;= :: Symbol -&gt; Symbol -&gt; Bool
+$c&lt;= :: Symbol -&gt; Symbol -&gt; Bool
+&lt; :: Symbol -&gt; Symbol -&gt; Bool
+$c&lt; :: Symbol -&gt; Symbol -&gt; Bool
+compare :: Symbol -&gt; Symbol -&gt; Ordering
+$ccompare :: Symbol -&gt; Symbol -&gt; Ordering
+$cp1Ord :: Eq Symbol
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Ord</span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679337588"><span id="local-6989586621679337590"><span id="local-6989586621679337592"><span id="local-6989586621679337594"><span id="local-6989586621679337596"><span id="local-6989586621679337598"><span id="local-6989586621679337600"><span class="annot"><span class="annottext">Integer -&gt; Symbol
+Symbol -&gt; Symbol
+Symbol -&gt; Symbol -&gt; Symbol
+(Symbol -&gt; Symbol -&gt; Symbol)
+-&gt; (Symbol -&gt; Symbol -&gt; Symbol)
+-&gt; (Symbol -&gt; Symbol -&gt; Symbol)
+-&gt; (Symbol -&gt; Symbol)
+-&gt; (Symbol -&gt; Symbol)
+-&gt; (Symbol -&gt; Symbol)
+-&gt; (Integer -&gt; Symbol)
+-&gt; Num Symbol
+forall a.
+(a -&gt; a -&gt; a)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; (a -&gt; a)
+-&gt; (a -&gt; a)
+-&gt; (a -&gt; a)
+-&gt; (Integer -&gt; a)
+-&gt; Num a
+fromInteger :: Integer -&gt; Symbol
+$cfromInteger :: Integer -&gt; Symbol
+signum :: Symbol -&gt; Symbol
+$csignum :: Symbol -&gt; Symbol
+abs :: Symbol -&gt; Symbol
+$cabs :: Symbol -&gt; Symbol
+negate :: Symbol -&gt; Symbol
+$cnegate :: Symbol -&gt; Symbol
+* :: Symbol -&gt; Symbol -&gt; Symbol
+$c* :: Symbol -&gt; Symbol -&gt; Symbol
+- :: Symbol -&gt; Symbol -&gt; Symbol
+$c- :: Symbol -&gt; Symbol -&gt; Symbol
++ :: Symbol -&gt; Symbol -&gt; Symbol
+$c+ :: Symbol -&gt; Symbol -&gt; Symbol
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Num</span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679337571"><span id="local-6989586621679337573"><span id="local-6989586621679337575"><span id="local-6989586621679337577"><span id="local-6989586621679337579"><span id="local-6989586621679337581"><span id="local-6989586621679337583"><span id="local-6989586621679337585"><span class="annot"><span class="annottext">Int -&gt; Symbol
+Symbol -&gt; Int
+Symbol -&gt; [Symbol]
+Symbol -&gt; Symbol
+Symbol -&gt; Symbol -&gt; [Symbol]
+Symbol -&gt; Symbol -&gt; Symbol -&gt; [Symbol]
+(Symbol -&gt; Symbol)
+-&gt; (Symbol -&gt; Symbol)
+-&gt; (Int -&gt; Symbol)
+-&gt; (Symbol -&gt; Int)
+-&gt; (Symbol -&gt; [Symbol])
+-&gt; (Symbol -&gt; Symbol -&gt; [Symbol])
+-&gt; (Symbol -&gt; Symbol -&gt; [Symbol])
+-&gt; (Symbol -&gt; Symbol -&gt; Symbol -&gt; [Symbol])
+-&gt; Enum Symbol
+forall a.
+(a -&gt; a)
+-&gt; (a -&gt; a)
+-&gt; (Int -&gt; a)
+-&gt; (a -&gt; Int)
+-&gt; (a -&gt; [a])
+-&gt; (a -&gt; a -&gt; [a])
+-&gt; (a -&gt; a -&gt; [a])
+-&gt; (a -&gt; a -&gt; a -&gt; [a])
+-&gt; Enum a
+enumFromThenTo :: Symbol -&gt; Symbol -&gt; Symbol -&gt; [Symbol]
+$cenumFromThenTo :: Symbol -&gt; Symbol -&gt; Symbol -&gt; [Symbol]
+enumFromTo :: Symbol -&gt; Symbol -&gt; [Symbol]
+$cenumFromTo :: Symbol -&gt; Symbol -&gt; [Symbol]
+enumFromThen :: Symbol -&gt; Symbol -&gt; [Symbol]
+$cenumFromThen :: Symbol -&gt; Symbol -&gt; [Symbol]
+enumFrom :: Symbol -&gt; [Symbol]
+$cenumFrom :: Symbol -&gt; [Symbol]
+fromEnum :: Symbol -&gt; Int
+$cfromEnum :: Symbol -&gt; Int
+toEnum :: Int -&gt; Symbol
+$ctoEnum :: Int -&gt; Symbol
+pred :: Symbol -&gt; Symbol
+$cpred :: Symbol -&gt; Symbol
+succ :: Symbol -&gt; Symbol
+$csucc :: Symbol -&gt; Symbol
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Enum</span></span></span></span></span></span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-12"></span><span>
+</span><span id="line-13"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bounded</span></span><span> </span><span class="annot"><a href="TuringMachine.Symbol.html#Symbol"><span class="hs-identifier hs-type">Symbol</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-14"></span><span>    </span><span id="local-6989586621679337566"><span class="annot"><span class="annottext">minBound :: Symbol
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">minBound</span></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Int -&gt; Symbol
+</span><a href="TuringMachine.Symbol.html#S"><span class="hs-identifier hs-var">S</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">0</span></span><span>
+</span><span id="line-15"></span><span>    </span><span id="local-6989586621679337564"><span class="annot"><span class="annottext">maxBound :: Symbol
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">maxBound</span></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Int -&gt; Symbol
+</span><a href="TuringMachine.Symbol.html#S"><span class="hs-identifier hs-var">S</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+forall a. Bounded a =&gt; a
+</span><span class="hs-identifier hs-var">maxBound</span></span><span>
+</span><span id="line-16"></span><span>
+</span><span id="line-17"></span><span class="annot"><a href="TuringMachine.Symbol.html#symbol"><span class="hs-identifier hs-type">symbol</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TuringMachine.Symbol.html#Symbol"><span class="hs-identifier hs-type">Symbol</span></a></span><span>
+</span><span id="line-18"></span><span id="symbol"><span class="annot"><span class="annottext">symbol :: Int -&gt; Symbol
+</span><a href="TuringMachine.Symbol.html#symbol"><span class="hs-identifier hs-var hs-var">symbol</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Int -&gt; Symbol
+</span><a href="TuringMachine.Symbol.html#S"><span class="hs-identifier hs-var">S</span></a></span><span>
+</span><span id="line-19"></span><span>
+</span><span id="line-20"></span><span class="annot"><a href="TuringMachine.Symbol.html#blankSymbol"><span class="hs-identifier hs-type">blankSymbol</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TuringMachine.Symbol.html#Symbol"><span class="hs-identifier hs-type">Symbol</span></a></span><span>
+</span><span id="line-21"></span><span id="blankSymbol"><span class="annot"><span class="annottext">blankSymbol :: Symbol
+</span><a href="TuringMachine.Symbol.html#blankSymbol"><span class="hs-identifier hs-var hs-var">blankSymbol</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Int -&gt; Symbol
+</span><a href="TuringMachine.Symbol.html#S"><span class="hs-identifier hs-var">S</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">0</span></span><span>
+</span><span id="line-22"></span></pre></body></html>

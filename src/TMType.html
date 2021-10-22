@@ -1,0 +1,735 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span id="%24con2tag_38z9lzErb3xGEnRIknDcbX"><span id="%24con2tag_4fvbEG4gNq0LQhRlLwmqfS"></span></span><span>
+</span><span id="line-2"></span><span class="hs-comment">-- |This module represents a types of Turing machine.</span><span>
+</span><span id="line-3"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">TMType</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-4"></span><span>
+</span><span id="line-5"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Set</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">Set</span></span><span class="hs-special">)</span><span>
+</span><span id="line-6"></span><span>
+</span><span id="line-7"></span><span class="hs-comment">-- |This type represents a state of the Turing machine 'TM'.</span><span>
+</span><span id="line-8"></span><span class="hs-keyword">newtype</span><span> </span><span id="State"><span class="annot"><a href="TMType.html#State"><span class="hs-identifier hs-var">State</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="State"><span class="annot"><a href="TMType.html#State"><span class="hs-identifier hs-var">State</span></a></span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-9"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679333628"><span id="local-6989586621679333630"><span class="annot"><span class="annottext">State -&gt; State -&gt; Bool
+(State -&gt; State -&gt; Bool) -&gt; (State -&gt; State -&gt; Bool) -&gt; Eq State
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+/= :: State -&gt; State -&gt; Bool
+$c/= :: State -&gt; State -&gt; Bool
+== :: State -&gt; State -&gt; Bool
+$c== :: State -&gt; State -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679333612"><span id="local-6989586621679333614"><span id="local-6989586621679333616"><span id="local-6989586621679333618"><span id="local-6989586621679333620"><span id="local-6989586621679333622"><span id="local-6989586621679333624"><span class="annot"><span class="annottext">Eq State
+Eq State
+-&gt; (State -&gt; State -&gt; Ordering)
+-&gt; (State -&gt; State -&gt; Bool)
+-&gt; (State -&gt; State -&gt; Bool)
+-&gt; (State -&gt; State -&gt; Bool)
+-&gt; (State -&gt; State -&gt; Bool)
+-&gt; (State -&gt; State -&gt; State)
+-&gt; (State -&gt; State -&gt; State)
+-&gt; Ord State
+State -&gt; State -&gt; Bool
+State -&gt; State -&gt; Ordering
+State -&gt; State -&gt; State
+forall a.
+Eq a
+-&gt; (a -&gt; a -&gt; Ordering)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; Ord a
+min :: State -&gt; State -&gt; State
+$cmin :: State -&gt; State -&gt; State
+max :: State -&gt; State -&gt; State
+$cmax :: State -&gt; State -&gt; State
+&gt;= :: State -&gt; State -&gt; Bool
+$c&gt;= :: State -&gt; State -&gt; Bool
+&gt; :: State -&gt; State -&gt; Bool
+$c&gt; :: State -&gt; State -&gt; Bool
+&lt;= :: State -&gt; State -&gt; Bool
+$c&lt;= :: State -&gt; State -&gt; Bool
+&lt; :: State -&gt; State -&gt; Bool
+$c&lt; :: State -&gt; State -&gt; Bool
+compare :: State -&gt; State -&gt; Ordering
+$ccompare :: State -&gt; State -&gt; Ordering
+$cp1Ord :: Eq State
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Ord</span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679333605"><span id="local-6989586621679333607"><span id="local-6989586621679333609"><span class="annot"><span class="annottext">Int -&gt; State -&gt; ShowS
+[State] -&gt; ShowS
+State -&gt; String
+(Int -&gt; State -&gt; ShowS)
+-&gt; (State -&gt; String) -&gt; ([State] -&gt; ShowS) -&gt; Show State
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+showList :: [State] -&gt; ShowS
+$cshowList :: [State] -&gt; ShowS
+show :: State -&gt; String
+$cshow :: State -&gt; String
+showsPrec :: Int -&gt; State -&gt; ShowS
+$cshowsPrec :: Int -&gt; State -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-10"></span><span>
+</span><span id="line-11"></span><span class="hs-comment">-- |Type of a k-vector of tapes states, where k is a count of tapes. </span><span>
+</span><span id="line-12"></span><span class="hs-comment">--</span><span>
+</span><span id="line-13"></span><span class="hs-comment">-- Type represents all states of the Turing machine 'TM'.</span><span>
+</span><span id="line-14"></span><span class="hs-keyword">newtype</span><span> </span><span id="MultiTapeStates"><span class="annot"><a href="TMType.html#MultiTapeStates"><span class="hs-identifier hs-var">MultiTapeStates</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="MultiTapeStates"><span class="annot"><a href="TMType.html#MultiTapeStates"><span class="hs-identifier hs-var">MultiTapeStates</span></a></span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">Set</span></span><span> </span><span class="annot"><a href="TMType.html#State"><span class="hs-identifier hs-type">State</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-15"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679333599"><span id="local-6989586621679333601"><span class="annot"><span class="annottext">MultiTapeStates -&gt; MultiTapeStates -&gt; Bool
+(MultiTapeStates -&gt; MultiTapeStates -&gt; Bool)
+-&gt; (MultiTapeStates -&gt; MultiTapeStates -&gt; Bool)
+-&gt; Eq MultiTapeStates
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+/= :: MultiTapeStates -&gt; MultiTapeStates -&gt; Bool
+$c/= :: MultiTapeStates -&gt; MultiTapeStates -&gt; Bool
+== :: MultiTapeStates -&gt; MultiTapeStates -&gt; Bool
+$c== :: MultiTapeStates -&gt; MultiTapeStates -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679333584"><span id="local-6989586621679333586"><span id="local-6989586621679333588"><span id="local-6989586621679333590"><span id="local-6989586621679333592"><span id="local-6989586621679333594"><span id="local-6989586621679333596"><span class="annot"><span class="annottext">Eq MultiTapeStates
+Eq MultiTapeStates
+-&gt; (MultiTapeStates -&gt; MultiTapeStates -&gt; Ordering)
+-&gt; (MultiTapeStates -&gt; MultiTapeStates -&gt; Bool)
+-&gt; (MultiTapeStates -&gt; MultiTapeStates -&gt; Bool)
+-&gt; (MultiTapeStates -&gt; MultiTapeStates -&gt; Bool)
+-&gt; (MultiTapeStates -&gt; MultiTapeStates -&gt; Bool)
+-&gt; (MultiTapeStates -&gt; MultiTapeStates -&gt; MultiTapeStates)
+-&gt; (MultiTapeStates -&gt; MultiTapeStates -&gt; MultiTapeStates)
+-&gt; Ord MultiTapeStates
+MultiTapeStates -&gt; MultiTapeStates -&gt; Bool
+MultiTapeStates -&gt; MultiTapeStates -&gt; Ordering
+MultiTapeStates -&gt; MultiTapeStates -&gt; MultiTapeStates
+forall a.
+Eq a
+-&gt; (a -&gt; a -&gt; Ordering)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; Ord a
+min :: MultiTapeStates -&gt; MultiTapeStates -&gt; MultiTapeStates
+$cmin :: MultiTapeStates -&gt; MultiTapeStates -&gt; MultiTapeStates
+max :: MultiTapeStates -&gt; MultiTapeStates -&gt; MultiTapeStates
+$cmax :: MultiTapeStates -&gt; MultiTapeStates -&gt; MultiTapeStates
+&gt;= :: MultiTapeStates -&gt; MultiTapeStates -&gt; Bool
+$c&gt;= :: MultiTapeStates -&gt; MultiTapeStates -&gt; Bool
+&gt; :: MultiTapeStates -&gt; MultiTapeStates -&gt; Bool
+$c&gt; :: MultiTapeStates -&gt; MultiTapeStates -&gt; Bool
+&lt;= :: MultiTapeStates -&gt; MultiTapeStates -&gt; Bool
+$c&lt;= :: MultiTapeStates -&gt; MultiTapeStates -&gt; Bool
+&lt; :: MultiTapeStates -&gt; MultiTapeStates -&gt; Bool
+$c&lt; :: MultiTapeStates -&gt; MultiTapeStates -&gt; Bool
+compare :: MultiTapeStates -&gt; MultiTapeStates -&gt; Ordering
+$ccompare :: MultiTapeStates -&gt; MultiTapeStates -&gt; Ordering
+$cp1Ord :: Eq MultiTapeStates
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Ord</span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679333578"><span id="local-6989586621679333580"><span id="local-6989586621679333582"><span class="annot"><span class="annottext">Int -&gt; MultiTapeStates -&gt; ShowS
+[MultiTapeStates] -&gt; ShowS
+MultiTapeStates -&gt; String
+(Int -&gt; MultiTapeStates -&gt; ShowS)
+-&gt; (MultiTapeStates -&gt; String)
+-&gt; ([MultiTapeStates] -&gt; ShowS)
+-&gt; Show MultiTapeStates
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+showList :: [MultiTapeStates] -&gt; ShowS
+$cshowList :: [MultiTapeStates] -&gt; ShowS
+show :: MultiTapeStates -&gt; String
+$cshow :: MultiTapeStates -&gt; String
+showsPrec :: Int -&gt; MultiTapeStates -&gt; ShowS
+$cshowsPrec :: Int -&gt; MultiTapeStates -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-16"></span><span>
+</span><span id="line-17"></span><span class="hs-comment">-- |Type of a k-vector of a start states of the Turing machine 'TM'.</span><span>
+</span><span id="line-18"></span><span class="hs-keyword">newtype</span><span> </span><span id="StartStates"><span class="annot"><a href="TMType.html#StartStates"><span class="hs-identifier hs-var">StartStates</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="StartStates"><span class="annot"><a href="TMType.html#StartStates"><span class="hs-identifier hs-var">StartStates</span></a></span></span><span> </span><span class="hs-special">[</span><span class="annot"><a href="TMType.html#State"><span class="hs-identifier hs-type">State</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-19"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679333573"><span id="local-6989586621679333575"><span class="annot"><span class="annottext">StartStates -&gt; StartStates -&gt; Bool
+(StartStates -&gt; StartStates -&gt; Bool)
+-&gt; (StartStates -&gt; StartStates -&gt; Bool) -&gt; Eq StartStates
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+/= :: StartStates -&gt; StartStates -&gt; Bool
+$c/= :: StartStates -&gt; StartStates -&gt; Bool
+== :: StartStates -&gt; StartStates -&gt; Bool
+$c== :: StartStates -&gt; StartStates -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679333558"><span id="local-6989586621679333560"><span id="local-6989586621679333562"><span id="local-6989586621679333564"><span id="local-6989586621679333566"><span id="local-6989586621679333568"><span id="local-6989586621679333570"><span class="annot"><span class="annottext">Eq StartStates
+Eq StartStates
+-&gt; (StartStates -&gt; StartStates -&gt; Ordering)
+-&gt; (StartStates -&gt; StartStates -&gt; Bool)
+-&gt; (StartStates -&gt; StartStates -&gt; Bool)
+-&gt; (StartStates -&gt; StartStates -&gt; Bool)
+-&gt; (StartStates -&gt; StartStates -&gt; Bool)
+-&gt; (StartStates -&gt; StartStates -&gt; StartStates)
+-&gt; (StartStates -&gt; StartStates -&gt; StartStates)
+-&gt; Ord StartStates
+StartStates -&gt; StartStates -&gt; Bool
+StartStates -&gt; StartStates -&gt; Ordering
+StartStates -&gt; StartStates -&gt; StartStates
+forall a.
+Eq a
+-&gt; (a -&gt; a -&gt; Ordering)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; Ord a
+min :: StartStates -&gt; StartStates -&gt; StartStates
+$cmin :: StartStates -&gt; StartStates -&gt; StartStates
+max :: StartStates -&gt; StartStates -&gt; StartStates
+$cmax :: StartStates -&gt; StartStates -&gt; StartStates
+&gt;= :: StartStates -&gt; StartStates -&gt; Bool
+$c&gt;= :: StartStates -&gt; StartStates -&gt; Bool
+&gt; :: StartStates -&gt; StartStates -&gt; Bool
+$c&gt; :: StartStates -&gt; StartStates -&gt; Bool
+&lt;= :: StartStates -&gt; StartStates -&gt; Bool
+$c&lt;= :: StartStates -&gt; StartStates -&gt; Bool
+&lt; :: StartStates -&gt; StartStates -&gt; Bool
+$c&lt; :: StartStates -&gt; StartStates -&gt; Bool
+compare :: StartStates -&gt; StartStates -&gt; Ordering
+$ccompare :: StartStates -&gt; StartStates -&gt; Ordering
+$cp1Ord :: Eq StartStates
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Ord</span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679333552"><span id="local-6989586621679333554"><span id="local-6989586621679333556"><span class="annot"><span class="annottext">Int -&gt; StartStates -&gt; ShowS
+[StartStates] -&gt; ShowS
+StartStates -&gt; String
+(Int -&gt; StartStates -&gt; ShowS)
+-&gt; (StartStates -&gt; String)
+-&gt; ([StartStates] -&gt; ShowS)
+-&gt; Show StartStates
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+showList :: [StartStates] -&gt; ShowS
+$cshowList :: [StartStates] -&gt; ShowS
+show :: StartStates -&gt; String
+$cshow :: StartStates -&gt; String
+showsPrec :: Int -&gt; StartStates -&gt; ShowS
+$cshowsPrec :: Int -&gt; StartStates -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-20"></span><span>
+</span><span id="line-21"></span><span class="hs-comment">-- |Type of a k-vector of a final states of the Turing machine 'TM'.</span><span>
+</span><span id="line-22"></span><span class="hs-keyword">newtype</span><span> </span><span id="AccessStates"><span class="annot"><a href="TMType.html#AccessStates"><span class="hs-identifier hs-var">AccessStates</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="AccessStates"><span class="annot"><a href="TMType.html#AccessStates"><span class="hs-identifier hs-var">AccessStates</span></a></span></span><span> </span><span class="hs-special">[</span><span class="annot"><a href="TMType.html#State"><span class="hs-identifier hs-type">State</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-23"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679333547"><span id="local-6989586621679333549"><span class="annot"><span class="annottext">AccessStates -&gt; AccessStates -&gt; Bool
+(AccessStates -&gt; AccessStates -&gt; Bool)
+-&gt; (AccessStates -&gt; AccessStates -&gt; Bool) -&gt; Eq AccessStates
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+/= :: AccessStates -&gt; AccessStates -&gt; Bool
+$c/= :: AccessStates -&gt; AccessStates -&gt; Bool
+== :: AccessStates -&gt; AccessStates -&gt; Bool
+$c== :: AccessStates -&gt; AccessStates -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679333532"><span id="local-6989586621679333534"><span id="local-6989586621679333536"><span id="local-6989586621679333538"><span id="local-6989586621679333540"><span id="local-6989586621679333542"><span id="local-6989586621679333544"><span class="annot"><span class="annottext">Eq AccessStates
+Eq AccessStates
+-&gt; (AccessStates -&gt; AccessStates -&gt; Ordering)
+-&gt; (AccessStates -&gt; AccessStates -&gt; Bool)
+-&gt; (AccessStates -&gt; AccessStates -&gt; Bool)
+-&gt; (AccessStates -&gt; AccessStates -&gt; Bool)
+-&gt; (AccessStates -&gt; AccessStates -&gt; Bool)
+-&gt; (AccessStates -&gt; AccessStates -&gt; AccessStates)
+-&gt; (AccessStates -&gt; AccessStates -&gt; AccessStates)
+-&gt; Ord AccessStates
+AccessStates -&gt; AccessStates -&gt; Bool
+AccessStates -&gt; AccessStates -&gt; Ordering
+AccessStates -&gt; AccessStates -&gt; AccessStates
+forall a.
+Eq a
+-&gt; (a -&gt; a -&gt; Ordering)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; Ord a
+min :: AccessStates -&gt; AccessStates -&gt; AccessStates
+$cmin :: AccessStates -&gt; AccessStates -&gt; AccessStates
+max :: AccessStates -&gt; AccessStates -&gt; AccessStates
+$cmax :: AccessStates -&gt; AccessStates -&gt; AccessStates
+&gt;= :: AccessStates -&gt; AccessStates -&gt; Bool
+$c&gt;= :: AccessStates -&gt; AccessStates -&gt; Bool
+&gt; :: AccessStates -&gt; AccessStates -&gt; Bool
+$c&gt; :: AccessStates -&gt; AccessStates -&gt; Bool
+&lt;= :: AccessStates -&gt; AccessStates -&gt; Bool
+$c&lt;= :: AccessStates -&gt; AccessStates -&gt; Bool
+&lt; :: AccessStates -&gt; AccessStates -&gt; Bool
+$c&lt; :: AccessStates -&gt; AccessStates -&gt; Bool
+compare :: AccessStates -&gt; AccessStates -&gt; Ordering
+$ccompare :: AccessStates -&gt; AccessStates -&gt; Ordering
+$cp1Ord :: Eq AccessStates
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Ord</span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679333526"><span id="local-6989586621679333528"><span id="local-6989586621679333530"><span class="annot"><span class="annottext">Int -&gt; AccessStates -&gt; ShowS
+[AccessStates] -&gt; ShowS
+AccessStates -&gt; String
+(Int -&gt; AccessStates -&gt; ShowS)
+-&gt; (AccessStates -&gt; String)
+-&gt; ([AccessStates] -&gt; ShowS)
+-&gt; Show AccessStates
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+showList :: [AccessStates] -&gt; ShowS
+$cshowList :: [AccessStates] -&gt; ShowS
+show :: AccessStates -&gt; String
+$cshow :: AccessStates -&gt; String
+showsPrec :: Int -&gt; AccessStates -&gt; ShowS
+$cshowsPrec :: Int -&gt; AccessStates -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-24"></span><span>
+</span><span id="line-25"></span><span class="hs-comment">-- |Type of a state in a changed Turing machine, which has a form F_q, where q is a 'State'.</span><span>
+</span><span id="line-26"></span><span class="hs-keyword">newtype</span><span> </span><span id="StateOmega"><span class="annot"><a href="TMType.html#StateOmega"><span class="hs-identifier hs-var">StateOmega</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="StateOmega"><span class="annot"><a href="TMType.html#StateOmega"><span class="hs-identifier hs-var">StateOmega</span></a></span></span><span> </span><span class="hs-special">{</span><span id="state"><span class="annot"><span class="annottext">StateOmega -&gt; State
+</span><a href="TMType.html#state"><span class="hs-identifier hs-var hs-var">state</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TMType.html#State"><span class="hs-identifier hs-type">State</span></a></span><span class="hs-special">}</span><span>
+</span><span id="line-27"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679333520"><span id="local-6989586621679333522"><span class="annot"><span class="annottext">StateOmega -&gt; StateOmega -&gt; Bool
+(StateOmega -&gt; StateOmega -&gt; Bool)
+-&gt; (StateOmega -&gt; StateOmega -&gt; Bool) -&gt; Eq StateOmega
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+/= :: StateOmega -&gt; StateOmega -&gt; Bool
+$c/= :: StateOmega -&gt; StateOmega -&gt; Bool
+== :: StateOmega -&gt; StateOmega -&gt; Bool
+$c== :: StateOmega -&gt; StateOmega -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679333505"><span id="local-6989586621679333507"><span id="local-6989586621679333509"><span id="local-6989586621679333511"><span id="local-6989586621679333513"><span id="local-6989586621679333515"><span id="local-6989586621679333517"><span class="annot"><span class="annottext">Eq StateOmega
+Eq StateOmega
+-&gt; (StateOmega -&gt; StateOmega -&gt; Ordering)
+-&gt; (StateOmega -&gt; StateOmega -&gt; Bool)
+-&gt; (StateOmega -&gt; StateOmega -&gt; Bool)
+-&gt; (StateOmega -&gt; StateOmega -&gt; Bool)
+-&gt; (StateOmega -&gt; StateOmega -&gt; Bool)
+-&gt; (StateOmega -&gt; StateOmega -&gt; StateOmega)
+-&gt; (StateOmega -&gt; StateOmega -&gt; StateOmega)
+-&gt; Ord StateOmega
+StateOmega -&gt; StateOmega -&gt; Bool
+StateOmega -&gt; StateOmega -&gt; Ordering
+StateOmega -&gt; StateOmega -&gt; StateOmega
+forall a.
+Eq a
+-&gt; (a -&gt; a -&gt; Ordering)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; Ord a
+min :: StateOmega -&gt; StateOmega -&gt; StateOmega
+$cmin :: StateOmega -&gt; StateOmega -&gt; StateOmega
+max :: StateOmega -&gt; StateOmega -&gt; StateOmega
+$cmax :: StateOmega -&gt; StateOmega -&gt; StateOmega
+&gt;= :: StateOmega -&gt; StateOmega -&gt; Bool
+$c&gt;= :: StateOmega -&gt; StateOmega -&gt; Bool
+&gt; :: StateOmega -&gt; StateOmega -&gt; Bool
+$c&gt; :: StateOmega -&gt; StateOmega -&gt; Bool
+&lt;= :: StateOmega -&gt; StateOmega -&gt; Bool
+$c&lt;= :: StateOmega -&gt; StateOmega -&gt; Bool
+&lt; :: StateOmega -&gt; StateOmega -&gt; Bool
+$c&lt; :: StateOmega -&gt; StateOmega -&gt; Bool
+compare :: StateOmega -&gt; StateOmega -&gt; Ordering
+$ccompare :: StateOmega -&gt; StateOmega -&gt; Ordering
+$cp1Ord :: Eq StateOmega
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Ord</span></span></span></span></span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-28"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679333500"><span id="local-6989586621679333503"><span class="annot"><span class="hs-identifier hs-type">Show</span></span><span> </span><span class="annot"><a href="TMType.html#StateOmega"><span class="hs-identifier hs-type">StateOmega</span></a></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-29"></span><span>    </span><span id="local-6989586621679333499"><span class="annot"><span class="annottext">show :: StateOmega -&gt; String
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">show</span></span></span><span> </span><span id="local-6989586621679333497"><span class="annot"><span class="annottext">StateOmega
+</span><a href="#local-6989586621679333497"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;F_{&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679333496"><span class="hs-identifier hs-var">q</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;}&quot;</span></span><span>
+</span><span id="line-30"></span><span>        </span><span class="hs-keyword">where</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="TMType.html#State"><span class="hs-identifier hs-type">State</span></a></span><span> </span><span id="local-6989586621679333496"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679333496"><span class="hs-identifier hs-var">q</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">StateOmega -&gt; State
+</span><a href="TMType.html#state"><span class="hs-identifier hs-var hs-var">state</span></a></span><span> </span><span class="annot"><span class="annottext">StateOmega
+</span><a href="#local-6989586621679333497"><span class="hs-identifier hs-var">s</span></a></span><span>
+</span><span id="line-31"></span><span>
+</span><span id="line-32"></span><span class="hs-comment">-- |Type of a command of the Turing machine 'TM', which applicable on a single tape.</span><span>
+</span><span id="line-33"></span><span class="hs-comment">--</span><span>
+</span><span id="line-34"></span><span class="hs-comment">-- 'SingleTapeCommand' is a command for normal Turing machine.</span><span>
+</span><span id="line-35"></span><span class="hs-comment">--</span><span>
+</span><span id="line-36"></span><span class="hs-comment">-- 'PreSMCommand' is a command for Turing machine after change.</span><span>
+</span><span id="line-37"></span><span class="hs-keyword">data</span><span> </span><span id="TapeCommand"><span class="annot"><a href="TMType.html#TapeCommand"><span class="hs-identifier hs-var">TapeCommand</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="SingleTapeCommand"><span class="annot"><a href="TMType.html#SingleTapeCommand"><span class="hs-identifier hs-var">SingleTapeCommand</span></a></span></span><span> </span><span class="hs-special">(</span><span class="hs-special">(</span><span class="annot"><a href="TMType.html#Square"><span class="hs-identifier hs-type">Square</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="TMType.html#State"><span class="hs-identifier hs-type">State</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="TMType.html#Square"><span class="hs-identifier hs-type">Square</span></a></span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="TMType.html#Square"><span class="hs-identifier hs-type">Square</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="TMType.html#State"><span class="hs-identifier hs-type">State</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="TMType.html#Square"><span class="hs-identifier hs-type">Square</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">|</span><span> </span><span id="PreSMCommand"><span class="annot"><a href="TMType.html#PreSMCommand"><span class="hs-identifier hs-var">PreSMCommand</span></a></span></span><span> </span><span class="hs-special">(</span><span class="hs-special">(</span><span class="annot"><a href="TMType.html#Square"><span class="hs-identifier hs-type">Square</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="TMType.html#StateOmega"><span class="hs-identifier hs-type">StateOmega</span></a></span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="TMType.html#Square"><span class="hs-identifier hs-type">Square</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="TMType.html#StateOmega"><span class="hs-identifier hs-type">StateOmega</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><span id="line-38"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679333490"><span id="local-6989586621679333492"><span class="annot"><span class="annottext">TapeCommand -&gt; TapeCommand -&gt; Bool
+(TapeCommand -&gt; TapeCommand -&gt; Bool)
+-&gt; (TapeCommand -&gt; TapeCommand -&gt; Bool) -&gt; Eq TapeCommand
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+/= :: TapeCommand -&gt; TapeCommand -&gt; Bool
+$c/= :: TapeCommand -&gt; TapeCommand -&gt; Bool
+== :: TapeCommand -&gt; TapeCommand -&gt; Bool
+$c== :: TapeCommand -&gt; TapeCommand -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679333475"><span id="local-6989586621679333477"><span id="local-6989586621679333479"><span id="local-6989586621679333481"><span id="local-6989586621679333483"><span id="local-6989586621679333485"><span id="local-6989586621679333487"><span class="annot"><span class="annottext">Eq TapeCommand
+Eq TapeCommand
+-&gt; (TapeCommand -&gt; TapeCommand -&gt; Ordering)
+-&gt; (TapeCommand -&gt; TapeCommand -&gt; Bool)
+-&gt; (TapeCommand -&gt; TapeCommand -&gt; Bool)
+-&gt; (TapeCommand -&gt; TapeCommand -&gt; Bool)
+-&gt; (TapeCommand -&gt; TapeCommand -&gt; Bool)
+-&gt; (TapeCommand -&gt; TapeCommand -&gt; TapeCommand)
+-&gt; (TapeCommand -&gt; TapeCommand -&gt; TapeCommand)
+-&gt; Ord TapeCommand
+TapeCommand -&gt; TapeCommand -&gt; Bool
+TapeCommand -&gt; TapeCommand -&gt; Ordering
+TapeCommand -&gt; TapeCommand -&gt; TapeCommand
+forall a.
+Eq a
+-&gt; (a -&gt; a -&gt; Ordering)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; Ord a
+min :: TapeCommand -&gt; TapeCommand -&gt; TapeCommand
+$cmin :: TapeCommand -&gt; TapeCommand -&gt; TapeCommand
+max :: TapeCommand -&gt; TapeCommand -&gt; TapeCommand
+$cmax :: TapeCommand -&gt; TapeCommand -&gt; TapeCommand
+&gt;= :: TapeCommand -&gt; TapeCommand -&gt; Bool
+$c&gt;= :: TapeCommand -&gt; TapeCommand -&gt; Bool
+&gt; :: TapeCommand -&gt; TapeCommand -&gt; Bool
+$c&gt; :: TapeCommand -&gt; TapeCommand -&gt; Bool
+&lt;= :: TapeCommand -&gt; TapeCommand -&gt; Bool
+$c&lt;= :: TapeCommand -&gt; TapeCommand -&gt; Bool
+&lt; :: TapeCommand -&gt; TapeCommand -&gt; Bool
+$c&lt; :: TapeCommand -&gt; TapeCommand -&gt; Bool
+compare :: TapeCommand -&gt; TapeCommand -&gt; Ordering
+$ccompare :: TapeCommand -&gt; TapeCommand -&gt; Ordering
+$cp1Ord :: Eq TapeCommand
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Ord</span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679333469"><span id="local-6989586621679333471"><span id="local-6989586621679333473"><span class="annot"><span class="annottext">Int -&gt; TapeCommand -&gt; ShowS
+[TapeCommand] -&gt; ShowS
+TapeCommand -&gt; String
+(Int -&gt; TapeCommand -&gt; ShowS)
+-&gt; (TapeCommand -&gt; String)
+-&gt; ([TapeCommand] -&gt; ShowS)
+-&gt; Show TapeCommand
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+showList :: [TapeCommand] -&gt; ShowS
+$cshowList :: [TapeCommand] -&gt; ShowS
+show :: TapeCommand -&gt; String
+$cshow :: TapeCommand -&gt; String
+showsPrec :: Int -&gt; TapeCommand -&gt; ShowS
+$cshowsPrec :: Int -&gt; TapeCommand -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-39"></span><span>
+</span><span id="line-40"></span><span class="hs-comment">-- |This is a data type of square of the Turing machine 'TM'. </span><span>
+</span><span id="line-41"></span><span class="hs-comment">--</span><span>
+</span><span id="line-42"></span><span class="hs-comment">-- 'Value' is a square of string.</span><span>
+</span><span id="line-43"></span><span class="hs-comment">--</span><span>
+</span><span id="line-44"></span><span class="hs-comment">-- 'E' is a square, which we use after change of Turing machine, for representing empties of a tape, and its argument marks the tape number. </span><span>
+</span><span id="line-45"></span><span class="hs-comment">--</span><span>
+</span><span id="line-46"></span><span class="hs-comment">-- 'RBS' is a right bounding square. </span><span>
+</span><span id="line-47"></span><span class="hs-comment">--</span><span>
+</span><span id="line-48"></span><span class="hs-comment">-- 'LBS' is a left bounding square.</span><span>
+</span><span id="line-49"></span><span class="hs-comment">--</span><span>
+</span><span id="line-50"></span><span class="hs-comment">-- 'ES' is a empty square.</span><span>
+</span><span id="line-51"></span><span class="hs-comment">--</span><span>
+</span><span id="line-52"></span><span class="hs-comment">-- 'PCommand' is a square of command with parentheses surroundings.</span><span>
+</span><span id="line-53"></span><span class="hs-comment">--</span><span>
+</span><span id="line-54"></span><span class="hs-comment">-- 'BCommand' is a square of command with brackets surroundings.</span><span>
+</span><span id="line-55"></span><span class="hs-keyword">data</span><span> </span><span id="Square"><span class="annot"><a href="TMType.html#Square"><span class="hs-identifier hs-var">Square</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="Value"><span class="annot"><a href="TMType.html#Value"><span class="hs-identifier hs-var">Value</span></a></span></span><span> </span><span class="hs-special">{</span><span id="val_name"><span class="annot"><span class="annottext">Square -&gt; String
+</span><a href="TMType.html#val_name"><span class="hs-identifier hs-var hs-var">val_name</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span class="hs-special">,</span><span> </span><span id="val_quote_cnt"><span class="annot"><span class="annottext">Square -&gt; Int
+</span><a href="TMType.html#val_quote_cnt"><span class="hs-identifier hs-var hs-var">val_quote_cnt</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span class="hs-special">}</span><span> </span><span class="hs-glyph">|</span><span> </span><span id="E"><span class="annot"><a href="TMType.html#E"><span class="hs-identifier hs-var">E</span></a></span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">|</span><span> </span><span id="RBS"><span class="annot"><a href="TMType.html#RBS"><span class="hs-identifier hs-var">RBS</span></a></span></span><span> </span><span class="hs-glyph">|</span><span> </span><span id="LBS"><span class="annot"><a href="TMType.html#LBS"><span class="hs-identifier hs-var">LBS</span></a></span></span><span> </span><span class="hs-glyph">|</span><span> </span><span id="ES"><span class="annot"><a href="TMType.html#ES"><span class="hs-identifier hs-var">ES</span></a></span></span><span> </span><span class="hs-glyph">|</span><span> </span><span id="PCommand"><span class="annot"><a href="TMType.html#PCommand"><span class="hs-identifier hs-var">PCommand</span></a></span></span><span> </span><span class="hs-special">[</span><span class="annot"><a href="TMType.html#TapeCommand"><span class="hs-identifier hs-type">TapeCommand</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">|</span><span> </span><span id="BCommand"><span class="annot"><a href="TMType.html#BCommand"><span class="hs-identifier hs-var">BCommand</span></a></span></span><span> </span><span class="hs-special">[</span><span class="annot"><a href="TMType.html#TapeCommand"><span class="hs-identifier hs-type">TapeCommand</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-56"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679333456"><span id="local-6989586621679333458"><span class="annot"><span class="annottext">Square -&gt; Square -&gt; Bool
+(Square -&gt; Square -&gt; Bool)
+-&gt; (Square -&gt; Square -&gt; Bool) -&gt; Eq Square
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+/= :: Square -&gt; Square -&gt; Bool
+$c/= :: Square -&gt; Square -&gt; Bool
+== :: Square -&gt; Square -&gt; Bool
+$c== :: Square -&gt; Square -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679333441"><span id="local-6989586621679333443"><span id="local-6989586621679333445"><span id="local-6989586621679333447"><span id="local-6989586621679333449"><span id="local-6989586621679333451"><span id="local-6989586621679333453"><span class="annot"><span class="annottext">Eq Square
+Eq Square
+-&gt; (Square -&gt; Square -&gt; Ordering)
+-&gt; (Square -&gt; Square -&gt; Bool)
+-&gt; (Square -&gt; Square -&gt; Bool)
+-&gt; (Square -&gt; Square -&gt; Bool)
+-&gt; (Square -&gt; Square -&gt; Bool)
+-&gt; (Square -&gt; Square -&gt; Square)
+-&gt; (Square -&gt; Square -&gt; Square)
+-&gt; Ord Square
+Square -&gt; Square -&gt; Bool
+Square -&gt; Square -&gt; Ordering
+Square -&gt; Square -&gt; Square
+forall a.
+Eq a
+-&gt; (a -&gt; a -&gt; Ordering)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; Ord a
+min :: Square -&gt; Square -&gt; Square
+$cmin :: Square -&gt; Square -&gt; Square
+max :: Square -&gt; Square -&gt; Square
+$cmax :: Square -&gt; Square -&gt; Square
+&gt;= :: Square -&gt; Square -&gt; Bool
+$c&gt;= :: Square -&gt; Square -&gt; Bool
+&gt; :: Square -&gt; Square -&gt; Bool
+$c&gt; :: Square -&gt; Square -&gt; Bool
+&lt;= :: Square -&gt; Square -&gt; Bool
+$c&lt;= :: Square -&gt; Square -&gt; Bool
+&lt; :: Square -&gt; Square -&gt; Bool
+$c&lt; :: Square -&gt; Square -&gt; Bool
+compare :: Square -&gt; Square -&gt; Ordering
+$ccompare :: Square -&gt; Square -&gt; Ordering
+$cp1Ord :: Eq Square
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Ord</span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679333435"><span id="local-6989586621679333437"><span id="local-6989586621679333439"><span class="annot"><span class="annottext">Int -&gt; Square -&gt; ShowS
+[Square] -&gt; ShowS
+Square -&gt; String
+(Int -&gt; Square -&gt; ShowS)
+-&gt; (Square -&gt; String) -&gt; ([Square] -&gt; ShowS) -&gt; Show Square
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+showList :: [Square] -&gt; ShowS
+$cshowList :: [Square] -&gt; ShowS
+show :: Square -&gt; String
+$cshow :: Square -&gt; String
+showsPrec :: Int -&gt; Square -&gt; ShowS
+$cshowsPrec :: Int -&gt; Square -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-57"></span><span>
+</span><span id="line-58"></span><span class="hs-comment">-- |Type of input alphabet of the Turing machine 'TM'.</span><span>
+</span><span id="line-59"></span><span class="hs-keyword">newtype</span><span> </span><span id="InputAlphabet"><span class="annot"><a href="TMType.html#InputAlphabet"><span class="hs-identifier hs-var">InputAlphabet</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="InputAlphabet"><span class="annot"><a href="TMType.html#InputAlphabet"><span class="hs-identifier hs-var">InputAlphabet</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Set</span></span><span> </span><span class="annot"><a href="TMType.html#Square"><span class="hs-identifier hs-type">Square</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-60"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679333430"><span id="local-6989586621679333432"><span class="annot"><span class="annottext">InputAlphabet -&gt; InputAlphabet -&gt; Bool
+(InputAlphabet -&gt; InputAlphabet -&gt; Bool)
+-&gt; (InputAlphabet -&gt; InputAlphabet -&gt; Bool) -&gt; Eq InputAlphabet
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+/= :: InputAlphabet -&gt; InputAlphabet -&gt; Bool
+$c/= :: InputAlphabet -&gt; InputAlphabet -&gt; Bool
+== :: InputAlphabet -&gt; InputAlphabet -&gt; Bool
+$c== :: InputAlphabet -&gt; InputAlphabet -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679333415"><span id="local-6989586621679333417"><span id="local-6989586621679333419"><span id="local-6989586621679333421"><span id="local-6989586621679333423"><span id="local-6989586621679333425"><span id="local-6989586621679333427"><span class="annot"><span class="annottext">Eq InputAlphabet
+Eq InputAlphabet
+-&gt; (InputAlphabet -&gt; InputAlphabet -&gt; Ordering)
+-&gt; (InputAlphabet -&gt; InputAlphabet -&gt; Bool)
+-&gt; (InputAlphabet -&gt; InputAlphabet -&gt; Bool)
+-&gt; (InputAlphabet -&gt; InputAlphabet -&gt; Bool)
+-&gt; (InputAlphabet -&gt; InputAlphabet -&gt; Bool)
+-&gt; (InputAlphabet -&gt; InputAlphabet -&gt; InputAlphabet)
+-&gt; (InputAlphabet -&gt; InputAlphabet -&gt; InputAlphabet)
+-&gt; Ord InputAlphabet
+InputAlphabet -&gt; InputAlphabet -&gt; Bool
+InputAlphabet -&gt; InputAlphabet -&gt; Ordering
+InputAlphabet -&gt; InputAlphabet -&gt; InputAlphabet
+forall a.
+Eq a
+-&gt; (a -&gt; a -&gt; Ordering)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; Ord a
+min :: InputAlphabet -&gt; InputAlphabet -&gt; InputAlphabet
+$cmin :: InputAlphabet -&gt; InputAlphabet -&gt; InputAlphabet
+max :: InputAlphabet -&gt; InputAlphabet -&gt; InputAlphabet
+$cmax :: InputAlphabet -&gt; InputAlphabet -&gt; InputAlphabet
+&gt;= :: InputAlphabet -&gt; InputAlphabet -&gt; Bool
+$c&gt;= :: InputAlphabet -&gt; InputAlphabet -&gt; Bool
+&gt; :: InputAlphabet -&gt; InputAlphabet -&gt; Bool
+$c&gt; :: InputAlphabet -&gt; InputAlphabet -&gt; Bool
+&lt;= :: InputAlphabet -&gt; InputAlphabet -&gt; Bool
+$c&lt;= :: InputAlphabet -&gt; InputAlphabet -&gt; Bool
+&lt; :: InputAlphabet -&gt; InputAlphabet -&gt; Bool
+$c&lt; :: InputAlphabet -&gt; InputAlphabet -&gt; Bool
+compare :: InputAlphabet -&gt; InputAlphabet -&gt; Ordering
+$ccompare :: InputAlphabet -&gt; InputAlphabet -&gt; Ordering
+$cp1Ord :: Eq InputAlphabet
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Ord</span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679333409"><span id="local-6989586621679333411"><span id="local-6989586621679333413"><span class="annot"><span class="annottext">Int -&gt; InputAlphabet -&gt; ShowS
+[InputAlphabet] -&gt; ShowS
+InputAlphabet -&gt; String
+(Int -&gt; InputAlphabet -&gt; ShowS)
+-&gt; (InputAlphabet -&gt; String)
+-&gt; ([InputAlphabet] -&gt; ShowS)
+-&gt; Show InputAlphabet
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+showList :: [InputAlphabet] -&gt; ShowS
+$cshowList :: [InputAlphabet] -&gt; ShowS
+show :: InputAlphabet -&gt; String
+$cshow :: InputAlphabet -&gt; String
+showsPrec :: Int -&gt; InputAlphabet -&gt; ShowS
+$cshowsPrec :: Int -&gt; InputAlphabet -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-61"></span><span>
+</span><span id="line-62"></span><span class="hs-comment">-- |Type of tape alphabet of the Turing machine 'TM'.</span><span>
+</span><span id="line-63"></span><span class="hs-keyword">newtype</span><span> </span><span id="TapeAlphabet"><span class="annot"><a href="TMType.html#TapeAlphabet"><span class="hs-identifier hs-var">TapeAlphabet</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="TapeAlphabet"><span class="annot"><a href="TMType.html#TapeAlphabet"><span class="hs-identifier hs-var">TapeAlphabet</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Set</span></span><span> </span><span class="annot"><a href="TMType.html#Square"><span class="hs-identifier hs-type">Square</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-64"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679333404"><span id="local-6989586621679333406"><span class="annot"><span class="annottext">TapeAlphabet -&gt; TapeAlphabet -&gt; Bool
+(TapeAlphabet -&gt; TapeAlphabet -&gt; Bool)
+-&gt; (TapeAlphabet -&gt; TapeAlphabet -&gt; Bool) -&gt; Eq TapeAlphabet
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+/= :: TapeAlphabet -&gt; TapeAlphabet -&gt; Bool
+$c/= :: TapeAlphabet -&gt; TapeAlphabet -&gt; Bool
+== :: TapeAlphabet -&gt; TapeAlphabet -&gt; Bool
+$c== :: TapeAlphabet -&gt; TapeAlphabet -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679333389"><span id="local-6989586621679333391"><span id="local-6989586621679333393"><span id="local-6989586621679333395"><span id="local-6989586621679333397"><span id="local-6989586621679333399"><span id="local-6989586621679333401"><span class="annot"><span class="annottext">Eq TapeAlphabet
+Eq TapeAlphabet
+-&gt; (TapeAlphabet -&gt; TapeAlphabet -&gt; Ordering)
+-&gt; (TapeAlphabet -&gt; TapeAlphabet -&gt; Bool)
+-&gt; (TapeAlphabet -&gt; TapeAlphabet -&gt; Bool)
+-&gt; (TapeAlphabet -&gt; TapeAlphabet -&gt; Bool)
+-&gt; (TapeAlphabet -&gt; TapeAlphabet -&gt; Bool)
+-&gt; (TapeAlphabet -&gt; TapeAlphabet -&gt; TapeAlphabet)
+-&gt; (TapeAlphabet -&gt; TapeAlphabet -&gt; TapeAlphabet)
+-&gt; Ord TapeAlphabet
+TapeAlphabet -&gt; TapeAlphabet -&gt; Bool
+TapeAlphabet -&gt; TapeAlphabet -&gt; Ordering
+TapeAlphabet -&gt; TapeAlphabet -&gt; TapeAlphabet
+forall a.
+Eq a
+-&gt; (a -&gt; a -&gt; Ordering)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; Ord a
+min :: TapeAlphabet -&gt; TapeAlphabet -&gt; TapeAlphabet
+$cmin :: TapeAlphabet -&gt; TapeAlphabet -&gt; TapeAlphabet
+max :: TapeAlphabet -&gt; TapeAlphabet -&gt; TapeAlphabet
+$cmax :: TapeAlphabet -&gt; TapeAlphabet -&gt; TapeAlphabet
+&gt;= :: TapeAlphabet -&gt; TapeAlphabet -&gt; Bool
+$c&gt;= :: TapeAlphabet -&gt; TapeAlphabet -&gt; Bool
+&gt; :: TapeAlphabet -&gt; TapeAlphabet -&gt; Bool
+$c&gt; :: TapeAlphabet -&gt; TapeAlphabet -&gt; Bool
+&lt;= :: TapeAlphabet -&gt; TapeAlphabet -&gt; Bool
+$c&lt;= :: TapeAlphabet -&gt; TapeAlphabet -&gt; Bool
+&lt; :: TapeAlphabet -&gt; TapeAlphabet -&gt; Bool
+$c&lt; :: TapeAlphabet -&gt; TapeAlphabet -&gt; Bool
+compare :: TapeAlphabet -&gt; TapeAlphabet -&gt; Ordering
+$ccompare :: TapeAlphabet -&gt; TapeAlphabet -&gt; Ordering
+$cp1Ord :: Eq TapeAlphabet
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Ord</span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679333383"><span id="local-6989586621679333385"><span id="local-6989586621679333387"><span class="annot"><span class="annottext">Int -&gt; TapeAlphabet -&gt; ShowS
+[TapeAlphabet] -&gt; ShowS
+TapeAlphabet -&gt; String
+(Int -&gt; TapeAlphabet -&gt; ShowS)
+-&gt; (TapeAlphabet -&gt; String)
+-&gt; ([TapeAlphabet] -&gt; ShowS)
+-&gt; Show TapeAlphabet
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+showList :: [TapeAlphabet] -&gt; ShowS
+$cshowList :: [TapeAlphabet] -&gt; ShowS
+show :: TapeAlphabet -&gt; String
+$cshow :: TapeAlphabet -&gt; String
+showsPrec :: Int -&gt; TapeAlphabet -&gt; ShowS
+$cshowsPrec :: Int -&gt; TapeAlphabet -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-65"></span><span>
+</span><span id="line-66"></span><span class="hs-comment">-- |Type of commands of a Turing machine 'TM'.</span><span>
+</span><span id="line-67"></span><span class="hs-keyword">newtype</span><span> </span><span id="Commands"><span class="annot"><a href="TMType.html#Commands"><span class="hs-identifier hs-var">Commands</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="Commands"><span class="annot"><a href="TMType.html#Commands"><span class="hs-identifier hs-var">Commands</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Set</span></span><span> </span><span class="hs-special">[</span><span class="annot"><a href="TMType.html#TapeCommand"><span class="hs-identifier hs-type">TapeCommand</span></a></span><span class="hs-special">]</span><span class="hs-special">)</span><span>
+</span><span id="line-68"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679333378"><span id="local-6989586621679333380"><span class="annot"><span class="annottext">Commands -&gt; Commands -&gt; Bool
+(Commands -&gt; Commands -&gt; Bool)
+-&gt; (Commands -&gt; Commands -&gt; Bool) -&gt; Eq Commands
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+/= :: Commands -&gt; Commands -&gt; Bool
+$c/= :: Commands -&gt; Commands -&gt; Bool
+== :: Commands -&gt; Commands -&gt; Bool
+$c== :: Commands -&gt; Commands -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679333363"><span id="local-6989586621679333365"><span id="local-6989586621679333367"><span id="local-6989586621679333369"><span id="local-6989586621679333371"><span id="local-6989586621679333373"><span id="local-6989586621679333375"><span class="annot"><span class="annottext">Eq Commands
+Eq Commands
+-&gt; (Commands -&gt; Commands -&gt; Ordering)
+-&gt; (Commands -&gt; Commands -&gt; Bool)
+-&gt; (Commands -&gt; Commands -&gt; Bool)
+-&gt; (Commands -&gt; Commands -&gt; Bool)
+-&gt; (Commands -&gt; Commands -&gt; Bool)
+-&gt; (Commands -&gt; Commands -&gt; Commands)
+-&gt; (Commands -&gt; Commands -&gt; Commands)
+-&gt; Ord Commands
+Commands -&gt; Commands -&gt; Bool
+Commands -&gt; Commands -&gt; Ordering
+Commands -&gt; Commands -&gt; Commands
+forall a.
+Eq a
+-&gt; (a -&gt; a -&gt; Ordering)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; Ord a
+min :: Commands -&gt; Commands -&gt; Commands
+$cmin :: Commands -&gt; Commands -&gt; Commands
+max :: Commands -&gt; Commands -&gt; Commands
+$cmax :: Commands -&gt; Commands -&gt; Commands
+&gt;= :: Commands -&gt; Commands -&gt; Bool
+$c&gt;= :: Commands -&gt; Commands -&gt; Bool
+&gt; :: Commands -&gt; Commands -&gt; Bool
+$c&gt; :: Commands -&gt; Commands -&gt; Bool
+&lt;= :: Commands -&gt; Commands -&gt; Bool
+$c&lt;= :: Commands -&gt; Commands -&gt; Bool
+&lt; :: Commands -&gt; Commands -&gt; Bool
+$c&lt; :: Commands -&gt; Commands -&gt; Bool
+compare :: Commands -&gt; Commands -&gt; Ordering
+$ccompare :: Commands -&gt; Commands -&gt; Ordering
+$cp1Ord :: Eq Commands
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Ord</span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679333357"><span id="local-6989586621679333359"><span id="local-6989586621679333361"><span class="annot"><span class="annottext">Int -&gt; Commands -&gt; ShowS
+[Commands] -&gt; ShowS
+Commands -&gt; String
+(Int -&gt; Commands -&gt; ShowS)
+-&gt; (Commands -&gt; String) -&gt; ([Commands] -&gt; ShowS) -&gt; Show Commands
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+showList :: [Commands] -&gt; ShowS
+$cshowList :: [Commands] -&gt; ShowS
+show :: Commands -&gt; String
+$cshow :: Commands -&gt; String
+showsPrec :: Int -&gt; Commands -&gt; ShowS
+$cshowsPrec :: Int -&gt; Commands -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-69"></span><span>
+</span><span id="line-70"></span><span class="hs-comment">-- |This type represents a Turing macine. </span><span>
+</span><span id="line-71"></span><span class="hs-keyword">newtype</span><span> </span><span id="TM"><span class="annot"><a href="TMType.html#TM"><span class="hs-identifier hs-var">TM</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="TM"><span class="annot"><a href="TMType.html#TM"><span class="hs-identifier hs-var">TM</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="TMType.html#InputAlphabet"><span class="hs-identifier hs-type">InputAlphabet</span></a></span><span class="hs-special">,</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="TMType.html#TapeAlphabet"><span class="hs-identifier hs-type">TapeAlphabet</span></a></span><span class="hs-special">]</span><span class="hs-special">,</span><span> </span><span class="annot"><a href="TMType.html#MultiTapeStates"><span class="hs-identifier hs-type">MultiTapeStates</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="TMType.html#Commands"><span class="hs-identifier hs-type">Commands</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="TMType.html#StartStates"><span class="hs-identifier hs-type">StartStates</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="TMType.html#AccessStates"><span class="hs-identifier hs-type">AccessStates</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-72"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679333352"><span id="local-6989586621679333354"><span class="annot"><span class="annottext">TM -&gt; TM -&gt; Bool
+(TM -&gt; TM -&gt; Bool) -&gt; (TM -&gt; TM -&gt; Bool) -&gt; Eq TM
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+/= :: TM -&gt; TM -&gt; Bool
+$c/= :: TM -&gt; TM -&gt; Bool
+== :: TM -&gt; TM -&gt; Bool
+$c== :: TM -&gt; TM -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679333337"><span id="local-6989586621679333339"><span id="local-6989586621679333341"><span id="local-6989586621679333343"><span id="local-6989586621679333345"><span id="local-6989586621679333347"><span id="local-6989586621679333349"><span class="annot"><span class="annottext">Eq TM
+Eq TM
+-&gt; (TM -&gt; TM -&gt; Ordering)
+-&gt; (TM -&gt; TM -&gt; Bool)
+-&gt; (TM -&gt; TM -&gt; Bool)
+-&gt; (TM -&gt; TM -&gt; Bool)
+-&gt; (TM -&gt; TM -&gt; Bool)
+-&gt; (TM -&gt; TM -&gt; TM)
+-&gt; (TM -&gt; TM -&gt; TM)
+-&gt; Ord TM
+TM -&gt; TM -&gt; Bool
+TM -&gt; TM -&gt; Ordering
+TM -&gt; TM -&gt; TM
+forall a.
+Eq a
+-&gt; (a -&gt; a -&gt; Ordering)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; Ord a
+min :: TM -&gt; TM -&gt; TM
+$cmin :: TM -&gt; TM -&gt; TM
+max :: TM -&gt; TM -&gt; TM
+$cmax :: TM -&gt; TM -&gt; TM
+&gt;= :: TM -&gt; TM -&gt; Bool
+$c&gt;= :: TM -&gt; TM -&gt; Bool
+&gt; :: TM -&gt; TM -&gt; Bool
+$c&gt; :: TM -&gt; TM -&gt; Bool
+&lt;= :: TM -&gt; TM -&gt; Bool
+$c&lt;= :: TM -&gt; TM -&gt; Bool
+&lt; :: TM -&gt; TM -&gt; Bool
+$c&lt; :: TM -&gt; TM -&gt; Bool
+compare :: TM -&gt; TM -&gt; Ordering
+$ccompare :: TM -&gt; TM -&gt; Ordering
+$cp1Ord :: Eq TM
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Ord</span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679333331"><span id="local-6989586621679333333"><span id="local-6989586621679333335"><span class="annot"><span class="annottext">Int -&gt; TM -&gt; ShowS
+[TM] -&gt; ShowS
+TM -&gt; String
+(Int -&gt; TM -&gt; ShowS)
+-&gt; (TM -&gt; String) -&gt; ([TM] -&gt; ShowS) -&gt; Show TM
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+showList :: [TM] -&gt; ShowS
+$cshowList :: [TM] -&gt; ShowS
+show :: TM -&gt; String
+$cshow :: TM -&gt; String
+showsPrec :: Int -&gt; TM -&gt; ShowS
+$cshowsPrec :: Int -&gt; TM -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-73"></span></pre></body></html>

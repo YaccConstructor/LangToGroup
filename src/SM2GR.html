@@ -1,0 +1,429 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">SM2GR</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-2"></span><span>
+</span><span id="line-3"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="SMType.html"><span class="hs-identifier">SMType</span></a></span><span>
+</span><span id="line-4"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="GRType.html"><span class="hs-identifier">GRType</span></a></span><span>
+</span><span id="line-5"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Set</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">Set</span></span><span>
+</span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Helpers.html"><span class="hs-identifier">Helpers</span></a></span><span>
+</span><span id="line-7"></span><span>
+</span><span id="line-8"></span><span class="annot"><a href="SM2GR.html#smb2As"><span class="hs-identifier hs-type">smb2As</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="SMType.html#Smb"><span class="hs-identifier hs-type">Smb</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="GRType.html#SmbR"><span class="hs-identifier hs-type">SmbR</span></a></span><span>
+</span><span id="line-9"></span><span id="smb2As"><span class="annot"><span class="annottext">smb2As :: Smb -&gt; SmbR
+</span><a href="SM2GR.html#smb2As"><span class="hs-identifier hs-var hs-var">smb2As</span></a></span></span><span> </span><span id="local-6989586621679335894"><span class="annot"><span class="annottext">Smb
+</span><a href="#local-6989586621679335894"><span class="hs-identifier hs-var">smb</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">Smb
+</span><a href="#local-6989586621679335894"><span class="hs-identifier hs-var">smb</span></a></span><span> </span><span class="hs-keyword">of</span><span> </span><span class="annot"><a href="SMType.html#SmbY"><span class="hs-identifier hs-type">SmbY</span></a></span><span> </span><span id="local-6989586621679335892"><span class="annot"><span class="annottext">Y
+</span><a href="#local-6989586621679335892"><span class="hs-identifier hs-var">y</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">A -&gt; SmbR
+</span><a href="GRType.html#SmbA"><span class="hs-identifier hs-var">SmbA</span></a></span><span> </span><span class="annot"><span class="annottext">(A -&gt; SmbR) -&gt; A -&gt; SmbR
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Y -&gt; A
+</span><a href="GRType.html#A_Y"><span class="hs-identifier hs-var">A_Y</span></a></span><span> </span><span class="annot"><span class="annottext">Y
+</span><a href="#local-6989586621679335892"><span class="hs-identifier hs-var">y</span></a></span><span> </span><span class="hs-special">;</span><span> </span><span class="annot"><a href="SMType.html#SmbY%27"><span class="hs-identifier hs-type">SmbY'</span></a></span><span> </span><span id="local-6989586621679335888"><span class="annot"><span class="annottext">Y
+</span><a href="#local-6989586621679335888"><span class="hs-identifier hs-var">y</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">A -&gt; SmbR
+</span><a href="GRType.html#SmbA%27"><span class="hs-identifier hs-var">SmbA'</span></a></span><span> </span><span class="annot"><span class="annottext">(A -&gt; SmbR) -&gt; A -&gt; SmbR
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Y -&gt; A
+</span><a href="GRType.html#A_Y"><span class="hs-identifier hs-var">A_Y</span></a></span><span> </span><span class="annot"><span class="annottext">Y
+</span><a href="#local-6989586621679335888"><span class="hs-identifier hs-var">y</span></a></span><span> </span><span class="hs-special">;</span><span> </span><span class="annot"><a href="SMType.html#SmbQ"><span class="hs-identifier hs-type">SmbQ</span></a></span><span> </span><span id="local-6989586621679335885"><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679335885"><span class="hs-identifier hs-var">q</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">A -&gt; SmbR
+</span><a href="GRType.html#SmbA"><span class="hs-identifier hs-var">SmbA</span></a></span><span> </span><span class="annot"><span class="annottext">(A -&gt; SmbR) -&gt; A -&gt; SmbR
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">State -&gt; A
+</span><a href="GRType.html#A_Q"><span class="hs-identifier hs-var">A_Q</span></a></span><span> </span><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679335885"><span class="hs-identifier hs-var">q</span></a></span><span>
+</span><span id="line-10"></span><span>
+</span><span id="line-11"></span><span class="annot"><a href="SM2GR.html#transitionRelations"><span class="hs-identifier hs-type">transitionRelations</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="SMType.html#SRule"><span class="hs-identifier hs-type">SRule</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="hs-special">[</span><span class="annot"><a href="SMType.html#State"><span class="hs-identifier hs-type">State</span></a></span><span class="hs-special">]</span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="GRType.html#GrRelation"><span class="hs-identifier hs-type">GrRelation</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-12"></span><span id="transitionRelations"><span class="annot"><span class="annottext">transitionRelations :: [SRule] -&gt; [[State]] -&gt; [GrRelation]
+</span><a href="SM2GR.html#transitionRelations"><span class="hs-identifier hs-var hs-var">transitionRelations</span></a></span></span><span> </span><span id="local-6989586621679335882"><span class="annot"><span class="annottext">[SRule]
+</span><a href="#local-6989586621679335882"><span class="hs-identifier hs-var">rules</span></a></span></span><span> </span><span id="local-6989586621679335881"><span class="annot"><span class="annottext">[[State]]
+</span><a href="#local-6989586621679335881"><span class="hs-identifier hs-var">states</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[GrRelation]
+</span><a href="#local-6989586621679335880"><span class="hs-identifier hs-var">cmdQs</span></a></span><span> </span><span class="annot"><span class="annottext">[GrRelation] -&gt; [GrRelation] -&gt; [GrRelation]
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[GrRelation]
+</span><a href="#local-6989586621679335879"><span class="hs-identifier hs-var">cmdRs</span></a></span><span>
+</span><span id="line-13"></span><span>        </span><span class="hs-keyword">where</span><span>
+</span><span id="line-14"></span><span>        </span><span id="local-6989586621679335878"><span class="annot"><span class="annottext">powtau :: [SmbR] -&gt; SRule -&gt; [SmbR]
+</span><a href="#local-6989586621679335878"><span class="hs-identifier hs-var hs-var">powtau</span></a></span></span><span> </span><span id="local-6989586621679335877"><span class="annot"><span class="annottext">[SmbR]
+</span><a href="#local-6989586621679335877"><span class="hs-identifier hs-var">x</span></a></span></span><span> </span><span id="local-6989586621679335876"><span class="annot"><span class="annottext">SRule
+</span><a href="#local-6989586621679335876"><span class="hs-identifier hs-var">tau</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">A -&gt; SmbR
+</span><a href="GRType.html#SmbA%27"><span class="hs-identifier hs-var">SmbA'</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">SRule -&gt; A
+</span><a href="GRType.html#A_R"><span class="hs-identifier hs-var">A_R</span></a></span><span> </span><span class="annot"><span class="annottext">SRule
+</span><a href="#local-6989586621679335876"><span class="hs-identifier hs-var">tau</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">SmbR -&gt; [SmbR] -&gt; [SmbR]
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span> </span><span class="annot"><span class="annottext">[SmbR]
+</span><a href="#local-6989586621679335877"><span class="hs-identifier hs-var">x</span></a></span><span> </span><span class="annot"><span class="annottext">[SmbR] -&gt; [SmbR] -&gt; [SmbR]
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">A -&gt; SmbR
+</span><a href="GRType.html#SmbA"><span class="hs-identifier hs-var">SmbA</span></a></span><span> </span><span class="annot"><span class="annottext">(A -&gt; SmbR) -&gt; A -&gt; SmbR
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">SRule -&gt; A
+</span><a href="GRType.html#A_R"><span class="hs-identifier hs-var">A_R</span></a></span><span> </span><span class="annot"><span class="annottext">SRule
+</span><a href="#local-6989586621679335876"><span class="hs-identifier hs-var">tau</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-15"></span><span>        </span><span id="local-6989586621679335879"><span class="annot"><span class="annottext">cmdRs :: [GrRelation]
+</span><a href="#local-6989586621679335879"><span class="hs-identifier hs-var hs-var">cmdRs</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(SRule -&gt; [GrRelation]) -&gt; [SRule] -&gt; [GrRelation]
+forall (t :: * -&gt; *) a b. Foldable t =&gt; (a -&gt; [b]) -&gt; t a -&gt; [b]
+</span><span class="hs-identifier hs-var">concatMap</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679335873"><span class="annot"><span class="annottext">r :: SRule
+</span><a href="#local-6989586621679335873"><span class="hs-identifier hs-var">r</span></a></span></span><span class="hs-glyph">@</span><span class="hs-special">(</span><span class="annot"><a href="SMType.html#SRule"><span class="hs-identifier hs-type">SRule</span></a></span><span> </span><span id="local-6989586621679335871"><span class="annot"><span class="annottext">[(Word, Word)]
+</span><a href="#local-6989586621679335871"><span class="hs-identifier hs-var">x</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">((Word, Word) -&gt; GrRelation) -&gt; [(Word, Word)] -&gt; [GrRelation]
+forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span class="hs-special">(</span><span class="annot"><a href="SMType.html#Word"><span class="hs-identifier hs-type">Word</span></a></span><span> </span><span id="local-6989586621679335869"><span class="annot"><span class="annottext">[Smb]
+</span><a href="#local-6989586621679335869"><span class="hs-identifier hs-var">u</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="SMType.html#Word"><span class="hs-identifier hs-type">Word</span></a></span><span> </span><span id="local-6989586621679335868"><span class="annot"><span class="annottext">[Smb]
+</span><a href="#local-6989586621679335868"><span class="hs-identifier hs-var">v</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">([SmbR], [SmbR]) -&gt; GrRelation
+</span><a href="GRType.html#Relation"><span class="hs-identifier hs-var">Relation</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[SmbR] -&gt; SRule -&gt; [SmbR]
+</span><a href="#local-6989586621679335878"><span class="hs-identifier hs-var">powtau</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">(Smb -&gt; SmbR) -&gt; [Smb] -&gt; [SmbR]
+forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="annot"><span class="annottext">Smb -&gt; SmbR
+</span><a href="SM2GR.html#smb2As"><span class="hs-identifier hs-var">smb2As</span></a></span><span> </span><span class="annot"><span class="annottext">[Smb]
+</span><a href="#local-6989586621679335869"><span class="hs-identifier hs-var">u</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">SRule
+</span><a href="#local-6989586621679335873"><span class="hs-identifier hs-var">r</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">(Smb -&gt; SmbR) -&gt; [Smb] -&gt; [SmbR]
+forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="annot"><span class="annottext">Smb -&gt; SmbR
+</span><a href="SM2GR.html#smb2As"><span class="hs-identifier hs-var">smb2As</span></a></span><span> </span><span class="annot"><span class="annottext">[Smb]
+</span><a href="#local-6989586621679335868"><span class="hs-identifier hs-var">v</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[(Word, Word)]
+</span><a href="#local-6989586621679335871"><span class="hs-identifier hs-var">x</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[SRule]
+</span><a href="#local-6989586621679335882"><span class="hs-identifier hs-var">rules</span></a></span><span>
+</span><span id="line-16"></span><span>        </span><span id="local-6989586621679335866"><span class="annot"><span class="annottext">us :: [SmbR]
+</span><a href="#local-6989586621679335866"><span class="hs-identifier hs-var hs-var">us</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(Smb -&gt; SmbR) -&gt; [Smb] -&gt; [SmbR]
+forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="annot"><span class="annottext">Smb -&gt; SmbR
+</span><a href="SM2GR.html#smb2As"><span class="hs-identifier hs-var">smb2As</span></a></span><span> </span><span class="annot"><span class="annottext">([Smb] -&gt; [SmbR]) -&gt; ([SRule] -&gt; [Smb]) -&gt; [SRule] -&gt; [SmbR]
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">[[Smb]] -&gt; [Smb]
+forall (t :: * -&gt; *) a. Foldable t =&gt; t [a] -&gt; [a]
+</span><span class="hs-identifier hs-var">concat</span></span><span> </span><span class="annot"><span class="annottext">([[Smb]] -&gt; [Smb]) -&gt; ([SRule] -&gt; [[Smb]]) -&gt; [SRule] -&gt; [Smb]
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">(SRule -&gt; [[Smb]]) -&gt; [SRule] -&gt; [[Smb]]
+forall (t :: * -&gt; *) a b. Foldable t =&gt; (a -&gt; [b]) -&gt; t a -&gt; [b]
+</span><span class="hs-identifier hs-var">concatMap</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">((Word, Word) -&gt; [Smb]) -&gt; [(Word, Word)] -&gt; [[Smb]]
+forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">(</span><span class="hs-glyph">\</span><span class="hs-special">(</span><span class="annot"><a href="SMType.html#Word"><span class="hs-identifier hs-type">SMType.Word</span></a></span><span> </span><span id="local-6989586621679335863"><span class="annot"><span class="annottext">[Smb]
+</span><a href="#local-6989586621679335863"><span class="hs-identifier hs-var">w</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">[Smb]
+</span><a href="#local-6989586621679335863"><span class="hs-identifier hs-var">w</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">(Word -&gt; [Smb]) -&gt; ((Word, Word) -&gt; Word) -&gt; (Word, Word) -&gt; [Smb]
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">(Word, Word) -&gt; Word
+forall a b. (a, b) -&gt; a
+</span><span class="hs-identifier hs-var">fst</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">([(Word, Word)] -&gt; [[Smb]])
+-&gt; (SRule -&gt; [(Word, Word)]) -&gt; SRule -&gt; [[Smb]]
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span class="hs-special">(</span><span class="annot"><a href="SMType.html#SRule"><span class="hs-identifier hs-type">SRule</span></a></span><span> </span><span id="local-6989586621679335862"><span class="annot"><span class="annottext">[(Word, Word)]
+</span><a href="#local-6989586621679335862"><span class="hs-identifier hs-var">x</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">[(Word, Word)]
+</span><a href="#local-6989586621679335862"><span class="hs-identifier hs-var">x</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">([SRule] -&gt; [SmbR]) -&gt; [SRule] -&gt; [SmbR]
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">[SRule]
+</span><a href="#local-6989586621679335882"><span class="hs-identifier hs-var">rules</span></a></span><span>
+</span><span id="line-17"></span><span>        </span><span id="local-6989586621679335880"><span class="annot"><span class="annottext">cmdQs :: [GrRelation]
+</span><a href="#local-6989586621679335880"><span class="hs-identifier hs-var hs-var">cmdQs</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">([GrRelation] -&gt; [State] -&gt; [GrRelation])
+-&gt; [GrRelation] -&gt; [[State]] -&gt; [GrRelation]
+forall (t :: * -&gt; *) b a.
+Foldable t =&gt;
+(b -&gt; a -&gt; b) -&gt; b -&gt; t a -&gt; b
+</span><span class="hs-identifier hs-var">foldl</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679335860"><span class="annot"><span class="annottext">[GrRelation]
+</span><a href="#local-6989586621679335860"><span class="hs-identifier hs-var">x</span></a></span></span><span> </span><span id="local-6989586621679335859"><span class="annot"><span class="annottext">[State]
+</span><a href="#local-6989586621679335859"><span class="hs-identifier hs-var">y</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span>  </span><span class="hs-keyword">if</span><span> </span><span class="annot"><span class="annottext">(State -&gt; Bool) -&gt; [State] -&gt; Bool
+forall (t :: * -&gt; *) a. Foldable t =&gt; (a -&gt; Bool) -&gt; t a -&gt; Bool
+</span><span class="hs-identifier hs-var">any</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679335857"><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679335857"><span class="hs-identifier hs-var">q</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">A -&gt; SmbR
+</span><a href="GRType.html#SmbA"><span class="hs-identifier hs-var">SmbA</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">State -&gt; A
+</span><a href="GRType.html#A_Q"><span class="hs-identifier hs-var">A_Q</span></a></span><span> </span><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679335857"><span class="hs-identifier hs-var">q</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">SmbR -&gt; [SmbR] -&gt; Bool
+forall (t :: * -&gt; *) a. (Foldable t, Eq a) =&gt; a -&gt; t a -&gt; Bool
+</span><span class="hs-operator hs-var">`elem`</span></span><span> </span><span class="annot"><span class="annottext">[SmbR]
+</span><a href="#local-6989586621679335866"><span class="hs-identifier hs-var">us</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[State]
+</span><a href="#local-6989586621679335859"><span class="hs-identifier hs-var">y</span></a></span><span> </span><span class="hs-keyword">then</span><span> </span><span class="annot"><span class="annottext">[GrRelation]
+</span><a href="#local-6989586621679335860"><span class="hs-identifier hs-var">x</span></a></span><span> </span><span class="hs-keyword">else</span><span>
+</span><span id="line-18"></span><span>                                </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">([SmbR], [SmbR]) -&gt; GrRelation
+</span><a href="GRType.html#Relation"><span class="hs-identifier hs-var">Relation</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[SmbR] -&gt; SRule -&gt; [SmbR]
+</span><a href="#local-6989586621679335878"><span class="hs-identifier hs-var">powtau</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">A -&gt; SmbR
+</span><a href="GRType.html#SmbA"><span class="hs-identifier hs-var">SmbA</span></a></span><span> </span><span class="annot"><span class="annottext">(A -&gt; SmbR) -&gt; A -&gt; SmbR
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">State -&gt; A
+</span><a href="GRType.html#A_Q"><span class="hs-identifier hs-var">A_Q</span></a></span><span> </span><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679335855"><span class="hs-identifier hs-var">q</span></a></span><span class="hs-special">]</span><span> </span><span class="annot"><span class="annottext">SRule
+</span><a href="#local-6989586621679335854"><span class="hs-identifier hs-var">r</span></a></span><span class="hs-special">,</span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">A -&gt; SmbR
+</span><a href="GRType.html#SmbA"><span class="hs-identifier hs-var">SmbA</span></a></span><span> </span><span class="annot"><span class="annottext">(A -&gt; SmbR) -&gt; A -&gt; SmbR
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">State -&gt; A
+</span><a href="GRType.html#A_Q"><span class="hs-identifier hs-var">A_Q</span></a></span><span> </span><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679335855"><span class="hs-identifier hs-var">q</span></a></span><span class="hs-special">]</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">|</span><span> </span><span id="local-6989586621679335854"><span class="annot"><span class="annottext">SRule
+</span><a href="#local-6989586621679335854"><span class="hs-identifier hs-var">r</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">[SRule]
+</span><a href="#local-6989586621679335882"><span class="hs-identifier hs-var">rules</span></a></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679335855"><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679335855"><span class="hs-identifier hs-var">q</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">[State]
+</span><a href="#local-6989586621679335859"><span class="hs-identifier hs-var">y</span></a></span><span> </span><span class="hs-special">]</span><span> </span><span class="annot"><span class="annottext">[GrRelation] -&gt; [GrRelation] -&gt; [GrRelation]
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[GrRelation]
+</span><a href="#local-6989586621679335860"><span class="hs-identifier hs-var">x</span></a></span><span>
+</span><span id="line-19"></span><span>                                </span><span class="hs-special">)</span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span> </span><span class="annot"><span class="annottext">[[State]]
+</span><a href="#local-6989586621679335881"><span class="hs-identifier hs-var">states</span></a></span><span>
+</span><span id="line-20"></span><span>
+</span><span id="line-21"></span><span class="annot"><a href="SM2GR.html#nk"><span class="hs-identifier hs-type">nk</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>
+</span><span id="line-22"></span><span id="nk"><span class="annot"><span class="annottext">nk :: Int
+</span><a href="SM2GR.html#nk"><span class="hs-identifier hs-var hs-var">nk</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">1</span></span><span>
+</span><span id="line-23"></span><span class="annot"><a href="SM2GR.html#k"><span class="hs-identifier hs-type">k</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="GRType.html#A"><span class="hs-identifier hs-type">A</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-24"></span><span id="k"><span class="annot"><span class="annottext">k :: [A]
+</span><a href="SM2GR.html#k"><span class="hs-identifier hs-var hs-var">k</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(Int -&gt; A) -&gt; [Int] -&gt; [A]
+forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="annot"><span class="annottext">Int -&gt; A
+</span><a href="GRType.html#A_K"><span class="hs-identifier hs-var">A_K</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">1</span></span><span> </span><span class="hs-glyph">..</span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">2</span></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
+forall a. Num a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">*</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="SM2GR.html#nk"><span class="hs-identifier hs-var">nk</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-25"></span><span>
+</span><span id="line-26"></span><span class="annot"><a href="SM2GR.html#hubRelation"><span class="hs-identifier hs-type">hubRelation</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="SMType.html#Word"><span class="hs-identifier hs-type">SMType.Word</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="GRType.html#SmbR"><span class="hs-identifier hs-type">SmbR</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-27"></span><span id="hubRelation"><span class="annot"><span class="annottext">hubRelation :: Word -&gt; [SmbR]
+</span><a href="SM2GR.html#hubRelation"><span class="hs-identifier hs-var hs-var">hubRelation</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="SMType.html#Word"><span class="hs-identifier hs-type">Word</span></a></span><span> </span><span id="local-6989586621679335848"><span class="annot"><span class="annottext">[Smb]
+</span><a href="#local-6989586621679335848"><span class="hs-identifier hs-var">w0</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[SmbR]
+</span><a href="#local-6989586621679335847"><span class="hs-identifier hs-var">posPart</span></a></span><span> </span><span class="annot"><span class="annottext">[SmbR] -&gt; [SmbR] -&gt; [SmbR]
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[SmbR]
+</span><a href="#local-6989586621679335846"><span class="hs-identifier hs-var">negPart</span></a></span><span>
+</span><span id="line-28"></span><span>        </span><span class="hs-keyword">where</span><span>
+</span><span id="line-29"></span><span>        </span><span id="local-6989586621679335845"><span class="annot"><span class="annottext">word :: [SmbR]
+</span><a href="#local-6989586621679335845"><span class="hs-identifier hs-var hs-var">word</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(Smb -&gt; SmbR) -&gt; [Smb] -&gt; [SmbR]
+forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="annot"><span class="annottext">Smb -&gt; SmbR
+</span><a href="SM2GR.html#smb2As"><span class="hs-identifier hs-var">smb2As</span></a></span><span> </span><span class="annot"><span class="annottext">[Smb]
+</span><a href="#local-6989586621679335848"><span class="hs-identifier hs-var">w0</span></a></span><span>
+</span><span id="line-30"></span><span>        </span><span id="local-6989586621679335844"><span class="annot"><span class="annottext">negationWord :: [SmbR] -&gt; [SmbR]
+</span><a href="#local-6989586621679335844"><span class="hs-identifier hs-var hs-var">negationWord</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">([SmbR] -&gt; SmbR -&gt; [SmbR]) -&gt; [SmbR] -&gt; [SmbR] -&gt; [SmbR]
+forall (t :: * -&gt; *) b a.
+Foldable t =&gt;
+(b -&gt; a -&gt; b) -&gt; b -&gt; t a -&gt; b
+</span><span class="hs-identifier hs-var">foldl</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679335843"><span class="annot"><span class="annottext">[SmbR]
+</span><a href="#local-6989586621679335843"><span class="hs-identifier hs-var">x</span></a></span></span><span> </span><span id="local-6989586621679335842"><span class="annot"><span class="annottext">SmbR
+</span><a href="#local-6989586621679335842"><span class="hs-identifier hs-var">y</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">SmbR -&gt; SmbR
+</span><a href="Helpers.html#revertSmb"><span class="hs-identifier hs-var">revertSmb</span></a></span><span> </span><span class="annot"><span class="annottext">SmbR
+</span><a href="#local-6989586621679335842"><span class="hs-identifier hs-var">y</span></a></span><span> </span><span class="annot"><span class="annottext">SmbR -&gt; [SmbR] -&gt; [SmbR]
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span> </span><span class="annot"><span class="annottext">[SmbR]
+</span><a href="#local-6989586621679335843"><span class="hs-identifier hs-var">x</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span>
+</span><span id="line-31"></span><span>        </span><span id="local-6989586621679335847"><span class="annot"><span class="annottext">posPart :: [SmbR]
+</span><a href="#local-6989586621679335847"><span class="hs-identifier hs-var hs-var">posPart</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">([SmbR] -&gt; (Integer, A) -&gt; [SmbR])
+-&gt; [SmbR] -&gt; [(Integer, A)] -&gt; [SmbR]
+forall (t :: * -&gt; *) b a.
+Foldable t =&gt;
+(b -&gt; a -&gt; b) -&gt; b -&gt; t a -&gt; b
+</span><span class="hs-identifier hs-var">foldl</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679335840"><span class="annot"><span class="annottext">[SmbR]
+</span><a href="#local-6989586621679335840"><span class="hs-identifier hs-var">x</span></a></span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679335839"><span class="annot"><span class="annottext">Integer
+</span><a href="#local-6989586621679335839"><span class="hs-identifier hs-var">i</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679335838"><span class="annot"><span class="annottext">A
+</span><a href="#local-6989586621679335838"><span class="hs-identifier hs-var">y</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">[SmbR]
+</span><a href="#local-6989586621679335840"><span class="hs-identifier hs-var">x</span></a></span><span> </span><span class="annot"><span class="annottext">[SmbR] -&gt; [SmbR] -&gt; [SmbR]
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="hs-special">(</span><span class="hs-keyword">if</span><span> </span><span class="annot"><span class="annottext">Integer -&gt; Bool
+forall a. Integral a =&gt; a -&gt; Bool
+</span><span class="hs-identifier hs-var">even</span></span><span> </span><span class="annot"><span class="annottext">Integer
+</span><a href="#local-6989586621679335839"><span class="hs-identifier hs-var">i</span></a></span><span> </span><span class="hs-keyword">then</span><span> </span><span class="annot"><span class="annottext">[SmbR]
+</span><a href="#local-6989586621679335845"><span class="hs-identifier hs-var">word</span></a></span><span> </span><span class="hs-keyword">else</span><span> </span><span class="annot"><span class="annottext">[SmbR] -&gt; [SmbR]
+</span><a href="#local-6989586621679335844"><span class="hs-identifier hs-var">negationWord</span></a></span><span> </span><span class="annot"><span class="annottext">[SmbR]
+</span><a href="#local-6989586621679335845"><span class="hs-identifier hs-var">word</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[SmbR] -&gt; [SmbR] -&gt; [SmbR]
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">A -&gt; SmbR
+</span><a href="GRType.html#SmbA"><span class="hs-identifier hs-var">SmbA</span></a></span><span> </span><span class="annot"><span class="annottext">A
+</span><a href="#local-6989586621679335838"><span class="hs-identifier hs-var">y</span></a></span><span class="hs-special">]</span><span class="hs-special">)</span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span> </span><span class="annot"><span class="annottext">([(Integer, A)] -&gt; [SmbR]) -&gt; [(Integer, A)] -&gt; [SmbR]
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">[Integer] -&gt; [A] -&gt; [(Integer, A)]
+forall a b. [a] -&gt; [b] -&gt; [(a, b)]
+</span><span class="hs-identifier hs-var">zip</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">Integer
+</span><span class="hs-number">1</span></span><span class="hs-glyph">..</span><span class="hs-special">]</span><span> </span><span class="annot"><span class="annottext">[A]
+</span><a href="SM2GR.html#k"><span class="hs-identifier hs-var">k</span></a></span><span>
+</span><span id="line-32"></span><span>        </span><span id="local-6989586621679335846"><span class="annot"><span class="annottext">negPart :: [SmbR]
+</span><a href="#local-6989586621679335846"><span class="hs-identifier hs-var hs-var">negPart</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[SmbR] -&gt; [SmbR]
+</span><a href="#local-6989586621679335844"><span class="hs-identifier hs-var">negationWord</span></a></span><span> </span><span class="annot"><span class="annottext">([SmbR] -&gt; [SmbR])
+-&gt; ([(Integer, A)] -&gt; [SmbR]) -&gt; [(Integer, A)] -&gt; [SmbR]
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">([SmbR] -&gt; (Integer, A) -&gt; [SmbR])
+-&gt; [SmbR] -&gt; [(Integer, A)] -&gt; [SmbR]
+forall (t :: * -&gt; *) b a.
+Foldable t =&gt;
+(b -&gt; a -&gt; b) -&gt; b -&gt; t a -&gt; b
+</span><span class="hs-identifier hs-var">foldl</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679335836"><span class="annot"><span class="annottext">[SmbR]
+</span><a href="#local-6989586621679335836"><span class="hs-identifier hs-var">x</span></a></span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679335835"><span class="annot"><span class="annottext">Integer
+</span><a href="#local-6989586621679335835"><span class="hs-identifier hs-var">i</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679335834"><span class="annot"><span class="annottext">A
+</span><a href="#local-6989586621679335834"><span class="hs-identifier hs-var">y</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">[SmbR]
+</span><a href="#local-6989586621679335836"><span class="hs-identifier hs-var">x</span></a></span><span> </span><span class="annot"><span class="annottext">[SmbR] -&gt; [SmbR] -&gt; [SmbR]
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">A -&gt; SmbR
+</span><a href="GRType.html#SmbA"><span class="hs-identifier hs-var">SmbA</span></a></span><span> </span><span class="annot"><span class="annottext">A
+</span><a href="#local-6989586621679335834"><span class="hs-identifier hs-var">y</span></a></span><span class="hs-special">]</span><span> </span><span class="annot"><span class="annottext">[SmbR] -&gt; [SmbR] -&gt; [SmbR]
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="hs-special">(</span><span class="hs-keyword">if</span><span> </span><span class="annot"><span class="annottext">Integer -&gt; Bool
+forall a. Integral a =&gt; a -&gt; Bool
+</span><span class="hs-identifier hs-var">even</span></span><span> </span><span class="annot"><span class="annottext">Integer
+</span><a href="#local-6989586621679335835"><span class="hs-identifier hs-var">i</span></a></span><span> </span><span class="hs-keyword">then</span><span> </span><span class="annot"><span class="annottext">[SmbR] -&gt; [SmbR]
+</span><a href="#local-6989586621679335844"><span class="hs-identifier hs-var">negationWord</span></a></span><span> </span><span class="annot"><span class="annottext">[SmbR]
+</span><a href="#local-6989586621679335845"><span class="hs-identifier hs-var">word</span></a></span><span> </span><span class="hs-keyword">else</span><span> </span><span class="annot"><span class="annottext">[SmbR]
+</span><a href="#local-6989586621679335845"><span class="hs-identifier hs-var">word</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span> </span><span class="annot"><span class="annottext">([(Integer, A)] -&gt; [SmbR]) -&gt; [(Integer, A)] -&gt; [SmbR]
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">[(Integer, A)] -&gt; [(Integer, A)]
+forall a. [a] -&gt; [a]
+</span><span class="hs-identifier hs-var">reverse</span></span><span> </span><span class="annot"><span class="annottext">([(Integer, A)] -&gt; [(Integer, A)])
+-&gt; [(Integer, A)] -&gt; [(Integer, A)]
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">[Integer] -&gt; [A] -&gt; [(Integer, A)]
+forall a b. [a] -&gt; [b] -&gt; [(a, b)]
+</span><span class="hs-identifier hs-var">zip</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">Integer
+</span><span class="hs-number">1</span></span><span class="hs-glyph">..</span><span class="hs-special">]</span><span> </span><span class="annot"><span class="annottext">[A]
+</span><a href="SM2GR.html#k"><span class="hs-identifier hs-var">k</span></a></span><span>
+</span><span id="line-33"></span><span>
+</span><span id="line-34"></span><span class="annot"><a href="SM2GR.html#easyHubRelation"><span class="hs-identifier hs-type">easyHubRelation</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="SMType.html#Word"><span class="hs-identifier hs-type">SMType.Word</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="GRType.html#SmbR"><span class="hs-identifier hs-type">SmbR</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-35"></span><span id="easyHubRelation"><span class="annot"><span class="annottext">easyHubRelation :: Word -&gt; [SmbR]
+</span><a href="SM2GR.html#easyHubRelation"><span class="hs-identifier hs-var hs-var">easyHubRelation</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="SMType.html#Word"><span class="hs-identifier hs-type">Word</span></a></span><span> </span><span id="local-6989586621679335831"><span class="annot"><span class="annottext">[Smb]
+</span><a href="#local-6989586621679335831"><span class="hs-identifier hs-var">w0</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">A -&gt; SmbR
+</span><a href="GRType.html#SmbA"><span class="hs-identifier hs-var">SmbA</span></a></span><span> </span><span class="annot"><span class="annottext">(A -&gt; SmbR) -&gt; A -&gt; SmbR
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">[A] -&gt; Int -&gt; A
+forall a. [a] -&gt; Int -&gt; a
+</span><span class="hs-operator hs-var">(!!)</span></span><span> </span><span class="annot"><span class="annottext">[A]
+</span><a href="SM2GR.html#k"><span class="hs-identifier hs-var">k</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">0</span></span><span class="hs-special">]</span><span> </span><span class="annot"><span class="annottext">[SmbR] -&gt; [SmbR] -&gt; [SmbR]
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">(Smb -&gt; SmbR) -&gt; [Smb] -&gt; [SmbR]
+forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="annot"><span class="annottext">Smb -&gt; SmbR
+</span><a href="SM2GR.html#smb2As"><span class="hs-identifier hs-var">smb2As</span></a></span><span> </span><span class="annot"><span class="annottext">[Smb]
+</span><a href="#local-6989586621679335831"><span class="hs-identifier hs-var">w0</span></a></span><span> </span><span class="annot"><span class="annottext">[SmbR] -&gt; [SmbR] -&gt; [SmbR]
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">A -&gt; SmbR
+</span><a href="GRType.html#SmbA"><span class="hs-identifier hs-var">SmbA</span></a></span><span> </span><span class="annot"><span class="annottext">(A -&gt; SmbR) -&gt; A -&gt; SmbR
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">[A] -&gt; Int -&gt; A
+forall a. [a] -&gt; Int -&gt; a
+</span><span class="hs-operator hs-var">(!!)</span></span><span> </span><span class="annot"><span class="annottext">[A]
+</span><a href="SM2GR.html#k"><span class="hs-identifier hs-var">k</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">1</span></span><span class="hs-special">]</span><span>
+</span><span id="line-36"></span><span>
+</span><span id="line-37"></span><span class="annot"><a href="SM2GR.html#auxiliaryRelations"><span class="hs-identifier hs-type">auxiliaryRelations</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="GRType.html#A"><span class="hs-identifier hs-type">A</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="GRType.html#A"><span class="hs-identifier hs-type">A</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="GRType.html#A"><span class="hs-identifier hs-type">A</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="GRType.html#GrRelation"><span class="hs-identifier hs-type">GrRelation</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-38"></span><span id="auxiliaryRelations"><span class="annot"><span class="annottext">auxiliaryRelations :: [A] -&gt; [A] -&gt; [A] -&gt; [GrRelation]
+</span><a href="SM2GR.html#auxiliaryRelations"><span class="hs-identifier hs-var hs-var">auxiliaryRelations</span></a></span></span><span> </span><span id="local-6989586621679335828"><span class="annot"><span class="annottext">[A]
+</span><a href="#local-6989586621679335828"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679335827"><span class="annot"><span class="annottext">[A]
+</span><a href="#local-6989586621679335827"><span class="hs-identifier hs-var">y</span></a></span></span><span> </span><span id="local-6989586621679335826"><span class="annot"><span class="annottext">[A]
+</span><a href="#local-6989586621679335826"><span class="hs-identifier hs-var">src</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">([SmbR], [SmbR]) -&gt; GrRelation
+</span><a href="GRType.html#Relation"><span class="hs-identifier hs-var">Relation</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-special">[</span><span class="annot"><span class="annottext">A -&gt; SmbR
+</span><a href="GRType.html#SmbA"><span class="hs-identifier hs-var">SmbA</span></a></span><span> </span><span class="annot"><span class="annottext">A
+</span><a href="#local-6989586621679335825"><span class="hs-identifier hs-var">t</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">A -&gt; SmbR
+</span><a href="GRType.html#SmbA"><span class="hs-identifier hs-var">SmbA</span></a></span><span> </span><span class="annot"><span class="annottext">A
+</span><a href="#local-6989586621679335824"><span class="hs-identifier hs-var">x</span></a></span><span class="hs-special">]</span><span class="hs-special">,</span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">A -&gt; SmbR
+</span><a href="GRType.html#SmbA"><span class="hs-identifier hs-var">SmbA</span></a></span><span> </span><span class="annot"><span class="annottext">A
+</span><a href="#local-6989586621679335824"><span class="hs-identifier hs-var">x</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">A -&gt; SmbR
+</span><a href="GRType.html#SmbA"><span class="hs-identifier hs-var">SmbA</span></a></span><span> </span><span class="annot"><span class="annottext">A
+</span><a href="#local-6989586621679335825"><span class="hs-identifier hs-var">t</span></a></span><span class="hs-special">]</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">|</span><span> </span><span id="local-6989586621679335824"><span class="annot"><span class="annottext">A
+</span><a href="#local-6989586621679335824"><span class="hs-identifier hs-var">x</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">[A]
+</span><a href="#local-6989586621679335828"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">[A] -&gt; [A] -&gt; [A]
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[A]
+</span><a href="#local-6989586621679335827"><span class="hs-identifier hs-var">y</span></a></span><span> </span><span class="annot"><span class="annottext">[A] -&gt; [A] -&gt; [A]
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[A]
+</span><a href="SM2GR.html#k"><span class="hs-identifier hs-var">k</span></a></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679335825"><span class="annot"><span class="annottext">A
+</span><a href="#local-6989586621679335825"><span class="hs-identifier hs-var">t</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">[A]
+</span><a href="#local-6989586621679335826"><span class="hs-identifier hs-var">src</span></a></span><span> </span><span class="hs-special">]</span><span>
+</span><span id="line-39"></span><span>
+</span><span id="line-40"></span><span class="annot"><a href="SM2GR.html#sm2grInternal"><span class="hs-identifier hs-type">sm2grInternal</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="SMType.html#SM"><span class="hs-identifier hs-type">SMType.SM</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="SMType.html#Word"><span class="hs-identifier hs-type">SMType.Word</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="GRType.html#A"><span class="hs-identifier hs-type">A</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="GRType.html#GR"><span class="hs-identifier hs-type">GRType.GR</span></a></span><span>
+</span><span id="line-41"></span><span id="sm2grInternal"><span class="annot"><span class="annottext">sm2grInternal :: (SM, Word) -&gt; [A] -&gt; GR
+</span><a href="SM2GR.html#sm2grInternal"><span class="hs-identifier hs-var hs-var">sm2grInternal</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="SMType.html#SM"><span class="hs-identifier hs-type">SMType.SM</span></a></span><span> </span><span id="local-6989586621679335821"><span class="annot"><span class="annottext">[[Y]]
+</span><a href="#local-6989586621679335821"><span class="hs-identifier hs-var">ys</span></a></span></span><span>
+</span><span id="line-42"></span><span>                  </span><span id="local-6989586621679335820"><span class="annot"><span class="annottext">[Set State]
+</span><a href="#local-6989586621679335820"><span class="hs-identifier hs-var">qs</span></a></span></span><span>
+</span><span id="line-43"></span><span>                  </span><span id="local-6989586621679335819"><span class="annot"><span class="annottext">[SRule]
+</span><a href="#local-6989586621679335819"><span class="hs-identifier hs-var">sRules</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679335818"><span class="annot"><span class="annottext">Word
+</span><a href="#local-6989586621679335818"><span class="hs-identifier hs-var">w0</span></a></span></span><span class="hs-special">)</span><span> </span><span id="local-6989586621679335817"><span class="annot"><span class="annottext">[A]
+</span><a href="#local-6989586621679335817"><span class="hs-identifier hs-var">s</span></a></span></span><span>
+</span><span id="line-44"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(Set A, Set GrRelation) -&gt; GR
+</span><a href="GRType.html#GR"><span class="hs-identifier hs-var">GRType.GR</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[A] -&gt; Set A
+forall a. Ord a =&gt; [a] -&gt; Set a
+</span><span class="hs-identifier hs-var">Set.fromList</span></span><span> </span><span class="annot"><span class="annottext">[A]
+</span><a href="#local-6989586621679335814"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">[GrRelation] -&gt; Set GrRelation
+forall a. Ord a =&gt; [a] -&gt; Set a
+</span><span class="hs-identifier hs-var">Set.fromList</span></span><span> </span><span class="annot"><span class="annottext">[GrRelation]
+</span><a href="#local-6989586621679335813"><span class="hs-identifier hs-var">relations</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-45"></span><span>        </span><span class="hs-keyword">where</span><span>
+</span><span id="line-46"></span><span>        </span><span id="local-6989586621679335812"><span class="annot"><span class="annottext">ql :: [[State]]
+</span><a href="#local-6989586621679335812"><span class="hs-identifier hs-var hs-var">ql</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(Set State -&gt; [State]) -&gt; [Set State] -&gt; [[State]]
+forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="annot"><span class="annottext">Set State -&gt; [State]
+forall a. Set a -&gt; [a]
+</span><span class="hs-identifier hs-var">Set.toList</span></span><span> </span><span class="annot"><span class="annottext">[Set State]
+</span><a href="#local-6989586621679335820"><span class="hs-identifier hs-var">qs</span></a></span><span>
+</span><span id="line-47"></span><span>        </span><span id="local-6989586621679335810"><span class="annot"><span class="annottext">q :: [A]
+</span><a href="#local-6989586621679335810"><span class="hs-identifier hs-var hs-var">q</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(State -&gt; A) -&gt; [State] -&gt; [A]
+forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="annot"><span class="annottext">State -&gt; A
+</span><a href="GRType.html#A_Q"><span class="hs-identifier hs-var">A_Q</span></a></span><span> </span><span class="annot"><span class="annottext">([State] -&gt; [A]) -&gt; [State] -&gt; [A]
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">[[State]] -&gt; [State]
+forall (t :: * -&gt; *) a. Foldable t =&gt; t [a] -&gt; [a]
+</span><span class="hs-identifier hs-var">concat</span></span><span> </span><span class="annot"><span class="annottext">[[State]]
+</span><a href="#local-6989586621679335812"><span class="hs-identifier hs-var">ql</span></a></span><span>
+</span><span id="line-48"></span><span>        </span><span id="local-6989586621679335809"><span class="annot"><span class="annottext">y :: [A]
+</span><a href="#local-6989586621679335809"><span class="hs-identifier hs-var hs-var">y</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(Y -&gt; A) -&gt; [Y] -&gt; [A]
+forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="annot"><span class="annottext">Y -&gt; A
+</span><a href="GRType.html#A_Y"><span class="hs-identifier hs-var">A_Y</span></a></span><span> </span><span class="annot"><span class="annottext">([Y] -&gt; [A]) -&gt; [Y] -&gt; [A]
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">[[Y]] -&gt; [Y]
+forall (t :: * -&gt; *) a. Foldable t =&gt; t [a] -&gt; [a]
+</span><span class="hs-identifier hs-var">concat</span></span><span> </span><span class="annot"><span class="annottext">[[Y]]
+</span><a href="#local-6989586621679335821"><span class="hs-identifier hs-var">ys</span></a></span><span>
+</span><span id="line-49"></span><span>        </span><span id="local-6989586621679335808"><span class="annot"><span class="annottext">src :: [A]
+</span><a href="#local-6989586621679335808"><span class="hs-identifier hs-var hs-var">src</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(SRule -&gt; A) -&gt; [SRule] -&gt; [A]
+forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="annot"><span class="annottext">SRule -&gt; A
+</span><a href="GRType.html#A_R"><span class="hs-identifier hs-var">A_R</span></a></span><span> </span><span class="annot"><span class="annottext">[SRule]
+</span><a href="#local-6989586621679335819"><span class="hs-identifier hs-var">sRules</span></a></span><span>
+</span><span id="line-50"></span><span>        </span><span id="local-6989586621679335814"><span class="annot"><span class="annottext">a :: [A]
+</span><a href="#local-6989586621679335814"><span class="hs-identifier hs-var hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[[A]] -&gt; [A]
+forall (t :: * -&gt; *) a. Foldable t =&gt; t [a] -&gt; [a]
+</span><span class="hs-identifier hs-var">concat</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">[A]
+</span><a href="#local-6989586621679335817"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">[A]
+</span><a href="SM2GR.html#k"><span class="hs-identifier hs-var">k</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">[A]
+</span><a href="#local-6989586621679335809"><span class="hs-identifier hs-var">y</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">[A]
+</span><a href="#local-6989586621679335810"><span class="hs-identifier hs-var">q</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">[A]
+</span><a href="#local-6989586621679335808"><span class="hs-identifier hs-var">src</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-51"></span><span>        </span><span id="local-6989586621679335807"><span class="annot"><span class="annottext">transition :: [GrRelation]
+</span><a href="#local-6989586621679335807"><span class="hs-identifier hs-var hs-var">transition</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[SRule] -&gt; [[State]] -&gt; [GrRelation]
+</span><a href="SM2GR.html#transitionRelations"><span class="hs-identifier hs-var">transitionRelations</span></a></span><span> </span><span class="annot"><span class="annottext">[SRule]
+</span><a href="#local-6989586621679335819"><span class="hs-identifier hs-var">sRules</span></a></span><span> </span><span class="annot"><span class="annottext">[[State]]
+</span><a href="#local-6989586621679335812"><span class="hs-identifier hs-var">ql</span></a></span><span>
+</span><span id="line-52"></span><span>        </span><span id="local-6989586621679335806"><span class="annot"><span class="annottext">auxiliary :: [GrRelation]
+</span><a href="#local-6989586621679335806"><span class="hs-identifier hs-var hs-var">auxiliary</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[A] -&gt; [A] -&gt; [A] -&gt; [GrRelation]
+</span><a href="SM2GR.html#auxiliaryRelations"><span class="hs-identifier hs-var">auxiliaryRelations</span></a></span><span> </span><span class="annot"><span class="annottext">[A]
+</span><a href="#local-6989586621679335817"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">[A]
+</span><a href="#local-6989586621679335809"><span class="hs-identifier hs-var">y</span></a></span><span> </span><span class="annot"><span class="annottext">[A]
+</span><a href="#local-6989586621679335808"><span class="hs-identifier hs-var">src</span></a></span><span>
+</span><span id="line-53"></span><span>        </span><span id="local-6989586621679335805"><span class="annot"><span class="annottext">hub :: GrRelation
+</span><a href="#local-6989586621679335805"><span class="hs-identifier hs-var hs-var">hub</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[SmbR] -&gt; GrRelation
+</span><a href="GRType.html#Relator"><span class="hs-identifier hs-var">Relator</span></a></span><span> </span><span class="annot"><span class="annottext">([SmbR] -&gt; GrRelation) -&gt; [SmbR] -&gt; GrRelation
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Word -&gt; [SmbR]
+</span><a href="SM2GR.html#hubRelation"><span class="hs-identifier hs-var">hubRelation</span></a></span><span> </span><span class="annot"><span class="annottext">Word
+</span><a href="#local-6989586621679335818"><span class="hs-identifier hs-var">w0</span></a></span><span>
+</span><span id="line-54"></span><span>        </span><span class="hs-comment">--hub = Relator $ easyHubRelation w0</span><span>
+</span><span id="line-55"></span><span>        </span><span id="local-6989586621679335813"><span class="annot"><span class="annottext">relations :: [GrRelation]
+</span><a href="#local-6989586621679335813"><span class="hs-identifier hs-var hs-var">relations</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[GrRelation]
+</span><a href="#local-6989586621679335806"><span class="hs-identifier hs-var">auxiliary</span></a></span><span> </span><span class="annot"><span class="annottext">[GrRelation] -&gt; [GrRelation] -&gt; [GrRelation]
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[GrRelation]
+</span><a href="#local-6989586621679335807"><span class="hs-identifier hs-var">transition</span></a></span><span> </span><span class="annot"><span class="annottext">[GrRelation] -&gt; [GrRelation] -&gt; [GrRelation]
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">GrRelation
+</span><a href="#local-6989586621679335805"><span class="hs-identifier hs-var">hub</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-56"></span><span>
+</span><span id="line-57"></span><span class="annot"><a href="SM2GR.html#sm2gr"><span class="hs-identifier hs-type">sm2gr</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="SMType.html#SM"><span class="hs-identifier hs-type">SMType.SM</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="SMType.html#Word"><span class="hs-identifier hs-type">SMType.Word</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="GRType.html#GR"><span class="hs-identifier hs-type">GRType.GR</span></a></span><span>
+</span><span id="line-58"></span><span id="sm2gr"><span class="annot"><span class="annottext">sm2gr :: (SM, Word) -&gt; GR
+</span><a href="SM2GR.html#sm2gr"><span class="hs-identifier hs-var hs-var">sm2gr</span></a></span></span><span> </span><span id="local-6989586621679335802"><span class="annot"><span class="annottext">(SM, Word)
+</span><a href="#local-6989586621679335802"><span class="hs-identifier hs-var">sw</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(SM, Word) -&gt; [A] -&gt; GR
+</span><a href="SM2GR.html#sm2grInternal"><span class="hs-identifier hs-var">sm2grInternal</span></a></span><span> </span><span class="annot"><span class="annottext">(SM, Word)
+</span><a href="#local-6989586621679335802"><span class="hs-identifier hs-var">sw</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">Y -&gt; A
+</span><a href="GRType.html#A_Y"><span class="hs-identifier hs-var">A_Y</span></a></span><span> </span><span class="annot"><span class="annottext">Y
+</span><a href="SMType.html#Alpha"><span class="hs-identifier hs-var">Alpha</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Y -&gt; A
+</span><a href="GRType.html#A_Y"><span class="hs-identifier hs-var">A_Y</span></a></span><span> </span><span class="annot"><span class="annottext">Y
+</span><a href="SMType.html#Omega"><span class="hs-identifier hs-var">Omega</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Y -&gt; A
+</span><a href="GRType.html#A_Y"><span class="hs-identifier hs-var">A_Y</span></a></span><span> </span><span class="annot"><span class="annottext">Y
+</span><a href="SMType.html#Delta"><span class="hs-identifier hs-var">Delta</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-59"></span><span>
+</span><span id="line-60"></span><span class="annot"><a href="SM2GR.html#sm2grEmpty"><span class="hs-identifier hs-type">sm2grEmpty</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="SMType.html#SM"><span class="hs-identifier hs-type">SMType.SM</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="SMType.html#Word"><span class="hs-identifier hs-type">SMType.Word</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="GRType.html#GR"><span class="hs-identifier hs-type">GRType.GR</span></a></span><span>
+</span><span id="line-61"></span><span id="sm2grEmpty"><span class="annot"><span class="annottext">sm2grEmpty :: (SM, Word) -&gt; GR
+</span><a href="SM2GR.html#sm2grEmpty"><span class="hs-identifier hs-var hs-var">sm2grEmpty</span></a></span></span><span> </span><span id="local-6989586621679335797"><span class="annot"><span class="annottext">(SM, Word)
+</span><a href="#local-6989586621679335797"><span class="hs-identifier hs-var">sw</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(SM, Word) -&gt; [A] -&gt; GR
+</span><a href="SM2GR.html#sm2grInternal"><span class="hs-identifier hs-var">sm2grInternal</span></a></span><span> </span><span class="annot"><span class="annottext">(SM, Word)
+</span><a href="#local-6989586621679335797"><span class="hs-identifier hs-var">sw</span></a></span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span>
+</span><span id="line-62"></span></pre></body></html>

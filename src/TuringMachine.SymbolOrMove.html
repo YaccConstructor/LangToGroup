@@ -1,0 +1,126 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span id="%24con2tag_5zmwUVcOeIwKj3rtBZnybP"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">TuringMachine.SymbolOrMove</span><span> </span><span class="hs-special">(</span><span>
+</span><span id="line-2"></span><span>    </span><span class="annot"><a href="TuringMachine.SymbolOrMove.html#MoveOr"><span class="hs-identifier">MoveOr</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="TuringMachine.SymbolOrMove.html#S"><span class="hs-identifier">S</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="TuringMachine.SymbolOrMove.html#M"><span class="hs-identifier">M</span></a></span><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><span id="line-3"></span><span>    </span><span class="annot"><a href="TuringMachine.SymbolOrMove.html#SymbolOrMove"><span class="hs-identifier">SymbolOrMove</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-4"></span><span>    </span><span class="annot"><a href="TuringMachine.SymbolOrMove.html#ShowedSymbolOrMove"><span class="hs-identifier">ShowedSymbolOrMove</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-5"></span><span>    </span><span class="annot"><a href="TuringMachine.SymbolOrMove.html#getSymbol"><span class="hs-identifier">getSymbol</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-6"></span><span>    </span><span class="annot"><a href="TuringMachine.SymbolOrMove.html#isSymbol"><span class="hs-identifier">isSymbol</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-7"></span><span>    </span><span class="annot"><a href="TuringMachine.SymbolOrMove.html#getMove"><span class="hs-identifier">getMove</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-8"></span><span>    </span><span class="annot"><a href="TuringMachine.SymbolOrMove.html#isMove"><span class="hs-identifier">isMove</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-9"></span><span>    </span><span class="hs-keyword">module</span><span> </span><span class="annot"><a href="TuringMachine.Symbol.html"><span class="hs-identifier">TuringMachine.Symbol</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-10"></span><span>    </span><span class="hs-keyword">module</span><span> </span><span class="annot"><a href="TuringMachine.ShowedSymbol.html"><span class="hs-identifier">TuringMachine.ShowedSymbol</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-11"></span><span>    </span><span class="hs-keyword">module</span><span> </span><span class="annot"><a href="TuringMachine.Move.html"><span class="hs-identifier">TuringMachine.Move</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-12"></span><span>  </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-13"></span><span>
+</span><span id="line-14"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="TuringMachine.Symbol.html"><span class="hs-identifier">TuringMachine.Symbol</span></a></span><span>
+</span><span id="line-15"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="TuringMachine.ShowedSymbol.html"><span class="hs-identifier">TuringMachine.ShowedSymbol</span></a></span><span>
+</span><span id="line-16"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="TuringMachine.Move.html"><span class="hs-identifier">TuringMachine.Move</span></a></span><span>
+</span><span id="line-17"></span><span>
+</span><span id="line-18"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Maybe</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">isJust</span></span><span class="hs-special">)</span><span>
+</span><span id="line-19"></span><span>
+</span><span id="line-20"></span><span class="hs-keyword">data</span><span> </span><span id="MoveOr"><span class="annot"><a href="TuringMachine.SymbolOrMove.html#MoveOr"><span class="hs-identifier hs-var">MoveOr</span></a></span></span><span> </span><span id="local-6989586621679337672"><span class="annot"><a href="#local-6989586621679337672"><span class="hs-identifier hs-type">s</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-21"></span><span>      </span><span id="S"><span class="annot"><a href="TuringMachine.SymbolOrMove.html#S"><span class="hs-identifier hs-var">S</span></a></span></span><span> </span><span class="annot"><a href="#local-6989586621679337672"><span class="hs-identifier hs-type">s</span></a></span><span>
+</span><span id="line-22"></span><span>    </span><span class="hs-glyph">|</span><span> </span><span id="M"><span class="annot"><a href="TuringMachine.SymbolOrMove.html#M"><span class="hs-identifier hs-var">M</span></a></span></span><span> </span><span class="annot"><a href="TuringMachine.Move.html#Move"><span class="hs-identifier hs-type">Move</span></a></span><span>
+</span><span id="line-23"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679337668"><span id="local-6989586621679337670"><span class="annot"><span class="annottext">MoveOr s -&gt; MoveOr s -&gt; Bool
+(MoveOr s -&gt; MoveOr s -&gt; Bool)
+-&gt; (MoveOr s -&gt; MoveOr s -&gt; Bool) -&gt; Eq (MoveOr s)
+forall s. Eq s =&gt; MoveOr s -&gt; MoveOr s -&gt; Bool
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+/= :: MoveOr s -&gt; MoveOr s -&gt; Bool
+$c/= :: forall s. Eq s =&gt; MoveOr s -&gt; MoveOr s -&gt; Bool
+== :: MoveOr s -&gt; MoveOr s -&gt; Bool
+$c== :: forall s. Eq s =&gt; MoveOr s -&gt; MoveOr s -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679337652"><span id="local-6989586621679337654"><span id="local-6989586621679337656"><span id="local-6989586621679337658"><span id="local-6989586621679337660"><span id="local-6989586621679337662"><span id="local-6989586621679337664"><span class="annot"><span class="annottext">Eq (MoveOr s)
+Eq (MoveOr s)
+-&gt; (MoveOr s -&gt; MoveOr s -&gt; Ordering)
+-&gt; (MoveOr s -&gt; MoveOr s -&gt; Bool)
+-&gt; (MoveOr s -&gt; MoveOr s -&gt; Bool)
+-&gt; (MoveOr s -&gt; MoveOr s -&gt; Bool)
+-&gt; (MoveOr s -&gt; MoveOr s -&gt; Bool)
+-&gt; (MoveOr s -&gt; MoveOr s -&gt; MoveOr s)
+-&gt; (MoveOr s -&gt; MoveOr s -&gt; MoveOr s)
+-&gt; Ord (MoveOr s)
+MoveOr s -&gt; MoveOr s -&gt; Bool
+MoveOr s -&gt; MoveOr s -&gt; Ordering
+MoveOr s -&gt; MoveOr s -&gt; MoveOr s
+forall a.
+Eq a
+-&gt; (a -&gt; a -&gt; Ordering)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; Ord a
+forall s. Ord s =&gt; Eq (MoveOr s)
+forall s. Ord s =&gt; MoveOr s -&gt; MoveOr s -&gt; Bool
+forall s. Ord s =&gt; MoveOr s -&gt; MoveOr s -&gt; Ordering
+forall s. Ord s =&gt; MoveOr s -&gt; MoveOr s -&gt; MoveOr s
+min :: MoveOr s -&gt; MoveOr s -&gt; MoveOr s
+$cmin :: forall s. Ord s =&gt; MoveOr s -&gt; MoveOr s -&gt; MoveOr s
+max :: MoveOr s -&gt; MoveOr s -&gt; MoveOr s
+$cmax :: forall s. Ord s =&gt; MoveOr s -&gt; MoveOr s -&gt; MoveOr s
+&gt;= :: MoveOr s -&gt; MoveOr s -&gt; Bool
+$c&gt;= :: forall s. Ord s =&gt; MoveOr s -&gt; MoveOr s -&gt; Bool
+&gt; :: MoveOr s -&gt; MoveOr s -&gt; Bool
+$c&gt; :: forall s. Ord s =&gt; MoveOr s -&gt; MoveOr s -&gt; Bool
+&lt;= :: MoveOr s -&gt; MoveOr s -&gt; Bool
+$c&lt;= :: forall s. Ord s =&gt; MoveOr s -&gt; MoveOr s -&gt; Bool
+&lt; :: MoveOr s -&gt; MoveOr s -&gt; Bool
+$c&lt; :: forall s. Ord s =&gt; MoveOr s -&gt; MoveOr s -&gt; Bool
+compare :: MoveOr s -&gt; MoveOr s -&gt; Ordering
+$ccompare :: forall s. Ord s =&gt; MoveOr s -&gt; MoveOr s -&gt; Ordering
+$cp1Ord :: forall s. Ord s =&gt; Eq (MoveOr s)
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Ord</span></span></span></span></span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-24"></span><span>
+</span><span id="line-25"></span><span class="hs-keyword">type</span><span> </span><span id="SymbolOrMove"><span class="annot"><a href="TuringMachine.SymbolOrMove.html#SymbolOrMove"><span class="hs-identifier hs-var">SymbolOrMove</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><a href="TuringMachine.SymbolOrMove.html#MoveOr"><span class="hs-identifier hs-type">MoveOr</span></a></span><span> </span><span class="annot"><a href="TuringMachine.Symbol.html#Symbol"><span class="hs-identifier hs-type">Symbol</span></a></span><span>
+</span><span id="line-26"></span><span>
+</span><span id="line-27"></span><span class="hs-keyword">type</span><span> </span><span id="ShowedSymbolOrMove"><span class="annot"><a href="TuringMachine.SymbolOrMove.html#ShowedSymbolOrMove"><span class="hs-identifier hs-var">ShowedSymbolOrMove</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><a href="TuringMachine.SymbolOrMove.html#MoveOr"><span class="hs-identifier hs-type">MoveOr</span></a></span><span> </span><span class="annot"><a href="TuringMachine.ShowedSymbol.html#ShowedSymbol"><span class="hs-identifier hs-type">ShowedSymbol</span></a></span><span>
+</span><span id="line-28"></span><span>
+</span><span id="line-29"></span><span id="local-6989586621679337689"><span id="local-6989586621679337690"><span class="annot"><a href="TuringMachine.SymbolOrMove.html#getSymbol"><span class="hs-identifier hs-type">getSymbol</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">MonadFail</span></span><span> </span><span class="annot"><a href="#local-6989586621679337690"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><a href="TuringMachine.SymbolOrMove.html#MoveOr"><span class="hs-identifier hs-type">MoveOr</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679337689"><span class="hs-identifier hs-type">s</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679337690"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679337689"><span class="hs-identifier hs-type">s</span></a></span></span></span><span>
+</span><span id="line-30"></span><span id="getSymbol"><span class="annot"><span class="annottext">getSymbol :: MoveOr s -&gt; m s
+</span><a href="TuringMachine.SymbolOrMove.html#getSymbol"><span class="hs-identifier hs-var hs-var">getSymbol</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="TuringMachine.SymbolOrMove.html#S"><span class="hs-identifier hs-type">S</span></a></span><span> </span><span id="local-6989586621679337648"><span class="annot"><span class="annottext">s
+</span><a href="#local-6989586621679337648"><span class="hs-identifier hs-var">s</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">s -&gt; m s
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">s
+</span><a href="#local-6989586621679337648"><span class="hs-identifier hs-var">s</span></a></span><span>
+</span><span id="line-31"></span><span class="annot"><a href="TuringMachine.SymbolOrMove.html#getSymbol"><span class="hs-identifier hs-var">getSymbol</span></a></span><span> </span><span class="annot"><span class="annottext">MoveOr s
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; m s
+forall (m :: * -&gt; *) a. MonadFail m =&gt; String -&gt; m a
+</span><span class="hs-identifier hs-var">fail</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;Symbol expected, but Move was found&quot;</span></span><span>
+</span><span id="line-32"></span><span>
+</span><span id="line-33"></span><span id="local-6989586621679337647"><span class="annot"><a href="TuringMachine.SymbolOrMove.html#isSymbol"><span class="hs-identifier hs-type">isSymbol</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TuringMachine.SymbolOrMove.html#MoveOr"><span class="hs-identifier hs-type">MoveOr</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679337647"><span class="hs-identifier hs-type">s</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span></span><span>
+</span><span id="line-34"></span><span id="isSymbol"><span class="annot"><span class="annottext">isSymbol :: MoveOr s -&gt; Bool
+</span><a href="TuringMachine.SymbolOrMove.html#isSymbol"><span class="hs-identifier hs-var hs-var">isSymbol</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe s -&gt; Bool
+forall a. Maybe a -&gt; Bool
+</span><span class="hs-identifier hs-var">isJust</span></span><span> </span><span class="annot"><span class="annottext">(Maybe s -&gt; Bool) -&gt; (MoveOr s -&gt; Maybe s) -&gt; MoveOr s -&gt; Bool
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">MoveOr s -&gt; Maybe s
+forall (m :: * -&gt; *) s. MonadFail m =&gt; MoveOr s -&gt; m s
+</span><a href="TuringMachine.SymbolOrMove.html#getSymbol"><span class="hs-identifier hs-var">getSymbol</span></a></span><span>
+</span><span id="line-35"></span><span>
+</span><span id="line-36"></span><span id="local-6989586621679337683"><span id="local-6989586621679337684"><span class="annot"><a href="TuringMachine.SymbolOrMove.html#getMove"><span class="hs-identifier hs-type">getMove</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">MonadFail</span></span><span> </span><span class="annot"><a href="#local-6989586621679337684"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><a href="TuringMachine.SymbolOrMove.html#MoveOr"><span class="hs-identifier hs-type">MoveOr</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679337683"><span class="hs-identifier hs-type">s</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679337684"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="annot"><a href="TuringMachine.Move.html#Move"><span class="hs-identifier hs-type">Move</span></a></span></span></span><span>
+</span><span id="line-37"></span><span id="getMove"><span class="annot"><span class="annottext">getMove :: MoveOr s -&gt; m Move
+</span><a href="TuringMachine.SymbolOrMove.html#getMove"><span class="hs-identifier hs-var hs-var">getMove</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="TuringMachine.SymbolOrMove.html#M"><span class="hs-identifier hs-type">M</span></a></span><span> </span><span id="local-6989586621679337645"><span class="annot"><span class="annottext">Move
+</span><a href="#local-6989586621679337645"><span class="hs-identifier hs-var">m</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Move -&gt; m Move
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">Move
+</span><a href="#local-6989586621679337645"><span class="hs-identifier hs-var">m</span></a></span><span>
+</span><span id="line-38"></span><span class="annot"><a href="TuringMachine.SymbolOrMove.html#getMove"><span class="hs-identifier hs-var">getMove</span></a></span><span> </span><span class="annot"><span class="annottext">MoveOr s
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; m Move
+forall (m :: * -&gt; *) a. MonadFail m =&gt; String -&gt; m a
+</span><span class="hs-identifier hs-var">fail</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;Move expected, but Symbol was found&quot;</span></span><span>
+</span><span id="line-39"></span><span>
+</span><span id="line-40"></span><span id="local-6989586621679337644"><span class="annot"><a href="TuringMachine.SymbolOrMove.html#isMove"><span class="hs-identifier hs-type">isMove</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TuringMachine.SymbolOrMove.html#MoveOr"><span class="hs-identifier hs-type">MoveOr</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679337644"><span class="hs-identifier hs-type">s</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span></span><span>
+</span><span id="line-41"></span><span id="isMove"><span class="annot"><span class="annottext">isMove :: MoveOr s -&gt; Bool
+</span><a href="TuringMachine.SymbolOrMove.html#isMove"><span class="hs-identifier hs-var hs-var">isMove</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Move -&gt; Bool
+forall a. Maybe a -&gt; Bool
+</span><span class="hs-identifier hs-var">isJust</span></span><span> </span><span class="annot"><span class="annottext">(Maybe Move -&gt; Bool)
+-&gt; (MoveOr s -&gt; Maybe Move) -&gt; MoveOr s -&gt; Bool
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">MoveOr s -&gt; Maybe Move
+forall (m :: * -&gt; *) s. MonadFail m =&gt; MoveOr s -&gt; m Move
+</span><a href="TuringMachine.SymbolOrMove.html#getMove"><span class="hs-identifier hs-var">getMove</span></a></span><span>
+</span><span id="line-42"></span></pre></body></html>

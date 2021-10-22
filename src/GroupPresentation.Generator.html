@@ -1,0 +1,118 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE GeneralizedNewtypeDeriving #-}</span><span>
+</span><span id="line-2"></span><span>
+</span><span id="line-3"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">GroupPresentation.Generator</span><span> </span><span class="hs-special">(</span><span>
+</span><span id="line-4"></span><span>    </span><span class="annot"><a href="GroupPresentation.Generator.html#Generator"><span class="hs-identifier">Generator</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-5"></span><span>    </span><span class="annot"><a href="GroupPresentation.Generator.html#generator"><span class="hs-identifier">generator</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-6"></span><span>    </span><span class="annot"><a href="GroupPresentation.Generator.html#numGenerator"><span class="hs-identifier">numGenerator</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-7"></span><span>    </span><span class="annot"><a href="GroupPresentation.Generator.html#GWord"><span class="hs-identifier">GWord</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-8"></span><span>  </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-9"></span><span>
+</span><span id="line-10"></span><span class="hs-keyword">newtype</span><span> </span><span id="Generator"><span class="annot"><a href="GroupPresentation.Generator.html#Generator"><span class="hs-identifier hs-var">Generator</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="G"><span class="annot"><a href="GroupPresentation.Generator.html#G"><span class="hs-identifier hs-var">G</span></a></span></span><span> </span><span class="hs-special">{</span><span> </span><span id="numGenerator"><span class="annot"><span class="annottext">Generator -&gt; Int
+</span><a href="GroupPresentation.Generator.html#numGenerator"><span class="hs-identifier hs-var hs-var">numGenerator</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-special">}</span><span>
+</span><span id="line-11"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679328239"><span id="local-6989586621679328241"><span class="annot"><span class="annottext">Generator -&gt; Generator -&gt; Bool
+(Generator -&gt; Generator -&gt; Bool)
+-&gt; (Generator -&gt; Generator -&gt; Bool) -&gt; Eq Generator
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+/= :: Generator -&gt; Generator -&gt; Bool
+$c/= :: Generator -&gt; Generator -&gt; Bool
+== :: Generator -&gt; Generator -&gt; Bool
+$c== :: Generator -&gt; Generator -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679328223"><span id="local-6989586621679328225"><span id="local-6989586621679328227"><span id="local-6989586621679328229"><span id="local-6989586621679328231"><span id="local-6989586621679328233"><span id="local-6989586621679328235"><span class="annot"><span class="annottext">Eq Generator
+Eq Generator
+-&gt; (Generator -&gt; Generator -&gt; Ordering)
+-&gt; (Generator -&gt; Generator -&gt; Bool)
+-&gt; (Generator -&gt; Generator -&gt; Bool)
+-&gt; (Generator -&gt; Generator -&gt; Bool)
+-&gt; (Generator -&gt; Generator -&gt; Bool)
+-&gt; (Generator -&gt; Generator -&gt; Generator)
+-&gt; (Generator -&gt; Generator -&gt; Generator)
+-&gt; Ord Generator
+Generator -&gt; Generator -&gt; Bool
+Generator -&gt; Generator -&gt; Ordering
+Generator -&gt; Generator -&gt; Generator
+forall a.
+Eq a
+-&gt; (a -&gt; a -&gt; Ordering)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; Ord a
+min :: Generator -&gt; Generator -&gt; Generator
+$cmin :: Generator -&gt; Generator -&gt; Generator
+max :: Generator -&gt; Generator -&gt; Generator
+$cmax :: Generator -&gt; Generator -&gt; Generator
+&gt;= :: Generator -&gt; Generator -&gt; Bool
+$c&gt;= :: Generator -&gt; Generator -&gt; Bool
+&gt; :: Generator -&gt; Generator -&gt; Bool
+$c&gt; :: Generator -&gt; Generator -&gt; Bool
+&lt;= :: Generator -&gt; Generator -&gt; Bool
+$c&lt;= :: Generator -&gt; Generator -&gt; Bool
+&lt; :: Generator -&gt; Generator -&gt; Bool
+$c&lt; :: Generator -&gt; Generator -&gt; Bool
+compare :: Generator -&gt; Generator -&gt; Ordering
+$ccompare :: Generator -&gt; Generator -&gt; Ordering
+$cp1Ord :: Eq Generator
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Ord</span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679328206"><span id="local-6989586621679328208"><span id="local-6989586621679328210"><span id="local-6989586621679328212"><span id="local-6989586621679328214"><span id="local-6989586621679328216"><span id="local-6989586621679328218"><span id="local-6989586621679328220"><span class="annot"><span class="annottext">Int -&gt; Generator
+Generator -&gt; Int
+Generator -&gt; [Generator]
+Generator -&gt; Generator
+Generator -&gt; Generator -&gt; [Generator]
+Generator -&gt; Generator -&gt; Generator -&gt; [Generator]
+(Generator -&gt; Generator)
+-&gt; (Generator -&gt; Generator)
+-&gt; (Int -&gt; Generator)
+-&gt; (Generator -&gt; Int)
+-&gt; (Generator -&gt; [Generator])
+-&gt; (Generator -&gt; Generator -&gt; [Generator])
+-&gt; (Generator -&gt; Generator -&gt; [Generator])
+-&gt; (Generator -&gt; Generator -&gt; Generator -&gt; [Generator])
+-&gt; Enum Generator
+forall a.
+(a -&gt; a)
+-&gt; (a -&gt; a)
+-&gt; (Int -&gt; a)
+-&gt; (a -&gt; Int)
+-&gt; (a -&gt; [a])
+-&gt; (a -&gt; a -&gt; [a])
+-&gt; (a -&gt; a -&gt; [a])
+-&gt; (a -&gt; a -&gt; a -&gt; [a])
+-&gt; Enum a
+enumFromThenTo :: Generator -&gt; Generator -&gt; Generator -&gt; [Generator]
+$cenumFromThenTo :: Generator -&gt; Generator -&gt; Generator -&gt; [Generator]
+enumFromTo :: Generator -&gt; Generator -&gt; [Generator]
+$cenumFromTo :: Generator -&gt; Generator -&gt; [Generator]
+enumFromThen :: Generator -&gt; Generator -&gt; [Generator]
+$cenumFromThen :: Generator -&gt; Generator -&gt; [Generator]
+enumFrom :: Generator -&gt; [Generator]
+$cenumFrom :: Generator -&gt; [Generator]
+fromEnum :: Generator -&gt; Int
+$cfromEnum :: Generator -&gt; Int
+toEnum :: Int -&gt; Generator
+$ctoEnum :: Int -&gt; Generator
+pred :: Generator -&gt; Generator
+$cpred :: Generator -&gt; Generator
+succ :: Generator -&gt; Generator
+$csucc :: Generator -&gt; Generator
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Enum</span></span></span></span></span></span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-12"></span><span>
+</span><span id="line-13"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bounded</span></span><span> </span><span class="annot"><a href="GroupPresentation.Generator.html#Generator"><span class="hs-identifier hs-type">Generator</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-14"></span><span>    </span><span id="local-6989586621679328201"><span class="annot"><span class="annottext">minBound :: Generator
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">minBound</span></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Int -&gt; Generator
+</span><a href="GroupPresentation.Generator.html#G"><span class="hs-identifier hs-var">G</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">0</span></span><span>
+</span><span id="line-15"></span><span>    </span><span id="local-6989586621679328199"><span class="annot"><span class="annottext">maxBound :: Generator
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">maxBound</span></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Int -&gt; Generator
+</span><a href="GroupPresentation.Generator.html#G"><span class="hs-identifier hs-var">G</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+forall a. Bounded a =&gt; a
+</span><span class="hs-identifier hs-var">maxBound</span></span><span>
+</span><span id="line-16"></span><span>
+</span><span id="line-17"></span><span class="annot"><a href="GroupPresentation.Generator.html#generator"><span class="hs-identifier hs-type">generator</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="GroupPresentation.Generator.html#Generator"><span class="hs-identifier hs-type">Generator</span></a></span><span>
+</span><span id="line-18"></span><span id="generator"><span class="annot"><span class="annottext">generator :: Int -&gt; Generator
+</span><a href="GroupPresentation.Generator.html#generator"><span class="hs-identifier hs-var hs-var">generator</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Int -&gt; Generator
+</span><a href="GroupPresentation.Generator.html#G"><span class="hs-identifier hs-var">G</span></a></span><span>
+</span><span id="line-19"></span><span>
+</span><span id="line-20"></span><span class="hs-keyword">type</span><span> </span><span id="GWord"><span class="annot"><a href="GroupPresentation.Generator.html#GWord"><span class="hs-identifier hs-var">GWord</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="GroupPresentation.Generator.html#Generator"><span class="hs-identifier hs-type">Generator</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-21"></span></pre></body></html>

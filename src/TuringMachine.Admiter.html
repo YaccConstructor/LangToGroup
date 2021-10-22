@@ -1,0 +1,119 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE MultiWayIf #-}</span><span>
+</span><span id="line-2"></span><span>
+</span><span id="line-3"></span><span class="hs-comment">-- |Module `TuringMachine.Admiter` include `admit` function for detecting if</span><span>
+</span><span id="line-4"></span><span class="hs-comment">--  input Turing machine admit input string.</span><span>
+</span><span id="line-5"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">TuringMachine.Admiter</span><span> </span><span class="hs-special">(</span><span>
+</span><span id="line-6"></span><span>    </span><span class="annot"><a href="TuringMachine.Admiter.html#Depth"><span class="hs-identifier">Depth</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-7"></span><span>    </span><span class="annot"><a href="TuringMachine.Admiter.html#Action"><span class="hs-identifier">Action</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-8"></span><span>    </span><span class="annot"><a href="TuringMachine.Admiter.html#admit"><span class="hs-identifier">admit</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-9"></span><span>    </span><span class="annot"><a href="TuringMachine.Admiter.html#admit%27"><span class="hs-identifier">admit'</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-10"></span><span>    </span><span class="hs-keyword">module</span><span> </span><span class="annot"><a href="TuringMachine.html"><span class="hs-identifier">TuringMachine</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-11"></span><span>  </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-12"></span><span>
+</span><span id="line-13"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="TuringMachine.html"><span class="hs-identifier">TuringMachine</span></a></span><span>
+</span><span id="line-14"></span><span>
+</span><span id="line-15"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="TuringMachine.Interpreter.html"><span class="hs-identifier">TuringMachine.Interpreter</span></a></span><span>
+</span><span id="line-16"></span><span>
+</span><span id="line-17"></span><span class="hs-keyword">type</span><span> </span><span id="Depth"><span class="annot"><a href="TuringMachine.Admiter.html#Depth"><span class="hs-identifier hs-var">Depth</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>
+</span><span id="line-18"></span><span>
+</span><span id="line-19"></span><span class="hs-keyword">type</span><span> </span><span id="Action"><span class="annot"><a href="TuringMachine.Admiter.html#Action"><span class="hs-identifier hs-var">Action</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><a href="TuringMachine.SymbolOrMove.html#SymbolOrMove"><span class="hs-identifier hs-type">SymbolOrMove</span></a></span><span>
+</span><span id="line-20"></span><span>
+</span><span id="line-21"></span><span id="local-6989586621679342903"><span class="annot"><a href="TuringMachine.Admiter.html#admit"><span class="hs-identifier hs-type">admit</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">MonadFail</span></span><span> </span><span class="annot"><a href="#local-6989586621679342903"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><a href="TuringMachine.html#TuringMachine"><span class="hs-identifier hs-type">TuringMachine</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TuringMachine.Admiter.html#Depth"><span class="hs-identifier hs-type">Depth</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679342903"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><a href="TuringMachine.Admiter.html#Action"><span class="hs-identifier hs-type">Action</span></a></span><span class="hs-special">]</span></span><span>
+</span><span id="line-22"></span><span id="admit"><span class="annot"><span class="annottext">admit :: TuringMachine -&gt; Depth -&gt; (String, Int) -&gt; m [Action]
+</span><a href="TuringMachine.Admiter.html#admit"><span class="hs-identifier hs-var hs-var">admit</span></a></span></span><span> </span><span id="local-6989586621679342902"><span class="annot"><span class="annottext">TuringMachine
+</span><a href="#local-6989586621679342902"><span class="hs-identifier hs-var">tm</span></a></span></span><span> </span><span id="local-6989586621679342901"><span class="annot"><span class="annottext">Depth
+</span><a href="#local-6989586621679342901"><span class="hs-identifier hs-var">depth</span></a></span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679342900"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679342900"><span class="hs-identifier hs-var">strIni</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679342899"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679342899"><span class="hs-identifier hs-var">posIni</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-23"></span><span>    </span><span class="annot"><span class="annottext">TuringMachine -&gt; Depth -&gt; WorkingState -&gt; m [Action]
+forall (m :: * -&gt; *).
+MonadFail m =&gt;
+TuringMachine -&gt; Depth -&gt; WorkingState -&gt; m [Action]
+</span><a href="TuringMachine.Admiter.html#admit%27"><span class="hs-identifier hs-var">admit'</span></a></span><span> </span><span class="annot"><span class="annottext">TuringMachine
+</span><a href="#local-6989586621679342902"><span class="hs-identifier hs-var">tm</span></a></span><span> </span><span class="annot"><span class="annottext">Depth
+</span><a href="#local-6989586621679342901"><span class="hs-identifier hs-var">depth</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String -&gt; Int -&gt; WorkingState
+</span><a href="TuringMachine.Interpreter.html#initWS"><span class="hs-identifier hs-var">initWS</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679342900"><span class="hs-identifier hs-var">strIni</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679342899"><span class="hs-identifier hs-var">posIni</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-24"></span><span>
+</span><span id="line-25"></span><span id="local-6989586621679342930"><span class="annot"><a href="TuringMachine.Admiter.html#admit%27"><span class="hs-identifier hs-type">admit'</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">MonadFail</span></span><span> </span><span class="annot"><a href="#local-6989586621679342930"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><a href="TuringMachine.html#TuringMachine"><span class="hs-identifier hs-type">TuringMachine</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TuringMachine.Admiter.html#Depth"><span class="hs-identifier hs-type">Depth</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TuringMachine.Interpreter.html#WorkingState"><span class="hs-identifier hs-type">WorkingState</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679342930"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><a href="TuringMachine.Admiter.html#Action"><span class="hs-identifier hs-type">Action</span></a></span><span class="hs-special">]</span></span><span>
+</span><span id="line-26"></span><span id="admit%27"><span class="annot"><span class="annottext">admit' :: TuringMachine -&gt; Depth -&gt; WorkingState -&gt; m [Action]
+</span><a href="TuringMachine.Admiter.html#admit%27"><span class="hs-identifier hs-var hs-var">admit'</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Action] -&gt; TuringMachine -&gt; Depth -&gt; WorkingState -&gt; m [Action]
+forall b (m :: * -&gt; *).
+(Eq b, Num b, MonadFail m) =&gt;
+[Action] -&gt; TuringMachine -&gt; Maybe b -&gt; WorkingState -&gt; m [Action]
+</span><a href="#local-6989586621679342897"><span class="hs-identifier hs-var">go</span></a></span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span>
+</span><span id="line-27"></span><span>  </span><span class="hs-keyword">where</span><span>
+</span><span id="line-28"></span><span>    </span><span id="local-6989586621679342897"><span class="annot"><span class="annottext">go :: [Action] -&gt; TuringMachine -&gt; Maybe b -&gt; WorkingState -&gt; m [Action]
+</span><a href="#local-6989586621679342897"><span class="hs-identifier hs-var hs-var">go</span></a></span></span><span> </span><span class="annot"><span class="annottext">[Action]
+</span><span class="hs-identifier">_</span></span><span> </span><span class="annot"><span class="annottext">TuringMachine
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Just</span></span><span> </span><span class="annot"><span class="annottext">b
+</span><span class="hs-number">0</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">WorkingState
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-29"></span><span>        </span><span class="annot"><span class="annottext">String -&gt; m [Action]
+forall (m :: * -&gt; *) a. MonadFail m =&gt; String -&gt; m a
+</span><span class="hs-identifier hs-var">fail</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;Analysis depth limit reached&quot;</span></span><span>
+</span><span id="line-30"></span><span>    </span><span class="annot"><a href="#local-6989586621679342897"><span class="hs-identifier hs-var">go</span></a></span><span> </span><span id="local-6989586621679342896"><span class="annot"><span class="annottext">[Action]
+</span><a href="#local-6989586621679342896"><span class="hs-identifier hs-var">res</span></a></span></span><span> </span><span id="local-6989586621679342895"><span class="annot"><span class="annottext">TuringMachine
+</span><a href="#local-6989586621679342895"><span class="hs-identifier hs-var">tm</span></a></span></span><span> </span><span id="local-6989586621679342894"><span class="annot"><span class="annottext">Maybe b
+</span><a href="#local-6989586621679342894"><span class="hs-identifier hs-var">depth</span></a></span></span><span> </span><span id="local-6989586621679342893"><span class="annot"><span class="annottext">WorkingState
+</span><a href="#local-6989586621679342893"><span class="hs-identifier hs-var">ws</span></a></span></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-31"></span><span>        </span><span class="hs-special">(</span><span class="hs-special">(</span><span class="hs-special">(</span><span id="local-6989586621679342892"><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679342892"><span class="hs-identifier hs-var">q</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679342891"><span class="annot"><span class="annottext">Symbol
+</span><a href="#local-6989586621679342891"><span class="hs-identifier hs-var">s</span></a></span></span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679342890"><span class="annot"><span class="annottext">Action
+</span><a href="#local-6989586621679342890"><span class="hs-identifier hs-var">sm</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679342889"><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679342889"><span class="hs-identifier hs-var">q'</span></a></span></span><span class="hs-special">)</span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span id="local-6989586621679342888"><span class="annot"><span class="annottext">WorkingState
+</span><a href="#local-6989586621679342888"><span class="hs-identifier hs-var">ws'</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">TuringMachine -&gt; WorkingState -&gt; m (Quadruple, WorkingState)
+forall (m :: * -&gt; *).
+MonadFail m =&gt;
+TuringMachine -&gt; WorkingState -&gt; m (Quadruple, WorkingState)
+</span><a href="TuringMachine.Interpreter.html#step"><span class="hs-identifier hs-var">step</span></a></span><span> </span><span class="annot"><span class="annottext">TuringMachine
+</span><a href="#local-6989586621679342895"><span class="hs-identifier hs-var">tm</span></a></span><span> </span><span class="annot"><span class="annottext">WorkingState
+</span><a href="#local-6989586621679342893"><span class="hs-identifier hs-var">ws</span></a></span><span>
+</span><span id="line-32"></span><span>        </span><span class="hs-keyword">if</span><span>  </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679342889"><span class="hs-identifier hs-var">q'</span></a></span><span> </span><span class="annot"><span class="annottext">State -&gt; State -&gt; Bool
+forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">==</span></span><span> </span><span class="annot"><span class="annottext">State
+</span><a href="TuringMachine.State.html#finalState"><span class="hs-identifier hs-var">finalState</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span>
+</span><span id="line-33"></span><span>                </span><span class="annot"><span class="annottext">[Action] -&gt; m [Action]
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">([Action] -&gt; m [Action]) -&gt; [Action] -&gt; m [Action]
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">[Action] -&gt; [Action]
+forall a. [a] -&gt; [a]
+</span><span class="hs-identifier hs-var">reverse</span></span><span> </span><span class="annot"><span class="annottext">[Action]
+</span><a href="#local-6989586621679342896"><span class="hs-identifier hs-var">res</span></a></span><span>
+</span><span id="line-34"></span><span>            </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679342892"><span class="hs-identifier hs-var">q</span></a></span><span> </span><span class="annot"><span class="annottext">State -&gt; State -&gt; Bool
+forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">==</span></span><span> </span><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679342889"><span class="hs-identifier hs-var">q'</span></a></span><span> </span><span class="annot"><span class="annottext">Bool -&gt; Bool -&gt; Bool
+</span><span class="hs-operator hs-var">&amp;&amp;</span></span><span> </span><span class="annot"><span class="annottext">Symbol -&gt; Action
+forall s. s -&gt; MoveOr s
+</span><a href="TuringMachine.SymbolOrMove.html#S"><span class="hs-identifier hs-var">S</span></a></span><span> </span><span class="annot"><span class="annottext">Symbol
+</span><a href="#local-6989586621679342891"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">Action -&gt; Action -&gt; Bool
+forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">==</span></span><span> </span><span class="annot"><span class="annottext">Action
+</span><a href="#local-6989586621679342890"><span class="hs-identifier hs-var">sm</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span>
+</span><span id="line-35"></span><span>                </span><span class="annot"><span class="annottext">String -&gt; m [Action]
+forall (m :: * -&gt; *) a. MonadFail m =&gt; String -&gt; m a
+</span><span class="hs-identifier hs-var">fail</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;Loop was found&quot;</span></span><span>
+</span><span id="line-36"></span><span>            </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Bool
+</span><span class="hs-identifier hs-var">otherwise</span></span><span> </span><span class="hs-glyph">-&gt;</span><span>
+</span><span id="line-37"></span><span>                </span><span class="annot"><span class="annottext">[Action] -&gt; TuringMachine -&gt; Maybe b -&gt; WorkingState -&gt; m [Action]
+</span><a href="#local-6989586621679342897"><span class="hs-identifier hs-var">go</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Action
+</span><a href="#local-6989586621679342890"><span class="hs-identifier hs-var">sm</span></a></span><span> </span><span class="annot"><span class="annottext">Action -&gt; [Action] -&gt; [Action]
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span> </span><span class="annot"><span class="annottext">[Action]
+</span><a href="#local-6989586621679342896"><span class="hs-identifier hs-var">res</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">TuringMachine
+</span><a href="#local-6989586621679342895"><span class="hs-identifier hs-var">tm</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">b -&gt; b -&gt; b
+forall a. Num a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-identifier hs-var">subtract</span></span><span> </span><span class="annot"><span class="annottext">b
+</span><span class="hs-number">1</span></span><span> </span><span class="annot"><span class="annottext">(b -&gt; b) -&gt; Maybe b -&gt; Maybe b
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">Maybe b
+</span><a href="#local-6989586621679342894"><span class="hs-identifier hs-var">depth</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">WorkingState
+</span><a href="#local-6989586621679342888"><span class="hs-identifier hs-var">ws'</span></a></span><span>
+</span><span id="line-38"></span></pre></body></html>

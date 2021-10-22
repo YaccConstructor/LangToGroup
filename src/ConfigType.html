@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span>
+</span><span id="line-2"></span><span class="hs-comment">-- |This module represents a configuration of the Turing machine 'TMType.TM'.</span><span>
+</span><span id="line-3"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">ConfigType</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-4"></span><span>    </span><span>
+</span><span id="line-5"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="TMType.html"><span class="hs-identifier">TMType</span></a></span><span>
+</span><span id="line-6"></span><span>
+</span><span id="line-7"></span><span class="hs-comment">-- |This is type of configurations of the Turing machine.</span><span>
+</span><span id="line-8"></span><span class="hs-keyword">newtype</span><span> </span><span id="Configs"><span class="annot"><a href="ConfigType.html#Configs"><span class="hs-identifier hs-var">Configs</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="Configs"><span class="annot"><a href="ConfigType.html#Configs"><span class="hs-identifier hs-var">Configs</span></a></span></span><span> </span><span class="hs-special">[</span><span class="hs-special">[</span><span class="hs-special">(</span><span class="hs-special">[</span><span class="annot"><a href="TMType.html#Square"><span class="hs-identifier hs-type">Square</span></a></span><span class="hs-special">]</span><span class="hs-special">,</span><span> </span><span class="annot"><a href="TMType.html#State"><span class="hs-identifier hs-type">State</span></a></span><span class="hs-special">,</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="TMType.html#Square"><span class="hs-identifier hs-type">Square</span></a></span><span class="hs-special">]</span><span class="hs-special">)</span><span class="hs-special">]</span><span class="hs-special">]</span><span>
+</span><span id="line-9"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679336119"><span id="local-6989586621679336121"><span class="annot"><span class="annottext">Configs -&gt; Configs -&gt; Bool
+(Configs -&gt; Configs -&gt; Bool)
+-&gt; (Configs -&gt; Configs -&gt; Bool) -&gt; Eq Configs
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+/= :: Configs -&gt; Configs -&gt; Bool
+$c/= :: Configs -&gt; Configs -&gt; Bool
+== :: Configs -&gt; Configs -&gt; Bool
+$c== :: Configs -&gt; Configs -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679336103"><span id="local-6989586621679336105"><span id="local-6989586621679336107"><span id="local-6989586621679336109"><span id="local-6989586621679336111"><span id="local-6989586621679336113"><span id="local-6989586621679336115"><span class="annot"><span class="annottext">Eq Configs
+Eq Configs
+-&gt; (Configs -&gt; Configs -&gt; Ordering)
+-&gt; (Configs -&gt; Configs -&gt; Bool)
+-&gt; (Configs -&gt; Configs -&gt; Bool)
+-&gt; (Configs -&gt; Configs -&gt; Bool)
+-&gt; (Configs -&gt; Configs -&gt; Bool)
+-&gt; (Configs -&gt; Configs -&gt; Configs)
+-&gt; (Configs -&gt; Configs -&gt; Configs)
+-&gt; Ord Configs
+Configs -&gt; Configs -&gt; Bool
+Configs -&gt; Configs -&gt; Ordering
+Configs -&gt; Configs -&gt; Configs
+forall a.
+Eq a
+-&gt; (a -&gt; a -&gt; Ordering)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; Ord a
+min :: Configs -&gt; Configs -&gt; Configs
+$cmin :: Configs -&gt; Configs -&gt; Configs
+max :: Configs -&gt; Configs -&gt; Configs
+$cmax :: Configs -&gt; Configs -&gt; Configs
+&gt;= :: Configs -&gt; Configs -&gt; Bool
+$c&gt;= :: Configs -&gt; Configs -&gt; Bool
+&gt; :: Configs -&gt; Configs -&gt; Bool
+$c&gt; :: Configs -&gt; Configs -&gt; Bool
+&lt;= :: Configs -&gt; Configs -&gt; Bool
+$c&lt;= :: Configs -&gt; Configs -&gt; Bool
+&lt; :: Configs -&gt; Configs -&gt; Bool
+$c&lt; :: Configs -&gt; Configs -&gt; Bool
+compare :: Configs -&gt; Configs -&gt; Ordering
+$ccompare :: Configs -&gt; Configs -&gt; Ordering
+$cp1Ord :: Eq Configs
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Ord</span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679336096"><span id="local-6989586621679336098"><span id="local-6989586621679336100"><span class="annot"><span class="annottext">Int -&gt; Configs -&gt; ShowS
+[Configs] -&gt; ShowS
+Configs -&gt; String
+(Int -&gt; Configs -&gt; ShowS)
+-&gt; (Configs -&gt; String) -&gt; ([Configs] -&gt; ShowS) -&gt; Show Configs
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+showList :: [Configs] -&gt; ShowS
+$cshowList :: [Configs] -&gt; ShowS
+show :: Configs -&gt; String
+$cshow :: Configs -&gt; String
+showsPrec :: Int -&gt; Configs -&gt; ShowS
+$cshowsPrec :: Int -&gt; Configs -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span></pre></body></html>

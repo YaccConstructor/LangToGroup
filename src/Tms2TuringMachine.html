@@ -1,0 +1,592 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-comment">-- |This module provides functionality for converting the Turing machine 'Tms' to 'TMType.TM'.</span><span>
+</span><span id="line-2"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Tms2TuringMachine</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Tms2TuringMachine.html#tms2turingMachine"><span class="hs-identifier">tms2turingMachine</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Tms2TuringMachine.html#hash"><span class="hs-identifier">hash</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-3"></span><span>
+</span><span id="line-4"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.List.NonEmpty</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">NonEmpty</span></span><span>
+</span><span id="line-5"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Char</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">ord</span></span><span class="hs-special">)</span><span>
+</span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.List.NonEmpty</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">NonEmpty</span></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><span id="line-7"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Bits</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">xor</span></span><span class="hs-special">)</span><span>
+</span><span id="line-8"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Maybe</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">fromMaybe</span></span><span class="hs-special">)</span><span>
+</span><span id="line-9"></span><span>
+</span><span id="line-10"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="TuringMachine.html"><span class="hs-identifier">TuringMachine</span></a></span><span>
+</span><span id="line-11"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="TmsType.html"><span class="hs-identifier">TmsType</span></a></span><span>
+</span><span id="line-12"></span><span>
+</span><span id="line-13"></span><span class="annot"><a href="Tms2TuringMachine.html#tms2turingMachine"><span class="hs-identifier hs-type">tms2turingMachine</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TmsType.html#Tms"><span class="hs-identifier hs-type">Tms</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Either</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="annot"><a href="TuringMachine.html#TuringMachine"><span class="hs-identifier hs-type">TuringMachine</span></a></span><span>
+</span><span id="line-14"></span><span id="tms2turingMachine"><span class="annot"><span class="annottext">tms2turingMachine :: Tms -&gt; Either String TuringMachine
+</span><a href="Tms2TuringMachine.html#tms2turingMachine"><span class="hs-identifier hs-var hs-var">tms2turingMachine</span></a></span></span><span>
+</span><span id="line-15"></span><span>    </span><span class="hs-special">(</span><span> </span><span class="annot"><a href="TmsType.html#Tms"><span class="hs-identifier hs-type">Tms</span></a></span><span>
+</span><span id="line-16"></span><span>        </span><span class="hs-special">(</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span>
+</span><span id="line-17"></span><span>          </span><span id="local-6989586621679339365"><span class="annot"><span class="annottext">TmsState
+</span><a href="#local-6989586621679339365"><span class="hs-identifier hs-var">startSt</span></a></span></span><span class="hs-special">,</span><span>
+</span><span id="line-18"></span><span>          </span><span class="hs-special">[</span><span id="local-6989586621679339364"><span class="annot"><span class="annottext">TmsState
+</span><a href="#local-6989586621679339364"><span class="hs-identifier hs-var">acc</span></a></span></span><span class="hs-special">]</span><span class="hs-special">,</span><span>
+</span><span id="line-19"></span><span>          </span><span id="local-6989586621679339363"><span class="annot"><span class="annottext">[TmsCommand]
+</span><a href="#local-6989586621679339363"><span class="hs-identifier hs-var">commands</span></a></span></span><span class="hs-special">,</span><span>
+</span><span id="line-20"></span><span>          </span><span class="hs-special">[</span><span id="local-6989586621679339362"><span class="annot"><span class="annottext">alph :: String
+</span><a href="#local-6989586621679339362"><span class="hs-identifier hs-var">alph</span></a></span></span><span class="hs-glyph">@</span><span class="hs-special">(</span><span id="local-6989586621679339361"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679339361"><span class="hs-identifier hs-var">x</span></a></span></span><span> </span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span> </span><span id="local-6989586621679339360"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679339360"><span class="hs-identifier hs-var">xs</span></a></span></span><span class="hs-special">)</span><span class="hs-special">]</span><span>
+</span><span id="line-21"></span><span>          </span><span class="hs-special">)</span><span>
+</span><span id="line-22"></span><span>      </span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-23"></span><span>        </span><span id="local-6989586621679339359"><span class="annot"><span class="annottext">[OneTapeTMCommand]
+</span><a href="#local-6989586621679339359"><span class="hs-identifier hs-var">oneTapeCmds</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">(TmsCommand -&gt; Either String OneTapeTMCommand)
+-&gt; [TmsCommand] -&gt; Either String [OneTapeTMCommand]
+forall (t :: * -&gt; *) (f :: * -&gt; *) a b.
+(Traversable t, Applicative f) =&gt;
+(a -&gt; f b) -&gt; t a -&gt; f (t b)
+</span><span class="hs-identifier hs-var">traverse</span></span><span> </span><span class="annot"><span class="annottext">TmsCommand -&gt; Either String OneTapeTMCommand
+</span><a href="#local-6989586621679339357"><span class="hs-identifier hs-var">toOneTapeCommand</span></a></span><span> </span><span class="annot"><span class="annottext">[TmsCommand]
+</span><a href="#local-6989586621679339363"><span class="hs-identifier hs-var">commands</span></a></span><span> </span><span class="hs-comment">-- [(TmsState, TmsSingleTapeCommand, TmsState)]</span><span>
+</span><span id="line-24"></span><span>        </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679339356"><span class="annot"><span class="annottext">otherStates :: [TmsState]
+</span><a href="#local-6989586621679339356"><span class="hs-identifier hs-var hs-var">otherStates</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(TmsState -&gt; Bool) -&gt; [TmsState] -&gt; [TmsState]
+forall a. (a -&gt; Bool) -&gt; [a] -&gt; [a]
+</span><span class="hs-identifier hs-var">filter</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679339355"><span class="annot"><span class="annottext">TmsState
+</span><a href="#local-6989586621679339355"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">TmsState
+</span><a href="#local-6989586621679339355"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">TmsState -&gt; TmsState -&gt; Bool
+forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">/=</span></span><span> </span><span class="annot"><span class="annottext">TmsState
+</span><a href="#local-6989586621679339365"><span class="hs-identifier hs-var">startSt</span></a></span><span> </span><span class="annot"><span class="annottext">Bool -&gt; Bool -&gt; Bool
+</span><span class="hs-operator hs-var">&amp;&amp;</span></span><span> </span><span class="annot"><span class="annottext">TmsState
+</span><a href="#local-6989586621679339355"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">TmsState -&gt; TmsState -&gt; Bool
+forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">/=</span></span><span> </span><span class="annot"><span class="annottext">TmsState
+</span><a href="#local-6989586621679339364"><span class="hs-identifier hs-var">acc</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">(OneTapeTMCommand -&gt; [TmsState])
+-&gt; [OneTapeTMCommand] -&gt; [TmsState]
+forall (t :: * -&gt; *) a b. Foldable t =&gt; (a -&gt; [b]) -&gt; t a -&gt; [b]
+</span><span class="hs-identifier hs-var">concatMap</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span class="hs-special">(</span><span id="local-6989586621679339351"><span class="annot"><span class="annottext">TmsState
+</span><a href="#local-6989586621679339351"><span class="hs-identifier hs-var">s1</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">TmsSingleTapeCommand
+</span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679339350"><span class="annot"><span class="annottext">TmsState
+</span><a href="#local-6989586621679339350"><span class="hs-identifier hs-var">s2</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">TmsState
+</span><a href="#local-6989586621679339351"><span class="hs-identifier hs-var">s1</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">TmsState
+</span><a href="#local-6989586621679339350"><span class="hs-identifier hs-var">s2</span></a></span><span class="hs-special">]</span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[OneTapeTMCommand]
+</span><a href="#local-6989586621679339359"><span class="hs-identifier hs-var">oneTapeCmds</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-25"></span><span>        </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679339349"><span class="annot"><span class="annottext">stateToInd :: Map TmsState Int
+</span><a href="#local-6989586621679339349"><span class="hs-identifier hs-var hs-var">stateToInd</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[(TmsState, Int)] -&gt; Map TmsState Int
+forall c v. UnsafeListable c v =&gt; [v] -&gt; c
+</span><a href="Containers.html#fromList"><span class="hs-identifier hs-var">fromList</span></a></span><span> </span><span class="annot"><span class="annottext">([(TmsState, Int)] -&gt; Map TmsState Int)
+-&gt; [(TmsState, Int)] -&gt; Map TmsState Int
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">[TmsState] -&gt; [Int] -&gt; [(TmsState, Int)]
+forall a b. [a] -&gt; [b] -&gt; [(a, b)]
+</span><span class="hs-identifier hs-var">zip</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">TmsState
+</span><a href="#local-6989586621679339364"><span class="hs-identifier hs-var">acc</span></a></span><span> </span><span class="annot"><span class="annottext">TmsState -&gt; [TmsState] -&gt; [TmsState]
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span> </span><span class="annot"><span class="annottext">TmsState
+</span><a href="#local-6989586621679339365"><span class="hs-identifier hs-var">startSt</span></a></span><span> </span><span class="annot"><span class="annottext">TmsState -&gt; [TmsState] -&gt; [TmsState]
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span> </span><span class="annot"><span class="annottext">[TmsState]
+</span><a href="#local-6989586621679339356"><span class="hs-identifier hs-var">otherStates</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">0</span></span><span> </span><span class="hs-glyph">..</span><span class="hs-special">]</span><span>
+</span><span id="line-26"></span><span>        </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679339347"><span class="annot"><span class="annottext">alphabet' :: Alphabet
+</span><a href="#local-6989586621679339347"><span class="hs-identifier hs-var hs-var">alphabet'</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[(ShowedSymbol, Symbol)] -&gt; Alphabet
+forall c v. UnsafeListable c v =&gt; [v] -&gt; c
+</span><a href="Containers.html#fromList"><span class="hs-identifier hs-var">fromList</span></a></span><span> </span><span class="annot"><span class="annottext">([(ShowedSymbol, Symbol)] -&gt; Alphabet)
+-&gt; [(ShowedSymbol, Symbol)] -&gt; Alphabet
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">[ShowedSymbol] -&gt; [Symbol] -&gt; [(ShowedSymbol, Symbol)]
+forall a b. [a] -&gt; [b] -&gt; [(a, b)]
+</span><span class="hs-identifier hs-var">zip</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">ShowedSymbol
+</span><a href="TuringMachine.ShowedSymbol.html#blank"><span class="hs-identifier hs-var">blank</span></a></span><span> </span><span class="annot"><span class="annottext">ShowedSymbol -&gt; [ShowedSymbol] -&gt; [ShowedSymbol]
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span> </span><span class="annot"><span class="annottext">(Char -&gt; ShowedSymbol) -&gt; String -&gt; [ShowedSymbol]
+forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String -&gt; ShowedSymbol
+forall a. Read a =&gt; String -&gt; a
+</span><span class="hs-identifier hs-var">read</span></span><span> </span><span class="annot"><span class="annottext">(String -&gt; ShowedSymbol)
+-&gt; (Char -&gt; String) -&gt; Char -&gt; ShowedSymbol
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">Char -&gt; String
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679339362"><span class="hs-identifier hs-var">alph</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">Symbol
+forall a. Bounded a =&gt; a
+</span><span class="hs-identifier hs-var">minBound</span></span><span class="hs-glyph">..</span><span class="hs-special">]</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TuringMachine.html#Alphabet"><span class="hs-identifier hs-type">Alphabet</span></a></span><span>
+</span><span id="line-27"></span><span>        </span><span class="annot"><span class="annottext">TuringMachine -&gt; Either String TuringMachine
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">(TuringMachine -&gt; Either String TuringMachine)
+-&gt; TuringMachine -&gt; Either String TuringMachine
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Quadruples -&gt; LabeledStates -&gt; Alphabet -&gt; TuringMachine
+</span><a href="TuringMachine.html#turingMachine"><span class="hs-identifier hs-var">turingMachine</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[Quadruple] -&gt; Quadruples
+forall c v. UnsafeListable c v =&gt; [v] -&gt; c
+</span><a href="Containers.html#fromList"><span class="hs-identifier hs-var">fromList</span></a></span><span> </span><span class="annot"><span class="annottext">([Quadruple] -&gt; Quadruples) -&gt; [Quadruple] -&gt; Quadruples
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">((Int, OneTapeTMCommand) -&gt; [Quadruple])
+-&gt; [(Int, OneTapeTMCommand)] -&gt; [Quadruple]
+forall (t :: * -&gt; *) a b. Foldable t =&gt; (a -&gt; [b]) -&gt; t a -&gt; [b]
+</span><span class="hs-identifier hs-var">concatMap</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">NonEmpty Char
+-&gt; Map TmsState Int
+-&gt; Alphabet
+-&gt; (Int, OneTapeTMCommand)
+-&gt; [Quadruple]
+</span><a href="Tms2TuringMachine.html#tmsCmd2tmCmd"><span class="hs-identifier hs-var">tmsCmd2tmCmd</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679339361"><span class="hs-identifier hs-var">x</span></a></span><span> </span><span class="annot"><span class="annottext">Char -&gt; String -&gt; NonEmpty Char
+forall a. a -&gt; [a] -&gt; NonEmpty a
+</span><span class="hs-operator hs-var">:|</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679339360"><span class="hs-identifier hs-var">xs</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Map TmsState Int
+</span><a href="#local-6989586621679339349"><span class="hs-identifier hs-var">stateToInd</span></a></span><span> </span><span class="annot"><span class="annottext">Alphabet
+</span><a href="#local-6989586621679339347"><span class="hs-identifier hs-var">alphabet'</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[Int] -&gt; [OneTapeTMCommand] -&gt; [(Int, OneTapeTMCommand)]
+forall a b. [a] -&gt; [b] -&gt; [(a, b)]
+</span><span class="hs-identifier hs-var">zip</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">0</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String -&gt; Int
+forall (t :: * -&gt; *) a. Foldable t =&gt; t a -&gt; Int
+</span><span class="hs-identifier hs-var">Prelude.length</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679339362"><span class="hs-identifier hs-var">alph</span></a></span><span> </span><span class="hs-glyph">..</span><span class="hs-special">]</span><span> </span><span class="annot"><span class="annottext">[OneTapeTMCommand]
+</span><a href="#local-6989586621679339359"><span class="hs-identifier hs-var">oneTapeCmds</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">LabeledStates
+forall c. Nullable c =&gt; c
+</span><a href="Containers.html#emptyC"><span class="hs-identifier hs-var">emptyC</span></a></span><span> </span><span class="annot"><span class="annottext">Alphabet
+</span><a href="#local-6989586621679339347"><span class="hs-identifier hs-var">alphabet'</span></a></span><span>
+</span><span id="line-28"></span><span>    </span><span class="hs-keyword">where</span><span>
+</span><span id="line-29"></span><span>        </span><span class="annot"><a href="#local-6989586621679339357"><span class="hs-identifier hs-type">toOneTapeCommand</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TmsType.html#TmsCommand"><span class="hs-identifier hs-type">TmsCommand</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Either</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="annot"><a href="TmsType.html#OneTapeTMCommand"><span class="hs-identifier hs-type">OneTapeTMCommand</span></a></span><span>
+</span><span id="line-30"></span><span>        </span><span id="local-6989586621679339357"><span class="annot"><span class="annottext">toOneTapeCommand :: TmsCommand -&gt; Either String OneTapeTMCommand
+</span><a href="#local-6989586621679339357"><span class="hs-identifier hs-var hs-var">toOneTapeCommand</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="TmsType.html#TmsCommand"><span class="hs-identifier hs-type">TmsCommand</span></a></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679339336"><span class="annot"><span class="annottext">TmsState
+</span><a href="#local-6989586621679339336"><span class="hs-identifier hs-var">tmsStartSt</span></a></span></span><span class="hs-special">,</span><span> </span><span class="hs-special">[</span><span id="local-6989586621679339335"><span class="annot"><span class="annottext">TmsSingleTapeCommand
+</span><a href="#local-6989586621679339335"><span class="hs-identifier hs-var">cmd</span></a></span></span><span class="hs-special">]</span><span class="hs-special">,</span><span> </span><span id="local-6989586621679339334"><span class="annot"><span class="annottext">TmsState
+</span><a href="#local-6989586621679339334"><span class="hs-identifier hs-var">fol</span></a></span></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">OneTapeTMCommand -&gt; Either String OneTapeTMCommand
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">TmsState
+</span><a href="#local-6989586621679339336"><span class="hs-identifier hs-var">tmsStartSt</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">TmsSingleTapeCommand
+</span><a href="#local-6989586621679339335"><span class="hs-identifier hs-var">cmd</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">TmsState
+</span><a href="#local-6989586621679339334"><span class="hs-identifier hs-var">fol</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-31"></span><span>        </span><span class="annot"><a href="#local-6989586621679339357"><span class="hs-identifier hs-var">toOneTapeCommand</span></a></span><span> </span><span class="annot"><span class="annottext">TmsCommand
+</span><span class="hs-identifier">_</span></span><span>                                     </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; Either String OneTapeTMCommand
+forall a b. a -&gt; Either a b
+</span><span class="hs-identifier hs-var">Left</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;Multi tape command found.&quot;</span></span><span>
+</span><span id="line-32"></span><span class="annot"><a href="Tms2TuringMachine.html#tms2turingMachine"><span class="hs-identifier hs-var">tms2turingMachine</span></a></span><span> </span><span class="annot"><span class="annottext">Tms
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; Either String TuringMachine
+forall a b. a -&gt; Either a b
+</span><span class="hs-identifier hs-var">Left</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;Must have only one tape, one accept state and nonempty alphabet.&quot;</span></span><span>
+</span><span id="line-33"></span><span>
+</span><span id="line-34"></span><span class="hs-comment">-- | Hash function used to proivde algorithm with extra unique names.</span><span>
+</span><span id="line-35"></span><span class="annot"><a href="Tms2TuringMachine.html#hash"><span class="hs-identifier hs-type">hash</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>
+</span><span id="line-36"></span><span id="hash"><span class="annot"><span class="annottext">hash :: String -&gt; Int
+</span><a href="Tms2TuringMachine.html#hash"><span class="hs-identifier hs-var hs-var">hash</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(Int -&gt; Char -&gt; Int) -&gt; Int -&gt; String -&gt; Int
+forall (t :: * -&gt; *) b a.
+Foldable t =&gt;
+(b -&gt; a -&gt; b) -&gt; b -&gt; t a -&gt; b
+</span><span class="hs-identifier hs-var">foldl</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679339332"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679339332"><span class="hs-identifier hs-var">h</span></a></span></span><span> </span><span id="local-6989586621679339331"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679339331"><span class="hs-identifier hs-var">c</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">29</span></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
+forall a. Num a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">*</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679339332"><span class="hs-identifier hs-var">h</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
+forall a. Bits a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">`xor`</span></span><span> </span><span class="annot"><span class="annottext">Char -&gt; Int
+</span><span class="hs-identifier hs-var">ord</span></span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679339331"><span class="hs-identifier hs-var">c</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">0</span></span><span>
+</span><span id="line-37"></span><span>
+</span><span id="line-38"></span><span class="hs-keyword">type</span><span> </span><span id="Transition"><span class="annot"><a href="Tms2TuringMachine.html#Transition"><span class="hs-identifier hs-var">Transition</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="TuringMachine.Symbol.html#Symbol"><span class="hs-identifier hs-type">Symbol</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="TuringMachine.SymbolOrMove.html#SymbolOrMove"><span class="hs-identifier hs-type">SymbolOrMove</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-39"></span><span>
+</span><span id="line-40"></span><span class="hs-comment">-- | Convert TmsSingleTapeCommand to [Quadriple]</span><span>
+</span><span id="line-41"></span><span class="annot"><a href="Tms2TuringMachine.html#tmsCmd2tmCmd"><span class="hs-identifier hs-type">tmsCmd2tmCmd</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">NonEmpty.NonEmpty</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Char</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Map</span></span><span> </span><span class="annot"><a href="TmsType.html#TmsState"><span class="hs-identifier hs-type">TmsState</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TuringMachine.html#Alphabet"><span class="hs-identifier hs-type">Alphabet</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="TmsType.html#OneTapeTMCommand"><span class="hs-identifier hs-type">OneTapeTMCommand</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="TuringMachine.Quadruple.html#Quadruple"><span class="hs-identifier hs-type">TuringMachine.Quadruple</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-42"></span><span id="tmsCmd2tmCmd"><span class="annot"><span class="annottext">tmsCmd2tmCmd :: NonEmpty Char
+-&gt; Map TmsState Int
+-&gt; Alphabet
+-&gt; (Int, OneTapeTMCommand)
+-&gt; [Quadruple]
+</span><a href="Tms2TuringMachine.html#tmsCmd2tmCmd"><span class="hs-identifier hs-var hs-var">tmsCmd2tmCmd</span></a></span></span><span> </span><span id="local-6989586621679339329"><span class="annot"><span class="annottext">NonEmpty Char
+</span><a href="#local-6989586621679339329"><span class="hs-identifier hs-var">alph</span></a></span></span><span> </span><span id="local-6989586621679339328"><span class="annot"><span class="annottext">Map TmsState Int
+</span><a href="#local-6989586621679339328"><span class="hs-identifier hs-var">stateToInd</span></a></span></span><span> </span><span id="local-6989586621679339327"><span class="annot"><span class="annottext">Alphabet
+</span><a href="#local-6989586621679339327"><span class="hs-identifier hs-var">alphabet</span></a></span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679339326"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679339326"><span class="hs-identifier hs-var">transStart</span></a></span></span><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679339325"><span class="annot"><span class="annottext">TmsState
+</span><a href="#local-6989586621679339325"><span class="hs-identifier hs-var">iniSt</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="TmsType.html#TmsSingleTapeCommand"><span class="hs-identifier hs-type">TmsSingleTapeCommand</span></a></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679339323"><span class="annot"><span class="annottext">TmsTapeSquare
+</span><a href="#local-6989586621679339323"><span class="hs-identifier hs-var">action</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679339322"><span class="annot"><span class="annottext">TmsTapeHeadMovement
+</span><a href="#local-6989586621679339322"><span class="hs-identifier hs-var">move</span></a></span></span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span id="local-6989586621679339321"><span class="annot"><span class="annottext">TmsState
+</span><a href="#local-6989586621679339321"><span class="hs-identifier hs-var">folSt</span></a></span></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(NonEmpty Quadruple -&gt; [Quadruple])
+-&gt; NonEmpty (NonEmpty Quadruple) -&gt; [Quadruple]
+forall (t :: * -&gt; *) a b. Foldable t =&gt; (a -&gt; [b]) -&gt; t a -&gt; [b]
+</span><span class="hs-identifier hs-var">concatMap</span></span><span> </span><span class="annot"><span class="annottext">NonEmpty Quadruple -&gt; [Quadruple]
+forall a. NonEmpty a -&gt; [a]
+</span><span class="hs-identifier hs-var">NonEmpty.toList</span></span><span> </span><span class="annot"><span class="annottext">(NonEmpty (NonEmpty Quadruple) -&gt; [Quadruple])
+-&gt; NonEmpty (NonEmpty Quadruple) -&gt; [Quadruple]
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-43"></span><span>    </span><span id="local-6989586621679339319"><span class="annot"><span class="annottext">NonEmpty Transition
+</span><a href="#local-6989586621679339319"><span class="hs-identifier hs-var">oneSequence</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">NonEmpty Char
+-&gt; (TmsTapeSquare, TmsTapeHeadMovement)
+-&gt; NonEmpty (NonEmpty Transition)
+</span><a href="#local-6989586621679339318"><span class="hs-identifier hs-var">translate</span></a></span><span> </span><span class="annot"><span class="annottext">NonEmpty Char
+</span><a href="#local-6989586621679339329"><span class="hs-identifier hs-var">alph</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">TmsTapeSquare
+</span><a href="#local-6989586621679339323"><span class="hs-identifier hs-var">action</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">TmsTapeHeadMovement
+</span><a href="#local-6989586621679339322"><span class="hs-identifier hs-var">move</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-44"></span><span>    </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">NonEmpty Transition
+</span><a href="#local-6989586621679339319"><span class="hs-identifier hs-var">oneSequence</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-45"></span><span>        </span><span class="hs-special">(</span><span id="local-6989586621679339317"><span class="annot"><span class="annottext">Transition
+</span><a href="#local-6989586621679339317"><span class="hs-identifier hs-var">step</span></a></span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:|</span></span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span class="hs-special">)</span><span>             </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">NonEmpty Quadruple -&gt; NonEmpty (NonEmpty Quadruple)
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">(NonEmpty Quadruple -&gt; NonEmpty (NonEmpty Quadruple))
+-&gt; (Quadruple -&gt; NonEmpty Quadruple)
+-&gt; Quadruple
+-&gt; NonEmpty (NonEmpty Quadruple)
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">Quadruple -&gt; NonEmpty Quadruple
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">(Quadruple -&gt; NonEmpty (NonEmpty Quadruple))
+-&gt; Quadruple -&gt; NonEmpty (NonEmpty Quadruple)
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Transition -&gt; TmsState -&gt; TmsState -&gt; Quadruple
+forall b a.
+(b, a) -&gt; TmsState -&gt; TmsState -&gt; ((State, b), (a, State))
+</span><a href="#local-6989586621679339316"><span class="hs-identifier hs-var">makeQuad</span></a></span><span> </span><span class="annot"><span class="annottext">Transition
+</span><a href="#local-6989586621679339317"><span class="hs-identifier hs-var">step</span></a></span><span> </span><span class="annot"><span class="annottext">TmsState
+</span><a href="#local-6989586621679339325"><span class="hs-identifier hs-var">iniSt</span></a></span><span> </span><span class="annot"><span class="annottext">TmsState
+</span><a href="#local-6989586621679339321"><span class="hs-identifier hs-var">folSt</span></a></span><span>
+</span><span id="line-46"></span><span>        </span><span class="hs-special">(</span><span id="local-6989586621679339315"><span class="annot"><span class="annottext">Transition
+</span><a href="#local-6989586621679339315"><span class="hs-identifier hs-var">step</span></a></span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:|</span></span><span> </span><span id="local-6989586621679339314"><span class="annot"><span class="annottext">extras :: [Transition]
+</span><a href="#local-6989586621679339314"><span class="hs-identifier hs-var">extras</span></a></span></span><span class="hs-glyph">@</span><span class="hs-special">(</span><span class="annot"><span class="annottext">Transition
+</span><span class="hs-identifier">_</span></span><span> </span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span> </span><span class="annot"><span class="annottext">[Transition]
+</span><span class="hs-identifier">_</span></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">NonEmpty Quadruple -&gt; NonEmpty (NonEmpty Quadruple)
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">(NonEmpty Quadruple -&gt; NonEmpty (NonEmpty Quadruple))
+-&gt; NonEmpty Quadruple -&gt; NonEmpty (NonEmpty Quadruple)
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span>
+</span><span id="line-47"></span><span>            </span><span class="annot"><span class="annottext">Transition -&gt; TmsState -&gt; State -&gt; Quadruple
+forall b a b. (b, a) -&gt; TmsState -&gt; b -&gt; ((State, b), (a, b))
+</span><a href="#local-6989586621679339313"><span class="hs-identifier hs-var">makeQuad'</span></a></span><span> </span><span class="annot"><span class="annottext">Transition
+</span><a href="#local-6989586621679339315"><span class="hs-identifier hs-var">step</span></a></span><span> </span><span class="annot"><span class="annottext">TmsState
+</span><a href="#local-6989586621679339325"><span class="hs-identifier hs-var">iniSt</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Int -&gt; TmsState -&gt; State
+</span><a href="#local-6989586621679339312"><span class="hs-identifier hs-var">addIndex</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679339326"><span class="hs-identifier hs-var">transStart</span></a></span><span> </span><span class="annot"><span class="annottext">TmsState
+</span><a href="#local-6989586621679339325"><span class="hs-identifier hs-var">iniSt</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Quadruple -&gt; [Quadruple] -&gt; NonEmpty Quadruple
+forall a. a -&gt; [a] -&gt; NonEmpty a
+</span><span class="hs-operator hs-var">:|</span></span><span>
+</span><span id="line-48"></span><span>            </span><span class="hs-special">(</span><span>
+</span><span id="line-49"></span><span>                </span><span class="hs-special">(</span><span class="annot"><span class="annottext">TmsState -&gt; (Int, Transition) -&gt; Quadruple
+</span><a href="#local-6989586621679339311"><span class="hs-identifier hs-var">makeTransition</span></a></span><span> </span><span class="annot"><span class="annottext">TmsState
+</span><a href="#local-6989586621679339325"><span class="hs-identifier hs-var">iniSt</span></a></span><span> </span><span class="annot"><span class="annottext">((Int, Transition) -&gt; Quadruple)
+-&gt; [(Int, Transition)] -&gt; [Quadruple]
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">[Int] -&gt; [Transition] -&gt; [(Int, Transition)]
+forall a b. [a] -&gt; [b] -&gt; [(a, b)]
+</span><span class="hs-identifier hs-var">zip</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679339326"><span class="hs-identifier hs-var">transStart</span></a></span><span> </span><span class="hs-glyph">..</span><span class="hs-special">]</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[Transition] -&gt; [Transition]
+forall a. [a] -&gt; [a]
+</span><span class="hs-identifier hs-var">Prelude.init</span></span><span> </span><span class="annot"><span class="annottext">[Transition]
+</span><a href="#local-6989586621679339314"><span class="hs-identifier hs-var">extras</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[Quadruple] -&gt; [Quadruple] -&gt; [Quadruple]
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span>
+</span><span id="line-50"></span><span>                </span><span class="hs-special">[</span><span class="annot"><span class="annottext">Transition -&gt; State -&gt; TmsState -&gt; Quadruple
+forall b a a. (b, a) -&gt; a -&gt; TmsState -&gt; ((a, b), (a, State))
+</span><a href="#local-6989586621679339308"><span class="hs-identifier hs-var">makeQuad''</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[Transition] -&gt; Transition
+forall a. [a] -&gt; a
+</span><span class="hs-identifier hs-var">Prelude.last</span></span><span> </span><span class="annot"><span class="annottext">[Transition]
+</span><a href="#local-6989586621679339314"><span class="hs-identifier hs-var">extras</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Int -&gt; TmsState -&gt; State
+</span><a href="#local-6989586621679339312"><span class="hs-identifier hs-var">addIndex</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679339326"><span class="hs-identifier hs-var">transStart</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
+forall a. Num a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">+</span></span><span> </span><span class="annot"><span class="annottext">[Transition] -&gt; Int
+forall (t :: * -&gt; *) a. Foldable t =&gt; t a -&gt; Int
+</span><span class="hs-identifier hs-var">Prelude.length</span></span><span> </span><span class="annot"><span class="annottext">[Transition]
+</span><a href="#local-6989586621679339314"><span class="hs-identifier hs-var">extras</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
+forall a. Num a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-glyph hs-var">-</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">1</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">TmsState
+</span><a href="#local-6989586621679339325"><span class="hs-identifier hs-var">iniSt</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">TmsState
+</span><a href="#local-6989586621679339321"><span class="hs-identifier hs-var">folSt</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-51"></span><span>            </span><span class="hs-special">)</span><span>
+</span><span id="line-52"></span><span>    </span><span class="hs-keyword">where</span><span>
+</span><span id="line-53"></span><span>        </span><span id="local-6989586621679339316"><span class="annot"><span class="annottext">makeQuad :: (b, a) -&gt; TmsState -&gt; TmsState -&gt; ((State, b), (a, State))
+</span><a href="#local-6989586621679339316"><span class="hs-identifier hs-var hs-var">makeQuad</span></a></span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679339305"><span class="annot"><span class="annottext">b
+</span><a href="#local-6989586621679339305"><span class="hs-identifier hs-var">s</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679339304"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679339304"><span class="hs-identifier hs-var">m</span></a></span></span><span class="hs-special">)</span><span> </span><span id="local-6989586621679339303"><span class="annot"><span class="annottext">TmsState
+</span><a href="#local-6989586621679339303"><span class="hs-identifier hs-var">startSt</span></a></span></span><span> </span><span id="local-6989586621679339302"><span class="annot"><span class="annottext">TmsState
+</span><a href="#local-6989586621679339302"><span class="hs-identifier hs-var">fol</span></a></span></span><span>   </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><span class="hs-special">(</span><span class="annot"><span class="annottext">TmsState -&gt; State
+</span><a href="#local-6989586621679339301"><span class="hs-identifier hs-var">tmsState2state</span></a></span><span> </span><span class="annot"><span class="annottext">TmsState
+</span><a href="#local-6989586621679339303"><span class="hs-identifier hs-var">startSt</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">b
+</span><a href="#local-6989586621679339305"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679339304"><span class="hs-identifier hs-var">m</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">TmsState -&gt; State
+</span><a href="#local-6989586621679339301"><span class="hs-identifier hs-var">tmsState2state</span></a></span><span> </span><span class="annot"><span class="annottext">TmsState
+</span><a href="#local-6989586621679339302"><span class="hs-identifier hs-var">fol</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><span id="line-54"></span><span>        </span><span id="local-6989586621679339313"><span class="annot"><span class="annottext">makeQuad' :: (b, a) -&gt; TmsState -&gt; b -&gt; ((State, b), (a, b))
+</span><a href="#local-6989586621679339313"><span class="hs-identifier hs-var hs-var">makeQuad'</span></a></span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679339300"><span class="annot"><span class="annottext">b
+</span><a href="#local-6989586621679339300"><span class="hs-identifier hs-var">s</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679339299"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679339299"><span class="hs-identifier hs-var">m</span></a></span></span><span class="hs-special">)</span><span> </span><span id="local-6989586621679339298"><span class="annot"><span class="annottext">TmsState
+</span><a href="#local-6989586621679339298"><span class="hs-identifier hs-var">startSt</span></a></span></span><span> </span><span id="local-6989586621679339297"><span class="annot"><span class="annottext">b
+</span><a href="#local-6989586621679339297"><span class="hs-identifier hs-var">fol</span></a></span></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><span class="hs-special">(</span><span class="annot"><span class="annottext">TmsState -&gt; State
+</span><a href="#local-6989586621679339301"><span class="hs-identifier hs-var">tmsState2state</span></a></span><span> </span><span class="annot"><span class="annottext">TmsState
+</span><a href="#local-6989586621679339298"><span class="hs-identifier hs-var">startSt</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">b
+</span><a href="#local-6989586621679339300"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679339299"><span class="hs-identifier hs-var">m</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">b
+</span><a href="#local-6989586621679339297"><span class="hs-identifier hs-var">fol</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><span id="line-55"></span><span>        </span><span id="local-6989586621679339308"><span class="annot"><span class="annottext">makeQuad'' :: (b, a) -&gt; a -&gt; TmsState -&gt; ((a, b), (a, State))
+</span><a href="#local-6989586621679339308"><span class="hs-identifier hs-var hs-var">makeQuad''</span></a></span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679339296"><span class="annot"><span class="annottext">b
+</span><a href="#local-6989586621679339296"><span class="hs-identifier hs-var">s</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679339295"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679339295"><span class="hs-identifier hs-var">m</span></a></span></span><span class="hs-special">)</span><span> </span><span id="local-6989586621679339294"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679339294"><span class="hs-identifier hs-var">startSt</span></a></span></span><span> </span><span id="local-6989586621679339293"><span class="annot"><span class="annottext">TmsState
+</span><a href="#local-6989586621679339293"><span class="hs-identifier hs-var">fol</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><span class="hs-special">(</span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679339294"><span class="hs-identifier hs-var">startSt</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">b
+</span><a href="#local-6989586621679339296"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679339295"><span class="hs-identifier hs-var">m</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">TmsState -&gt; State
+</span><a href="#local-6989586621679339301"><span class="hs-identifier hs-var">tmsState2state</span></a></span><span> </span><span class="annot"><span class="annottext">TmsState
+</span><a href="#local-6989586621679339293"><span class="hs-identifier hs-var">fol</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><span id="line-56"></span><span>
+</span><span id="line-57"></span><span>        </span><span class="annot"><a href="#local-6989586621679339311"><span class="hs-identifier hs-type">makeTransition</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TmsType.html#TmsState"><span class="hs-identifier hs-type">TmsState</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Tms2TuringMachine.html#Transition"><span class="hs-identifier hs-type">Transition</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TuringMachine.Quadruple.html#Quadruple"><span class="hs-identifier hs-type">TuringMachine.Quadruple</span></a></span><span>
+</span><span id="line-58"></span><span>        </span><span id="local-6989586621679339311"><span class="annot"><span class="annottext">makeTransition :: TmsState -&gt; (Int, Transition) -&gt; Quadruple
+</span><a href="#local-6989586621679339311"><span class="hs-identifier hs-var hs-var">makeTransition</span></a></span></span><span> </span><span id="local-6989586621679339292"><span class="annot"><span class="annottext">TmsState
+</span><a href="#local-6989586621679339292"><span class="hs-identifier hs-var">startSt</span></a></span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679339291"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679339291"><span class="hs-identifier hs-var">ind</span></a></span></span><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679339290"><span class="annot"><span class="annottext">Symbol
+</span><a href="#local-6989586621679339290"><span class="hs-identifier hs-var">s</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679339289"><span class="annot"><span class="annottext">SymbolOrMove
+</span><a href="#local-6989586621679339289"><span class="hs-identifier hs-var">sm</span></a></span></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><span class="hs-special">(</span><span class="annot"><span class="annottext">Int -&gt; TmsState -&gt; State
+</span><a href="#local-6989586621679339312"><span class="hs-identifier hs-var">addIndex</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679339291"><span class="hs-identifier hs-var">ind</span></a></span><span> </span><span class="annot"><span class="annottext">TmsState
+</span><a href="#local-6989586621679339292"><span class="hs-identifier hs-var">startSt</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Symbol
+</span><a href="#local-6989586621679339290"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">SymbolOrMove
+</span><a href="#local-6989586621679339289"><span class="hs-identifier hs-var">sm</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Int -&gt; TmsState -&gt; State
+</span><a href="#local-6989586621679339312"><span class="hs-identifier hs-var">addIndex</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Int -&gt; Int
+forall a. Enum a =&gt; a -&gt; a
+</span><span class="hs-identifier hs-var">succ</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679339291"><span class="hs-identifier hs-var">ind</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">TmsState
+</span><a href="#local-6989586621679339292"><span class="hs-identifier hs-var">startSt</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><span id="line-59"></span><span>
+</span><span id="line-60"></span><span>        </span><span class="annot"><a href="#local-6989586621679339312"><span class="hs-identifier hs-type">addIndex</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TmsType.html#TmsState"><span class="hs-identifier hs-type">TmsState</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TuringMachine.State.html#State"><span class="hs-identifier hs-type">State</span></a></span><span>
+</span><span id="line-61"></span><span>        </span><span id="local-6989586621679339312"><span class="annot"><span class="annottext">addIndex :: Int -&gt; TmsState -&gt; State
+</span><a href="#local-6989586621679339312"><span class="hs-identifier hs-var hs-var">addIndex</span></a></span></span><span> </span><span id="local-6989586621679339287"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679339287"><span class="hs-identifier hs-var">x</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="TmsType.html#TmsState"><span class="hs-identifier hs-type">TmsState</span></a></span><span> </span><span id="local-6989586621679339285"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679339285"><span class="hs-identifier hs-var">name</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">TmsState -&gt; State
+</span><a href="#local-6989586621679339301"><span class="hs-identifier hs-var">tmsState2state</span></a></span><span> </span><span class="annot"><span class="annottext">(TmsState -&gt; State) -&gt; TmsState -&gt; State
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; TmsState
+</span><a href="TmsType.html#TmsState"><span class="hs-identifier hs-var">TmsState</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679339285"><span class="hs-identifier hs-var">name</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;_&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">Int -&gt; String
+forall a. Show a =&gt; a -&gt; String
+</span><span class="hs-identifier hs-var">show</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679339287"><span class="hs-identifier hs-var">x</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-62"></span><span>
+</span><span id="line-63"></span><span>        </span><span class="annot"><a href="#local-6989586621679339301"><span class="hs-identifier hs-type">tmsState2state</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TmsType.html#TmsState"><span class="hs-identifier hs-type">TmsState</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TuringMachine.State.html#State"><span class="hs-identifier hs-type">State</span></a></span><span>
+</span><span id="line-64"></span><span>        </span><span id="local-6989586621679339301"><span class="annot"><span class="annottext">tmsState2state :: TmsState -&gt; State
+</span><a href="#local-6989586621679339301"><span class="hs-identifier hs-var hs-var">tmsState2state</span></a></span></span><span> </span><span id="local-6989586621679339283"><span class="annot"><span class="annottext">TmsState
+</span><a href="#local-6989586621679339283"><span class="hs-identifier hs-var">st</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Int -&gt; State
+</span><a href="TuringMachine.State.html#state"><span class="hs-identifier hs-var">state</span></a></span><span> </span><span class="annot"><span class="annottext">(Int -&gt; State) -&gt; Int -&gt; State
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">TmsState -&gt; Map TmsState Int -&gt; Int
+</span><a href="#local-6989586621679339281"><span class="hs-identifier hs-var">safeLookup</span></a></span><span> </span><span class="annot"><span class="annottext">TmsState
+</span><a href="#local-6989586621679339283"><span class="hs-identifier hs-var">st</span></a></span><span> </span><span class="annot"><span class="annottext">Map TmsState Int
+</span><a href="#local-6989586621679339328"><span class="hs-identifier hs-var">stateToInd</span></a></span><span>
+</span><span id="line-65"></span><span>
+</span><span id="line-66"></span><span>        </span><span class="annot"><a href="#local-6989586621679339281"><span class="hs-identifier hs-type">safeLookup</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TmsType.html#TmsState"><span class="hs-identifier hs-type">TmsState</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Map</span></span><span> </span><span class="annot"><a href="TmsType.html#TmsState"><span class="hs-identifier hs-type">TmsState</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>
+</span><span id="line-67"></span><span>        </span><span id="local-6989586621679339281"><span class="annot"><span class="annottext">safeLookup :: TmsState -&gt; Map TmsState Int -&gt; Int
+</span><a href="#local-6989586621679339281"><span class="hs-identifier hs-var hs-var">safeLookup</span></a></span></span><span> </span><span id="local-6989586621679339280"><span class="annot"><span class="annottext">key :: TmsState
+</span><a href="#local-6989586621679339280"><span class="hs-identifier hs-var">key</span></a></span></span><span class="hs-glyph">@</span><span class="hs-special">(</span><span class="annot"><a href="TmsType.html#TmsState"><span class="hs-identifier hs-type">TmsState</span></a></span><span> </span><span id="local-6989586621679339279"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679339279"><span class="hs-identifier hs-var">name</span></a></span></span><span class="hs-special">)</span><span> </span><span id="local-6989586621679339278"><span class="annot"><span class="annottext">Map TmsState Int
+</span><a href="#local-6989586621679339278"><span class="hs-identifier hs-var">m</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Int -&gt; Maybe Int -&gt; Int
+forall a. a -&gt; Maybe a -&gt; a
+</span><span class="hs-identifier hs-var">fromMaybe</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String -&gt; Int
+</span><a href="Tms2TuringMachine.html#hash"><span class="hs-identifier hs-var">hash</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679339279"><span class="hs-identifier hs-var">name</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Map TmsState Int
+</span><a href="#local-6989586621679339278"><span class="hs-identifier hs-var">m</span></a></span><span> </span><span class="annot"><span class="annottext">Map TmsState Int -&gt; TmsState -&gt; Maybe Int
+forall c k v (m :: * -&gt; *).
+(Indexable c k v, MonadFail m) =&gt;
+c -&gt; k -&gt; m v
+</span><a href="Containers.html#%21%3F"><span class="hs-operator hs-var">!?</span></a></span><span> </span><span class="annot"><span class="annottext">TmsState
+</span><a href="#local-6989586621679339280"><span class="hs-identifier hs-var">key</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-68"></span><span>
+</span><span id="line-69"></span><span>        </span><span class="hs-comment">-- | List of equivalent sequences of Transitions.</span><span>
+</span><span id="line-70"></span><span>        </span><span class="annot"><a href="#local-6989586621679339318"><span class="hs-identifier hs-type">translate</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">NonEmpty</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Char</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="TmsType.html#TmsTapeSquare"><span class="hs-identifier hs-type">TmsTapeSquare</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="TmsType.html#TmsTapeHeadMovement"><span class="hs-identifier hs-type">TmsTapeHeadMovement</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">NonEmpty</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">NonEmpty</span></span><span> </span><span class="annot"><a href="Tms2TuringMachine.html#Transition"><span class="hs-identifier hs-type">Transition</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-71"></span><span>        </span><span id="local-6989586621679339318"><span class="annot"><span class="annottext">translate :: NonEmpty Char
+-&gt; (TmsTapeSquare, TmsTapeHeadMovement)
+-&gt; NonEmpty (NonEmpty Transition)
+</span><a href="#local-6989586621679339318"><span class="hs-identifier hs-var hs-var">translate</span></a></span></span><span> </span><span class="annot"><span class="annottext">NonEmpty Char
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="TmsType.html#ChangeFromTo"><span class="hs-identifier hs-type">ChangeFromTo</span></a></span><span> </span><span id="local-6989586621679339275"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679339275"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span id="local-6989586621679339274"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679339274"><span class="hs-identifier hs-var">t</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">TmsTapeHeadMovement
+</span><a href="TmsType.html#MoveLeft"><span class="hs-identifier hs-var">MoveLeft</span></a></span><span class="hs-special">)</span><span>  </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679339275"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">Char -&gt; Char -&gt; Bool
+forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">==</span></span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679339274"><span class="hs-identifier hs-var">t</span></a></span><span>    </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">NonEmpty Transition -&gt; NonEmpty (NonEmpty Transition)
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">(NonEmpty Transition -&gt; NonEmpty (NonEmpty Transition))
+-&gt; NonEmpty Transition -&gt; NonEmpty (NonEmpty Transition)
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Char -&gt; Symbol
+</span><a href="#local-6989586621679339272"><span class="hs-identifier hs-var">smb</span></a></span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679339275"><span class="hs-identifier hs-var">f</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Move -&gt; SymbolOrMove
+forall s. Move -&gt; MoveOr s
+</span><a href="TuringMachine.SymbolOrMove.html#M"><span class="hs-identifier hs-var">M</span></a></span><span> </span><span class="annot"><span class="annottext">Move
+</span><a href="TuringMachine.Move.html#toLeft"><span class="hs-identifier hs-var">toLeft</span></a></span><span class="hs-special">)</span><span>  </span><span class="annot"><span class="annottext">Transition -&gt; [Transition] -&gt; NonEmpty Transition
+forall a. a -&gt; [a] -&gt; NonEmpty a
+</span><span class="hs-operator hs-var">:|</span></span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span>
+</span><span id="line-72"></span><span>                                                  </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Bool
+</span><span class="hs-identifier hs-var">otherwise</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">NonEmpty Transition -&gt; NonEmpty (NonEmpty Transition)
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">(NonEmpty Transition -&gt; NonEmpty (NonEmpty Transition))
+-&gt; NonEmpty Transition -&gt; NonEmpty (NonEmpty Transition)
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Char -&gt; Symbol
+</span><a href="#local-6989586621679339272"><span class="hs-identifier hs-var">smb</span></a></span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679339275"><span class="hs-identifier hs-var">f</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Char -&gt; SymbolOrMove
+</span><a href="#local-6989586621679339269"><span class="hs-identifier hs-var">chg</span></a></span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679339274"><span class="hs-identifier hs-var">t</span></a></span><span class="hs-special">)</span><span>     </span><span class="annot"><span class="annottext">Transition -&gt; [Transition] -&gt; NonEmpty Transition
+forall a. a -&gt; [a] -&gt; NonEmpty a
+</span><span class="hs-operator hs-var">:|</span></span><span> </span><span class="hs-special">[</span><span class="hs-special">(</span><span class="annot"><span class="annottext">Char -&gt; Symbol
+</span><a href="#local-6989586621679339272"><span class="hs-identifier hs-var">smb</span></a></span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679339274"><span class="hs-identifier hs-var">t</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Move -&gt; SymbolOrMove
+forall s. Move -&gt; MoveOr s
+</span><a href="TuringMachine.SymbolOrMove.html#M"><span class="hs-identifier hs-var">M</span></a></span><span> </span><span class="annot"><span class="annottext">Move
+</span><a href="TuringMachine.Move.html#toLeft"><span class="hs-identifier hs-var">toLeft</span></a></span><span class="hs-special">)</span><span class="hs-special">]</span><span>
+</span><span id="line-73"></span><span>        </span><span class="annot"><a href="#local-6989586621679339318"><span class="hs-identifier hs-var">translate</span></a></span><span> </span><span class="annot"><span class="annottext">NonEmpty Char
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="TmsType.html#ChangeFromTo"><span class="hs-identifier hs-type">ChangeFromTo</span></a></span><span> </span><span id="local-6989586621679339268"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679339268"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span id="local-6989586621679339267"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679339267"><span class="hs-identifier hs-var">t</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">TmsTapeHeadMovement
+</span><a href="TmsType.html#MoveRight"><span class="hs-identifier hs-var">MoveRight</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679339268"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">Char -&gt; Char -&gt; Bool
+forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">==</span></span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679339267"><span class="hs-identifier hs-var">t</span></a></span><span>    </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">NonEmpty Transition -&gt; NonEmpty (NonEmpty Transition)
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">(NonEmpty Transition -&gt; NonEmpty (NonEmpty Transition))
+-&gt; NonEmpty Transition -&gt; NonEmpty (NonEmpty Transition)
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Char -&gt; Symbol
+</span><a href="#local-6989586621679339272"><span class="hs-identifier hs-var">smb</span></a></span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679339268"><span class="hs-identifier hs-var">f</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Move -&gt; SymbolOrMove
+forall s. Move -&gt; MoveOr s
+</span><a href="TuringMachine.SymbolOrMove.html#M"><span class="hs-identifier hs-var">M</span></a></span><span> </span><span class="annot"><span class="annottext">Move
+</span><a href="TuringMachine.Move.html#toRight"><span class="hs-identifier hs-var">toRight</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Transition -&gt; [Transition] -&gt; NonEmpty Transition
+forall a. a -&gt; [a] -&gt; NonEmpty a
+</span><span class="hs-operator hs-var">:|</span></span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span>
+</span><span id="line-74"></span><span>                                                  </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Bool
+</span><span class="hs-identifier hs-var">otherwise</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">NonEmpty Transition -&gt; NonEmpty (NonEmpty Transition)
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">(NonEmpty Transition -&gt; NonEmpty (NonEmpty Transition))
+-&gt; NonEmpty Transition -&gt; NonEmpty (NonEmpty Transition)
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Char -&gt; Symbol
+</span><a href="#local-6989586621679339272"><span class="hs-identifier hs-var">smb</span></a></span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679339268"><span class="hs-identifier hs-var">f</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Char -&gt; SymbolOrMove
+</span><a href="#local-6989586621679339269"><span class="hs-identifier hs-var">chg</span></a></span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679339267"><span class="hs-identifier hs-var">t</span></a></span><span class="hs-special">)</span><span>     </span><span class="annot"><span class="annottext">Transition -&gt; [Transition] -&gt; NonEmpty Transition
+forall a. a -&gt; [a] -&gt; NonEmpty a
+</span><span class="hs-operator hs-var">:|</span></span><span> </span><span class="hs-special">[</span><span class="hs-special">(</span><span class="annot"><span class="annottext">Char -&gt; Symbol
+</span><a href="#local-6989586621679339272"><span class="hs-identifier hs-var">smb</span></a></span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679339267"><span class="hs-identifier hs-var">t</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Move -&gt; SymbolOrMove
+forall s. Move -&gt; MoveOr s
+</span><a href="TuringMachine.SymbolOrMove.html#M"><span class="hs-identifier hs-var">M</span></a></span><span> </span><span class="annot"><span class="annottext">Move
+</span><a href="TuringMachine.Move.html#toRight"><span class="hs-identifier hs-var">toRight</span></a></span><span class="hs-special">)</span><span class="hs-special">]</span><span>
+</span><span id="line-75"></span><span>        </span><span class="annot"><a href="#local-6989586621679339318"><span class="hs-identifier hs-var">translate</span></a></span><span> </span><span class="annot"><span class="annottext">NonEmpty Char
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="TmsType.html#ChangeFromTo"><span class="hs-identifier hs-type">ChangeFromTo</span></a></span><span> </span><span id="local-6989586621679339264"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679339264"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span id="local-6989586621679339263"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679339263"><span class="hs-identifier hs-var">t</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">TmsTapeHeadMovement
+</span><a href="TmsType.html#Stay"><span class="hs-identifier hs-var">Stay</span></a></span><span class="hs-special">)</span><span>                  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">NonEmpty Transition -&gt; NonEmpty (NonEmpty Transition)
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">(NonEmpty Transition -&gt; NonEmpty (NonEmpty Transition))
+-&gt; NonEmpty Transition -&gt; NonEmpty (NonEmpty Transition)
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Char -&gt; Symbol
+</span><a href="#local-6989586621679339272"><span class="hs-identifier hs-var">smb</span></a></span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679339264"><span class="hs-identifier hs-var">f</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Char -&gt; SymbolOrMove
+</span><a href="#local-6989586621679339269"><span class="hs-identifier hs-var">chg</span></a></span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679339263"><span class="hs-identifier hs-var">t</span></a></span><span class="hs-special">)</span><span>     </span><span class="annot"><span class="annottext">Transition -&gt; [Transition] -&gt; NonEmpty Transition
+forall a. a -&gt; [a] -&gt; NonEmpty a
+</span><span class="hs-operator hs-var">:|</span></span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span>
+</span><span id="line-76"></span><span>
+</span><span id="line-77"></span><span>        </span><span class="annot"><a href="#local-6989586621679339318"><span class="hs-identifier hs-var">translate</span></a></span><span> </span><span id="local-6989586621679339261"><span class="annot"><span class="annottext">NonEmpty Char
+</span><a href="#local-6989586621679339261"><span class="hs-identifier hs-var">abc</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">TmsTapeSquare
+</span><a href="TmsType.html#Leave"><span class="hs-identifier hs-var">Leave</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">TmsTapeHeadMovement
+</span><a href="TmsType.html#Stay"><span class="hs-identifier hs-var">Stay</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-78"></span><span>            </span><span id="local-6989586621679339259"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679339259"><span class="hs-identifier hs-var">ch</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Char -&gt; NonEmpty Char -&gt; NonEmpty Char
+forall a. a -&gt; NonEmpty a -&gt; NonEmpty a
+</span><span class="hs-identifier hs-var">NonEmpty.cons</span></span><span> </span><span class="annot"><span class="annottext">Char
+</span><span class="hs-char">'_'</span></span><span> </span><span class="annot"><span class="annottext">NonEmpty Char
+</span><a href="#local-6989586621679339261"><span class="hs-identifier hs-var">abc</span></a></span><span>
+</span><span id="line-79"></span><span>            </span><span class="annot"><span class="annottext">NonEmpty Transition -&gt; NonEmpty (NonEmpty Transition)
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">(NonEmpty Transition -&gt; NonEmpty (NonEmpty Transition))
+-&gt; NonEmpty Transition -&gt; NonEmpty (NonEmpty Transition)
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Transition -&gt; NonEmpty Transition
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Char -&gt; Symbol
+</span><a href="#local-6989586621679339272"><span class="hs-identifier hs-var">smb</span></a></span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679339259"><span class="hs-identifier hs-var">ch</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Char -&gt; SymbolOrMove
+</span><a href="#local-6989586621679339269"><span class="hs-identifier hs-var">chg</span></a></span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679339259"><span class="hs-identifier hs-var">ch</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-80"></span><span>        </span><span class="annot"><a href="#local-6989586621679339318"><span class="hs-identifier hs-var">translate</span></a></span><span> </span><span id="local-6989586621679339257"><span class="annot"><span class="annottext">NonEmpty Char
+</span><a href="#local-6989586621679339257"><span class="hs-identifier hs-var">abc</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">TmsTapeSquare
+</span><a href="TmsType.html#Leave"><span class="hs-identifier hs-var">Leave</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">TmsTapeHeadMovement
+</span><a href="TmsType.html#MoveLeft"><span class="hs-identifier hs-var">MoveLeft</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-81"></span><span>            </span><span id="local-6989586621679339256"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679339256"><span class="hs-identifier hs-var">ch</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Char -&gt; NonEmpty Char -&gt; NonEmpty Char
+forall a. a -&gt; NonEmpty a -&gt; NonEmpty a
+</span><span class="hs-identifier hs-var">NonEmpty.cons</span></span><span> </span><span class="annot"><span class="annottext">Char
+</span><span class="hs-char">'_'</span></span><span> </span><span class="annot"><span class="annottext">NonEmpty Char
+</span><a href="#local-6989586621679339257"><span class="hs-identifier hs-var">abc</span></a></span><span>
+</span><span id="line-82"></span><span>            </span><span class="annot"><span class="annottext">NonEmpty Transition -&gt; NonEmpty (NonEmpty Transition)
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">(NonEmpty Transition -&gt; NonEmpty (NonEmpty Transition))
+-&gt; NonEmpty Transition -&gt; NonEmpty (NonEmpty Transition)
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Transition -&gt; NonEmpty Transition
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Char -&gt; Symbol
+</span><a href="#local-6989586621679339272"><span class="hs-identifier hs-var">smb</span></a></span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679339256"><span class="hs-identifier hs-var">ch</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Move -&gt; SymbolOrMove
+forall s. Move -&gt; MoveOr s
+</span><a href="TuringMachine.SymbolOrMove.html#M"><span class="hs-identifier hs-var">M</span></a></span><span> </span><span class="annot"><span class="annottext">Move
+</span><a href="TuringMachine.Move.html#toLeft"><span class="hs-identifier hs-var">toLeft</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-83"></span><span>        </span><span class="annot"><a href="#local-6989586621679339318"><span class="hs-identifier hs-var">translate</span></a></span><span> </span><span id="local-6989586621679339255"><span class="annot"><span class="annottext">NonEmpty Char
+</span><a href="#local-6989586621679339255"><span class="hs-identifier hs-var">abc</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">TmsTapeSquare
+</span><a href="TmsType.html#Leave"><span class="hs-identifier hs-var">Leave</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">TmsTapeHeadMovement
+</span><a href="TmsType.html#MoveRight"><span class="hs-identifier hs-var">MoveRight</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-84"></span><span>            </span><span id="local-6989586621679339254"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679339254"><span class="hs-identifier hs-var">ch</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Char -&gt; NonEmpty Char -&gt; NonEmpty Char
+forall a. a -&gt; NonEmpty a -&gt; NonEmpty a
+</span><span class="hs-identifier hs-var">NonEmpty.cons</span></span><span> </span><span class="annot"><span class="annottext">Char
+</span><span class="hs-char">'_'</span></span><span> </span><span class="annot"><span class="annottext">NonEmpty Char
+</span><a href="#local-6989586621679339255"><span class="hs-identifier hs-var">abc</span></a></span><span>
+</span><span id="line-85"></span><span>            </span><span class="annot"><span class="annottext">NonEmpty Transition -&gt; NonEmpty (NonEmpty Transition)
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">(NonEmpty Transition -&gt; NonEmpty (NonEmpty Transition))
+-&gt; NonEmpty Transition -&gt; NonEmpty (NonEmpty Transition)
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Transition -&gt; NonEmpty Transition
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Char -&gt; Symbol
+</span><a href="#local-6989586621679339272"><span class="hs-identifier hs-var">smb</span></a></span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679339254"><span class="hs-identifier hs-var">ch</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Move -&gt; SymbolOrMove
+forall s. Move -&gt; MoveOr s
+</span><a href="TuringMachine.SymbolOrMove.html#M"><span class="hs-identifier hs-var">M</span></a></span><span> </span><span class="annot"><span class="annottext">Move
+</span><a href="TuringMachine.Move.html#toRight"><span class="hs-identifier hs-var">toRight</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-86"></span><span>
+</span><span id="line-87"></span><span>        </span><span class="annot"><a href="#local-6989586621679339272"><span class="hs-identifier hs-type">smb</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Char</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TuringMachine.Symbol.html#Symbol"><span class="hs-identifier hs-type">Symbol</span></a></span><span>
+</span><span id="line-88"></span><span>        </span><span id="local-6989586621679339272"><span class="annot"><span class="annottext">smb :: Char -&gt; Symbol
+</span><a href="#local-6989586621679339272"><span class="hs-identifier hs-var hs-var">smb</span></a></span></span><span> </span><span class="annot"><span class="annottext">Char
+</span><span class="hs-char">'_'</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Symbol
+</span><a href="TuringMachine.Symbol.html#blankSymbol"><span class="hs-identifier hs-var">blankSymbol</span></a></span><span>
+</span><span id="line-89"></span><span>        </span><span class="annot"><a href="#local-6989586621679339272"><span class="hs-identifier hs-var">smb</span></a></span><span> </span><span id="local-6989586621679339252"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679339252"><span class="hs-identifier hs-var">c</span></a></span></span><span>   </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Symbol -&gt; Maybe Symbol -&gt; Symbol
+forall a. a -&gt; Maybe a -&gt; a
+</span><span class="hs-identifier hs-var">fromMaybe</span></span><span> </span><span class="annot"><span class="annottext">Symbol
+</span><a href="TuringMachine.Symbol.html#blankSymbol"><span class="hs-identifier hs-var">blankSymbol</span></a></span><span> </span><span class="annot"><span class="annottext">(Maybe Symbol -&gt; Symbol) -&gt; Maybe Symbol -&gt; Symbol
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Alphabet
+</span><a href="#local-6989586621679339327"><span class="hs-identifier hs-var">alphabet</span></a></span><span> </span><span class="annot"><span class="annottext">Alphabet -&gt; ShowedSymbol -&gt; Maybe Symbol
+forall c k v (m :: * -&gt; *).
+(Indexable c k v, MonadFail m) =&gt;
+c -&gt; k -&gt; m v
+</span><a href="Containers.html#%21%3F"><span class="hs-operator hs-var">!?</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; ShowedSymbol
+forall a. Read a =&gt; String -&gt; a
+</span><span class="hs-identifier hs-var">read</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679339252"><span class="hs-identifier hs-var">c</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-90"></span><span>
+</span><span id="line-91"></span><span>        </span><span class="annot"><a href="#local-6989586621679339269"><span class="hs-identifier hs-type">chg</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Char</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TuringMachine.SymbolOrMove.html#SymbolOrMove"><span class="hs-identifier hs-type">SymbolOrMove</span></a></span><span>
+</span><span id="line-92"></span><span>        </span><span id="local-6989586621679339269"><span class="annot"><span class="annottext">chg :: Char -&gt; SymbolOrMove
+</span><a href="#local-6989586621679339269"><span class="hs-identifier hs-var hs-var">chg</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Symbol -&gt; SymbolOrMove
+forall s. s -&gt; MoveOr s
+</span><a href="TuringMachine.SymbolOrMove.html#S"><span class="hs-identifier hs-var">S</span></a></span><span> </span><span class="annot"><span class="annottext">(Symbol -&gt; SymbolOrMove)
+-&gt; (Char -&gt; Symbol) -&gt; Char -&gt; SymbolOrMove
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">Char -&gt; Symbol
+</span><a href="#local-6989586621679339272"><span class="hs-identifier hs-var">smb</span></a></span><span>
+</span><span id="line-93"></span></pre></body></html>

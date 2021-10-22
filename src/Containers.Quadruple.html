@@ -1,0 +1,212 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-comment">-- |Module `Containers.Quadruple` include type `Quadruple` and useful functions</span><span>
+</span><span id="line-2"></span><span class="hs-comment">--  for work with it.</span><span>
+</span><span id="line-3"></span><span class="hs-comment">--</span><span>
+</span><span id="line-4"></span><span class="hs-comment">--  `Quadruple a` is just quadruple as `(a, a, a, a)`.</span><span>
+</span><span id="line-5"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Containers.Quadruple</span><span> </span><span class="hs-special">(</span><span>
+</span><span id="line-6"></span><span>    </span><span class="annot"><a href="Containers.Quadruple.html#Quadruple"><span class="hs-identifier">Quadruple</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Containers.Quadruple.html#Quadruple"><span class="hs-identifier">Quadruple</span></a></span><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><span id="line-7"></span><span>    </span><span class="annot"><a href="Containers.Quadruple.html#unQuadruple"><span class="hs-identifier">unQuadruple</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-8"></span><span>    </span><span class="annot"><a href="Containers.Quadruple.html#toList"><span class="hs-identifier">toList</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-9"></span><span>    </span><span class="annot"><a href="Containers.Quadruple.html#toZipList"><span class="hs-identifier">toZipList</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-10"></span><span>    </span><span class="annot"><a href="Containers.Quadruple.html#fromList"><span class="hs-identifier">fromList</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-11"></span><span>  </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-12"></span><span>
+</span><span id="line-13"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Control.Applicative</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">ZipList</span></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><span id="line-14"></span><span>
+</span><span id="line-15"></span><span class="hs-keyword">newtype</span><span> </span><span id="Quadruple"><span class="annot"><a href="Containers.Quadruple.html#Quadruple"><span class="hs-identifier hs-var">Quadruple</span></a></span></span><span> </span><span id="local-6989586621679327367"><span class="annot"><a href="#local-6989586621679327367"><span class="hs-identifier hs-type">a</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="Quadruple"><span class="annot"><a href="Containers.Quadruple.html#Quadruple"><span class="hs-identifier hs-var">Quadruple</span></a></span></span><span> </span><span class="hs-special">{</span><span> </span><span id="unQuadruple"><span class="annot"><span class="annottext">Quadruple a -&gt; (a, a, a, a)
+</span><a href="Containers.Quadruple.html#unQuadruple"><span class="hs-identifier hs-var hs-var">unQuadruple</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="#local-6989586621679327367"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="#local-6989586621679327367"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="#local-6989586621679327367"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="#local-6989586621679327367"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">}</span><span>
+</span><span id="line-16"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679327254"><span id="local-6989586621679327256"><span class="annot"><span class="annottext">Quadruple a -&gt; Quadruple a -&gt; Bool
+(Quadruple a -&gt; Quadruple a -&gt; Bool)
+-&gt; (Quadruple a -&gt; Quadruple a -&gt; Bool) -&gt; Eq (Quadruple a)
+forall a. Eq a =&gt; Quadruple a -&gt; Quadruple a -&gt; Bool
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+/= :: Quadruple a -&gt; Quadruple a -&gt; Bool
+$c/= :: forall a. Eq a =&gt; Quadruple a -&gt; Quadruple a -&gt; Bool
+== :: Quadruple a -&gt; Quadruple a -&gt; Bool
+$c== :: forall a. Eq a =&gt; Quadruple a -&gt; Quadruple a -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679327238"><span id="local-6989586621679327240"><span id="local-6989586621679327242"><span id="local-6989586621679327244"><span id="local-6989586621679327246"><span id="local-6989586621679327248"><span id="local-6989586621679327250"><span class="annot"><span class="annottext">Eq (Quadruple a)
+Eq (Quadruple a)
+-&gt; (Quadruple a -&gt; Quadruple a -&gt; Ordering)
+-&gt; (Quadruple a -&gt; Quadruple a -&gt; Bool)
+-&gt; (Quadruple a -&gt; Quadruple a -&gt; Bool)
+-&gt; (Quadruple a -&gt; Quadruple a -&gt; Bool)
+-&gt; (Quadruple a -&gt; Quadruple a -&gt; Bool)
+-&gt; (Quadruple a -&gt; Quadruple a -&gt; Quadruple a)
+-&gt; (Quadruple a -&gt; Quadruple a -&gt; Quadruple a)
+-&gt; Ord (Quadruple a)
+Quadruple a -&gt; Quadruple a -&gt; Bool
+Quadruple a -&gt; Quadruple a -&gt; Ordering
+Quadruple a -&gt; Quadruple a -&gt; Quadruple a
+forall a.
+Eq a
+-&gt; (a -&gt; a -&gt; Ordering)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; Ord a
+forall a. Ord a =&gt; Eq (Quadruple a)
+forall a. Ord a =&gt; Quadruple a -&gt; Quadruple a -&gt; Bool
+forall a. Ord a =&gt; Quadruple a -&gt; Quadruple a -&gt; Ordering
+forall a. Ord a =&gt; Quadruple a -&gt; Quadruple a -&gt; Quadruple a
+min :: Quadruple a -&gt; Quadruple a -&gt; Quadruple a
+$cmin :: forall a. Ord a =&gt; Quadruple a -&gt; Quadruple a -&gt; Quadruple a
+max :: Quadruple a -&gt; Quadruple a -&gt; Quadruple a
+$cmax :: forall a. Ord a =&gt; Quadruple a -&gt; Quadruple a -&gt; Quadruple a
+&gt;= :: Quadruple a -&gt; Quadruple a -&gt; Bool
+$c&gt;= :: forall a. Ord a =&gt; Quadruple a -&gt; Quadruple a -&gt; Bool
+&gt; :: Quadruple a -&gt; Quadruple a -&gt; Bool
+$c&gt; :: forall a. Ord a =&gt; Quadruple a -&gt; Quadruple a -&gt; Bool
+&lt;= :: Quadruple a -&gt; Quadruple a -&gt; Bool
+$c&lt;= :: forall a. Ord a =&gt; Quadruple a -&gt; Quadruple a -&gt; Bool
+&lt; :: Quadruple a -&gt; Quadruple a -&gt; Bool
+$c&lt; :: forall a. Ord a =&gt; Quadruple a -&gt; Quadruple a -&gt; Bool
+compare :: Quadruple a -&gt; Quadruple a -&gt; Ordering
+$ccompare :: forall a. Ord a =&gt; Quadruple a -&gt; Quadruple a -&gt; Ordering
+$cp1Ord :: forall a. Ord a =&gt; Eq (Quadruple a)
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Ord</span></span></span></span></span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-17"></span><span>
+</span><span id="line-18"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679327234"><span class="annot"><span class="hs-identifier hs-type">Functor</span></span><span> </span><span class="annot"><a href="Containers.Quadruple.html#Quadruple"><span class="hs-identifier hs-type">Quadruple</span></a></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-19"></span><span>    </span><span id="local-6989586621679327232"><span class="annot"><span class="annottext">fmap :: (a -&gt; b) -&gt; Quadruple a -&gt; Quadruple b
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">fmap</span></span></span><span> </span><span id="local-6989586621679327231"><span class="annot"><span class="annottext">a -&gt; b
+</span><a href="#local-6989586621679327231"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Containers.Quadruple.html#Quadruple"><span class="hs-identifier hs-type">Quadruple</span></a></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679327230"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679327230"><span class="hs-identifier hs-var">x</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679327229"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679327229"><span class="hs-identifier hs-var">y</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679327228"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679327228"><span class="hs-identifier hs-var">z</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679327227"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679327227"><span class="hs-identifier hs-var">w</span></a></span></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(b, b, b, b) -&gt; Quadruple b
+forall a. (a, a, a, a) -&gt; Quadruple a
+</span><a href="Containers.Quadruple.html#Quadruple"><span class="hs-identifier hs-var">Quadruple</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">a -&gt; b
+</span><a href="#local-6989586621679327231"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679327230"><span class="hs-identifier hs-var">x</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">a -&gt; b
+</span><a href="#local-6989586621679327231"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679327229"><span class="hs-identifier hs-var">y</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">a -&gt; b
+</span><a href="#local-6989586621679327231"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679327228"><span class="hs-identifier hs-var">z</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">a -&gt; b
+</span><a href="#local-6989586621679327231"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679327227"><span class="hs-identifier hs-var">w</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-20"></span><span>
+</span><span id="line-21"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679327218"><span id="local-6989586621679327220"><span id="local-6989586621679327222"><span class="annot"><span class="hs-identifier hs-type">Applicative</span></span><span> </span><span class="annot"><a href="Containers.Quadruple.html#Quadruple"><span class="hs-identifier hs-type">Quadruple</span></a></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-22"></span><span>    </span><span id="local-6989586621679327216"><span class="annot"><span class="annottext">pure :: a -&gt; Quadruple a
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">pure</span></span></span><span> </span><span id="local-6989586621679327215"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679327215"><span class="hs-identifier hs-var">x</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(a, a, a, a) -&gt; Quadruple a
+forall a. (a, a, a, a) -&gt; Quadruple a
+</span><a href="Containers.Quadruple.html#Quadruple"><span class="hs-identifier hs-var">Quadruple</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679327215"><span class="hs-identifier hs-var">x</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679327215"><span class="hs-identifier hs-var">x</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679327215"><span class="hs-identifier hs-var">x</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679327215"><span class="hs-identifier hs-var">x</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-23"></span><span>    </span><span class="hs-special">(</span><span class="annot"><a href="Containers.Quadruple.html#Quadruple"><span class="hs-identifier hs-type">Quadruple</span></a></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679327214"><span class="annot"><span class="annottext">a -&gt; b
+</span><a href="#local-6989586621679327214"><span class="hs-identifier hs-var">f</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679327213"><span class="annot"><span class="annottext">a -&gt; b
+</span><a href="#local-6989586621679327213"><span class="hs-identifier hs-var">g</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679327212"><span class="annot"><span class="annottext">a -&gt; b
+</span><a href="#local-6989586621679327212"><span class="hs-identifier hs-var">h</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679327211"><span class="annot"><span class="annottext">a -&gt; b
+</span><a href="#local-6989586621679327211"><span class="hs-identifier hs-var">q</span></a></span></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span id="local-6989586621679327210"><span class="annot"><span class="annottext">&lt;*&gt; :: Quadruple (a -&gt; b) -&gt; Quadruple a -&gt; Quadruple b
+</span><span class="hs-operator hs-var hs-var hs-var hs-var">&lt;*&gt;</span></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Containers.Quadruple.html#Quadruple"><span class="hs-identifier hs-type">Quadruple</span></a></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679327209"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679327209"><span class="hs-identifier hs-var">x</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679327208"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679327208"><span class="hs-identifier hs-var">y</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679327207"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679327207"><span class="hs-identifier hs-var">z</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679327206"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679327206"><span class="hs-identifier hs-var">w</span></a></span></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-24"></span><span>        </span><span class="annot"><span class="annottext">(b, b, b, b) -&gt; Quadruple b
+forall a. (a, a, a, a) -&gt; Quadruple a
+</span><a href="Containers.Quadruple.html#Quadruple"><span class="hs-identifier hs-var">Quadruple</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">a -&gt; b
+</span><a href="#local-6989586621679327214"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679327209"><span class="hs-identifier hs-var">x</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">a -&gt; b
+</span><a href="#local-6989586621679327213"><span class="hs-identifier hs-var">g</span></a></span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679327208"><span class="hs-identifier hs-var">y</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">a -&gt; b
+</span><a href="#local-6989586621679327212"><span class="hs-identifier hs-var">h</span></a></span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679327207"><span class="hs-identifier hs-var">z</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">a -&gt; b
+</span><a href="#local-6989586621679327211"><span class="hs-identifier hs-var">q</span></a></span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679327206"><span class="hs-identifier hs-var">w</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-25"></span><span>
+</span><span id="line-26"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679327173"><span id="local-6989586621679327175"><span id="local-6989586621679327177"><span id="local-6989586621679327179"><span id="local-6989586621679327181"><span id="local-6989586621679327183"><span id="local-6989586621679327185"><span id="local-6989586621679327187"><span id="local-6989586621679327189"><span id="local-6989586621679327191"><span id="local-6989586621679327193"><span id="local-6989586621679327195"><span id="local-6989586621679327197"><span id="local-6989586621679327200"><span id="local-6989586621679327202"><span id="local-6989586621679327204"><span class="annot"><span class="hs-identifier hs-type">Foldable</span></span><span> </span><span class="annot"><a href="Containers.Quadruple.html#Quadruple"><span class="hs-identifier hs-type">Quadruple</span></a></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-27"></span><span>    </span><span id="local-6989586621679327171"><span class="annot"><span class="annottext">foldr :: (a -&gt; b -&gt; b) -&gt; b -&gt; Quadruple a -&gt; b
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">foldr</span></span></span><span> </span><span id="local-6989586621679327169"><span class="annot"><span class="annottext">a -&gt; b -&gt; b
+</span><a href="#local-6989586621679327169"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span id="local-6989586621679327168"><span class="annot"><span class="annottext">b
+</span><a href="#local-6989586621679327168"><span class="hs-identifier hs-var">z</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(a -&gt; b -&gt; b) -&gt; b -&gt; [a] -&gt; b
+forall (t :: * -&gt; *) a b.
+Foldable t =&gt;
+(a -&gt; b -&gt; b) -&gt; b -&gt; t a -&gt; b
+</span><span class="hs-identifier hs-var">foldr</span></span><span> </span><span class="annot"><span class="annottext">a -&gt; b -&gt; b
+</span><a href="#local-6989586621679327169"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">b
+</span><a href="#local-6989586621679327168"><span class="hs-identifier hs-var">z</span></a></span><span> </span><span class="annot"><span class="annottext">([a] -&gt; b) -&gt; (Quadruple a -&gt; [a]) -&gt; Quadruple a -&gt; b
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">Quadruple a -&gt; [a]
+forall a. Quadruple a -&gt; [a]
+</span><a href="Containers.Quadruple.html#toList"><span class="hs-identifier hs-var">toList</span></a></span><span>
+</span><span id="line-28"></span><span>
+</span><span id="line-29"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679327158"><span id="local-6989586621679327160"><span id="local-6989586621679327163"><span class="annot"><span class="hs-identifier hs-type">Traversable</span></span><span> </span><span class="annot"><a href="Containers.Quadruple.html#Quadruple"><span class="hs-identifier hs-type">Quadruple</span></a></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-30"></span><span>    </span><span id="local-6989586621679327156"><span class="annot"><span class="annottext">sequenceA :: Quadruple (f a) -&gt; f (Quadruple a)
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">sequenceA</span></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Containers.Quadruple.html#Quadruple"><span class="hs-identifier hs-type">Quadruple</span></a></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679327154"><span class="annot"><span class="annottext">f a
+</span><a href="#local-6989586621679327154"><span class="hs-identifier hs-var">f</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679327153"><span class="annot"><span class="annottext">f a
+</span><a href="#local-6989586621679327153"><span class="hs-identifier hs-var">g</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679327152"><span class="annot"><span class="annottext">f a
+</span><a href="#local-6989586621679327152"><span class="hs-identifier hs-var">h</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679327151"><span class="annot"><span class="annottext">f a
+</span><a href="#local-6989586621679327151"><span class="hs-identifier hs-var">q</span></a></span></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-31"></span><span>        </span><span class="annot"><span class="annottext">(a, a, a, a) -&gt; Quadruple a
+forall a. (a, a, a, a) -&gt; Quadruple a
+</span><a href="Containers.Quadruple.html#Quadruple"><span class="hs-identifier hs-var">Quadruple</span></a></span><span> </span><span class="annot"><span class="annottext">((a, a, a, a) -&gt; Quadruple a) -&gt; f (a, a, a, a) -&gt; f (Quadruple a)
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">(</span><span class="hs-special">,</span><span class="hs-special">,</span><span class="hs-special">,</span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">(a -&gt; a -&gt; a -&gt; a -&gt; (a, a, a, a))
+-&gt; f a -&gt; f (a -&gt; a -&gt; a -&gt; (a, a, a, a))
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">f a
+</span><a href="#local-6989586621679327154"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">f (a -&gt; a -&gt; a -&gt; (a, a, a, a))
+-&gt; f a -&gt; f (a -&gt; a -&gt; (a, a, a, a))
+forall (f :: * -&gt; *) a b. Applicative f =&gt; f (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;*&gt;</span></span><span> </span><span class="annot"><span class="annottext">f a
+</span><a href="#local-6989586621679327153"><span class="hs-identifier hs-var">g</span></a></span><span> </span><span class="annot"><span class="annottext">f (a -&gt; a -&gt; (a, a, a, a)) -&gt; f a -&gt; f (a -&gt; (a, a, a, a))
+forall (f :: * -&gt; *) a b. Applicative f =&gt; f (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;*&gt;</span></span><span> </span><span class="annot"><span class="annottext">f a
+</span><a href="#local-6989586621679327152"><span class="hs-identifier hs-var">h</span></a></span><span> </span><span class="annot"><span class="annottext">f (a -&gt; (a, a, a, a)) -&gt; f a -&gt; f (a, a, a, a)
+forall (f :: * -&gt; *) a b. Applicative f =&gt; f (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;*&gt;</span></span><span> </span><span class="annot"><span class="annottext">f a
+</span><a href="#local-6989586621679327151"><span class="hs-identifier hs-var">q</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-32"></span><span>
+</span><span id="line-33"></span><span id="local-6989586621679327149"><span class="annot"><a href="Containers.Quadruple.html#toList"><span class="hs-identifier hs-type">toList</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Containers.Quadruple.html#Quadruple"><span class="hs-identifier hs-type">Quadruple</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679327149"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="#local-6989586621679327149"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">]</span></span><span>
+</span><span id="line-34"></span><span id="toList"><span class="annot"><span class="annottext">toList :: Quadruple a -&gt; [a]
+</span><a href="Containers.Quadruple.html#toList"><span class="hs-identifier hs-var hs-var">toList</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Containers.Quadruple.html#Quadruple"><span class="hs-identifier hs-type">Quadruple</span></a></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679327148"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679327148"><span class="hs-identifier hs-var">x</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679327147"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679327147"><span class="hs-identifier hs-var">y</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679327146"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679327146"><span class="hs-identifier hs-var">z</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679327145"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679327145"><span class="hs-identifier hs-var">w</span></a></span></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679327148"><span class="hs-identifier hs-var">x</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679327147"><span class="hs-identifier hs-var">y</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679327146"><span class="hs-identifier hs-var">z</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679327145"><span class="hs-identifier hs-var">w</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-35"></span><span>
+</span><span id="line-36"></span><span id="local-6989586621679327144"><span class="annot"><a href="Containers.Quadruple.html#toZipList"><span class="hs-identifier hs-type">toZipList</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Containers.Quadruple.html#Quadruple"><span class="hs-identifier hs-type">Quadruple</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679327144"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">ZipList</span></span><span> </span><span class="annot"><a href="#local-6989586621679327144"><span class="hs-identifier hs-type">a</span></a></span></span><span>
+</span><span id="line-37"></span><span id="toZipList"><span class="annot"><span class="annottext">toZipList :: Quadruple a -&gt; ZipList a
+</span><a href="Containers.Quadruple.html#toZipList"><span class="hs-identifier hs-var hs-var">toZipList</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Containers.Quadruple.html#Quadruple"><span class="hs-identifier hs-type">Quadruple</span></a></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679327143"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679327143"><span class="hs-identifier hs-var">x</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679327142"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679327142"><span class="hs-identifier hs-var">y</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679327141"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679327141"><span class="hs-identifier hs-var">z</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679327140"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679327140"><span class="hs-identifier hs-var">w</span></a></span></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[a] -&gt; ZipList a
+forall a. [a] -&gt; ZipList a
+</span><span class="hs-identifier hs-var">ZipList</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679327143"><span class="hs-identifier hs-var">x</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679327142"><span class="hs-identifier hs-var">y</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679327141"><span class="hs-identifier hs-var">z</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679327140"><span class="hs-identifier hs-var">w</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-38"></span><span>
+</span><span id="line-39"></span><span id="local-6989586621679327137"><span id="local-6989586621679327138"><span class="annot"><a href="Containers.Quadruple.html#fromList"><span class="hs-identifier hs-type">fromList</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">MonadFail</span></span><span> </span><span class="annot"><a href="#local-6989586621679327138"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="#local-6989586621679327137"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679327138"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Containers.Quadruple.html#Quadruple"><span class="hs-identifier hs-type">Quadruple</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679327137"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">)</span></span></span><span>
+</span><span id="line-40"></span><span id="fromList"><span class="annot"><span class="annottext">fromList :: [a] -&gt; m (Quadruple a)
+</span><a href="Containers.Quadruple.html#fromList"><span class="hs-identifier hs-var hs-var">fromList</span></a></span></span><span> </span><span class="hs-special">[</span><span id="local-6989586621679327136"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679327136"><span class="hs-identifier hs-var">x</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679327135"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679327135"><span class="hs-identifier hs-var">y</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679327134"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679327134"><span class="hs-identifier hs-var">z</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679327133"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679327133"><span class="hs-identifier hs-var">w</span></a></span></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Quadruple a -&gt; m (Quadruple a)
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">(Quadruple a -&gt; m (Quadruple a)) -&gt; Quadruple a -&gt; m (Quadruple a)
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">(a, a, a, a) -&gt; Quadruple a
+forall a. (a, a, a, a) -&gt; Quadruple a
+</span><a href="Containers.Quadruple.html#Quadruple"><span class="hs-identifier hs-var">Quadruple</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679327136"><span class="hs-identifier hs-var">x</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679327135"><span class="hs-identifier hs-var">y</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679327134"><span class="hs-identifier hs-var">z</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679327133"><span class="hs-identifier hs-var">w</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-41"></span><span class="annot"><a href="Containers.Quadruple.html#fromList"><span class="hs-identifier hs-var">fromList</span></a></span><span> </span><span class="annot"><span class="annottext">[a]
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; m (Quadruple a)
+forall (m :: * -&gt; *) a. MonadFail m =&gt; String -&gt; m a
+</span><span class="hs-identifier hs-var">fail</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;Input list must contain just 4 elements&quot;</span></span><span>
+</span><span id="line-42"></span></pre></body></html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span id="%24con2tag_IKBhE7LRwlMK0kgerrpzNT"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">GroupPresentation.Element</span><span> </span><span class="hs-special">(</span><span>
+</span><span id="line-2"></span><span>    </span><span class="annot"><a href="GroupPresentation.Element.html#Signed"><span class="hs-identifier">Signed</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><span id="line-3"></span><span>    </span><span class="annot"><a href="GroupPresentation.Element.html#Element"><span class="hs-identifier">Element</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-4"></span><span>    </span><span class="annot"><a href="GroupPresentation.Element.html#element"><span class="hs-identifier">element</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-5"></span><span>    </span><span class="annot"><a href="GroupPresentation.Element.html#%5E~"><span class="hs-operator">(^~)</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-6"></span><span>    </span><span class="annot"><a href="GroupPresentation.Element.html#isPositive"><span class="hs-identifier">isPositive</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-7"></span><span>    </span><span class="annot"><a href="GroupPresentation.Element.html#getGenerator"><span class="hs-identifier">getGenerator</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-8"></span><span>    </span><span class="annot"><a href="GroupPresentation.Element.html#EWord"><span class="hs-identifier">EWord</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-9"></span><span>    </span><span class="hs-keyword">module</span><span> </span><span class="annot"><a href="GroupPresentation.Generator.html"><span class="hs-identifier">GroupPresentation.Generator</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-10"></span><span>  </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-11"></span><span>
+</span><span id="line-12"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="GroupPresentation.Generator.html"><span class="hs-identifier">GroupPresentation.Generator</span></a></span><span>
+</span><span id="line-13"></span><span>
+</span><span id="line-14"></span><span class="hs-keyword">infix</span><span> </span><span class="hs-number">9</span><span> </span><span class="annot"><a href="GroupPresentation.Element.html#%5E~"><span class="hs-operator hs-type">^~</span></a></span><span>
+</span><span id="line-15"></span><span>
+</span><span id="line-16"></span><span class="hs-keyword">data</span><span> </span><span id="Signed"><span class="annot"><a href="GroupPresentation.Element.html#Signed"><span class="hs-identifier hs-var">Signed</span></a></span></span><span> </span><span id="local-6989586621679328468"><span class="annot"><a href="#local-6989586621679328468"><span class="hs-identifier hs-type">a</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-17"></span><span>      </span><span id="Positive"><span class="annot"><a href="GroupPresentation.Element.html#Positive"><span class="hs-identifier hs-var">Positive</span></a></span></span><span> </span><span class="hs-special">{</span><span> </span><span id="unSigned"><span class="annot"><span class="annottext">Signed a -&gt; a
+</span><a href="GroupPresentation.Element.html#unSigned"><span class="hs-identifier hs-var hs-var">unSigned</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="#local-6989586621679328468"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-special">}</span><span>
+</span><span id="line-18"></span><span>    </span><span class="hs-glyph">|</span><span> </span><span id="Negative"><span class="annot"><a href="GroupPresentation.Element.html#Negative"><span class="hs-identifier hs-var">Negative</span></a></span></span><span> </span><span class="hs-special">{</span><span> </span><span id="unSigned"><span class="annot"><a href="GroupPresentation.Element.html#unSigned"><span class="hs-identifier hs-var">unSigned</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="#local-6989586621679328468"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-special">}</span><span>
+</span><span id="line-19"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679328362"><span id="local-6989586621679328364"><span class="annot"><span class="annottext">Signed a -&gt; Signed a -&gt; Bool
+(Signed a -&gt; Signed a -&gt; Bool)
+-&gt; (Signed a -&gt; Signed a -&gt; Bool) -&gt; Eq (Signed a)
+forall a. Eq a =&gt; Signed a -&gt; Signed a -&gt; Bool
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+/= :: Signed a -&gt; Signed a -&gt; Bool
+$c/= :: forall a. Eq a =&gt; Signed a -&gt; Signed a -&gt; Bool
+== :: Signed a -&gt; Signed a -&gt; Bool
+$c== :: forall a. Eq a =&gt; Signed a -&gt; Signed a -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679328346"><span id="local-6989586621679328348"><span id="local-6989586621679328350"><span id="local-6989586621679328352"><span id="local-6989586621679328354"><span id="local-6989586621679328356"><span id="local-6989586621679328358"><span class="annot"><span class="annottext">Eq (Signed a)
+Eq (Signed a)
+-&gt; (Signed a -&gt; Signed a -&gt; Ordering)
+-&gt; (Signed a -&gt; Signed a -&gt; Bool)
+-&gt; (Signed a -&gt; Signed a -&gt; Bool)
+-&gt; (Signed a -&gt; Signed a -&gt; Bool)
+-&gt; (Signed a -&gt; Signed a -&gt; Bool)
+-&gt; (Signed a -&gt; Signed a -&gt; Signed a)
+-&gt; (Signed a -&gt; Signed a -&gt; Signed a)
+-&gt; Ord (Signed a)
+Signed a -&gt; Signed a -&gt; Bool
+Signed a -&gt; Signed a -&gt; Ordering
+Signed a -&gt; Signed a -&gt; Signed a
+forall a.
+Eq a
+-&gt; (a -&gt; a -&gt; Ordering)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; Ord a
+forall a. Ord a =&gt; Eq (Signed a)
+forall a. Ord a =&gt; Signed a -&gt; Signed a -&gt; Bool
+forall a. Ord a =&gt; Signed a -&gt; Signed a -&gt; Ordering
+forall a. Ord a =&gt; Signed a -&gt; Signed a -&gt; Signed a
+min :: Signed a -&gt; Signed a -&gt; Signed a
+$cmin :: forall a. Ord a =&gt; Signed a -&gt; Signed a -&gt; Signed a
+max :: Signed a -&gt; Signed a -&gt; Signed a
+$cmax :: forall a. Ord a =&gt; Signed a -&gt; Signed a -&gt; Signed a
+&gt;= :: Signed a -&gt; Signed a -&gt; Bool
+$c&gt;= :: forall a. Ord a =&gt; Signed a -&gt; Signed a -&gt; Bool
+&gt; :: Signed a -&gt; Signed a -&gt; Bool
+$c&gt; :: forall a. Ord a =&gt; Signed a -&gt; Signed a -&gt; Bool
+&lt;= :: Signed a -&gt; Signed a -&gt; Bool
+$c&lt;= :: forall a. Ord a =&gt; Signed a -&gt; Signed a -&gt; Bool
+&lt; :: Signed a -&gt; Signed a -&gt; Bool
+$c&lt; :: forall a. Ord a =&gt; Signed a -&gt; Signed a -&gt; Bool
+compare :: Signed a -&gt; Signed a -&gt; Ordering
+$ccompare :: forall a. Ord a =&gt; Signed a -&gt; Signed a -&gt; Ordering
+$cp1Ord :: forall a. Ord a =&gt; Eq (Signed a)
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Ord</span></span></span></span></span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-20"></span><span>
+</span><span id="line-21"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679328342"><span class="annot"><span class="hs-identifier hs-type">Functor</span></span><span> </span><span class="annot"><a href="GroupPresentation.Element.html#Signed"><span class="hs-identifier hs-type">Signed</span></a></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-22"></span><span>    </span><span id="local-6989586621679328340"><span class="annot"><span class="annottext">fmap :: (a -&gt; b) -&gt; Signed a -&gt; Signed b
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">fmap</span></span></span><span> </span><span id="local-6989586621679328339"><span class="annot"><span class="annottext">a -&gt; b
+</span><a href="#local-6989586621679328339"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="GroupPresentation.Element.html#Positive"><span class="hs-identifier hs-type">Positive</span></a></span><span> </span><span id="local-6989586621679328338"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679328338"><span class="hs-identifier hs-var">x</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">b -&gt; Signed b
+forall a. a -&gt; Signed a
+</span><a href="GroupPresentation.Element.html#Positive"><span class="hs-identifier hs-var">Positive</span></a></span><span> </span><span class="annot"><span class="annottext">(b -&gt; Signed b) -&gt; b -&gt; Signed b
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">a -&gt; b
+</span><a href="#local-6989586621679328339"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679328338"><span class="hs-identifier hs-var">x</span></a></span><span>
+</span><span id="line-23"></span><span>    </span><span class="annot"><span class="hs-identifier hs-var">fmap</span></span><span> </span><span id="local-6989586621679328337"><span class="annot"><span class="annottext">a -&gt; b
+</span><a href="#local-6989586621679328337"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="GroupPresentation.Element.html#Negative"><span class="hs-identifier hs-type">Negative</span></a></span><span> </span><span id="local-6989586621679328336"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679328336"><span class="hs-identifier hs-var">x</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">b -&gt; Signed b
+forall a. a -&gt; Signed a
+</span><a href="GroupPresentation.Element.html#Negative"><span class="hs-identifier hs-var">Negative</span></a></span><span> </span><span class="annot"><span class="annottext">(b -&gt; Signed b) -&gt; b -&gt; Signed b
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">a -&gt; b
+</span><a href="#local-6989586621679328337"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679328336"><span class="hs-identifier hs-var">x</span></a></span><span>
+</span><span id="line-24"></span><span>
+</span><span id="line-25"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679328327"><span id="local-6989586621679328329"><span id="local-6989586621679328331"><span class="annot"><span class="hs-identifier hs-type">Applicative</span></span><span> </span><span class="annot"><a href="GroupPresentation.Element.html#Signed"><span class="hs-identifier hs-type">Signed</span></a></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-26"></span><span>    </span><span id="local-6989586621679328325"><span class="annot"><span class="annottext">pure :: a -&gt; Signed a
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">pure</span></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">a -&gt; Signed a
+forall a. a -&gt; Signed a
+</span><a href="GroupPresentation.Element.html#Positive"><span class="hs-identifier hs-var">Positive</span></a></span><span>
+</span><span id="line-27"></span><span>    </span><span class="hs-special">(</span><span class="annot"><a href="GroupPresentation.Element.html#Positive"><span class="hs-identifier hs-type">Positive</span></a></span><span> </span><span id="local-6989586621679328324"><span class="annot"><span class="annottext">a -&gt; b
+</span><a href="#local-6989586621679328324"><span class="hs-identifier hs-var">f</span></a></span></span><span class="hs-special">)</span><span> </span><span id="local-6989586621679328323"><span class="annot"><span class="annottext">&lt;*&gt; :: Signed (a -&gt; b) -&gt; Signed a -&gt; Signed b
+</span><span class="hs-operator hs-var hs-var hs-var hs-var">&lt;*&gt;</span></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="GroupPresentation.Element.html#Positive"><span class="hs-identifier hs-type">Positive</span></a></span><span> </span><span id="local-6989586621679328322"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679328322"><span class="hs-identifier hs-var">x</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">b -&gt; Signed b
+forall a. a -&gt; Signed a
+</span><a href="GroupPresentation.Element.html#Positive"><span class="hs-identifier hs-var">Positive</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">a -&gt; b
+</span><a href="#local-6989586621679328324"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679328322"><span class="hs-identifier hs-var">x</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-28"></span><span>    </span><span class="hs-special">(</span><span class="annot"><a href="GroupPresentation.Element.html#Positive"><span class="hs-identifier hs-type">Positive</span></a></span><span> </span><span id="local-6989586621679328321"><span class="annot"><span class="annottext">a -&gt; b
+</span><a href="#local-6989586621679328321"><span class="hs-identifier hs-var">f</span></a></span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="hs-operator hs-var">&lt;*&gt;</span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="GroupPresentation.Element.html#Negative"><span class="hs-identifier hs-type">Negative</span></a></span><span> </span><span id="local-6989586621679328320"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679328320"><span class="hs-identifier hs-var">x</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">b -&gt; Signed b
+forall a. a -&gt; Signed a
+</span><a href="GroupPresentation.Element.html#Negative"><span class="hs-identifier hs-var">Negative</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">a -&gt; b
+</span><a href="#local-6989586621679328321"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679328320"><span class="hs-identifier hs-var">x</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-29"></span><span>    </span><span class="hs-special">(</span><span class="annot"><a href="GroupPresentation.Element.html#Negative"><span class="hs-identifier hs-type">Negative</span></a></span><span> </span><span id="local-6989586621679328319"><span class="annot"><span class="annottext">a -&gt; b
+</span><a href="#local-6989586621679328319"><span class="hs-identifier hs-var">f</span></a></span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="hs-operator hs-var">&lt;*&gt;</span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="GroupPresentation.Element.html#Positive"><span class="hs-identifier hs-type">Positive</span></a></span><span> </span><span id="local-6989586621679328318"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679328318"><span class="hs-identifier hs-var">x</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">b -&gt; Signed b
+forall a. a -&gt; Signed a
+</span><a href="GroupPresentation.Element.html#Negative"><span class="hs-identifier hs-var">Negative</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">a -&gt; b
+</span><a href="#local-6989586621679328319"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679328318"><span class="hs-identifier hs-var">x</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-30"></span><span>    </span><span class="hs-special">(</span><span class="annot"><a href="GroupPresentation.Element.html#Negative"><span class="hs-identifier hs-type">Negative</span></a></span><span> </span><span id="local-6989586621679328317"><span class="annot"><span class="annottext">a -&gt; b
+</span><a href="#local-6989586621679328317"><span class="hs-identifier hs-var">f</span></a></span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="hs-operator hs-var">&lt;*&gt;</span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="GroupPresentation.Element.html#Negative"><span class="hs-identifier hs-type">Negative</span></a></span><span> </span><span id="local-6989586621679328316"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679328316"><span class="hs-identifier hs-var">x</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">b -&gt; Signed b
+forall a. a -&gt; Signed a
+</span><a href="GroupPresentation.Element.html#Positive"><span class="hs-identifier hs-var">Positive</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">a -&gt; b
+</span><a href="#local-6989586621679328317"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679328316"><span class="hs-identifier hs-var">x</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-31"></span><span>
+</span><span id="line-32"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679328283"><span id="local-6989586621679328285"><span id="local-6989586621679328287"><span id="local-6989586621679328289"><span id="local-6989586621679328291"><span id="local-6989586621679328293"><span id="local-6989586621679328295"><span id="local-6989586621679328297"><span id="local-6989586621679328299"><span id="local-6989586621679328301"><span id="local-6989586621679328303"><span id="local-6989586621679328305"><span id="local-6989586621679328307"><span id="local-6989586621679328310"><span id="local-6989586621679328312"><span id="local-6989586621679328314"><span class="annot"><span class="hs-identifier hs-type">Foldable</span></span><span> </span><span class="annot"><a href="GroupPresentation.Element.html#Signed"><span class="hs-identifier hs-type">Signed</span></a></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-33"></span><span>    </span><span id="local-6989586621679328281"><span class="annot"><span class="annottext">foldr :: (a -&gt; b -&gt; b) -&gt; b -&gt; Signed a -&gt; b
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">foldr</span></span></span><span> </span><span id="local-6989586621679328279"><span class="annot"><span class="annottext">a -&gt; b -&gt; b
+</span><a href="#local-6989586621679328279"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span id="local-6989586621679328278"><span class="annot"><span class="annottext">b
+</span><a href="#local-6989586621679328278"><span class="hs-identifier hs-var">z</span></a></span></span><span> </span><span id="local-6989586621679328277"><span class="annot"><span class="annottext">Signed a
+</span><a href="#local-6989586621679328277"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">a -&gt; b -&gt; b
+</span><a href="#local-6989586621679328279"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Signed a -&gt; a
+forall a. Signed a -&gt; a
+</span><a href="GroupPresentation.Element.html#unSigned"><span class="hs-identifier hs-var hs-var">unSigned</span></a></span><span> </span><span class="annot"><span class="annottext">Signed a
+</span><a href="#local-6989586621679328277"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">b
+</span><a href="#local-6989586621679328278"><span class="hs-identifier hs-var">z</span></a></span><span>
+</span><span id="line-34"></span><span>
+</span><span id="line-35"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679328268"><span id="local-6989586621679328270"><span id="local-6989586621679328272"><span class="annot"><span class="hs-identifier hs-type">Traversable</span></span><span> </span><span class="annot"><a href="GroupPresentation.Element.html#Signed"><span class="hs-identifier hs-type">Signed</span></a></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-36"></span><span>    </span><span id="local-6989586621679328266"><span class="annot"><span class="annottext">traverse :: (a -&gt; f b) -&gt; Signed a -&gt; f (Signed b)
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">traverse</span></span></span><span> </span><span id="local-6989586621679328264"><span class="annot"><span class="annottext">a -&gt; f b
+</span><a href="#local-6989586621679328264"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="GroupPresentation.Element.html#Positive"><span class="hs-identifier hs-type">Positive</span></a></span><span> </span><span id="local-6989586621679328263"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679328263"><span class="hs-identifier hs-var">x</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">b -&gt; Signed b
+forall a. a -&gt; Signed a
+</span><a href="GroupPresentation.Element.html#Positive"><span class="hs-identifier hs-var">Positive</span></a></span><span> </span><span class="annot"><span class="annottext">(b -&gt; Signed b) -&gt; f b -&gt; f (Signed b)
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">a -&gt; f b
+</span><a href="#local-6989586621679328264"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679328263"><span class="hs-identifier hs-var">x</span></a></span><span>
+</span><span id="line-37"></span><span>    </span><span class="annot"><span class="hs-identifier hs-var">traverse</span></span><span> </span><span id="local-6989586621679328261"><span class="annot"><span class="annottext">a -&gt; f b
+</span><a href="#local-6989586621679328261"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="GroupPresentation.Element.html#Negative"><span class="hs-identifier hs-type">Negative</span></a></span><span> </span><span id="local-6989586621679328260"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679328260"><span class="hs-identifier hs-var">x</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">b -&gt; Signed b
+forall a. a -&gt; Signed a
+</span><a href="GroupPresentation.Element.html#Negative"><span class="hs-identifier hs-var">Negative</span></a></span><span> </span><span class="annot"><span class="annottext">(b -&gt; Signed b) -&gt; f b -&gt; f (Signed b)
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">a -&gt; f b
+</span><a href="#local-6989586621679328261"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679328260"><span class="hs-identifier hs-var">x</span></a></span><span>
+</span><span id="line-38"></span><span>
+</span><span id="line-39"></span><span id="local-6989586621679328259"><span class="annot"><a href="GroupPresentation.Element.html#%5E~"><span class="hs-operator hs-type">(^~)</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="GroupPresentation.Element.html#Signed"><span class="hs-identifier hs-type">Signed</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679328259"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="GroupPresentation.Element.html#Signed"><span class="hs-identifier hs-type">Signed</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679328259"><span class="hs-identifier hs-type">a</span></a></span></span><span>
+</span><span id="line-40"></span><span id="%5E~"><span class="annot"><span class="annottext">^~ :: Signed a -&gt; Signed a
+</span><a href="GroupPresentation.Element.html#%5E~"><span class="hs-operator hs-var hs-var">(^~)</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="GroupPresentation.Element.html#Positive"><span class="hs-identifier hs-type">Positive</span></a></span><span> </span><span id="local-6989586621679328258"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679328258"><span class="hs-identifier hs-var">x</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">a -&gt; Signed a
+forall a. a -&gt; Signed a
+</span><a href="GroupPresentation.Element.html#Negative"><span class="hs-identifier hs-var">Negative</span></a></span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679328258"><span class="hs-identifier hs-var">x</span></a></span><span>
+</span><span id="line-41"></span><span class="annot"><a href="GroupPresentation.Element.html#%5E~"><span class="hs-operator hs-var">(^~)</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="GroupPresentation.Element.html#Negative"><span class="hs-identifier hs-type">Negative</span></a></span><span> </span><span id="local-6989586621679328257"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679328257"><span class="hs-identifier hs-var">x</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">a -&gt; Signed a
+forall a. a -&gt; Signed a
+</span><a href="GroupPresentation.Element.html#Positive"><span class="hs-identifier hs-var">Positive</span></a></span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679328257"><span class="hs-identifier hs-var">x</span></a></span><span>
+</span><span id="line-42"></span><span>
+</span><span id="line-43"></span><span id="local-6989586621679328256"><span class="annot"><a href="GroupPresentation.Element.html#isPositive"><span class="hs-identifier hs-type">isPositive</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="GroupPresentation.Element.html#Signed"><span class="hs-identifier hs-type">Signed</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679328256"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span></span><span>
+</span><span id="line-44"></span><span id="isPositive"><span class="annot"><span class="annottext">isPositive :: Signed a -&gt; Bool
+</span><a href="GroupPresentation.Element.html#isPositive"><span class="hs-identifier hs-var hs-var">isPositive</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="GroupPresentation.Element.html#Positive"><span class="hs-identifier hs-type">Positive</span></a></span><span> </span><span class="annot"><span class="annottext">a
+</span><span class="hs-identifier">_</span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Bool
+</span><span class="hs-identifier hs-var">True</span></span><span>
+</span><span id="line-45"></span><span class="annot"><a href="GroupPresentation.Element.html#isPositive"><span class="hs-identifier hs-var">isPositive</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="GroupPresentation.Element.html#Negative"><span class="hs-identifier hs-type">Negative</span></a></span><span> </span><span class="annot"><span class="annottext">a
+</span><span class="hs-identifier">_</span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Bool
+</span><span class="hs-identifier hs-var">False</span></span><span>
+</span><span id="line-46"></span><span>
+</span><span id="line-47"></span><span class="hs-keyword">type</span><span> </span><span id="Element"><span class="annot"><a href="GroupPresentation.Element.html#Element"><span class="hs-identifier hs-var">Element</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><a href="GroupPresentation.Element.html#Signed"><span class="hs-identifier hs-type">Signed</span></a></span><span> </span><span class="annot"><a href="GroupPresentation.Generator.html#Generator"><span class="hs-identifier hs-type">Generator</span></a></span><span>
+</span><span id="line-48"></span><span>
+</span><span id="line-49"></span><span class="annot"><a href="GroupPresentation.Element.html#element"><span class="hs-identifier hs-type">element</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="GroupPresentation.Element.html#Element"><span class="hs-identifier hs-type">Element</span></a></span><span>
+</span><span id="line-50"></span><span id="element"><span class="annot"><span class="annottext">element :: Int -&gt; Element
+</span><a href="GroupPresentation.Element.html#element"><span class="hs-identifier hs-var hs-var">element</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Generator -&gt; Element
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">(Generator -&gt; Element) -&gt; (Int -&gt; Generator) -&gt; Int -&gt; Element
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Generator
+</span><a href="GroupPresentation.Generator.html#generator"><span class="hs-identifier hs-var">generator</span></a></span><span>
+</span><span id="line-51"></span><span>
+</span><span id="line-52"></span><span class="annot"><a href="GroupPresentation.Element.html#getGenerator"><span class="hs-identifier hs-type">getGenerator</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="GroupPresentation.Element.html#Element"><span class="hs-identifier hs-type">Element</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="GroupPresentation.Generator.html#Generator"><span class="hs-identifier hs-type">Generator</span></a></span><span>
+</span><span id="line-53"></span><span id="getGenerator"><span class="annot"><span class="annottext">getGenerator :: Element -&gt; Generator
+</span><a href="GroupPresentation.Element.html#getGenerator"><span class="hs-identifier hs-var hs-var">getGenerator</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Element -&gt; Generator
+forall a. Signed a -&gt; a
+</span><a href="GroupPresentation.Element.html#unSigned"><span class="hs-identifier hs-var hs-var">unSigned</span></a></span><span>
+</span><span id="line-54"></span><span>
+</span><span id="line-55"></span><span class="hs-keyword">type</span><span> </span><span id="EWord"><span class="annot"><a href="GroupPresentation.Element.html#EWord"><span class="hs-identifier hs-var">EWord</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="GroupPresentation.Element.html#Element"><span class="hs-identifier hs-type">Element</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-56"></span></pre></body></html>

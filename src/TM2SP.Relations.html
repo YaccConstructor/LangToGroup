@@ -1,0 +1,982 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE RankNTypes, TypeSynonymInstances, FlexibleInstances, ScopedTypeVariables, ExistentialQuantification, FlexibleContexts, UndecidableInstances, DefaultSignatures #-}</span><span>
+</span><span id="line-2"></span><span>
+</span><span id="line-3"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">TM2SP.Relations</span><span> </span><span class="hs-special">(</span><span>
+</span><span id="line-4"></span><span>    </span><span class="annot"><a href="TM2SP.Relations.html#Rels"><span class="hs-identifier">Rels</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-5"></span><span>    </span><span class="annot"><a href="TM2SP.Relations.html#%3D%3D%3D"><span class="hs-operator">(===)</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-6"></span><span>    </span><span class="annot"><a href="TM2SP.Relations.html#for%27"><span class="hs-identifier">for'</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-7"></span><span>    </span><span class="annot"><a href="TM2SP.Relations.html#in%27"><span class="hs-identifier">in'</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-8"></span><span>    </span><span class="annot"><a href="TM2SP.Relations.html#rels"><span class="hs-identifier">rels</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-9"></span><span>  </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-10"></span><span>
+</span><span id="line-11"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TuringMachine.html"><span class="hs-identifier">TuringMachine</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">TM</span></span><span>
+</span><span id="line-12"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="SemigroupPresentation.html"><span class="hs-identifier">SemigroupPresentation</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">SP</span></span><span>
+</span><span id="line-13"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Containers.html"><span class="hs-identifier">Containers</span></a></span><span>
+</span><span id="line-14"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Lens.html"><span class="hs-identifier">Lens</span></a></span><span>
+</span><span id="line-15"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Format.html"><span class="hs-identifier">Format</span></a></span><span>
+</span><span id="line-16"></span><span>
+</span><span id="line-17"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Control.Monad.Reader</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">R</span></span><span>
+</span><span id="line-18"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Control.Monad.List</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">LT</span></span><span>
+</span><span id="line-19"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Control.Monad.Trans</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">lift</span></span><span class="hs-special">)</span><span>
+</span><span id="line-20"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Control.Monad</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">when</span></span><span class="hs-special">)</span><span>
+</span><span id="line-21"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Control.Lens</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">each</span></span><span class="hs-special">)</span><span>
+</span><span id="line-22"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Maybe</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">catMaybes</span></span><span class="hs-special">)</span><span>
+</span><span id="line-23"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.List</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">find</span></span><span class="hs-special">)</span><span>
+</span><span id="line-24"></span><span>
+</span><span id="line-25"></span><span class="hs-keyword">type</span><span> </span><span id="Rels"><span class="annot"><a href="TM2SP.Relations.html#Rels"><span class="hs-identifier hs-var">Rels</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="TM2SP.Relations.html#Rel"><span class="hs-identifier hs-type">Rel</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-26"></span><span>
+</span><span id="line-27"></span><span class="hs-keyword">data</span><span> </span><span id="Rel"><span class="annot"><a href="TM2SP.Relations.html#Rel"><span class="hs-identifier hs-var">Rel</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-28"></span><span>    </span><span id="JustRel"><span class="annot"><a href="TM2SP.Relations.html#JustRel"><span class="hs-identifier hs-var">JustRel</span></a></span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-29"></span><span>  </span><span class="hs-glyph">|</span><span> </span><span class="hs-keyword">forall</span><span> </span><span id="local-6989586621679339721"><span class="annot"><a href="#local-6989586621679339721"><span class="hs-identifier hs-type">e</span></a></span></span><span class="hs-operator">.</span><span> </span><span class="annot"><a href="TM2SP.Relations.html#RangeElement"><span class="hs-identifier hs-type">RangeElement</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679339721"><span class="hs-identifier hs-type">e</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span id="ForBlock"><span class="annot"><a href="TM2SP.Relations.html#ForBlock"><span class="hs-identifier hs-var">ForBlock</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="TM2SP.Relations.html#Range"><span class="hs-identifier hs-type">Range</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679339721"><span class="hs-identifier hs-type">e</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><a href="TM2SP.Relations.html#Rels"><span class="hs-identifier hs-type">Rels</span></a></span><span>
+</span><span id="line-30"></span><span>
+</span><span id="line-31"></span><span class="hs-keyword">data</span><span> </span><span id="Range"><span class="annot"><a href="TM2SP.Relations.html#Range"><span class="hs-identifier hs-var">Range</span></a></span></span><span> </span><span id="local-6989586621679339717"><span class="annot"><a href="#local-6989586621679339717"><span class="hs-identifier hs-type">e</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="Range"><span class="annot"><a href="TM2SP.Relations.html#Range"><span class="hs-identifier hs-var">Range</span></a></span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="TM2SP.Relations.html#SetGetter"><span class="hs-identifier hs-type">SetGetter</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679339717"><span class="hs-identifier hs-type">e</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-32"></span><span>
+</span><span id="line-33"></span><span class="hs-keyword">type</span><span> </span><span id="SetGetter"><span class="annot"><a href="TM2SP.Relations.html#SetGetter"><span class="hs-identifier hs-var">SetGetter</span></a></span></span><span> </span><span id="local-6989586621679339566"><span class="annot"><a href="#local-6989586621679339566"><span class="hs-identifier hs-type">a</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><a href="TuringMachine.html#TMGetter"><span class="hs-identifier hs-type">TM.TMGetter</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Set</span></span><span> </span><span class="annot"><a href="#local-6989586621679339566"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-34"></span><span>
+</span><span id="line-35"></span><span class="annot"><a href="TM2SP.Relations.html#%3D%3D%3D"><span class="hs-operator hs-type">(===)</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TM2SP.Relations.html#Rel"><span class="hs-identifier hs-type">Rel</span></a></span><span>
+</span><span id="line-36"></span><span id="%3D%3D%3D"><span class="annot"><span class="annottext">=== :: String -&gt; String -&gt; Rel
+</span><a href="TM2SP.Relations.html#%3D%3D%3D"><span class="hs-operator hs-var hs-var">(===)</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; Rel
+</span><a href="TM2SP.Relations.html#JustRel"><span class="hs-identifier hs-var">JustRel</span></a></span><span>
+</span><span id="line-37"></span><span>
+</span><span id="line-38"></span><span id="local-6989586621679339564"><span class="annot"><a href="TM2SP.Relations.html#for%27"><span class="hs-identifier hs-type">for'</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TM2SP.Relations.html#RangeElement"><span class="hs-identifier hs-type">RangeElement</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679339564"><span class="hs-identifier hs-type">e</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><a href="TM2SP.Relations.html#Range"><span class="hs-identifier hs-type">Range</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679339564"><span class="hs-identifier hs-type">e</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TM2SP.Relations.html#Rels"><span class="hs-identifier hs-type">Rels</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TM2SP.Relations.html#Rel"><span class="hs-identifier hs-type">Rel</span></a></span></span><span>
+</span><span id="line-39"></span><span id="for%27"><span class="annot"><span class="annottext">for' :: Range e -&gt; Rels -&gt; Rel
+</span><a href="TM2SP.Relations.html#for%27"><span class="hs-identifier hs-var hs-var">for'</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Range e -&gt; Rels -&gt; Rel
+forall e. RangeElement e =&gt; Range e -&gt; Rels -&gt; Rel
+</span><a href="TM2SP.Relations.html#ForBlock"><span class="hs-identifier hs-var">ForBlock</span></a></span><span>
+</span><span id="line-40"></span><span>
+</span><span id="line-41"></span><span id="local-6989586621679339563"><span class="annot"><a href="TM2SP.Relations.html#in%27"><span class="hs-identifier hs-type">in'</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TM2SP.Relations.html#RangeElement"><span class="hs-identifier hs-type">RangeElement</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679339563"><span class="hs-identifier hs-type">e</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TM2SP.Relations.html#SetGetter"><span class="hs-identifier hs-type">SetGetter</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679339563"><span class="hs-identifier hs-type">e</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TM2SP.Relations.html#Range"><span class="hs-identifier hs-type">Range</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679339563"><span class="hs-identifier hs-type">e</span></a></span></span><span>
+</span><span id="line-42"></span><span id="in%27"><span class="annot"><span class="annottext">in' :: String -&gt; SetGetter e -&gt; Range e
+</span><a href="TM2SP.Relations.html#in%27"><span class="hs-identifier hs-var hs-var">in'</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; SetGetter e -&gt; Range e
+forall e. String -&gt; SetGetter e -&gt; Range e
+</span><a href="TM2SP.Relations.html#Range"><span class="hs-identifier hs-var">Range</span></a></span><span>
+</span><span id="line-43"></span><span>
+</span><span id="line-44"></span><span class="hs-keyword">type</span><span> </span><span id="LocalReader"><span class="annot"><a href="TM2SP.Relations.html#LocalReader"><span class="hs-identifier hs-var">LocalReader</span></a></span></span><span> </span><span id="local-6989586621679339562"><span class="annot"><a href="#local-6989586621679339562"><span class="hs-identifier hs-type">a</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-45"></span><span>    </span><span class="hs-keyword">forall</span><span> </span><span id="local-6989586621679339561"><span class="annot"><a href="#local-6989586621679339561"><span class="hs-identifier hs-type">m</span></a></span></span><span class="hs-operator">.</span><span> </span><span class="annot"><span class="hs-identifier hs-type">MonadFail</span></span><span> </span><span class="annot"><a href="#local-6989586621679339561"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span>
+</span><span id="line-46"></span><span>    </span><span class="annot"><span class="hs-identifier hs-type">R.ReaderT</span></span><span> </span><span class="annot"><a href="TM2SP.Relations.html#ReplaceRules"><span class="hs-identifier hs-type">ReplaceRules</span></a></span><span> </span><span class="hs-special">(</span><span>
+</span><span id="line-47"></span><span>        </span><span class="annot"><span class="hs-identifier hs-type">R.ReaderT</span></span><span> </span><span class="annot"><a href="SemigroupPresentation.html#GeneratorsDescr"><span class="hs-identifier hs-type">SP.GeneratorsDescr</span></a></span><span> </span><span class="hs-special">(</span><span>
+</span><span id="line-48"></span><span>            </span><span class="annot"><span class="hs-identifier hs-type">R.ReaderT</span></span><span> </span><span class="annot"><a href="TuringMachine.html#TuringMachine"><span class="hs-identifier hs-type">TM.TuringMachine</span></a></span><span>
+</span><span id="line-49"></span><span>                </span><span class="annot"><a href="#local-6989586621679339561"><span class="hs-identifier hs-type">m</span></a></span><span>
+</span><span id="line-50"></span><span>          </span><span class="hs-special">)</span><span>
+</span><span id="line-51"></span><span>      </span><span class="hs-special">)</span><span>
+</span><span id="line-52"></span><span>      </span><span class="annot"><a href="#local-6989586621679339562"><span class="hs-identifier hs-type">a</span></a></span><span>
+</span><span id="line-53"></span><span>
+</span><span id="line-54"></span><span id="local-6989586621679339648"><span id="local-6989586621679339649"><span class="annot"><a href="TM2SP.Relations.html#liftTM"><span class="hs-identifier hs-type">liftTM</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">MonadFail</span></span><span> </span><span class="annot"><a href="#local-6989586621679339649"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">R.ReaderT</span></span><span> </span><span class="annot"><a href="TuringMachine.html#TuringMachine"><span class="hs-identifier hs-type">TM.TuringMachine</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679339649"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679339648"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">R.ReaderT</span></span><span> </span><span class="annot"><a href="TM2SP.Relations.html#ReplaceRules"><span class="hs-identifier hs-type">ReplaceRules</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">R.ReaderT</span></span><span> </span><span class="annot"><a href="SemigroupPresentation.html#GeneratorsDescr"><span class="hs-identifier hs-type">SP.GeneratorsDescr</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">R.ReaderT</span></span><span> </span><span class="annot"><a href="TuringMachine.html#TuringMachine"><span class="hs-identifier hs-type">TM.TuringMachine</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679339649"><span class="hs-identifier hs-type">m</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="annot"><a href="#local-6989586621679339648"><span class="hs-identifier hs-type">a</span></a></span></span></span><span>
+</span><span id="line-55"></span><span id="liftTM"><span class="annot"><span class="annottext">liftTM :: ReaderT TuringMachine m a
+-&gt; ReaderT
+     ReplaceRules (ReaderT GeneratorsDescr (ReaderT TuringMachine m)) a
+</span><a href="TM2SP.Relations.html#liftTM"><span class="hs-identifier hs-var hs-var">liftTM</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">ReaderT GeneratorsDescr (ReaderT TuringMachine m) a
+-&gt; ReaderT
+     ReplaceRules (ReaderT GeneratorsDescr (ReaderT TuringMachine m)) a
+forall (t :: (* -&gt; *) -&gt; * -&gt; *) (m :: * -&gt; *) a.
+(MonadTrans t, Monad m) =&gt;
+m a -&gt; t m a
+</span><span class="hs-identifier hs-var">lift</span></span><span> </span><span class="annot"><span class="annottext">(ReaderT GeneratorsDescr (ReaderT TuringMachine m) a
+ -&gt; ReaderT
+      ReplaceRules (ReaderT GeneratorsDescr (ReaderT TuringMachine m)) a)
+-&gt; (ReaderT TuringMachine m a
+    -&gt; ReaderT GeneratorsDescr (ReaderT TuringMachine m) a)
+-&gt; ReaderT TuringMachine m a
+-&gt; ReaderT
+     ReplaceRules (ReaderT GeneratorsDescr (ReaderT TuringMachine m)) a
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">ReaderT TuringMachine m a
+-&gt; ReaderT GeneratorsDescr (ReaderT TuringMachine m) a
+forall (t :: (* -&gt; *) -&gt; * -&gt; *) (m :: * -&gt; *) a.
+(MonadTrans t, Monad m) =&gt;
+m a -&gt; t m a
+</span><span class="hs-identifier hs-var">lift</span></span><span>
+</span><span id="line-56"></span><span>
+</span><span id="line-57"></span><span class="hs-keyword">type</span><span> </span><span id="ReplaceRules"><span class="annot"><a href="TM2SP.Relations.html#ReplaceRules"><span class="hs-identifier hs-var">ReplaceRules</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="TM2SP.Relations.html#ReplaceRule"><span class="hs-identifier hs-type">ReplaceRule</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-58"></span><span>
+</span><span id="line-59"></span><span class="hs-keyword">type</span><span> </span><span id="ReplaceRule"><span class="annot"><a href="TM2SP.Relations.html#ReplaceRule"><span class="hs-identifier hs-var">ReplaceRule</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span class="hs-special">]</span><span class="hs-special">,</span><span> </span><span class="hs-special">[</span><span class="hs-special">[</span><span class="annot"><a href="SemigroupPresentation.Generator.html#Generator"><span class="hs-identifier hs-type">SP.Generator</span></a></span><span class="hs-special">]</span><span class="hs-special">]</span><span class="hs-special">)</span><span>
+</span><span id="line-60"></span><span>
+</span><span id="line-61"></span><span class="annot"><a href="TM2SP.Relations.html#consistRR"><span class="hs-identifier hs-type">consistRR</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TM2SP.Relations.html#ReplaceRule"><span class="hs-identifier hs-type">ReplaceRule</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span>
+</span><span id="line-62"></span><span id="consistRR"><span class="annot"><span class="annottext">consistRR :: String -&gt; ReplaceRule -&gt; Bool
+</span><a href="TM2SP.Relations.html#consistRR"><span class="hs-identifier hs-var hs-var">consistRR</span></a></span></span><span> </span><span id="local-6989586621679339557"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679339557"><span class="hs-identifier hs-var">g</span></a></span></span><span> </span><span id="local-6989586621679339556"><span class="annot"><span class="annottext">ReplaceRule
+</span><a href="#local-6989586621679339556"><span class="hs-identifier hs-var">rr</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679339557"><span class="hs-identifier hs-var">g</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; [String] -&gt; Bool
+forall (t :: * -&gt; *) a. (Foldable t, Eq a) =&gt; a -&gt; t a -&gt; Bool
+</span><span class="hs-operator hs-var">`elem`</span></span><span> </span><span class="annot"><span class="annottext">ReplaceRule -&gt; [String]
+forall a b. (a, b) -&gt; a
+</span><span class="hs-identifier hs-var">fst</span></span><span> </span><span class="annot"><span class="annottext">ReplaceRule
+</span><a href="#local-6989586621679339556"><span class="hs-identifier hs-var">rr</span></a></span><span>
+</span><span id="line-63"></span><span>
+</span><span id="line-64"></span><span class="hs-keyword">type</span><span> </span><span id="ReplaceAtom"><span class="annot"><a href="TM2SP.Relations.html#ReplaceAtom"><span class="hs-identifier hs-var">ReplaceAtom</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="SemigroupPresentation.Generator.html#Generator"><span class="hs-identifier hs-type">SP.Generator</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-65"></span><span>
+</span><span id="line-66"></span><span class="annot"><a href="TM2SP.Relations.html#consistRA"><span class="hs-identifier hs-type">consistRA</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TM2SP.Relations.html#ReplaceAtom"><span class="hs-identifier hs-type">ReplaceAtom</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span>
+</span><span id="line-67"></span><span id="consistRA"><span class="annot"><span class="annottext">consistRA :: String -&gt; ReplaceAtom -&gt; Bool
+</span><a href="TM2SP.Relations.html#consistRA"><span class="hs-identifier hs-var hs-var">consistRA</span></a></span></span><span> </span><span id="local-6989586621679339553"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679339553"><span class="hs-identifier hs-var">g</span></a></span></span><span> </span><span id="local-6989586621679339552"><span class="annot"><span class="annottext">ReplaceAtom
+</span><a href="#local-6989586621679339552"><span class="hs-identifier hs-var">ra</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">ReplaceAtom -&gt; String
+forall a b. (a, b) -&gt; a
+</span><span class="hs-identifier hs-var">fst</span></span><span> </span><span class="annot"><span class="annottext">ReplaceAtom
+</span><a href="#local-6989586621679339552"><span class="hs-identifier hs-var">ra</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; Bool
+forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">==</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679339553"><span class="hs-identifier hs-var">g</span></a></span><span>
+</span><span id="line-68"></span><span>
+</span><span id="line-69"></span><span id="local-6989586621679339551"><span class="annot"><a href="TM2SP.Relations.html#rels"><span class="hs-identifier hs-type">rels</span></a></span><span> </span><span class="hs-glyph">::</span><span>
+</span><span id="line-70"></span><span>    </span><span class="annot"><span class="hs-identifier hs-type">MonadFail</span></span><span> </span><span class="annot"><a href="#local-6989586621679339551"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span>
+</span><span id="line-71"></span><span>    </span><span class="annot"><a href="TM2SP.Relations.html#Rels"><span class="hs-identifier hs-type">Rels</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span>
+</span><span id="line-72"></span><span>    </span><span class="annot"><a href="SemigroupPresentation.html#GeneratorsDescr"><span class="hs-identifier hs-type">SP.GeneratorsDescr</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span>
+</span><span id="line-73"></span><span>    </span><span class="annot"><a href="TuringMachine.html#TuringMachine"><span class="hs-identifier hs-type">TM.TuringMachine</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span>
+</span><span id="line-74"></span><span>    </span><span class="annot"><a href="#local-6989586621679339551"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="annot"><a href="SemigroupPresentation.Relation.html#Relations"><span class="hs-identifier hs-type">SP.Relations</span></a></span></span><span>
+</span><span id="line-75"></span><span id="rels"><span class="annot"><span class="annottext">rels :: Rels -&gt; GeneratorsDescr -&gt; TuringMachine -&gt; m Relations
+</span><a href="TM2SP.Relations.html#rels"><span class="hs-identifier hs-var hs-var">rels</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-76"></span><span>    </span><span class="hs-special">(</span><span class="annot"><span class="annottext">ReaderT TuringMachine m Relations -&gt; TuringMachine -&gt; m Relations
+forall r (m :: * -&gt; *) a. ReaderT r m a -&gt; r -&gt; m a
+</span><span class="hs-identifier hs-var hs-var">R.runReaderT</span></span><span> </span><span class="annot"><span class="annottext">(ReaderT TuringMachine m Relations -&gt; TuringMachine -&gt; m Relations)
+-&gt; (GeneratorsDescr -&gt; ReaderT TuringMachine m Relations)
+-&gt; GeneratorsDescr
+-&gt; TuringMachine
+-&gt; m Relations
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">((GeneratorsDescr -&gt; ReaderT TuringMachine m Relations)
+ -&gt; GeneratorsDescr -&gt; TuringMachine -&gt; m Relations)
+-&gt; (Rels -&gt; GeneratorsDescr -&gt; ReaderT TuringMachine m Relations)
+-&gt; Rels
+-&gt; GeneratorsDescr
+-&gt; TuringMachine
+-&gt; m Relations
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span>
+</span><span id="line-77"></span><span>    </span><span class="annot"><span class="annottext">ReaderT GeneratorsDescr (ReaderT TuringMachine m) Relations
+-&gt; GeneratorsDescr -&gt; ReaderT TuringMachine m Relations
+forall r (m :: * -&gt; *) a. ReaderT r m a -&gt; r -&gt; m a
+</span><span class="hs-identifier hs-var hs-var">R.runReaderT</span></span><span> </span><span class="annot"><span class="annottext">(ReaderT GeneratorsDescr (ReaderT TuringMachine m) Relations
+ -&gt; GeneratorsDescr -&gt; ReaderT TuringMachine m Relations)
+-&gt; (Rels
+    -&gt; ReaderT GeneratorsDescr (ReaderT TuringMachine m) Relations)
+-&gt; Rels
+-&gt; GeneratorsDescr
+-&gt; ReaderT TuringMachine m Relations
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span>
+</span><span id="line-78"></span><span>    </span><span class="annot"><span class="annottext">(ReaderT
+   ReplaceRules
+   (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+   Relations
+ -&gt; ReplaceRules
+ -&gt; ReaderT GeneratorsDescr (ReaderT TuringMachine m) Relations)
+-&gt; ReplaceRules
+-&gt; ReaderT
+     ReplaceRules
+     (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+     Relations
+-&gt; ReaderT GeneratorsDescr (ReaderT TuringMachine m) Relations
+forall a b c. (a -&gt; b -&gt; c) -&gt; b -&gt; a -&gt; c
+</span><span class="hs-identifier hs-var">flip</span></span><span> </span><span class="annot"><span class="annottext">ReaderT
+  ReplaceRules
+  (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+  Relations
+-&gt; ReplaceRules
+-&gt; ReaderT GeneratorsDescr (ReaderT TuringMachine m) Relations
+forall r (m :: * -&gt; *) a. ReaderT r m a -&gt; r -&gt; m a
+</span><span class="hs-identifier hs-var hs-var">R.runReaderT</span></span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span> </span><span class="annot"><span class="annottext">(ReaderT
+   ReplaceRules
+   (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+   Relations
+ -&gt; ReaderT GeneratorsDescr (ReaderT TuringMachine m) Relations)
+-&gt; (Rels
+    -&gt; ReaderT
+         ReplaceRules
+         (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+         Relations)
+-&gt; Rels
+-&gt; ReaderT GeneratorsDescr (ReaderT TuringMachine m) Relations
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span>
+</span><span id="line-79"></span><span>    </span><span class="annot"><span class="annottext">Rels
+-&gt; ReaderT
+     ReplaceRules
+     (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+     Relations
+Rels -&gt; LocalReader Relations
+</span><a href="TM2SP.Relations.html#rels_"><span class="hs-identifier hs-var">rels_</span></a></span><span>
+</span><span id="line-80"></span><span>
+</span><span id="line-81"></span><span class="annot"><a href="TM2SP.Relations.html#rels_"><span class="hs-identifier hs-type">rels_</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TM2SP.Relations.html#Rels"><span class="hs-identifier hs-type">Rels</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TM2SP.Relations.html#LocalReader"><span class="hs-identifier hs-type">LocalReader</span></a></span><span> </span><span class="annot"><a href="SemigroupPresentation.Relation.html#Relations"><span class="hs-identifier hs-type">SP.Relations</span></a></span><span>
+</span><span id="line-82"></span><span id="rels_"><span class="annot"><span class="annottext">rels_ :: Rels -&gt; LocalReader Relations
+</span><a href="TM2SP.Relations.html#rels_"><span class="hs-identifier hs-var hs-var">rels_</span></a></span></span><span> </span><span id="local-6989586621679339547"><span class="annot"><span class="annottext">Rels
+</span><a href="#local-6989586621679339547"><span class="hs-identifier hs-var">rs</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-83"></span><span>    </span><span class="annot"><span class="annottext">[Relation] -&gt; Relations
+forall c v. UnsafeListable c v =&gt; [v] -&gt; c
+</span><a href="Containers.html#fromList"><span class="hs-identifier hs-var">fromList</span></a></span><span> </span><span class="annot"><span class="annottext">([Relation] -&gt; Relations)
+-&gt; ([[Relation]] -&gt; [Relation]) -&gt; [[Relation]] -&gt; Relations
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">[[Relation]] -&gt; [Relation]
+forall (t :: * -&gt; *) a. Foldable t =&gt; t [a] -&gt; [a]
+</span><span class="hs-identifier hs-var">concat</span></span><span> </span><span class="annot"><span class="annottext">([[Relation]] -&gt; Relations)
+-&gt; ReaderT
+     ReplaceRules
+     (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+     [[Relation]]
+-&gt; ReaderT
+     ReplaceRules
+     (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+     Relations
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">(Rel
+ -&gt; ReaderT
+      ReplaceRules
+      (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+      [Relation])
+-&gt; Rels
+-&gt; ReaderT
+     ReplaceRules
+     (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+     [[Relation]]
+forall (t :: * -&gt; *) (f :: * -&gt; *) a b.
+(Traversable t, Applicative f) =&gt;
+(a -&gt; f b) -&gt; t a -&gt; f (t b)
+</span><span class="hs-identifier hs-var">traverse</span></span><span> </span><span class="annot"><span class="annottext">Rel
+-&gt; ReaderT
+     ReplaceRules
+     (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+     [Relation]
+Rel -&gt; LocalReader [Relation]
+</span><a href="TM2SP.Relations.html#rel_"><span class="hs-identifier hs-var">rel_</span></a></span><span> </span><span class="annot"><span class="annottext">Rels
+</span><a href="#local-6989586621679339547"><span class="hs-identifier hs-var">rs</span></a></span><span>
+</span><span id="line-84"></span><span>
+</span><span id="line-85"></span><span class="annot"><a href="TM2SP.Relations.html#rel_"><span class="hs-identifier hs-type">rel_</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TM2SP.Relations.html#Rel"><span class="hs-identifier hs-type">Rel</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TM2SP.Relations.html#LocalReader"><span class="hs-identifier hs-type">LocalReader</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><a href="SemigroupPresentation.Relation.html#Relation"><span class="hs-identifier hs-type">SP.Relation</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-86"></span><span id="rel_"><span class="annot"><span class="annottext">rel_ :: Rel -&gt; LocalReader [Relation]
+</span><a href="TM2SP.Relations.html#rel_"><span class="hs-identifier hs-var hs-var">rel_</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="TM2SP.Relations.html#JustRel"><span class="hs-identifier hs-type">JustRel</span></a></span><span> </span><span id="local-6989586621679339541"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679339541"><span class="hs-identifier hs-var">gw1</span></a></span></span><span> </span><span id="local-6989586621679339540"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679339540"><span class="hs-identifier hs-var">gw2</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">ListT
+  (ReaderT
+     ReplaceRules (ReaderT GeneratorsDescr (ReaderT TuringMachine m)))
+  Relation
+-&gt; ReaderT
+     ReplaceRules
+     (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+     [Relation]
+forall (m :: * -&gt; *) a. ListT m a -&gt; m [a]
+</span><span class="hs-identifier hs-var hs-var">LT.runListT</span></span><span> </span><span class="annot"><span class="annottext">(ListT
+   (ReaderT
+      ReplaceRules (ReaderT GeneratorsDescr (ReaderT TuringMachine m)))
+   Relation
+ -&gt; ReaderT
+      ReplaceRules
+      (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+      [Relation])
+-&gt; ListT
+     (ReaderT
+        ReplaceRules (ReaderT GeneratorsDescr (ReaderT TuringMachine m)))
+     Relation
+-&gt; ReaderT
+     ReplaceRules
+     (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+     [Relation]
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-87"></span><span>    </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679339538"><span class="annot"><span class="annottext">gs1 :: [String]
+</span><a href="#local-6989586621679339538"><span class="hs-identifier hs-var hs-var">gs1</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; [String]
+</span><span class="hs-identifier hs-var">words</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679339541"><span class="hs-identifier hs-var">gw1</span></a></span><span>
+</span><span id="line-88"></span><span>        </span><span id="local-6989586621679339536"><span class="annot"><span class="annottext">gs2 :: [String]
+</span><a href="#local-6989586621679339536"><span class="hs-identifier hs-var hs-var">gs2</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; [String]
+</span><span class="hs-identifier hs-var">words</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679339540"><span class="hs-identifier hs-var">gw2</span></a></span><span>
+</span><span id="line-89"></span><span>    </span><span class="hs-special">(</span><span id="local-6989586621679339535"><span class="annot"><span class="annottext">GWord
+</span><a href="#local-6989586621679339535"><span class="hs-identifier hs-var">gws1</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679339534"><span class="annot"><span class="annottext">[ReplaceAtom]
+</span><a href="#local-6989586621679339534"><span class="hs-identifier hs-var">srrs</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">ReaderT
+  ReplaceRules
+  (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+  [(GWord, [ReplaceAtom])]
+-&gt; ListT
+     (ReaderT
+        ReplaceRules (ReaderT GeneratorsDescr (ReaderT TuringMachine m)))
+     (GWord, [ReplaceAtom])
+forall (m :: * -&gt; *) a. m [a] -&gt; ListT m a
+</span><span class="hs-identifier hs-var">LT.ListT</span></span><span> </span><span class="annot"><span class="annottext">(ReaderT
+   ReplaceRules
+   (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+   [(GWord, [ReplaceAtom])]
+ -&gt; ListT
+      (ReaderT
+         ReplaceRules (ReaderT GeneratorsDescr (ReaderT TuringMachine m)))
+      (GWord, [ReplaceAtom]))
+-&gt; ReaderT
+     ReplaceRules
+     (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+     [(GWord, [ReplaceAtom])]
+-&gt; ListT
+     (ReaderT
+        ReplaceRules (ReaderT GeneratorsDescr (ReaderT TuringMachine m)))
+     (GWord, [ReplaceAtom])
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; [ReplaceAtom] -&gt; LocalReader [(GWord, [ReplaceAtom])]
+</span><a href="TM2SP.Relations.html#gens_"><span class="hs-identifier hs-var">gens_</span></a></span><span> </span><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679339538"><span class="hs-identifier hs-var">gs1</span></a></span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span>
+</span><span id="line-90"></span><span>    </span><span class="hs-special">(</span><span id="local-6989586621679339531"><span class="annot"><span class="annottext">GWord
+</span><a href="#local-6989586621679339531"><span class="hs-identifier hs-var">gws2</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">[ReplaceAtom]
+</span><span class="hs-identifier">_</span></span><span class="hs-special">)</span><span>    </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">ReaderT
+  ReplaceRules
+  (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+  [(GWord, [ReplaceAtom])]
+-&gt; ListT
+     (ReaderT
+        ReplaceRules (ReaderT GeneratorsDescr (ReaderT TuringMachine m)))
+     (GWord, [ReplaceAtom])
+forall (m :: * -&gt; *) a. m [a] -&gt; ListT m a
+</span><span class="hs-identifier hs-var">LT.ListT</span></span><span> </span><span class="annot"><span class="annottext">(ReaderT
+   ReplaceRules
+   (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+   [(GWord, [ReplaceAtom])]
+ -&gt; ListT
+      (ReaderT
+         ReplaceRules (ReaderT GeneratorsDescr (ReaderT TuringMachine m)))
+      (GWord, [ReplaceAtom]))
+-&gt; ReaderT
+     ReplaceRules
+     (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+     [(GWord, [ReplaceAtom])]
+-&gt; ListT
+     (ReaderT
+        ReplaceRules (ReaderT GeneratorsDescr (ReaderT TuringMachine m)))
+     (GWord, [ReplaceAtom])
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; [ReplaceAtom] -&gt; LocalReader [(GWord, [ReplaceAtom])]
+</span><a href="TM2SP.Relations.html#gens_"><span class="hs-identifier hs-var">gens_</span></a></span><span> </span><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679339536"><span class="hs-identifier hs-var">gs2</span></a></span><span> </span><span class="annot"><span class="annottext">[ReplaceAtom]
+</span><a href="#local-6989586621679339534"><span class="hs-identifier hs-var">srrs</span></a></span><span>
+</span><span id="line-91"></span><span>    </span><span class="annot"><span class="annottext">Relation
+-&gt; ListT
+     (ReaderT
+        ReplaceRules (ReaderT GeneratorsDescr (ReaderT TuringMachine m)))
+     Relation
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">(Relation
+ -&gt; ListT
+      (ReaderT
+         ReplaceRules (ReaderT GeneratorsDescr (ReaderT TuringMachine m)))
+      Relation)
+-&gt; Relation
+-&gt; ListT
+     (ReaderT
+        ReplaceRules (ReaderT GeneratorsDescr (ReaderT TuringMachine m)))
+     Relation
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">GWord -&gt; GWord -&gt; Relation
+</span><a href="SemigroupPresentation.Relation.html#relation"><span class="hs-identifier hs-var">SP.relation</span></a></span><span> </span><span class="annot"><span class="annottext">GWord
+</span><a href="#local-6989586621679339535"><span class="hs-identifier hs-var">gws1</span></a></span><span> </span><span class="annot"><span class="annottext">GWord
+</span><a href="#local-6989586621679339531"><span class="hs-identifier hs-var">gws2</span></a></span><span>
+</span><span id="line-92"></span><span class="annot"><a href="TM2SP.Relations.html#rel_"><span class="hs-identifier hs-var">rel_</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="TM2SP.Relations.html#ForBlock"><span class="hs-identifier hs-type">ForBlock</span></a></span><span> </span><span id="local-6989586621679339529"><span class="annot"><span class="annottext">Range e
+</span><a href="#local-6989586621679339529"><span class="hs-identifier hs-var">rg</span></a></span></span><span> </span><span id="local-6989586621679339528"><span class="annot"><span class="annottext">Rels
+</span><a href="#local-6989586621679339528"><span class="hs-identifier hs-var">rs</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-93"></span><span>    </span><span id="local-6989586621679339527"><span class="annot"><span class="annottext">ReplaceRule
+</span><a href="#local-6989586621679339527"><span class="hs-identifier hs-var">newRule</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Range e -&gt; LocalReader ReplaceRule
+forall e. RangeElement e =&gt; Range e -&gt; LocalReader ReplaceRule
+</span><a href="TM2SP.Relations.html#range_"><span class="hs-identifier hs-var">range_</span></a></span><span> </span><span class="annot"><span class="annottext">Range e
+</span><a href="#local-6989586621679339529"><span class="hs-identifier hs-var">rg</span></a></span><span>
+</span><span id="line-94"></span><span>    </span><span class="annot"><span class="annottext">(ReplaceRules -&gt; ReplaceRules)
+-&gt; ReaderT
+     ReplaceRules
+     (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+     [Relation]
+-&gt; ReaderT
+     ReplaceRules
+     (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+     [Relation]
+forall r (m :: * -&gt; *) a. MonadReader r m =&gt; (r -&gt; r) -&gt; m a -&gt; m a
+</span><span class="hs-identifier hs-var">R.local</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">ReplaceRule
+</span><a href="#local-6989586621679339527"><span class="hs-identifier hs-var">newRule</span></a></span><span class="annot"><span class="annottext">ReplaceRule -&gt; ReplaceRules -&gt; ReplaceRules
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">(ReaderT
+   ReplaceRules
+   (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+   [Relation]
+ -&gt; ReaderT
+      ReplaceRules
+      (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+      [Relation])
+-&gt; ReaderT
+     ReplaceRules
+     (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+     [Relation]
+-&gt; ReaderT
+     ReplaceRules
+     (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+     [Relation]
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Relations -&gt; [Relation]
+forall c v. Listable c v =&gt; c -&gt; [v]
+</span><a href="Containers.html#toList"><span class="hs-identifier hs-var">toList</span></a></span><span> </span><span class="annot"><span class="annottext">(Relations -&gt; [Relation])
+-&gt; ReaderT
+     ReplaceRules
+     (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+     Relations
+-&gt; ReaderT
+     ReplaceRules
+     (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+     [Relation]
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">Rels -&gt; LocalReader Relations
+</span><a href="TM2SP.Relations.html#rels_"><span class="hs-identifier hs-var">rels_</span></a></span><span> </span><span class="annot"><span class="annottext">Rels
+</span><a href="#local-6989586621679339528"><span class="hs-identifier hs-var">rs</span></a></span><span>
+</span><span id="line-95"></span><span>
+</span><span id="line-96"></span><span class="hs-keyword">class</span><span> </span><span id="RangeElement"><span class="annot"><a href="TM2SP.Relations.html#RangeElement"><span class="hs-identifier hs-var">RangeElement</span></a></span></span><span> </span><span id="local-6989586621679339659"><span class="annot"><a href="#local-6989586621679339659"><span class="hs-identifier hs-type">e</span></a></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-97"></span><span>    </span><span id="dimension"><span class="annot"><a href="TM2SP.Relations.html#dimension"><span class="hs-identifier hs-type">dimension</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Set</span></span><span> </span><span class="annot"><a href="#local-6989586621679339659"><span class="hs-identifier hs-type">e</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>
+</span><span id="line-98"></span><span>    </span><span id="range_"><span class="annot"><a href="TM2SP.Relations.html#range_"><span class="hs-identifier hs-type">range_</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TM2SP.Relations.html#Range"><span class="hs-identifier hs-type">Range</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679339659"><span class="hs-identifier hs-type">e</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TM2SP.Relations.html#LocalReader"><span class="hs-identifier hs-type">LocalReader</span></a></span><span> </span><span class="annot"><a href="TM2SP.Relations.html#ReplaceRule"><span class="hs-identifier hs-type">ReplaceRule</span></a></span><span>
+</span><span id="line-99"></span><span>    </span><span class="hs-keyword">default</span><span> </span><span id="range_"><span class="annot"><a href="TM2SP.Relations.html#range_"><span class="hs-identifier hs-type">range_</span></a></span></span><span> </span><span class="hs-glyph">::</span><span>
+</span><span id="line-100"></span><span>        </span><span class="hs-special">(</span><span class="annot"><a href="Containers.html#Sizable"><span class="hs-identifier hs-type">Sizable</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679339659"><span class="hs-identifier hs-type">e</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Containers.html#Listable"><span class="hs-identifier hs-type">Listable</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679339659"><span class="hs-identifier hs-type">e</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Ord</span></span><span> </span><span class="annot"><a href="#local-6989586621679339659"><span class="hs-identifier hs-type">e</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=&gt;</span><span>
+</span><span id="line-101"></span><span>        </span><span class="annot"><a href="TM2SP.Relations.html#Range"><span class="hs-identifier hs-type">Range</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679339659"><span class="hs-identifier hs-type">e</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TM2SP.Relations.html#LocalReader"><span class="hs-identifier hs-type">LocalReader</span></a></span><span> </span><span class="annot"><a href="TM2SP.Relations.html#ReplaceRule"><span class="hs-identifier hs-type">ReplaceRule</span></a></span><span>
+</span><span id="line-102"></span><span>    </span><span id="local-6989586621679339521"><span class="annot"><a href="TM2SP.Relations.html#range_"><span class="hs-identifier hs-var hs-var">range_</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="TM2SP.Relations.html#Range"><span class="hs-identifier hs-type">Range</span></a></span><span> </span><span id="local-6989586621679339520"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679339520"><span class="hs-identifier hs-var">str</span></a></span></span><span> </span><span id="local-6989586621679339519"><span class="annot"><span class="annottext">SetGetter e
+</span><a href="#local-6989586621679339519"><span class="hs-identifier hs-var">cStrGetter</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-103"></span><span>        </span><span id="local-6989586621679339518"><span class="annot"><span class="annottext">Set e
+</span><a href="#local-6989586621679339518"><span class="hs-identifier hs-var">cStrSet</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">ReaderT TuringMachine m (Set e)
+-&gt; ReaderT
+     ReplaceRules
+     (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+     (Set e)
+forall (m :: * -&gt; *) a.
+MonadFail m =&gt;
+ReaderT TuringMachine m a
+-&gt; ReaderT
+     ReplaceRules (ReaderT GeneratorsDescr (ReaderT TuringMachine m)) a
+</span><a href="TM2SP.Relations.html#liftTM"><span class="hs-identifier hs-var">liftTM</span></a></span><span> </span><span class="annot"><span class="annottext">(ReaderT TuringMachine m (Set e)
+ -&gt; ReaderT
+      ReplaceRules
+      (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+      (Set e))
+-&gt; ReaderT TuringMachine m (Set e)
+-&gt; ReaderT
+     ReplaceRules
+     (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+     (Set e)
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Getting (Set e) TuringMachine (Set e)
+-&gt; ReaderT TuringMachine m (Set e)
+forall s (m :: * -&gt; *) a. MonadReader s m =&gt; Getting a s a -&gt; m a
+</span><span class="hs-identifier hs-var">view</span></span><span> </span><span class="annot"><span class="annottext">Getting (Set e) TuringMachine (Set e)
+SetGetter e
+</span><a href="#local-6989586621679339519"><span class="hs-identifier hs-var">cStrGetter</span></a></span><span>
+</span><span id="line-104"></span><span>        </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679339516"><span class="annot"><span class="annottext">fs' :: [String]
+</span><a href="#local-6989586621679339516"><span class="hs-identifier hs-var hs-var">fs'</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; [String]
+</span><span class="hs-identifier hs-var">words</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679339520"><span class="hs-identifier hs-var">str</span></a></span><span>
+</span><span id="line-105"></span><span>        </span><span class="annot"><span class="annottext">Bool
+-&gt; ReaderT
+     ReplaceRules (ReaderT GeneratorsDescr (ReaderT TuringMachine m)) ()
+-&gt; ReaderT
+     ReplaceRules (ReaderT GeneratorsDescr (ReaderT TuringMachine m)) ()
+forall (f :: * -&gt; *). Applicative f =&gt; Bool -&gt; f () -&gt; f ()
+</span><span class="hs-identifier hs-var">when</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[String] -&gt; Int
+forall (t :: * -&gt; *) a. Foldable t =&gt; t a -&gt; Int
+</span><span class="hs-identifier hs-var">length</span></span><span> </span><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679339516"><span class="hs-identifier hs-var">fs'</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Bool
+forall a. Ord a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">&gt;</span></span><span> </span><span class="annot"><span class="annottext">Set e -&gt; Int
+forall e. RangeElement e =&gt; Set e -&gt; Int
+</span><a href="TM2SP.Relations.html#dimension"><span class="hs-identifier hs-var">dimension</span></a></span><span> </span><span class="annot"><span class="annottext">Set e
+</span><a href="#local-6989586621679339518"><span class="hs-identifier hs-var">cStrSet</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">(ReaderT
+   ReplaceRules (ReaderT GeneratorsDescr (ReaderT TuringMachine m)) ()
+ -&gt; ReaderT
+      ReplaceRules
+      (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+      ())
+-&gt; ReaderT
+     ReplaceRules (ReaderT GeneratorsDescr (ReaderT TuringMachine m)) ()
+-&gt; ReaderT
+     ReplaceRules (ReaderT GeneratorsDescr (ReaderT TuringMachine m)) ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span>
+</span><span id="line-106"></span><span>            </span><span class="annot"><span class="annottext">String
+-&gt; ReaderT
+     ReplaceRules (ReaderT GeneratorsDescr (ReaderT TuringMachine m)) ()
+forall (m :: * -&gt; *) a. MonadFail m =&gt; String -&gt; m a
+</span><span class="hs-identifier hs-var">fail</span></span><span>
+</span><span id="line-107"></span><span>                </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;Amount of formats does not equal to dimension of received data&quot;</span></span><span>
+</span><span id="line-108"></span><span>        </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679339513"><span class="annot"><span class="annottext">[Maybe TaggedFormat]
+</span><a href="#local-6989586621679339513"><span class="hs-identifier hs-var">mfs</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="Format.html#TaggedFormat"><span class="hs-identifier hs-type">TaggedFormat</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe TaggedFormat
+forall f (m :: * -&gt; *). (Format f, MonadFail m) =&gt; String -&gt; m f
+</span><a href="Format.html#format"><span class="hs-identifier hs-var">format</span></a></span><span> </span><span class="annot"><span class="annottext">(String -&gt; Maybe TaggedFormat) -&gt; [String] -&gt; [Maybe TaggedFormat]
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679339516"><span class="hs-identifier hs-var">fs'</span></a></span><span>
+</span><span id="line-109"></span><span>        </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679339511"><span class="annot"><span class="annottext">strsList :: [[String]]
+</span><a href="#local-6989586621679339511"><span class="hs-identifier hs-var hs-var">strsList</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">e -&gt; [String]
+forall c v. Listable c v =&gt; c -&gt; [v]
+</span><a href="Containers.html#toList"><span class="hs-identifier hs-var">toList</span></a></span><span> </span><span class="annot"><span class="annottext">(e -&gt; [String]) -&gt; [e] -&gt; [[String]]
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">Set e -&gt; [e]
+forall c v. Listable c v =&gt; c -&gt; [v]
+</span><a href="Containers.html#toList"><span class="hs-identifier hs-var">toList</span></a></span><span> </span><span class="annot"><span class="annottext">Set e
+</span><a href="#local-6989586621679339518"><span class="hs-identifier hs-var">cStrSet</span></a></span><span>
+</span><span id="line-110"></span><span>            </span><span id="local-6989586621679339510"><span class="annot"><span class="annottext">gs' :: [[String]]
+</span><a href="#local-6989586621679339510"><span class="hs-identifier hs-var hs-var">gs'</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Maybe String] -&gt; [String]
+forall a. [Maybe a] -&gt; [a]
+</span><span class="hs-identifier hs-var">catMaybes</span></span><span> </span><span class="annot"><span class="annottext">([Maybe String] -&gt; [String])
+-&gt; ([String] -&gt; [Maybe String]) -&gt; [String] -&gt; [String]
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">(Maybe TaggedFormat -&gt; String -&gt; Maybe String)
+-&gt; [Maybe TaggedFormat] -&gt; [String] -&gt; [Maybe String]
+forall a b c. (a -&gt; b -&gt; c) -&gt; [a] -&gt; [b] -&gt; [c]
+</span><span class="hs-identifier hs-var">zipWith</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">(TaggedFormat -&gt; String -&gt; String)
+-&gt; Maybe TaggedFormat -&gt; String -&gt; Maybe String
+forall (t :: * -&gt; *) (f :: * -&gt; *) a b.
+(Traversable t, Applicative f) =&gt;
+(a -&gt; f b) -&gt; t a -&gt; f (t b)
+</span><span class="hs-identifier hs-var">traverse</span></span><span> </span><span class="annot"><span class="annottext">TaggedFormat -&gt; String -&gt; String
+forall f i. Apply f i =&gt; f -&gt; i -&gt; String
+</span><a href="Format.html#apply"><span class="hs-identifier hs-var">apply</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[Maybe TaggedFormat]
+</span><a href="#local-6989586621679339513"><span class="hs-identifier hs-var">mfs</span></a></span><span> </span><span class="annot"><span class="annottext">([String] -&gt; [String]) -&gt; [[String]] -&gt; [[String]]
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">[[String]]
+</span><a href="#local-6989586621679339511"><span class="hs-identifier hs-var">strsList</span></a></span><span>
+</span><span id="line-111"></span><span>        </span><span id="local-6989586621679339507"><span class="annot"><span class="annottext">[GWord]
+</span><a href="#local-6989586621679339507"><span class="hs-identifier hs-var">gs</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">([String]
+ -&gt; ReaderT
+      ReplaceRules
+      (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+      GWord)
+-&gt; [[String]]
+-&gt; ReaderT
+     ReplaceRules
+     (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+     [GWord]
+forall (t :: * -&gt; *) (f :: * -&gt; *) a b.
+(Traversable t, Applicative f) =&gt;
+(a -&gt; f b) -&gt; t a -&gt; f (t b)
+</span><span class="hs-identifier hs-var">traverse</span></span><span class="annot"><span class="annottext">(([String]
+  -&gt; ReaderT
+       ReplaceRules
+       (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+       GWord)
+ -&gt; [[String]]
+ -&gt; ReaderT
+      ReplaceRules
+      (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+      [GWord])
+-&gt; ((String
+     -&gt; ReaderT
+          ReplaceRules
+          (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+          Generator)
+    -&gt; [String]
+    -&gt; ReaderT
+         ReplaceRules
+         (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+         GWord)
+-&gt; (String
+    -&gt; ReaderT
+         ReplaceRules
+         (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+         Generator)
+-&gt; [[String]]
+-&gt; ReaderT
+     ReplaceRules
+     (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+     [GWord]
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span class="annot"><span class="annottext">(String
+ -&gt; ReaderT
+      ReplaceRules
+      (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+      Generator)
+-&gt; [String]
+-&gt; ReaderT
+     ReplaceRules
+     (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+     GWord
+forall (t :: * -&gt; *) (f :: * -&gt; *) a b.
+(Traversable t, Applicative f) =&gt;
+(a -&gt; f b) -&gt; t a -&gt; f (t b)
+</span><span class="hs-identifier hs-var">traverse</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">String
+-&gt; ReaderT
+     ReplaceRules
+     (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+     Generator
+String -&gt; LocalReader Generator
+</span><a href="TM2SP.Relations.html#gen_"><span class="hs-identifier hs-var">gen_</span></a></span><span> </span><span class="annot"><span class="annottext">[[String]]
+</span><a href="#local-6989586621679339510"><span class="hs-identifier hs-var">gs'</span></a></span><span>
+</span><span id="line-112"></span><span>        </span><span class="annot"><span class="annottext">ReplaceRule
+-&gt; ReaderT
+     ReplaceRules
+     (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+     ReplaceRule
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">TaggedFormat -&gt; String
+forall f. Apply f () =&gt; f -&gt; String
+</span><a href="Format.html#format2str"><span class="hs-identifier hs-var">format2str</span></a></span><span> </span><span class="annot"><span class="annottext">(TaggedFormat -&gt; String) -&gt; [TaggedFormat] -&gt; [String]
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">[Maybe TaggedFormat] -&gt; [TaggedFormat]
+forall a. [Maybe a] -&gt; [a]
+</span><span class="hs-identifier hs-var">catMaybes</span></span><span> </span><span class="annot"><span class="annottext">[Maybe TaggedFormat]
+</span><a href="#local-6989586621679339513"><span class="hs-identifier hs-var">mfs</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">[GWord]
+</span><a href="#local-6989586621679339507"><span class="hs-identifier hs-var">gs</span></a></span><span class="hs-special">)</span></span><span>
+</span><span id="line-113"></span><span>
+</span><span id="line-114"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="TM2SP.Relations.html#RangeElement"><span class="hs-identifier hs-type">RangeElement</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-115"></span><span>    </span><span id="local-6989586621679339501"><span class="annot"><span class="annottext">dimension :: Set String -&gt; Int
+</span><a href="#local-6989586621679339501"><span class="hs-identifier hs-var hs-var hs-var hs-var">dimension</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Int -&gt; Set String -&gt; Int
+forall a b. a -&gt; b -&gt; a
+</span><span class="hs-identifier hs-var">const</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">1</span></span><span>
+</span><span id="line-116"></span><span>    </span><span id="local-6989586621679339499"><span class="annot"><span class="annottext">range_ :: Range String -&gt; LocalReader ReplaceRule
+</span><a href="#local-6989586621679339499"><span class="hs-identifier hs-var hs-var hs-var hs-var">range_</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="TM2SP.Relations.html#Range"><span class="hs-identifier hs-type">Range</span></a></span><span> </span><span id="local-6989586621679339498"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679339498"><span class="hs-identifier hs-var">str</span></a></span></span><span> </span><span id="local-6989586621679339497"><span class="annot"><span class="annottext">SetGetter String
+</span><a href="#local-6989586621679339497"><span class="hs-identifier hs-var">strGetter</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-117"></span><span>        </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679339496"><span class="annot"><span class="annottext">fs' :: [String]
+</span><a href="#local-6989586621679339496"><span class="hs-identifier hs-var hs-var">fs'</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; [String]
+</span><span class="hs-identifier hs-var">words</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679339498"><span class="hs-identifier hs-var">str</span></a></span><span>
+</span><span id="line-118"></span><span>        </span><span class="annot"><span class="annottext">Bool
+-&gt; ReaderT
+     ReplaceRules (ReaderT GeneratorsDescr (ReaderT TuringMachine m)) ()
+-&gt; ReaderT
+     ReplaceRules (ReaderT GeneratorsDescr (ReaderT TuringMachine m)) ()
+forall (f :: * -&gt; *). Applicative f =&gt; Bool -&gt; f () -&gt; f ()
+</span><span class="hs-identifier hs-var">when</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[String] -&gt; Int
+forall (t :: * -&gt; *) a. Foldable t =&gt; t a -&gt; Int
+</span><span class="hs-identifier hs-var">length</span></span><span> </span><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679339496"><span class="hs-identifier hs-var">fs'</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Bool
+forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">/=</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">1</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">(ReaderT
+   ReplaceRules (ReaderT GeneratorsDescr (ReaderT TuringMachine m)) ()
+ -&gt; ReaderT
+      ReplaceRules
+      (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+      ())
+-&gt; ReaderT
+     ReplaceRules (ReaderT GeneratorsDescr (ReaderT TuringMachine m)) ()
+-&gt; ReaderT
+     ReplaceRules (ReaderT GeneratorsDescr (ReaderT TuringMachine m)) ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span>
+</span><span id="line-119"></span><span>            </span><span class="annot"><span class="annottext">String
+-&gt; ReaderT
+     ReplaceRules (ReaderT GeneratorsDescr (ReaderT TuringMachine m)) ()
+forall (m :: * -&gt; *) a. MonadFail m =&gt; String -&gt; m a
+</span><span class="hs-identifier hs-var">fail</span></span><span>
+</span><span id="line-120"></span><span>                </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;Amount of formats does not equal to dimension of received data&quot;</span></span><span>
+</span><span id="line-121"></span><span>        </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679339494"><span class="annot"><span class="annottext">f' :: String
+</span><a href="#local-6989586621679339494"><span class="hs-identifier hs-var hs-var">f'</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+forall a. [a] -&gt; a
+</span><span class="hs-identifier hs-var">head</span></span><span> </span><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679339496"><span class="hs-identifier hs-var">fs'</span></a></span><span>
+</span><span id="line-122"></span><span>        </span><span id="local-6989586621679339492"><span class="annot"><span class="annottext">TaggedFormat
+</span><a href="#local-6989586621679339492"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Format.html#TaggedFormat"><span class="hs-identifier hs-type">TaggedFormat</span></a></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">String
+-&gt; ReaderT
+     ReplaceRules
+     (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+     TaggedFormat
+forall f (m :: * -&gt; *). (Format f, MonadFail m) =&gt; String -&gt; m f
+</span><a href="Format.html#format"><span class="hs-identifier hs-var">format</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679339494"><span class="hs-identifier hs-var">f'</span></a></span><span>
+</span><span id="line-123"></span><span>        </span><span id="local-6989586621679339491"><span class="annot"><span class="annottext">Set String
+</span><a href="#local-6989586621679339491"><span class="hs-identifier hs-var">strSet</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">ReaderT TuringMachine m (Set String)
+-&gt; ReaderT
+     ReplaceRules
+     (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+     (Set String)
+forall (m :: * -&gt; *) a.
+MonadFail m =&gt;
+ReaderT TuringMachine m a
+-&gt; ReaderT
+     ReplaceRules (ReaderT GeneratorsDescr (ReaderT TuringMachine m)) a
+</span><a href="TM2SP.Relations.html#liftTM"><span class="hs-identifier hs-var">liftTM</span></a></span><span> </span><span class="annot"><span class="annottext">(ReaderT TuringMachine m (Set String)
+ -&gt; ReaderT
+      ReplaceRules
+      (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+      (Set String))
+-&gt; ReaderT TuringMachine m (Set String)
+-&gt; ReaderT
+     ReplaceRules
+     (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+     (Set String)
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Getting (Set String) TuringMachine (Set String)
+-&gt; ReaderT TuringMachine m (Set String)
+forall s (m :: * -&gt; *) a. MonadReader s m =&gt; Getting a s a -&gt; m a
+</span><span class="hs-identifier hs-var">view</span></span><span> </span><span class="annot"><span class="annottext">Getting (Set String) TuringMachine (Set String)
+SetGetter String
+</span><a href="#local-6989586621679339497"><span class="hs-identifier hs-var">strGetter</span></a></span><span>
+</span><span id="line-124"></span><span>        </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679339490"><span class="annot"><span class="annottext">strList :: [String]
+</span><a href="#local-6989586621679339490"><span class="hs-identifier hs-var hs-var">strList</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Set String -&gt; [String]
+forall c v. Listable c v =&gt; c -&gt; [v]
+</span><a href="Containers.html#toList"><span class="hs-identifier hs-var">toList</span></a></span><span> </span><span class="annot"><span class="annottext">Set String
+</span><a href="#local-6989586621679339491"><span class="hs-identifier hs-var">strSet</span></a></span><span>
+</span><span id="line-125"></span><span>        </span><span id="local-6989586621679339489"><span class="annot"><span class="annottext">GWord
+</span><a href="#local-6989586621679339489"><span class="hs-identifier hs-var">gs</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">(String
+ -&gt; ReaderT
+      ReplaceRules
+      (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+      Generator)
+-&gt; [String]
+-&gt; ReaderT
+     ReplaceRules
+     (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+     GWord
+forall (t :: * -&gt; *) (f :: * -&gt; *) a b.
+(Traversable t, Applicative f) =&gt;
+(a -&gt; f b) -&gt; t a -&gt; f (t b)
+</span><span class="hs-identifier hs-var">traverse</span></span><span> </span><span class="annot"><span class="annottext">String
+-&gt; ReaderT
+     ReplaceRules
+     (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+     Generator
+String -&gt; LocalReader Generator
+</span><a href="TM2SP.Relations.html#gen_"><span class="hs-identifier hs-var">gen_</span></a></span><span> </span><span class="annot"><span class="annottext">([String]
+ -&gt; ReaderT
+      ReplaceRules
+      (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+      GWord)
+-&gt; [String]
+-&gt; ReaderT
+     ReplaceRules
+     (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+     GWord
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">TaggedFormat -&gt; String -&gt; String
+forall f i. Apply f i =&gt; f -&gt; i -&gt; String
+</span><a href="Format.html#apply"><span class="hs-identifier hs-var">apply</span></a></span><span> </span><span class="annot"><span class="annottext">TaggedFormat
+</span><a href="#local-6989586621679339492"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">(String -&gt; String) -&gt; [String] -&gt; [String]
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679339490"><span class="hs-identifier hs-var">strList</span></a></span><span>
+</span><span id="line-126"></span><span>        </span><span class="annot"><span class="annottext">ReplaceRule
+-&gt; ReaderT
+     ReplaceRules
+     (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+     ReplaceRule
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">[</span><span class="annot"><span class="annottext">TaggedFormat -&gt; String
+forall f. Apply f () =&gt; f -&gt; String
+</span><a href="Format.html#format2str"><span class="hs-identifier hs-var">format2str</span></a></span><span> </span><span class="annot"><span class="annottext">TaggedFormat
+</span><a href="#local-6989586621679339492"><span class="hs-identifier hs-var">f</span></a></span><span class="hs-special">]</span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Generator -&gt; GWord
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">(Generator -&gt; GWord) -&gt; GWord -&gt; [GWord]
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">GWord
+</span><a href="#local-6989586621679339489"><span class="hs-identifier hs-var">gs</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-127"></span><span>
+</span><span id="line-128"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679339486"><span class="annot"><a href="TM2SP.Relations.html#RangeElement"><span class="hs-identifier hs-type">RangeElement</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Containers.Quadruple.html#Quadruple"><span class="hs-identifier hs-type">Quadruple</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span class="hs-special">)</span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-129"></span><span>    </span><span id="local-6989586621679339485"><span class="annot"><span class="annottext">dimension :: Set (Quadruple String) -&gt; Int
+</span><a href="#local-6989586621679339485"><span class="hs-identifier hs-var hs-var hs-var hs-var">dimension</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Int -&gt; Set (Quadruple String) -&gt; Int
+forall a b. a -&gt; b -&gt; a
+</span><span class="hs-identifier hs-var">const</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">4</span></span><span>
+</span><span id="line-130"></span><span>
+</span><span id="line-131"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679339482"><span class="annot"><a href="TM2SP.Relations.html#RangeElement"><span class="hs-identifier hs-type">RangeElement</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span class="hs-special">]</span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-132"></span><span>    </span><span id="local-6989586621679339481"><span class="annot"><span class="annottext">dimension :: Set [String] -&gt; Int
+</span><a href="#local-6989586621679339481"><span class="hs-identifier hs-var hs-var hs-var hs-var">dimension</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">([String] -&gt; Int -&gt; Int) -&gt; Int -&gt; Set [String] -&gt; Int
+forall (t :: * -&gt; *) a b.
+Foldable t =&gt;
+(a -&gt; b -&gt; b) -&gt; b -&gt; t a -&gt; b
+</span><span class="hs-identifier hs-var">foldr</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
+forall a. Ord a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-identifier hs-var">min</span></span><span> </span><span class="annot"><span class="annottext">(Int -&gt; Int -&gt; Int) -&gt; ([String] -&gt; Int) -&gt; [String] -&gt; Int -&gt; Int
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; Int
+forall (t :: * -&gt; *) a. Foldable t =&gt; t a -&gt; Int
+</span><span class="hs-identifier hs-var">length</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">42</span></span><span>
+</span><span id="line-133"></span><span>
+</span><span id="line-134"></span><span class="annot"><a href="TM2SP.Relations.html#gens_"><span class="hs-identifier hs-type">gens_</span></a></span><span> </span><span class="hs-glyph">::</span><span>
+</span><span id="line-135"></span><span>    </span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span>
+</span><span id="line-136"></span><span>    </span><span class="hs-special">[</span><span class="annot"><a href="TM2SP.Relations.html#ReplaceAtom"><span class="hs-identifier hs-type">ReplaceAtom</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span>
+</span><span id="line-137"></span><span>    </span><span class="annot"><a href="TM2SP.Relations.html#LocalReader"><span class="hs-identifier hs-type">LocalReader</span></a></span><span> </span><span class="hs-special">[</span><span class="hs-special">(</span><span class="annot"><a href="SemigroupPresentation.Generator.html#GWord"><span class="hs-identifier hs-type">SP.GWord</span></a></span><span class="hs-special">,</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="TM2SP.Relations.html#ReplaceAtom"><span class="hs-identifier hs-type">ReplaceAtom</span></a></span><span class="hs-special">]</span><span class="hs-special">)</span><span class="hs-special">]</span><span>
+</span><span id="line-138"></span><span id="gens_"><span class="annot"><span class="annottext">gens_ :: [String] -&gt; [ReplaceAtom] -&gt; LocalReader [(GWord, [ReplaceAtom])]
+</span><a href="TM2SP.Relations.html#gens_"><span class="hs-identifier hs-var hs-var">gens_</span></a></span></span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span> </span><span id="local-6989586621679339478"><span class="annot"><span class="annottext">[ReplaceAtom]
+</span><a href="#local-6989586621679339478"><span class="hs-identifier hs-var">replaceAtoms</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[(GWord, [ReplaceAtom])]
+-&gt; ReaderT
+     ReplaceRules
+     (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+     [(GWord, [ReplaceAtom])]
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="hs-special">[</span><span class="hs-special">(</span><span class="hs-special">[</span><span class="hs-special">]</span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">[ReplaceAtom]
+</span><a href="#local-6989586621679339478"><span class="hs-identifier hs-var">replaceAtoms</span></a></span><span class="hs-special">)</span><span class="hs-special">]</span><span>
+</span><span id="line-139"></span><span class="annot"><a href="TM2SP.Relations.html#gens_"><span class="hs-identifier hs-var">gens_</span></a></span><span> </span><span id="local-6989586621679339477"><span class="annot"><span class="annottext">allGs :: [String]
+</span><a href="#local-6989586621679339477"><span class="hs-identifier hs-var">allGs</span></a></span></span><span class="hs-glyph">@</span><span class="hs-special">(</span><span id="local-6989586621679339476"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679339476"><span class="hs-identifier hs-var">g</span></a></span></span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679339475"><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679339475"><span class="hs-identifier hs-var">gs</span></a></span></span><span class="hs-special">)</span><span> </span><span id="local-6989586621679339474"><span class="annot"><span class="annottext">[ReplaceAtom]
+</span><a href="#local-6989586621679339474"><span class="hs-identifier hs-var">replaceAtoms</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-140"></span><span>    </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">(ReplaceAtom -&gt; Bool) -&gt; [ReplaceAtom] -&gt; Maybe ReplaceAtom
+forall (t :: * -&gt; *) a. Foldable t =&gt; (a -&gt; Bool) -&gt; t a -&gt; Maybe a
+</span><span class="hs-identifier hs-var">find</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String -&gt; ReplaceAtom -&gt; Bool
+</span><a href="TM2SP.Relations.html#consistRA"><span class="hs-identifier hs-var">consistRA</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679339476"><span class="hs-identifier hs-var">g</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[ReplaceAtom]
+</span><a href="#local-6989586621679339474"><span class="hs-identifier hs-var">replaceAtoms</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-141"></span><span>        </span><span class="annot"><span class="hs-identifier hs-type">Just</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
+</span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679339473"><span class="annot"><span class="annottext">Generator
+</span><a href="#local-6989586621679339473"><span class="hs-identifier hs-var">gen</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span>
+</span><span id="line-142"></span><span>            </span><span class="annot"><span class="annottext">Generator -&gt; [(GWord, [ReplaceAtom])] -&gt; [(GWord, [ReplaceAtom])]
+forall s t a b a. (Each s t a b, Field1 a b [a] [a]) =&gt; a -&gt; s -&gt; t
+</span><a href="#local-6989586621679339472"><span class="hs-identifier hs-var">add</span></a></span><span> </span><span class="annot"><span class="annottext">Generator
+</span><a href="#local-6989586621679339473"><span class="hs-identifier hs-var">gen</span></a></span><span> </span><span class="annot"><span class="annottext">([(GWord, [ReplaceAtom])] -&gt; [(GWord, [ReplaceAtom])])
+-&gt; ReaderT
+     ReplaceRules
+     (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+     [(GWord, [ReplaceAtom])]
+-&gt; ReaderT
+     ReplaceRules
+     (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+     [(GWord, [ReplaceAtom])]
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; [ReplaceAtom] -&gt; LocalReader [(GWord, [ReplaceAtom])]
+</span><a href="TM2SP.Relations.html#gens_"><span class="hs-identifier hs-var">gens_</span></a></span><span> </span><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679339475"><span class="hs-identifier hs-var">gs</span></a></span><span> </span><span class="annot"><span class="annottext">[ReplaceAtom]
+</span><a href="#local-6989586621679339474"><span class="hs-identifier hs-var">replaceAtoms</span></a></span><span>
+</span><span id="line-143"></span><span>        </span><span class="annot"><span class="annottext">Maybe ReplaceAtom
+</span><span class="hs-identifier hs-var">Nothing</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-144"></span><span>            </span><span id="local-6989586621679339471"><span class="annot"><span class="annottext">ReplaceRules
+</span><a href="#local-6989586621679339471"><span class="hs-identifier hs-var">replaceRules</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">ReaderT
+  ReplaceRules
+  (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+  ReplaceRules
+forall r (m :: * -&gt; *). MonadReader r m =&gt; m r
+</span><span class="hs-identifier hs-var">R.ask</span></span><span>
+</span><span id="line-145"></span><span>            </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">(ReplaceRule -&gt; Bool) -&gt; ReplaceRules -&gt; Maybe ReplaceRule
+forall (t :: * -&gt; *) a. Foldable t =&gt; (a -&gt; Bool) -&gt; t a -&gt; Maybe a
+</span><span class="hs-identifier hs-var">find</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String -&gt; ReplaceRule -&gt; Bool
+</span><a href="TM2SP.Relations.html#consistRR"><span class="hs-identifier hs-var">consistRR</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679339476"><span class="hs-identifier hs-var">g</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">ReplaceRules
+</span><a href="#local-6989586621679339471"><span class="hs-identifier hs-var">replaceRules</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-146"></span><span>                </span><span class="annot"><span class="annottext">Maybe ReplaceRule
+</span><span class="hs-identifier hs-var">Nothing</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-147"></span><span>                    </span><span id="local-6989586621679339469"><span class="annot"><span class="annottext">Generator
+</span><a href="#local-6989586621679339469"><span class="hs-identifier hs-var">gen</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">String -&gt; LocalReader Generator
+</span><a href="TM2SP.Relations.html#gen_"><span class="hs-identifier hs-var">gen_</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679339476"><span class="hs-identifier hs-var">g</span></a></span><span>
+</span><span id="line-148"></span><span>                    </span><span class="annot"><span class="annottext">Generator -&gt; [(GWord, [ReplaceAtom])] -&gt; [(GWord, [ReplaceAtom])]
+forall s t a b a. (Each s t a b, Field1 a b [a] [a]) =&gt; a -&gt; s -&gt; t
+</span><a href="#local-6989586621679339472"><span class="hs-identifier hs-var">add</span></a></span><span> </span><span class="annot"><span class="annottext">Generator
+</span><a href="#local-6989586621679339469"><span class="hs-identifier hs-var">gen</span></a></span><span> </span><span class="annot"><span class="annottext">([(GWord, [ReplaceAtom])] -&gt; [(GWord, [ReplaceAtom])])
+-&gt; ReaderT
+     ReplaceRules
+     (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+     [(GWord, [ReplaceAtom])]
+-&gt; ReaderT
+     ReplaceRules
+     (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+     [(GWord, [ReplaceAtom])]
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; [ReplaceAtom] -&gt; LocalReader [(GWord, [ReplaceAtom])]
+</span><a href="TM2SP.Relations.html#gens_"><span class="hs-identifier hs-var">gens_</span></a></span><span> </span><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679339475"><span class="hs-identifier hs-var">gs</span></a></span><span> </span><span class="annot"><span class="annottext">[ReplaceAtom]
+</span><a href="#local-6989586621679339474"><span class="hs-identifier hs-var">replaceAtoms</span></a></span><span>
+</span><span id="line-149"></span><span>                </span><span class="annot"><span class="hs-identifier hs-type">Just</span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679339468"><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679339468"><span class="hs-identifier hs-var">gs'</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679339467"><span class="annot"><span class="annottext">[GWord]
+</span><a href="#local-6989586621679339467"><span class="hs-identifier hs-var">genss</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span>
+</span><span id="line-150"></span><span>                    </span><span class="annot"><span class="annottext">([[(GWord, [ReplaceAtom])]] -&gt; [(GWord, [ReplaceAtom])])
+-&gt; ReaderT
+     ReplaceRules
+     (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+     [[(GWord, [ReplaceAtom])]]
+-&gt; ReaderT
+     ReplaceRules
+     (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+     [(GWord, [ReplaceAtom])]
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-identifier hs-var">fmap</span></span><span> </span><span class="annot"><span class="annottext">[[(GWord, [ReplaceAtom])]] -&gt; [(GWord, [ReplaceAtom])]
+forall (t :: * -&gt; *) a. Foldable t =&gt; t [a] -&gt; [a]
+</span><span class="hs-identifier hs-var">concat</span></span><span> </span><span class="annot"><span class="annottext">(ReaderT
+   ReplaceRules
+   (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+   [[(GWord, [ReplaceAtom])]]
+ -&gt; ReaderT
+      ReplaceRules
+      (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+      [(GWord, [ReplaceAtom])])
+-&gt; ReaderT
+     ReplaceRules
+     (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+     [[(GWord, [ReplaceAtom])]]
+-&gt; ReaderT
+     ReplaceRules
+     (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+     [(GWord, [ReplaceAtom])]
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span>
+</span><span id="line-151"></span><span>                        </span><span class="annot"><span class="annottext">([ReplaceAtom]
+ -&gt; ReaderT
+      ReplaceRules
+      (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+      [(GWord, [ReplaceAtom])])
+-&gt; [[ReplaceAtom]]
+-&gt; ReaderT
+     ReplaceRules
+     (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+     [[(GWord, [ReplaceAtom])]]
+forall (t :: * -&gt; *) (f :: * -&gt; *) a b.
+(Traversable t, Applicative f) =&gt;
+(a -&gt; f b) -&gt; t a -&gt; f (t b)
+</span><span class="hs-identifier hs-var">traverse</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[String] -&gt; [ReplaceAtom] -&gt; LocalReader [(GWord, [ReplaceAtom])]
+</span><a href="TM2SP.Relations.html#gens_"><span class="hs-identifier hs-var">gens_</span></a></span><span> </span><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679339477"><span class="hs-identifier hs-var">allGs</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">([[ReplaceAtom]]
+ -&gt; ReaderT
+      ReplaceRules
+      (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+      [[(GWord, [ReplaceAtom])]])
+-&gt; [[ReplaceAtom]]
+-&gt; ReaderT
+     ReplaceRules
+     (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+     [[(GWord, [ReplaceAtom])]]
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span>
+</span><span id="line-152"></span><span>                            </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">[String] -&gt; GWord -&gt; [ReplaceAtom]
+forall a b. [a] -&gt; [b] -&gt; [(a, b)]
+</span><span class="hs-identifier hs-var">zip</span></span><span> </span><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679339468"><span class="hs-identifier hs-var">gs'</span></a></span><span> </span><span class="annot"><span class="annottext">GWord
+</span><a href="#local-6989586621679339466"><span class="hs-identifier hs-var">gens</span></a></span><span> </span><span class="annot"><span class="annottext">[ReplaceAtom] -&gt; [ReplaceAtom] -&gt; [ReplaceAtom]
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[ReplaceAtom]
+</span><a href="#local-6989586621679339474"><span class="hs-identifier hs-var">replaceAtoms</span></a></span><span>
+</span><span id="line-153"></span><span>                            </span><span class="hs-glyph">|</span><span> </span><span id="local-6989586621679339466"><span class="annot"><span class="annottext">GWord
+</span><a href="#local-6989586621679339466"><span class="hs-identifier hs-var">gens</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">[GWord]
+</span><a href="#local-6989586621679339467"><span class="hs-identifier hs-var">genss</span></a></span><span>
+</span><span id="line-154"></span><span>                            </span><span class="hs-special">]</span><span>
+</span><span id="line-155"></span><span>      </span><span class="hs-keyword">where</span><span>
+</span><span id="line-156"></span><span>        </span><span id="local-6989586621679339472"><span class="annot"><span class="annottext">add :: a -&gt; s -&gt; t
+</span><a href="#local-6989586621679339472"><span class="hs-identifier hs-var hs-var">add</span></a></span></span><span> </span><span id="local-6989586621679339465"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679339465"><span class="hs-identifier hs-var">gen</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(a -&gt; Identity b) -&gt; s -&gt; Identity t
+forall s t a b. Each s t a b =&gt; Traversal s t a b
+</span><span class="hs-identifier hs-var">each</span></span><span class="annot"><span class="annottext">((a -&gt; Identity b) -&gt; s -&gt; Identity t)
+-&gt; (([a] -&gt; Identity [a]) -&gt; a -&gt; Identity b)
+-&gt; ([a] -&gt; Identity [a])
+-&gt; s
+-&gt; Identity t
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span class="annot"><span class="annottext">([a] -&gt; Identity [a]) -&gt; a -&gt; Identity b
+forall s t a b. Field1 s t a b =&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">_1</span></span><span> </span><span class="annot"><span class="annottext">(([a] -&gt; Identity [a]) -&gt; s -&gt; Identity t)
+-&gt; ([a] -&gt; [a]) -&gt; s -&gt; t
+forall s t a b. ASetter s t a b -&gt; (a -&gt; b) -&gt; s -&gt; t
+</span><span class="hs-operator hs-var">%~</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679339465"><span class="hs-identifier hs-var">gen</span></a></span><span> </span><span class="annot"><span class="annottext">a -&gt; [a] -&gt; [a]
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span class="hs-special">)</span><span>
+</span><span id="line-157"></span><span>
+</span><span id="line-158"></span><span class="annot"><a href="TM2SP.Relations.html#gen_"><span class="hs-identifier hs-type">gen_</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TM2SP.Relations.html#LocalReader"><span class="hs-identifier hs-type">LocalReader</span></a></span><span> </span><span class="annot"><a href="SemigroupPresentation.Generator.html#Generator"><span class="hs-identifier hs-type">SP.Generator</span></a></span><span>
+</span><span id="line-159"></span><span id="gen_"><span class="annot"><span class="annottext">gen_ :: String -&gt; LocalReader Generator
+</span><a href="TM2SP.Relations.html#gen_"><span class="hs-identifier hs-var hs-var">gen_</span></a></span></span><span> </span><span id="local-6989586621679339462"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679339462"><span class="hs-identifier hs-var">g</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-160"></span><span>    </span><span id="local-6989586621679339461"><span class="annot"><span class="annottext">GeneratorsDescr
+</span><a href="#local-6989586621679339461"><span class="hs-identifier hs-var">gsd</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">ReaderT GeneratorsDescr (ReaderT TuringMachine m) GeneratorsDescr
+-&gt; ReaderT
+     ReplaceRules
+     (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+     GeneratorsDescr
+forall (t :: (* -&gt; *) -&gt; * -&gt; *) (m :: * -&gt; *) a.
+(MonadTrans t, Monad m) =&gt;
+m a -&gt; t m a
+</span><span class="hs-identifier hs-var">lift</span></span><span> </span><span class="annot"><span class="annottext">ReaderT GeneratorsDescr (ReaderT TuringMachine m) GeneratorsDescr
+forall r (m :: * -&gt; *). MonadReader r m =&gt; m r
+</span><span class="hs-identifier hs-var">R.ask</span></span><span>
+</span><span id="line-161"></span><span>    </span><span class="annot"><span class="annottext">GeneratorsDescr
+</span><a href="#local-6989586621679339461"><span class="hs-identifier hs-var">gsd</span></a></span><span> </span><span class="annot"><span class="annottext">GeneratorsDescr
+-&gt; String
+-&gt; ReaderT
+     ReplaceRules
+     (ReaderT GeneratorsDescr (ReaderT TuringMachine m))
+     Generator
+forall c k v (m :: * -&gt; *).
+(Indexable c k v, MonadFail m) =&gt;
+c -&gt; k -&gt; m v
+</span><a href="Containers.html#%21%3F"><span class="hs-operator hs-var">!?</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679339462"><span class="hs-identifier hs-var">g</span></a></span><span>
+</span><span id="line-162"></span></pre></body></html>

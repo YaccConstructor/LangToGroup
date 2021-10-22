@@ -1,0 +1,108 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE TemplateHaskell #-}</span><span>
+</span><span id="line-2"></span><span>
+</span><span id="line-3"></span><span class="hs-comment">-- |Module `StringRewriting` include type of string rewriting system and useful</span><span>
+</span><span id="line-4"></span><span class="hs-comment">--  objects for working with it. This module also export other useful modules.</span><span>
+</span><span id="line-5"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">StringRewriting</span><span> </span><span class="hs-special">(</span><span>
+</span><span id="line-6"></span><span>    </span><span class="annot"><a href="StringRewriting.html#GeneratorsDescr"><span class="hs-identifier">GeneratorsDescr</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-7"></span><span>    </span><span class="annot"><a href="StringRewriting.html#StringRewriting"><span class="hs-identifier">StringRewriting</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-8"></span><span>    </span><span class="annot"><a href="StringRewriting.html#stringRewriting"><span class="hs-identifier">stringRewriting</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-9"></span><span>    </span><span class="annot"><a href="StringRewriting.html#rules"><span class="hs-identifier">rules</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-10"></span><span>    </span><span class="annot"><a href="StringRewriting.html#generatorsDescr"><span class="hs-identifier">generatorsDescr</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-11"></span><span>    </span><span class="hs-keyword">module</span><span> </span><span class="annot"><a href="StringRewriting.Rule.html"><span class="hs-identifier">StringRewriting.Rule</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-12"></span><span>    </span><span class="hs-keyword">module</span><span> </span><span class="annot"><a href="Containers.html"><span class="hs-identifier">Containers</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-13"></span><span>    </span><span class="hs-keyword">module</span><span> </span><span class="annot"><a href="Lens.html"><span class="hs-identifier">Lens</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-14"></span><span>  </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-15"></span><span>
+</span><span id="line-16"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="StringRewriting.Rule.html"><span class="hs-identifier">StringRewriting.Rule</span></a></span><span>
+</span><span id="line-17"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Containers.html"><span class="hs-identifier">Containers</span></a></span><span>
+</span><span id="line-18"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Lens.html"><span class="hs-identifier">Lens</span></a></span><span>
+</span><span id="line-19"></span><span>
+</span><span id="line-20"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Maybe</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">fromMaybe</span></span><span class="hs-special">)</span><span>
+</span><span id="line-21"></span><span>
+</span><span id="line-22"></span><span class="hs-keyword">type</span><span> </span><span id="GeneratorsDescr"><span class="annot"><a href="StringRewriting.html#GeneratorsDescr"><span class="hs-identifier hs-var">GeneratorsDescr</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><a href="Containers.IsoMap.html#IsoMap"><span class="hs-identifier hs-type">IsoMap</span></a></span><span> </span><span class="annot"><a href="StringRewriting.Generator.html#Generator"><span class="hs-identifier hs-type">Generator</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-23"></span><span>
+</span><span id="line-24"></span><span class="hs-keyword">data</span><span> </span><span id="StringRewriting"><span class="annot"><a href="StringRewriting.html#StringRewriting"><span class="hs-identifier hs-var">StringRewriting</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="SR"><span class="annot"><a href="StringRewriting.html#SR"><span class="hs-identifier hs-var">SR</span></a></span></span><span>
+</span><span id="line-25"></span><span>  </span><span class="hs-special">{</span><span> </span><span id="_rules"><span class="annot"><span class="annottext">StringRewriting -&gt; Rules
+</span><a href="StringRewriting.html#_rules"><span class="hs-identifier hs-var hs-var">_rules</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="StringRewriting.Rule.html#Rules"><span class="hs-identifier hs-type">Rules</span></a></span><span>
+</span><span id="line-26"></span><span>  </span><span class="hs-special">,</span><span> </span><span id="_generatorsDescr"><span class="annot"><span class="annottext">StringRewriting -&gt; GeneratorsDescr
+</span><a href="StringRewriting.html#_generatorsDescr"><span class="hs-identifier hs-var hs-var">_generatorsDescr</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="StringRewriting.html#GeneratorsDescr"><span class="hs-identifier hs-type">GeneratorsDescr</span></a></span><span>
+</span><span id="line-27"></span><span>  </span><span class="hs-special">}</span><span>
+</span><span id="line-28"></span><span>
+</span><span id="line-29"></span><span class="annot"><a href="StringRewriting.html#stringRewriting"><span class="hs-identifier hs-type">stringRewriting</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="StringRewriting.Rule.html#Rules"><span class="hs-identifier hs-type">Rules</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="StringRewriting.html#GeneratorsDescr"><span class="hs-identifier hs-type">GeneratorsDescr</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="StringRewriting.html#StringRewriting"><span class="hs-identifier hs-type">StringRewriting</span></a></span><span>
+</span><span id="line-30"></span><span id="stringRewriting"><span class="annot"><span class="annottext">stringRewriting :: Rules -&gt; GeneratorsDescr -&gt; StringRewriting
+</span><a href="StringRewriting.html#stringRewriting"><span class="hs-identifier hs-var hs-var">stringRewriting</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Rules -&gt; GeneratorsDescr -&gt; StringRewriting
+</span><a href="StringRewriting.html#SR"><span class="hs-identifier hs-var">SR</span></a></span><span>
+</span><span id="line-31"></span><span>
+</span><span id="line-32"></span><span id="generatorsDescr"><span id="rules"><span class="hs-identifier">makeLenses</span><span> </span><span class="hs-special">''</span><span class="hs-identifier">StringRewriting</span></span></span><span>
+</span><span id="line-33"></span><span>
+</span><span id="line-34"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679332753"><span id="local-6989586621679332756"><span class="annot"><span class="hs-identifier hs-type">Show</span></span><span> </span><span class="annot"><a href="StringRewriting.html#StringRewriting"><span class="hs-identifier hs-type">StringRewriting</span></a></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-35"></span><span>    </span><span id="local-6989586621679332751"><span class="annot"><span class="annottext">show :: StringRewriting -&gt; String
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">show</span></span></span><span> </span><span id="local-6989586621679332749"><span class="annot"><span class="annottext">StringRewriting
+</span><a href="#local-6989586621679332749"><span class="hs-identifier hs-var">sr</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-36"></span><span>        </span><span class="annot"><span class="annottext">((Rule -&gt; String) -&gt; Rules -&gt; String)
+-&gt; Rules -&gt; (Rule -&gt; String) -&gt; String
+forall a b c. (a -&gt; b -&gt; c) -&gt; b -&gt; a -&gt; c
+</span><span class="hs-identifier hs-var">flip</span></span><span> </span><span class="annot"><span class="annottext">(Rule -&gt; String) -&gt; Rules -&gt; String
+forall (t :: * -&gt; *) a b. Foldable t =&gt; (a -&gt; [b]) -&gt; t a -&gt; [b]
+</span><span class="hs-identifier hs-var">concatMap</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">StringRewriting
+</span><a href="#local-6989586621679332749"><span class="hs-identifier hs-var">sr</span></a></span><span class="annot"><span class="annottext">StringRewriting -&gt; Getting Rules StringRewriting Rules -&gt; Rules
+forall s a. s -&gt; Getting a s a -&gt; a
+</span><span class="hs-operator hs-var">^.</span></span><span class="annot"><span class="annottext">Getting Rules StringRewriting Rules
+Lens' StringRewriting Rules
+</span><a href="StringRewriting.html#rules"><span class="hs-identifier hs-var">rules</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">((Rule -&gt; String) -&gt; String) -&gt; (Rule -&gt; String) -&gt; String
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679332745"><span class="annot"><span class="annottext">Rule
+</span><a href="#local-6989586621679332745"><span class="hs-identifier hs-var">r</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span>
+</span><span id="line-37"></span><span>            </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679332744"><span class="annot"><span class="annottext">showGen :: Generator -&gt; String
+</span><a href="#local-6989586621679332744"><span class="hs-identifier hs-var hs-var">showGen</span></a></span></span><span> </span><span id="local-6989586621679332743"><span class="annot"><span class="annottext">Generator
+</span><a href="#local-6989586621679332743"><span class="hs-identifier hs-var">g</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe String -&gt; String
+forall a. a -&gt; Maybe a -&gt; a
+</span><span class="hs-identifier hs-var">fromMaybe</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;???&quot;</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">StringRewriting
+</span><a href="#local-6989586621679332749"><span class="hs-identifier hs-var">sr</span></a></span><span class="annot"><span class="annottext">StringRewriting
+-&gt; Getting (Maybe String) StringRewriting (Maybe String)
+-&gt; Maybe String
+forall s a. s -&gt; Getting a s a -&gt; a
+</span><span class="hs-operator hs-var">^.</span></span><span class="annot"><span class="annottext">(GeneratorsDescr -&gt; Const (Maybe String) GeneratorsDescr)
+-&gt; StringRewriting -&gt; Const (Maybe String) StringRewriting
+Lens' StringRewriting GeneratorsDescr
+</span><a href="StringRewriting.html#generatorsDescr"><span class="hs-identifier hs-var">generatorsDescr</span></a></span><span class="annot"><span class="annottext">((GeneratorsDescr -&gt; Const (Maybe String) GeneratorsDescr)
+ -&gt; StringRewriting -&gt; Const (Maybe String) StringRewriting)
+-&gt; Generator
+-&gt; Getting (Maybe String) StringRewriting (Maybe String)
+forall c k v (m :: * -&gt; *) x y.
+(Indexable c k v, MonadFail m) =&gt;
+Getting x y c -&gt; k -&gt; Getting x y (m v)
+</span><a href="Containers.html#.%40"><span class="hs-operator hs-var">.@</span></a></span><span class="annot"><span class="annottext">Generator
+</span><a href="#local-6989586621679332743"><span class="hs-identifier hs-var">g</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-38"></span><span>                </span><span id="local-6989586621679332741"><span class="annot"><span class="annottext">showGWord :: [Generator] -&gt; String
+</span><a href="#local-6989586621679332741"><span class="hs-identifier hs-var hs-var">showGWord</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><span class="hs-identifier hs-var">unwords</span></span><span> </span><span class="annot"><span class="annottext">([String] -&gt; String)
+-&gt; ([Generator] -&gt; [String]) -&gt; [Generator] -&gt; String
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">(Generator -&gt; String) -&gt; [Generator] -&gt; [String]
+forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="annot"><span class="annottext">Generator -&gt; String
+</span><a href="#local-6989586621679332744"><span class="hs-identifier hs-var">showGen</span></a></span><span>
+</span><span id="line-39"></span><span>            </span><span class="hs-keyword">in</span><span>  </span><span class="annot"><span class="annottext">[Generator] -&gt; String
+</span><a href="#local-6989586621679332741"><span class="hs-identifier hs-var">showGWord</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Rule
+</span><a href="#local-6989586621679332745"><span class="hs-identifier hs-var">r</span></a></span><span class="annot"><span class="annottext">Rule -&gt; Getting [Generator] Rule [Generator] -&gt; [Generator]
+forall s a. s -&gt; Getting a s a -&gt; a
+</span><span class="hs-operator hs-var">^.</span></span><span class="annot"><span class="annottext">Getting [Generator] Rule [Generator]
+Lens' Rule [Generator]
+</span><a href="StringRewriting.Rule.html#left"><span class="hs-identifier hs-var">left</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot; -&gt; &quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[Generator] -&gt; String
+</span><a href="#local-6989586621679332741"><span class="hs-identifier hs-var">showGWord</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Rule
+</span><a href="#local-6989586621679332745"><span class="hs-identifier hs-var">r</span></a></span><span class="annot"><span class="annottext">Rule -&gt; Getting [Generator] Rule [Generator] -&gt; [Generator]
+forall s a. s -&gt; Getting a s a -&gt; a
+</span><span class="hs-operator hs-var">^.</span></span><span class="annot"><span class="annottext">Getting [Generator] Rule [Generator]
+Lens' Rule [Generator]
+</span><a href="StringRewriting.Rule.html#right"><span class="hs-identifier hs-var">right</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;\n&quot;</span></span><span>
+</span><span id="line-40"></span></pre></body></html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">StringRewriting.Generator</span><span> </span><span class="hs-special">(</span><span>
+</span><span id="line-2"></span><span>    </span><span class="annot"><a href="StringRewriting.Generator.html#Generator"><span class="hs-identifier">Generator</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-3"></span><span>    </span><span class="annot"><a href="StringRewriting.Generator.html#generator"><span class="hs-identifier">generator</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-4"></span><span>    </span><span class="annot"><a href="StringRewriting.Generator.html#numGenerator"><span class="hs-identifier">numGenerator</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-5"></span><span>    </span><span class="annot"><a href="StringRewriting.Generator.html#GWord"><span class="hs-identifier">GWord</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-6"></span><span>  </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-7"></span><span>
+</span><span id="line-8"></span><span class="hs-keyword">newtype</span><span> </span><span id="Generator"><span class="annot"><a href="StringRewriting.Generator.html#Generator"><span class="hs-identifier hs-var">Generator</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="G"><span class="annot"><a href="StringRewriting.Generator.html#G"><span class="hs-identifier hs-var">G</span></a></span></span><span> </span><span class="hs-special">{</span><span> </span><span id="numGenerator"><span class="annot"><span class="annottext">Generator -&gt; Int
+</span><a href="StringRewriting.Generator.html#numGenerator"><span class="hs-identifier hs-var hs-var">numGenerator</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-special">}</span><span>
+</span><span id="line-9"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679332580"><span id="local-6989586621679332582"><span class="annot"><span class="annottext">Generator -&gt; Generator -&gt; Bool
+(Generator -&gt; Generator -&gt; Bool)
+-&gt; (Generator -&gt; Generator -&gt; Bool) -&gt; Eq Generator
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+/= :: Generator -&gt; Generator -&gt; Bool
+$c/= :: Generator -&gt; Generator -&gt; Bool
+== :: Generator -&gt; Generator -&gt; Bool
+$c== :: Generator -&gt; Generator -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679332564"><span id="local-6989586621679332566"><span id="local-6989586621679332568"><span id="local-6989586621679332570"><span id="local-6989586621679332572"><span id="local-6989586621679332574"><span id="local-6989586621679332576"><span class="annot"><span class="annottext">Eq Generator
+Eq Generator
+-&gt; (Generator -&gt; Generator -&gt; Ordering)
+-&gt; (Generator -&gt; Generator -&gt; Bool)
+-&gt; (Generator -&gt; Generator -&gt; Bool)
+-&gt; (Generator -&gt; Generator -&gt; Bool)
+-&gt; (Generator -&gt; Generator -&gt; Bool)
+-&gt; (Generator -&gt; Generator -&gt; Generator)
+-&gt; (Generator -&gt; Generator -&gt; Generator)
+-&gt; Ord Generator
+Generator -&gt; Generator -&gt; Bool
+Generator -&gt; Generator -&gt; Ordering
+Generator -&gt; Generator -&gt; Generator
+forall a.
+Eq a
+-&gt; (a -&gt; a -&gt; Ordering)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; Ord a
+min :: Generator -&gt; Generator -&gt; Generator
+$cmin :: Generator -&gt; Generator -&gt; Generator
+max :: Generator -&gt; Generator -&gt; Generator
+$cmax :: Generator -&gt; Generator -&gt; Generator
+&gt;= :: Generator -&gt; Generator -&gt; Bool
+$c&gt;= :: Generator -&gt; Generator -&gt; Bool
+&gt; :: Generator -&gt; Generator -&gt; Bool
+$c&gt; :: Generator -&gt; Generator -&gt; Bool
+&lt;= :: Generator -&gt; Generator -&gt; Bool
+$c&lt;= :: Generator -&gt; Generator -&gt; Bool
+&lt; :: Generator -&gt; Generator -&gt; Bool
+$c&lt; :: Generator -&gt; Generator -&gt; Bool
+compare :: Generator -&gt; Generator -&gt; Ordering
+$ccompare :: Generator -&gt; Generator -&gt; Ordering
+$cp1Ord :: Eq Generator
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Ord</span></span></span></span></span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-10"></span><span>
+</span><span id="line-11"></span><span class="annot"><a href="StringRewriting.Generator.html#generator"><span class="hs-identifier hs-type">generator</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="StringRewriting.Generator.html#Generator"><span class="hs-identifier hs-type">Generator</span></a></span><span>
+</span><span id="line-12"></span><span id="generator"><span class="annot"><span class="annottext">generator :: Int -&gt; Generator
+</span><a href="StringRewriting.Generator.html#generator"><span class="hs-identifier hs-var hs-var">generator</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Int -&gt; Generator
+</span><a href="StringRewriting.Generator.html#G"><span class="hs-identifier hs-var">G</span></a></span><span>
+</span><span id="line-13"></span><span>
+</span><span id="line-14"></span><span class="hs-keyword">type</span><span> </span><span id="GWord"><span class="annot"><a href="StringRewriting.Generator.html#GWord"><span class="hs-identifier hs-var">GWord</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="StringRewriting.Generator.html#Generator"><span class="hs-identifier hs-type">Generator</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-15"></span></pre></body></html>

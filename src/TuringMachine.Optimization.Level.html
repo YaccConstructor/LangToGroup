@@ -1,0 +1,141 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span id="%24maxtag_BN6c3VOvIKTJ63ux5riik8"><span id="%24tag2con_BN6c3VOvIKTJ63ux5riik8"><span id="%24con2tag_BN6c3VOvIKTJ63ux5riik8"></span></span></span><span class="hs-comment">-- |Module `TuringMachine.Optimization.Level` include levels of optimization of</span><span>
+</span><span id="line-2"></span><span class="hs-comment">--  Turing machine.</span><span>
+</span><span id="line-3"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">TuringMachine.Optimization.Level</span><span> </span><span class="hs-special">(</span><span>
+</span><span id="line-4"></span><span>    </span><span class="annot"><a href="TuringMachine.Optimization.Level.html#Level"><span class="hs-identifier">Level</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><span id="line-5"></span><span>    </span><span class="annot"><a href="TuringMachine.Optimization.Level.html#maxO"><span class="hs-identifier">maxO</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-6"></span><span>    </span><span class="annot"><a href="TuringMachine.Optimization.Level.html#levelGradation"><span class="hs-identifier">levelGradation</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-7"></span><span>  </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-8"></span><span>
+</span><span id="line-9"></span><span class="hs-keyword">data</span><span> </span><span id="Level"><span class="annot"><a href="TuringMachine.Optimization.Level.html#Level"><span class="hs-identifier hs-var">Level</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-10"></span><span>      </span><span id="O0"><span class="annot"><a href="TuringMachine.Optimization.Level.html#O0"><span class="hs-identifier hs-var">O0</span></a></span></span><span>
+</span><span id="line-11"></span><span>    </span><span class="hs-glyph">|</span><span> </span><span id="O1"><span class="annot"><a href="TuringMachine.Optimization.Level.html#O1"><span class="hs-identifier hs-var">O1</span></a></span></span><span>
+</span><span id="line-12"></span><span>    </span><span class="hs-glyph">|</span><span> </span><span id="O2"><span class="annot"><a href="TuringMachine.Optimization.Level.html#O2"><span class="hs-identifier hs-var">O2</span></a></span></span><span>
+</span><span id="line-13"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679337372"><span id="local-6989586621679337374"><span class="annot"><span class="annottext">Level -&gt; Level -&gt; Bool
+(Level -&gt; Level -&gt; Bool) -&gt; (Level -&gt; Level -&gt; Bool) -&gt; Eq Level
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+/= :: Level -&gt; Level -&gt; Bool
+$c/= :: Level -&gt; Level -&gt; Bool
+== :: Level -&gt; Level -&gt; Bool
+$c== :: Level -&gt; Level -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679337356"><span id="local-6989586621679337358"><span id="local-6989586621679337360"><span id="local-6989586621679337362"><span id="local-6989586621679337364"><span id="local-6989586621679337366"><span id="local-6989586621679337368"><span class="annot"><span class="annottext">Eq Level
+Eq Level
+-&gt; (Level -&gt; Level -&gt; Ordering)
+-&gt; (Level -&gt; Level -&gt; Bool)
+-&gt; (Level -&gt; Level -&gt; Bool)
+-&gt; (Level -&gt; Level -&gt; Bool)
+-&gt; (Level -&gt; Level -&gt; Bool)
+-&gt; (Level -&gt; Level -&gt; Level)
+-&gt; (Level -&gt; Level -&gt; Level)
+-&gt; Ord Level
+Level -&gt; Level -&gt; Bool
+Level -&gt; Level -&gt; Ordering
+Level -&gt; Level -&gt; Level
+forall a.
+Eq a
+-&gt; (a -&gt; a -&gt; Ordering)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; Ord a
+min :: Level -&gt; Level -&gt; Level
+$cmin :: Level -&gt; Level -&gt; Level
+max :: Level -&gt; Level -&gt; Level
+$cmax :: Level -&gt; Level -&gt; Level
+&gt;= :: Level -&gt; Level -&gt; Bool
+$c&gt;= :: Level -&gt; Level -&gt; Bool
+&gt; :: Level -&gt; Level -&gt; Bool
+$c&gt; :: Level -&gt; Level -&gt; Bool
+&lt;= :: Level -&gt; Level -&gt; Bool
+$c&lt;= :: Level -&gt; Level -&gt; Bool
+&lt; :: Level -&gt; Level -&gt; Bool
+$c&lt; :: Level -&gt; Level -&gt; Bool
+compare :: Level -&gt; Level -&gt; Ordering
+$ccompare :: Level -&gt; Level -&gt; Ordering
+$cp1Ord :: Eq Level
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Ord</span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679337339"><span id="local-6989586621679337341"><span id="local-6989586621679337343"><span id="local-6989586621679337345"><span id="local-6989586621679337347"><span id="local-6989586621679337349"><span id="local-6989586621679337351"><span id="local-6989586621679337353"><span class="annot"><span class="annottext">Int -&gt; Level
+Level -&gt; Int
+Level -&gt; [Level]
+Level -&gt; Level
+Level -&gt; Level -&gt; [Level]
+Level -&gt; Level -&gt; Level -&gt; [Level]
+(Level -&gt; Level)
+-&gt; (Level -&gt; Level)
+-&gt; (Int -&gt; Level)
+-&gt; (Level -&gt; Int)
+-&gt; (Level -&gt; [Level])
+-&gt; (Level -&gt; Level -&gt; [Level])
+-&gt; (Level -&gt; Level -&gt; [Level])
+-&gt; (Level -&gt; Level -&gt; Level -&gt; [Level])
+-&gt; Enum Level
+forall a.
+(a -&gt; a)
+-&gt; (a -&gt; a)
+-&gt; (Int -&gt; a)
+-&gt; (a -&gt; Int)
+-&gt; (a -&gt; [a])
+-&gt; (a -&gt; a -&gt; [a])
+-&gt; (a -&gt; a -&gt; [a])
+-&gt; (a -&gt; a -&gt; a -&gt; [a])
+-&gt; Enum a
+enumFromThenTo :: Level -&gt; Level -&gt; Level -&gt; [Level]
+$cenumFromThenTo :: Level -&gt; Level -&gt; Level -&gt; [Level]
+enumFromTo :: Level -&gt; Level -&gt; [Level]
+$cenumFromTo :: Level -&gt; Level -&gt; [Level]
+enumFromThen :: Level -&gt; Level -&gt; [Level]
+$cenumFromThen :: Level -&gt; Level -&gt; [Level]
+enumFrom :: Level -&gt; [Level]
+$cenumFrom :: Level -&gt; [Level]
+fromEnum :: Level -&gt; Int
+$cfromEnum :: Level -&gt; Int
+toEnum :: Int -&gt; Level
+$ctoEnum :: Int -&gt; Level
+pred :: Level -&gt; Level
+$cpred :: Level -&gt; Level
+succ :: Level -&gt; Level
+$csucc :: Level -&gt; Level
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Enum</span></span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679337334"><span id="local-6989586621679337336"><span class="annot"><span class="annottext">Level
+Level -&gt; Level -&gt; Bounded Level
+forall a. a -&gt; a -&gt; Bounded a
+maxBound :: Level
+$cmaxBound :: Level
+minBound :: Level
+$cminBound :: Level
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Bounded</span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-14"></span><span>
+</span><span id="line-15"></span><span class="annot"><a href="TuringMachine.Optimization.Level.html#maxO"><span class="hs-identifier hs-type">maxO</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TuringMachine.Optimization.Level.html#Level"><span class="hs-identifier hs-type">Level</span></a></span><span>
+</span><span id="line-16"></span><span id="maxO"><span class="annot"><span class="annottext">maxO :: Level
+</span><a href="TuringMachine.Optimization.Level.html#maxO"><span class="hs-identifier hs-var hs-var">maxO</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Level
+forall a. Bounded a =&gt; a
+</span><span class="hs-identifier hs-var">maxBound</span></span><span>
+</span><span id="line-17"></span><span>
+</span><span id="line-18"></span><span id="local-6989586621679337387"><span class="annot"><a href="TuringMachine.Optimization.Level.html#levelGradation"><span class="hs-identifier hs-type">levelGradation</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="#local-6989586621679337387"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679337387"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TuringMachine.Optimization.Level.html#Level"><span class="hs-identifier hs-type">Level</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679337387"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679337387"><span class="hs-identifier hs-type">a</span></a></span></span><span>
+</span><span id="line-19"></span><span id="levelGradation"><span class="annot"><span class="annottext">levelGradation :: [a -&gt; a] -&gt; Level -&gt; a -&gt; a
+</span><a href="TuringMachine.Optimization.Level.html#levelGradation"><span class="hs-identifier hs-var hs-var">levelGradation</span></a></span></span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span> </span><span class="annot"><span class="annottext">Level
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">a -&gt; a
+forall a. a -&gt; a
+</span><span class="hs-identifier hs-var">id</span></span><span>
+</span><span id="line-20"></span><span class="annot"><a href="TuringMachine.Optimization.Level.html#levelGradation"><span class="hs-identifier hs-var">levelGradation</span></a></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679337330"><span class="annot"><span class="annottext">a -&gt; a
+</span><a href="#local-6989586621679337330"><span class="hs-identifier hs-var">f</span></a></span></span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679337329"><span class="annot"><span class="annottext">[a -&gt; a]
+</span><a href="#local-6989586621679337329"><span class="hs-identifier hs-var">fs</span></a></span></span><span class="hs-special">)</span><span> </span><span id="local-6989586621679337328"><span class="annot"><span class="annottext">Level
+</span><a href="#local-6989586621679337328"><span class="hs-identifier hs-var">l</span></a></span></span><span>
+</span><span id="line-21"></span><span>    </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Level
+</span><a href="#local-6989586621679337328"><span class="hs-identifier hs-var">l</span></a></span><span> </span><span class="annot"><span class="annottext">Level -&gt; Level -&gt; Bool
+forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">==</span></span><span> </span><span class="annot"><span class="annottext">Level
+</span><a href="TuringMachine.Optimization.Level.html#O0"><span class="hs-identifier hs-var">O0</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">a -&gt; a
+</span><a href="#local-6989586621679337330"><span class="hs-identifier hs-var">f</span></a></span><span>
+</span><span id="line-22"></span><span>    </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Bool
+</span><span class="hs-identifier hs-var">otherwise</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[a -&gt; a] -&gt; Level -&gt; a -&gt; a
+forall a. [a -&gt; a] -&gt; Level -&gt; a -&gt; a
+</span><a href="TuringMachine.Optimization.Level.html#levelGradation"><span class="hs-identifier hs-var">levelGradation</span></a></span><span> </span><span class="annot"><span class="annottext">[a -&gt; a]
+</span><a href="#local-6989586621679337329"><span class="hs-identifier hs-var">fs</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Level -&gt; Level
+forall a. Enum a =&gt; a -&gt; a
+</span><span class="hs-identifier hs-var">pred</span></span><span> </span><span class="annot"><span class="annottext">Level
+</span><a href="#local-6989586621679337328"><span class="hs-identifier hs-var">l</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">(a -&gt; a) -&gt; (a -&gt; a) -&gt; a -&gt; a
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">a -&gt; a
+</span><a href="#local-6989586621679337330"><span class="hs-identifier hs-var">f</span></a></span><span>
+</span><span id="line-23"></span></pre></body></html>

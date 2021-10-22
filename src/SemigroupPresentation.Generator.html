@@ -1,0 +1,220 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE GeneralizedNewtypeDeriving, RankNTypes, ScopedTypeVariables #-}</span><span>
+</span><span id="line-2"></span><span>
+</span><span id="line-3"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">SemigroupPresentation.Generator</span><span> </span><span class="hs-special">(</span><span>
+</span><span id="line-4"></span><span>    </span><span class="annot"><a href="SemigroupPresentation.Generator.html#Generator"><span class="hs-identifier">Generator</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-5"></span><span>    </span><span class="annot"><a href="SemigroupPresentation.Generator.html#generator"><span class="hs-identifier">generator</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-6"></span><span>    </span><span class="annot"><a href="SemigroupPresentation.Generator.html#numGenerator"><span class="hs-identifier">numGenerator</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-7"></span><span>    </span><span class="annot"><a href="SemigroupPresentation.Generator.html#GWord"><span class="hs-identifier">GWord</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-8"></span><span>    </span><span class="annot"><a href="SemigroupPresentation.Generator.html#StrGWord"><span class="hs-identifier">StrGWord</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-9"></span><span>    </span><span class="annot"><a href="SemigroupPresentation.Generator.html#filterByFormat"><span class="hs-identifier">filterByFormat</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-10"></span><span>    </span><span class="annot"><a href="SemigroupPresentation.Generator.html#matchWithFormat"><span class="hs-identifier">matchWithFormat</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-11"></span><span>    </span><span class="annot"><a href="SemigroupPresentation.Generator.html#insertGen"><span class="hs-identifier">insertGen</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-12"></span><span>  </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-13"></span><span>
+</span><span id="line-14"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Format.html"><span class="hs-identifier">Format</span></a></span><span>
+</span><span id="line-15"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Containers.html"><span class="hs-identifier">Containers</span></a></span><span>
+</span><span id="line-16"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Lens.html"><span class="hs-identifier">Lens</span></a></span><span>
+</span><span id="line-17"></span><span>
+</span><span id="line-18"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Maybe</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">mapMaybe</span></span><span class="hs-special">)</span><span>
+</span><span id="line-19"></span><span>
+</span><span id="line-20"></span><span class="hs-keyword">newtype</span><span> </span><span id="Generator"><span class="annot"><a href="SemigroupPresentation.Generator.html#Generator"><span class="hs-identifier hs-var">Generator</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="G"><span class="annot"><a href="SemigroupPresentation.Generator.html#G"><span class="hs-identifier hs-var">G</span></a></span></span><span> </span><span class="hs-special">{</span><span> </span><span id="numGenerator"><span class="annot"><span class="annottext">Generator -&gt; Int
+</span><a href="SemigroupPresentation.Generator.html#numGenerator"><span class="hs-identifier hs-var hs-var">numGenerator</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-special">}</span><span>
+</span><span id="line-21"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679331406"><span id="local-6989586621679331408"><span class="annot"><span class="annottext">Generator -&gt; Generator -&gt; Bool
+(Generator -&gt; Generator -&gt; Bool)
+-&gt; (Generator -&gt; Generator -&gt; Bool) -&gt; Eq Generator
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+/= :: Generator -&gt; Generator -&gt; Bool
+$c/= :: Generator -&gt; Generator -&gt; Bool
+== :: Generator -&gt; Generator -&gt; Bool
+$c== :: Generator -&gt; Generator -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679331390"><span id="local-6989586621679331392"><span id="local-6989586621679331394"><span id="local-6989586621679331396"><span id="local-6989586621679331398"><span id="local-6989586621679331400"><span id="local-6989586621679331402"><span class="annot"><span class="annottext">Eq Generator
+Eq Generator
+-&gt; (Generator -&gt; Generator -&gt; Ordering)
+-&gt; (Generator -&gt; Generator -&gt; Bool)
+-&gt; (Generator -&gt; Generator -&gt; Bool)
+-&gt; (Generator -&gt; Generator -&gt; Bool)
+-&gt; (Generator -&gt; Generator -&gt; Bool)
+-&gt; (Generator -&gt; Generator -&gt; Generator)
+-&gt; (Generator -&gt; Generator -&gt; Generator)
+-&gt; Ord Generator
+Generator -&gt; Generator -&gt; Bool
+Generator -&gt; Generator -&gt; Ordering
+Generator -&gt; Generator -&gt; Generator
+forall a.
+Eq a
+-&gt; (a -&gt; a -&gt; Ordering)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; Ord a
+min :: Generator -&gt; Generator -&gt; Generator
+$cmin :: Generator -&gt; Generator -&gt; Generator
+max :: Generator -&gt; Generator -&gt; Generator
+$cmax :: Generator -&gt; Generator -&gt; Generator
+&gt;= :: Generator -&gt; Generator -&gt; Bool
+$c&gt;= :: Generator -&gt; Generator -&gt; Bool
+&gt; :: Generator -&gt; Generator -&gt; Bool
+$c&gt; :: Generator -&gt; Generator -&gt; Bool
+&lt;= :: Generator -&gt; Generator -&gt; Bool
+$c&lt;= :: Generator -&gt; Generator -&gt; Bool
+&lt; :: Generator -&gt; Generator -&gt; Bool
+$c&lt; :: Generator -&gt; Generator -&gt; Bool
+compare :: Generator -&gt; Generator -&gt; Ordering
+$ccompare :: Generator -&gt; Generator -&gt; Ordering
+$cp1Ord :: Eq Generator
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Ord</span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679331373"><span id="local-6989586621679331375"><span id="local-6989586621679331377"><span id="local-6989586621679331379"><span id="local-6989586621679331381"><span id="local-6989586621679331383"><span id="local-6989586621679331385"><span id="local-6989586621679331387"><span class="annot"><span class="annottext">Int -&gt; Generator
+Generator -&gt; Int
+Generator -&gt; [Generator]
+Generator -&gt; Generator
+Generator -&gt; Generator -&gt; [Generator]
+Generator -&gt; Generator -&gt; Generator -&gt; [Generator]
+(Generator -&gt; Generator)
+-&gt; (Generator -&gt; Generator)
+-&gt; (Int -&gt; Generator)
+-&gt; (Generator -&gt; Int)
+-&gt; (Generator -&gt; [Generator])
+-&gt; (Generator -&gt; Generator -&gt; [Generator])
+-&gt; (Generator -&gt; Generator -&gt; [Generator])
+-&gt; (Generator -&gt; Generator -&gt; Generator -&gt; [Generator])
+-&gt; Enum Generator
+forall a.
+(a -&gt; a)
+-&gt; (a -&gt; a)
+-&gt; (Int -&gt; a)
+-&gt; (a -&gt; Int)
+-&gt; (a -&gt; [a])
+-&gt; (a -&gt; a -&gt; [a])
+-&gt; (a -&gt; a -&gt; [a])
+-&gt; (a -&gt; a -&gt; a -&gt; [a])
+-&gt; Enum a
+enumFromThenTo :: Generator -&gt; Generator -&gt; Generator -&gt; [Generator]
+$cenumFromThenTo :: Generator -&gt; Generator -&gt; Generator -&gt; [Generator]
+enumFromTo :: Generator -&gt; Generator -&gt; [Generator]
+$cenumFromTo :: Generator -&gt; Generator -&gt; [Generator]
+enumFromThen :: Generator -&gt; Generator -&gt; [Generator]
+$cenumFromThen :: Generator -&gt; Generator -&gt; [Generator]
+enumFrom :: Generator -&gt; [Generator]
+$cenumFrom :: Generator -&gt; [Generator]
+fromEnum :: Generator -&gt; Int
+$cfromEnum :: Generator -&gt; Int
+toEnum :: Int -&gt; Generator
+$ctoEnum :: Int -&gt; Generator
+pred :: Generator -&gt; Generator
+$cpred :: Generator -&gt; Generator
+succ :: Generator -&gt; Generator
+$csucc :: Generator -&gt; Generator
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Enum</span></span></span></span></span></span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-22"></span><span>
+</span><span id="line-23"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bounded</span></span><span> </span><span class="annot"><a href="SemigroupPresentation.Generator.html#Generator"><span class="hs-identifier hs-type">Generator</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-24"></span><span>    </span><span id="local-6989586621679331368"><span class="annot"><span class="annottext">minBound :: Generator
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">minBound</span></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Int -&gt; Generator
+</span><a href="SemigroupPresentation.Generator.html#G"><span class="hs-identifier hs-var">G</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">0</span></span><span>
+</span><span id="line-25"></span><span>    </span><span id="local-6989586621679331366"><span class="annot"><span class="annottext">maxBound :: Generator
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">maxBound</span></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Int -&gt; Generator
+</span><a href="SemigroupPresentation.Generator.html#G"><span class="hs-identifier hs-var">G</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+forall a. Bounded a =&gt; a
+</span><span class="hs-identifier hs-var">maxBound</span></span><span>
+</span><span id="line-26"></span><span>
+</span><span id="line-27"></span><span class="annot"><a href="SemigroupPresentation.Generator.html#generator"><span class="hs-identifier hs-type">generator</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="SemigroupPresentation.Generator.html#Generator"><span class="hs-identifier hs-type">Generator</span></a></span><span>
+</span><span id="line-28"></span><span id="generator"><span class="annot"><span class="annottext">generator :: Int -&gt; Generator
+</span><a href="SemigroupPresentation.Generator.html#generator"><span class="hs-identifier hs-var hs-var">generator</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Int -&gt; Generator
+</span><a href="SemigroupPresentation.Generator.html#G"><span class="hs-identifier hs-var">G</span></a></span><span>
+</span><span id="line-29"></span><span>
+</span><span id="line-30"></span><span class="hs-keyword">type</span><span> </span><span id="GWord"><span class="annot"><a href="SemigroupPresentation.Generator.html#GWord"><span class="hs-identifier hs-var">GWord</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="SemigroupPresentation.Generator.html#Generator"><span class="hs-identifier hs-type">Generator</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-31"></span><span>
+</span><span id="line-32"></span><span class="hs-keyword">type</span><span> </span><span id="StrGWord"><span class="annot"><a href="SemigroupPresentation.Generator.html#StrGWord"><span class="hs-identifier hs-var">StrGWord</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span class="hs-special">]</span><span>
+</span><span id="line-33"></span><span>
+</span><span id="line-34"></span><span class="annot"><a href="SemigroupPresentation.Generator.html#filterByFormat"><span class="hs-identifier hs-type">filterByFormat</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Getter</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Set</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Set</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span class="hs-special">)</span><span>
+</span><span id="line-35"></span><span id="filterByFormat"><span class="annot"><span class="annottext">filterByFormat :: String -&gt; Getter (Set String) (Set String)
+</span><a href="SemigroupPresentation.Generator.html#filterByFormat"><span class="hs-identifier hs-var hs-var">filterByFormat</span></a></span></span><span> </span><span id="local-6989586621679331364"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679331364"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(Set String -&gt; Set String)
+-&gt; Optic' (-&gt;) f (Set String) (Set String)
+forall (p :: * -&gt; * -&gt; *) (f :: * -&gt; *) s a.
+(Profunctor p, Contravariant f) =&gt;
+(s -&gt; a) -&gt; Optic' p f s a
+</span><span class="hs-identifier hs-var">to</span></span><span> </span><span class="annot"><span class="annottext">((Set String -&gt; Set String)
+ -&gt; Optic' (-&gt;) f (Set String) (Set String))
+-&gt; (Set String -&gt; Set String)
+-&gt; Optic' (-&gt;) f (Set String) (Set String)
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span>
+</span><span id="line-36"></span><span>    </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe SimpleFormat
+forall f (m :: * -&gt; *). (Format f, MonadFail m) =&gt; String -&gt; m f
+</span><a href="Format.html#format"><span class="hs-identifier hs-var">format</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679331364"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="Format.html#SimpleFormat"><span class="hs-identifier hs-type">SimpleFormat</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-37"></span><span>        </span><span class="annot"><span class="annottext">Maybe SimpleFormat
+</span><span class="hs-identifier hs-var">Nothing</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Set String -&gt; Set String -&gt; Set String
+forall a b. a -&gt; b -&gt; a
+</span><span class="hs-identifier hs-var">const</span></span><span> </span><span class="annot"><span class="annottext">Set String
+forall c. Nullable c =&gt; c
+</span><a href="Containers.html#emptyC"><span class="hs-identifier hs-var">emptyC</span></a></span><span>
+</span><span id="line-38"></span><span>        </span><span class="annot"><span class="hs-identifier hs-type">Just</span></span><span> </span><span id="local-6989586621679331359"><span class="annot"><span class="annottext">SimpleFormat
+</span><a href="#local-6989586621679331359"><span class="hs-identifier hs-var">f</span></a></span></span><span>  </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">(String -&gt; Bool) -&gt; Set String -&gt; Set String
+forall c v. Filterable c v =&gt; (v -&gt; Bool) -&gt; c -&gt; c
+</span><a href="Containers.html#filterC"><span class="hs-identifier hs-var">filterC</span></a></span><span> </span><span class="annot"><span class="annottext">((String -&gt; Bool) -&gt; Set String -&gt; Set String)
+-&gt; (String -&gt; Bool) -&gt; Set String -&gt; Set String
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">SimpleFormat -&gt; String -&gt; Bool
+forall f r. Match f r =&gt; f -&gt; String -&gt; r
+</span><a href="Format.html#match"><span class="hs-identifier hs-var">match</span></a></span><span> </span><span class="annot"><span class="annottext">SimpleFormat
+</span><a href="#local-6989586621679331359"><span class="hs-identifier hs-var">f</span></a></span><span>
+</span><span id="line-39"></span><span>
+</span><span id="line-40"></span><span class="annot"><a href="SemigroupPresentation.Generator.html#matchWithFormat"><span class="hs-identifier hs-type">matchWithFormat</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Getter</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Set</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Set</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span class="hs-special">)</span><span>
+</span><span id="line-41"></span><span id="matchWithFormat"><span class="annot"><span class="annottext">matchWithFormat :: String -&gt; Getter (Set String) (Set String)
+</span><a href="SemigroupPresentation.Generator.html#matchWithFormat"><span class="hs-identifier hs-var hs-var">matchWithFormat</span></a></span></span><span> </span><span id="local-6989586621679331356"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679331356"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(Set String -&gt; Set String)
+-&gt; Optic' (-&gt;) f (Set String) (Set String)
+forall (p :: * -&gt; * -&gt; *) (f :: * -&gt; *) s a.
+(Profunctor p, Contravariant f) =&gt;
+(s -&gt; a) -&gt; Optic' p f s a
+</span><span class="hs-identifier hs-var">to</span></span><span> </span><span class="hs-special">(</span><span>
+</span><span id="line-42"></span><span>    </span><span class="annot"><span class="annottext">[String] -&gt; Set String
+forall c v. UnsafeListable c v =&gt; [v] -&gt; c
+</span><a href="Containers.html#fromList"><span class="hs-identifier hs-var">fromList</span></a></span><span> </span><span class="annot"><span class="annottext">([String] -&gt; Set String)
+-&gt; (Set String -&gt; [String]) -&gt; Set String -&gt; Set String
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span>
+</span><span id="line-43"></span><span>    </span><span class="annot"><span class="annottext">(String -&gt; Maybe String) -&gt; [String] -&gt; [String]
+forall a b. (a -&gt; Maybe b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">mapMaybe</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679331353"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679331353"><span class="hs-identifier hs-var">s'</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-44"></span><span>        </span><span id="local-6989586621679331352"><span class="annot"><span class="annottext">SimpleFormat
+</span><a href="#local-6989586621679331352"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Format.html#SimpleFormat"><span class="hs-identifier hs-type">SimpleFormat</span></a></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe SimpleFormat
+forall f (m :: * -&gt; *). (Format f, MonadFail m) =&gt; String -&gt; m f
+</span><a href="Format.html#format"><span class="hs-identifier hs-var">format</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679331356"><span class="hs-identifier hs-var">s</span></a></span><span>
+</span><span id="line-45"></span><span>        </span><span class="annot"><span class="annottext">SimpleFormat -&gt; String -&gt; Maybe String
+forall f r. Match f r =&gt; f -&gt; String -&gt; r
+</span><a href="Format.html#match"><span class="hs-identifier hs-var">match</span></a></span><span> </span><span class="annot"><span class="annottext">SimpleFormat
+</span><a href="#local-6989586621679331352"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679331353"><span class="hs-identifier hs-var">s'</span></a></span><span>
+</span><span id="line-46"></span><span>      </span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">([String] -&gt; [String])
+-&gt; (Set String -&gt; [String]) -&gt; Set String -&gt; [String]
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span>
+</span><span id="line-47"></span><span>    </span><span class="annot"><span class="annottext">Set String -&gt; [String]
+forall c v. Listable c v =&gt; c -&gt; [v]
+</span><a href="Containers.html#toList"><span class="hs-identifier hs-var">toList</span></a></span><span>
+</span><span id="line-48"></span><span>  </span><span class="hs-special">)</span><span>
+</span><span id="line-49"></span><span>
+</span><span id="line-50"></span><span class="annot"><a href="SemigroupPresentation.Generator.html#insertGen"><span class="hs-identifier hs-type">insertGen</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Getter</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Set</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Set</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span class="hs-special">)</span><span>
+</span><span id="line-51"></span><span id="insertGen"><span class="annot"><span class="annottext">insertGen :: String -&gt; Getter (Set String) (Set String)
+</span><a href="SemigroupPresentation.Generator.html#insertGen"><span class="hs-identifier hs-var hs-var">insertGen</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(Set String -&gt; Set String)
+-&gt; Optic' (-&gt;) f (Set String) (Set String)
+forall (p :: * -&gt; * -&gt; *) (f :: * -&gt; *) s a.
+(Profunctor p, Contravariant f) =&gt;
+(s -&gt; a) -&gt; Optic' p f s a
+</span><span class="hs-identifier hs-var">to</span></span><span> </span><span class="annot"><span class="annottext">((Set String -&gt; Set String)
+ -&gt; Optic' (-&gt;) f (Set String) (Set String))
+-&gt; (String -&gt; Set String -&gt; Set String)
+-&gt; String
+-&gt; Optic' (-&gt;) f (Set String) (Set String)
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Set String -&gt; Set String
+forall c v. Insertable c v =&gt; v -&gt; c -&gt; c
+</span><a href="Containers.html#%2B%3E"><span class="hs-operator hs-var">(+&gt;)</span></a></span><span>
+</span><span id="line-52"></span></pre></body></html>

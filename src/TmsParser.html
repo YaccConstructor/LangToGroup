@@ -1,0 +1,610 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE OverloadedStrings #-}</span><span>
+</span><span id="line-2"></span><span>
+</span><span id="line-3"></span><span class="hs-comment">-- |This module provides types for parsing 'Tms' Turing machines.</span><span>
+</span><span id="line-4"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">TmsParser</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="TmsParser.html#parser"><span class="hs-identifier">parser</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="TmsParser.html#parseTms"><span class="hs-identifier">parseTms</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="TmsParser.html#pTms"><span class="hs-identifier">pTms</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-5"></span><span>
+</span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Text.Megaparsec</span></span><span> </span><span class="hs-keyword">hiding</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">empty</span></span><span class="hs-special">)</span><span>
+</span><span id="line-7"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Text.Megaparsec.Char</span></span><span>
+</span><span id="line-8"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Text.Megaparsec.Byte</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">string</span></span><span class="hs-special">)</span><span>
+</span><span id="line-9"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Text.Megaparsec.Error</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">errorBundlePretty</span></span><span class="hs-special">)</span><span>
+</span><span id="line-10"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Text</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">Text</span></span><span class="hs-special">)</span><span>
+</span><span id="line-11"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Control.Monad</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">guard</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">void</span></span><span class="hs-special">)</span><span>
+</span><span id="line-12"></span><span>
+</span><span id="line-13"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Set</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">Set</span></span><span>
+</span><span id="line-14"></span><span>
+</span><span id="line-15"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="TmsType.html"><span class="hs-identifier">TmsType</span></a></span><span>
+</span><span id="line-16"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="ParsingHelpers.html"><span class="hs-identifier">ParsingHelpers</span></a></span><span>
+</span><span id="line-17"></span><span>
+</span><span id="line-18"></span><span class="hs-comment">-- | Empty space.</span><span>
+</span><span id="line-19"></span><span class="annot"><a href="TmsParser.html#empty"><span class="hs-identifier hs-type">empty</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="ParsingHelpers.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
+</span><span id="line-20"></span><span id="empty"><span class="annot"><span class="annottext">empty :: Parser ()
+</span><a href="TmsParser.html#empty"><span class="hs-identifier hs-var hs-var">empty</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">ParsecT Void Text Identity [Char] -&gt; Parser ()
+forall (f :: * -&gt; *) a. Functor f =&gt; f a -&gt; f ()
+</span><span class="hs-identifier hs-var">void</span></span><span> </span><span class="annot"><span class="annottext">(ParsecT Void Text Identity [Char] -&gt; Parser ())
+-&gt; ParsecT Void Text Identity [Char] -&gt; Parser ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">ParsecT Void Text Identity Char
+-&gt; ParsecT Void Text Identity [Char]
+forall (m :: * -&gt; *) a. MonadPlus m =&gt; m a -&gt; m [a]
+</span><span class="hs-identifier hs-var">many</span></span><span> </span><span class="annot"><span class="annottext">ParsecT Void Text Identity Char
+forall e s (m :: * -&gt; *).
+(MonadParsec e s m, Token s ~ Char) =&gt;
+m (Token s)
+</span><span class="hs-identifier hs-var">separatorChar</span></span><span>
+</span><span id="line-21"></span><span>
+</span><span id="line-22"></span><span class="hs-comment">-- | Token.</span><span>
+</span><span id="line-23"></span><span id="local-6989586621679337061"><span class="annot"><a href="TmsParser.html#tok"><span class="hs-identifier hs-type">tok</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="ParsingHelpers.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679337061"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="ParsingHelpers.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679337061"><span class="hs-identifier hs-type">a</span></a></span></span><span>
+</span><span id="line-24"></span><span id="tok"><span class="annot"><span class="annottext">tok :: Parser a -&gt; Parser a
+</span><a href="TmsParser.html#tok"><span class="hs-identifier hs-var hs-var">tok</span></a></span></span><span> </span><span id="local-6989586621679336977"><span class="annot"><span class="annottext">Parser a
+</span><a href="#local-6989586621679336977"><span class="hs-identifier hs-var">p</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-25"></span><span>    </span><span class="annot"><span class="annottext">Parser ()
+</span><a href="TmsParser.html#empty"><span class="hs-identifier hs-var">empty</span></a></span><span>
+</span><span id="line-26"></span><span>    </span><span id="local-6989586621679336976"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679336976"><span class="hs-identifier hs-var">v</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser a
+</span><a href="#local-6989586621679336977"><span class="hs-identifier hs-var">p</span></a></span><span>
+</span><span id="line-27"></span><span>    </span><span class="annot"><span class="annottext">Parser ()
+</span><a href="TmsParser.html#empty"><span class="hs-identifier hs-var">empty</span></a></span><span>
+</span><span id="line-28"></span><span>    </span><span class="annot"><span class="annottext">a -&gt; Parser a
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679336976"><span class="hs-identifier hs-var">v</span></a></span><span>
+</span><span id="line-29"></span><span>
+</span><span id="line-30"></span><span class="hs-comment">-- | Identifier.</span><span>
+</span><span id="line-31"></span><span class="annot"><a href="TmsParser.html#pIdentifier"><span class="hs-identifier hs-type">pIdentifier</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="ParsingHelpers.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-32"></span><span id="pIdentifier"><span class="annot"><span class="annottext">pIdentifier :: ParsecT Void Text Identity [Char]
+</span><a href="TmsParser.html#pIdentifier"><span class="hs-identifier hs-var hs-var">pIdentifier</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-33"></span><span>    </span><span class="annot"><span class="annottext">ParsecT Void Text Identity [Char]
+-&gt; ParsecT Void Text Identity [Char]
+forall a. Parser a -&gt; Parser a
+</span><a href="TmsParser.html#tok"><span class="hs-identifier hs-var">tok</span></a></span><span> </span><span class="annot"><span class="annottext">ParsecT Void Text Identity [Char]
+</span><a href="#local-6989586621679336973"><span class="hs-identifier hs-var">pLetters</span></a></span><span>
+</span><span id="line-34"></span><span>    </span><span class="hs-keyword">where</span><span>
+</span><span id="line-35"></span><span>        </span><span id="local-6989586621679336973"><span class="annot"><span class="annottext">pLetters :: ParsecT Void Text Identity [Char]
+</span><a href="#local-6989586621679336973"><span class="hs-identifier hs-var hs-var">pLetters</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-36"></span><span>            </span><span id="local-6989586621679336972"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679336972"><span class="hs-identifier hs-var">first</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">ParsecT Void Text Identity Char
+forall e s (m :: * -&gt; *).
+(MonadParsec e s m, Token s ~ Char) =&gt;
+m (Token s)
+</span><span class="hs-identifier hs-var">letterChar</span></span><span>
+</span><span id="line-37"></span><span>            </span><span id="local-6989586621679336970"><span class="annot"><span class="annottext">[Char]
+</span><a href="#local-6989586621679336970"><span class="hs-identifier hs-var">rest</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">ParsecT Void Text Identity Char
+-&gt; ParsecT Void Text Identity [Char]
+forall (m :: * -&gt; *) a. MonadPlus m =&gt; m a -&gt; m [a]
+</span><span class="hs-identifier hs-var">many</span></span><span> </span><span class="annot"><span class="annottext">ParsecT Void Text Identity Char
+</span><a href="TmsParser.html#pChar"><span class="hs-identifier hs-var">pChar</span></a></span><span>
+</span><span id="line-38"></span><span>            </span><span class="annot"><span class="annottext">[Char] -&gt; ParsecT Void Text Identity [Char]
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">([Char] -&gt; ParsecT Void Text Identity [Char])
+-&gt; [Char] -&gt; ParsecT Void Text Identity [Char]
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679336972"><span class="hs-identifier hs-var">first</span></a></span><span> </span><span class="annot"><span class="annottext">Char -&gt; [Char] -&gt; [Char]
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span> </span><span class="annot"><span class="annottext">[Char]
+</span><a href="#local-6989586621679336970"><span class="hs-identifier hs-var">rest</span></a></span><span>
+</span><span id="line-39"></span><span>
+</span><span id="line-40"></span><span class="hs-comment">-- | Comma.</span><span>
+</span><span id="line-41"></span><span class="annot"><a href="TmsParser.html#comma"><span class="hs-identifier hs-type">comma</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="ParsingHelpers.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
+</span><span id="line-42"></span><span id="comma"><span class="annot"><span class="annottext">comma :: Parser ()
+</span><a href="TmsParser.html#comma"><span class="hs-identifier hs-var hs-var">comma</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-43"></span><span>    </span><span class="annot"><span class="annottext">ParsecT Void Text Identity Char -&gt; Parser ()
+forall (f :: * -&gt; *) a. Functor f =&gt; f a -&gt; f ()
+</span><span class="hs-identifier hs-var">void</span></span><span> </span><span class="annot"><span class="annottext">(ParsecT Void Text Identity Char -&gt; Parser ())
+-&gt; ParsecT Void Text Identity Char -&gt; Parser ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">ParsecT Void Text Identity Char -&gt; ParsecT Void Text Identity Char
+forall a. Parser a -&gt; Parser a
+</span><a href="TmsParser.html#tok"><span class="hs-identifier hs-var">tok</span></a></span><span> </span><span class="annot"><span class="annottext">(ParsecT Void Text Identity Char
+ -&gt; ParsecT Void Text Identity Char)
+-&gt; ParsecT Void Text Identity Char
+-&gt; ParsecT Void Text Identity Char
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Token Text -&gt; ParsecT Void Text Identity (Token Text)
+forall e s (m :: * -&gt; *).
+(MonadParsec e s m, Token s ~ Char) =&gt;
+Token s -&gt; m (Token s)
+</span><span class="hs-identifier hs-var">char</span></span><span> </span><span class="annot"><span class="annottext">Char
+Token Text
+</span><span class="hs-char">','</span></span><span>
+</span><span id="line-44"></span><span>
+</span><span id="line-45"></span><span class="hs-comment">-- | Pair '&lt;key&gt;: &lt;value&gt;\n'.</span><span>
+</span><span id="line-46"></span><span id="local-6989586621679337005"><span class="annot"><a href="TmsParser.html#pKeyValue"><span class="hs-identifier hs-type">pKeyValue</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Tokens</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="ParsingHelpers.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679337005"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="ParsingHelpers.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679337005"><span class="hs-identifier hs-type">a</span></a></span></span><span>
+</span><span id="line-47"></span><span id="pKeyValue"><span class="annot"><span class="annottext">pKeyValue :: Tokens Text -&gt; Parser a -&gt; Parser a
+</span><a href="TmsParser.html#pKeyValue"><span class="hs-identifier hs-var hs-var">pKeyValue</span></a></span></span><span> </span><span id="local-6989586621679336965"><span class="annot"><span class="annottext">Tokens Text
+</span><a href="#local-6989586621679336965"><span class="hs-identifier hs-var">key</span></a></span></span><span> </span><span id="local-6989586621679336964"><span class="annot"><span class="annottext">Parser a
+</span><a href="#local-6989586621679336964"><span class="hs-identifier hs-var">value</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-48"></span><span>    </span><span class="annot"><span class="annottext">ParsecT Void Text Identity Text -&gt; Parser ()
+forall (f :: * -&gt; *) a. Functor f =&gt; f a -&gt; f ()
+</span><span class="hs-identifier hs-var">void</span></span><span> </span><span class="annot"><span class="annottext">(ParsecT Void Text Identity Text -&gt; Parser ())
+-&gt; ParsecT Void Text Identity Text -&gt; Parser ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Tokens Text -&gt; ParsecT Void Text Identity (Tokens Text)
+forall e s (m :: * -&gt; *).
+MonadParsec e s m =&gt;
+Tokens s -&gt; m (Tokens s)
+</span><span class="hs-identifier hs-var">string</span></span><span> </span><span class="annot"><span class="annottext">Tokens Text
+</span><a href="#local-6989586621679336965"><span class="hs-identifier hs-var">key</span></a></span><span>
+</span><span id="line-49"></span><span>    </span><span class="annot"><span class="annottext">ParsecT Void Text Identity Char -&gt; Parser ()
+forall (f :: * -&gt; *) a. Functor f =&gt; f a -&gt; f ()
+</span><span class="hs-identifier hs-var">void</span></span><span> </span><span class="annot"><span class="annottext">(ParsecT Void Text Identity Char -&gt; Parser ())
+-&gt; ParsecT Void Text Identity Char -&gt; Parser ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">ParsecT Void Text Identity Char -&gt; ParsecT Void Text Identity Char
+forall a. Parser a -&gt; Parser a
+</span><a href="TmsParser.html#tok"><span class="hs-identifier hs-var">tok</span></a></span><span> </span><span class="annot"><span class="annottext">(ParsecT Void Text Identity Char
+ -&gt; ParsecT Void Text Identity Char)
+-&gt; ParsecT Void Text Identity Char
+-&gt; ParsecT Void Text Identity Char
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Token Text -&gt; ParsecT Void Text Identity (Token Text)
+forall e s (m :: * -&gt; *).
+(MonadParsec e s m, Token s ~ Char) =&gt;
+Token s -&gt; m (Token s)
+</span><span class="hs-identifier hs-var">char</span></span><span> </span><span class="annot"><span class="annottext">Char
+Token Text
+</span><span class="hs-char">':'</span></span><span>
+</span><span id="line-50"></span><span>    </span><span id="local-6989586621679336963"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679336963"><span class="hs-identifier hs-var">x</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser a
+</span><a href="#local-6989586621679336964"><span class="hs-identifier hs-var">value</span></a></span><span>
+</span><span id="line-51"></span><span>    </span><span class="annot"><span class="annottext">ParsecT Void Text Identity [Char] -&gt; Parser ()
+forall (f :: * -&gt; *) a. Functor f =&gt; f a -&gt; f ()
+</span><span class="hs-identifier hs-var">void</span></span><span> </span><span class="annot"><span class="annottext">(ParsecT Void Text Identity [Char] -&gt; Parser ())
+-&gt; ParsecT Void Text Identity [Char] -&gt; Parser ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">ParsecT Void Text Identity [Char]
+-&gt; ParsecT Void Text Identity [Char]
+forall a. Parser a -&gt; Parser a
+</span><a href="TmsParser.html#tok"><span class="hs-identifier hs-var">tok</span></a></span><span> </span><span class="annot"><span class="annottext">(ParsecT Void Text Identity [Char]
+ -&gt; ParsecT Void Text Identity [Char])
+-&gt; ParsecT Void Text Identity [Char]
+-&gt; ParsecT Void Text Identity [Char]
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">ParsecT Void Text Identity Char
+-&gt; ParsecT Void Text Identity [Char]
+forall (m :: * -&gt; *) a. MonadPlus m =&gt; m a -&gt; m [a]
+</span><span class="hs-identifier hs-var">many</span></span><span> </span><span class="annot"><span class="annottext">ParsecT Void Text Identity Char
+forall e s (m :: * -&gt; *).
+(MonadParsec e s m, Token s ~ Char) =&gt;
+m (Token s)
+</span><span class="hs-identifier hs-var">newline</span></span><span>
+</span><span id="line-52"></span><span>    </span><span class="annot"><span class="annottext">a -&gt; Parser a
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679336963"><span class="hs-identifier hs-var">x</span></a></span><span>
+</span><span id="line-53"></span><span>
+</span><span id="line-54"></span><span class="hs-comment">-- | TmsTapeHeadMovement</span><span>
+</span><span id="line-55"></span><span class="annot"><a href="TmsParser.html#pMove"><span class="hs-identifier hs-type">pMove</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="ParsingHelpers.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Char</span></span><span>
+</span><span id="line-56"></span><span id="pMove"><span class="annot"><span class="annottext">pMove :: ParsecT Void Text Identity Char
+</span><a href="TmsParser.html#pMove"><span class="hs-identifier hs-var hs-var">pMove</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Token Text -&gt; ParsecT Void Text Identity (Token Text)
+forall e s (m :: * -&gt; *).
+(MonadParsec e s m, Token s ~ Char) =&gt;
+Token s -&gt; m (Token s)
+</span><span class="hs-identifier hs-var">char</span></span><span> </span><span class="annot"><span class="annottext">Char
+Token Text
+</span><span class="hs-char">'&lt;'</span></span><span> </span><span class="annot"><span class="annottext">ParsecT Void Text Identity Char
+-&gt; ParsecT Void Text Identity Char
+-&gt; ParsecT Void Text Identity Char
+forall (f :: * -&gt; *) a. Alternative f =&gt; f a -&gt; f a -&gt; f a
+</span><span class="hs-operator hs-var">&lt;|&gt;</span></span><span> </span><span class="annot"><span class="annottext">Token Text -&gt; ParsecT Void Text Identity (Token Text)
+forall e s (m :: * -&gt; *).
+(MonadParsec e s m, Token s ~ Char) =&gt;
+Token s -&gt; m (Token s)
+</span><span class="hs-identifier hs-var">char</span></span><span> </span><span class="annot"><span class="annottext">Char
+Token Text
+</span><span class="hs-char">'-'</span></span><span> </span><span class="annot"><span class="annottext">ParsecT Void Text Identity Char
+-&gt; ParsecT Void Text Identity Char
+-&gt; ParsecT Void Text Identity Char
+forall (f :: * -&gt; *) a. Alternative f =&gt; f a -&gt; f a -&gt; f a
+</span><span class="hs-operator hs-var">&lt;|&gt;</span></span><span> </span><span class="annot"><span class="annottext">Token Text -&gt; ParsecT Void Text Identity (Token Text)
+forall e s (m :: * -&gt; *).
+(MonadParsec e s m, Token s ~ Char) =&gt;
+Token s -&gt; m (Token s)
+</span><span class="hs-identifier hs-var">char</span></span><span> </span><span class="annot"><span class="annottext">Char
+Token Text
+</span><span class="hs-char">'&gt;'</span></span><span>
+</span><span id="line-57"></span><span>
+</span><span id="line-58"></span><span class="annot"><a href="TmsParser.html#mvChar2TmsHeadMove"><span class="hs-identifier hs-type">mvChar2TmsHeadMove</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Char</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TmsType.html#TmsTapeHeadMovement"><span class="hs-identifier hs-type">TmsTapeHeadMovement</span></a></span><span>
+</span><span id="line-59"></span><span id="mvChar2TmsHeadMove"><span class="annot"><span class="annottext">mvChar2TmsHeadMove :: Char -&gt; Maybe TmsTapeHeadMovement
+</span><a href="TmsParser.html#mvChar2TmsHeadMove"><span class="hs-identifier hs-var hs-var">mvChar2TmsHeadMove</span></a></span></span><span> </span><span id="local-6989586621679336958"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679336958"><span class="hs-identifier hs-var">c</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679336958"><span class="hs-identifier hs-var">c</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-60"></span><span>    </span><span class="annot"><span class="annottext">Char
+</span><span class="hs-char">'&lt;'</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">TmsTapeHeadMovement -&gt; Maybe TmsTapeHeadMovement
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">TmsTapeHeadMovement
+</span><a href="TmsType.html#MoveLeft"><span class="hs-identifier hs-var">MoveLeft</span></a></span><span>
+</span><span id="line-61"></span><span>    </span><span class="annot"><span class="annottext">Char
+</span><span class="hs-char">'&gt;'</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">TmsTapeHeadMovement -&gt; Maybe TmsTapeHeadMovement
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">TmsTapeHeadMovement
+</span><a href="TmsType.html#MoveRight"><span class="hs-identifier hs-var">MoveRight</span></a></span><span>
+</span><span id="line-62"></span><span>    </span><span class="annot"><span class="annottext">Char
+</span><span class="hs-char">'-'</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">TmsTapeHeadMovement -&gt; Maybe TmsTapeHeadMovement
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">TmsTapeHeadMovement
+</span><a href="TmsType.html#Stay"><span class="hs-identifier hs-var">Stay</span></a></span><span>
+</span><span id="line-63"></span><span>    </span><span class="annot"><span class="annottext">Char
+</span><span class="hs-identifier">_</span></span><span>   </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Maybe TmsTapeHeadMovement
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-64"></span><span>
+</span><span id="line-65"></span><span class="hs-comment">-- | Tape symbol.</span><span>
+</span><span id="line-66"></span><span class="annot"><a href="TmsParser.html#pChar"><span class="hs-identifier hs-type">pChar</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="ParsingHelpers.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Char</span></span><span>
+</span><span id="line-67"></span><span id="pChar"><span class="annot"><span class="annottext">pChar :: ParsecT Void Text Identity Char
+</span><a href="TmsParser.html#pChar"><span class="hs-identifier hs-var hs-var">pChar</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">ParsecT Void Text Identity Char
+forall e s (m :: * -&gt; *).
+(MonadParsec e s m, Token s ~ Char) =&gt;
+m (Token s)
+</span><span class="hs-identifier hs-var">alphaNumChar</span></span><span> </span><span class="annot"><span class="annottext">ParsecT Void Text Identity Char
+-&gt; ParsecT Void Text Identity Char
+-&gt; ParsecT Void Text Identity Char
+forall (f :: * -&gt; *) a. Alternative f =&gt; f a -&gt; f a -&gt; f a
+</span><span class="hs-operator hs-var">&lt;|&gt;</span></span><span> </span><span class="annot"><span class="annottext">Token Text -&gt; ParsecT Void Text Identity (Token Text)
+forall e s (m :: * -&gt; *).
+(MonadParsec e s m, Token s ~ Char) =&gt;
+Token s -&gt; m (Token s)
+</span><span class="hs-identifier hs-var">char</span></span><span> </span><span class="annot"><span class="annottext">Char
+Token Text
+</span><span class="hs-char">'_'</span></span><span>
+</span><span id="line-68"></span><span>
+</span><span id="line-69"></span><span class="hs-comment">-- | Tms Command.</span><span>
+</span><span id="line-70"></span><span class="annot"><a href="TmsParser.html#pCommand"><span class="hs-identifier hs-type">pCommand</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="ParsingHelpers.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="TmsType.html#TmsCommand"><span class="hs-identifier hs-type">TmsCommand</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span class="hs-special">)</span><span>
+</span><span id="line-71"></span><span id="pCommand"><span class="annot"><span class="annottext">pCommand :: Parser (TmsCommand, Int)
+</span><a href="TmsParser.html#pCommand"><span class="hs-identifier hs-var hs-var">pCommand</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-72"></span><span>    </span><span id="local-6989586621679336952"><span class="annot"><span class="annottext">[Char]
+</span><a href="#local-6989586621679336952"><span class="hs-identifier hs-var">iniSt</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">ParsecT Void Text Identity [Char]
+</span><a href="TmsParser.html#pIdentifier"><span class="hs-identifier hs-var">pIdentifier</span></a></span><span>
+</span><span id="line-73"></span><span>    </span><span class="annot"><span class="annottext">Parser ()
+</span><a href="TmsParser.html#comma"><span class="hs-identifier hs-var">comma</span></a></span><span>
+</span><span id="line-74"></span><span>    </span><span id="local-6989586621679336951"><span class="annot"><span class="annottext">[Char]
+</span><a href="#local-6989586621679336951"><span class="hs-identifier hs-var">iniChars</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">ParsecT Void Text Identity Char
+</span><a href="TmsParser.html#pChar"><span class="hs-identifier hs-var">pChar</span></a></span><span> </span><span class="annot"><span class="annottext">ParsecT Void Text Identity Char
+-&gt; Parser () -&gt; ParsecT Void Text Identity [Char]
+forall (m :: * -&gt; *) a sep. MonadPlus m =&gt; m a -&gt; m sep -&gt; m [a]
+</span><span class="hs-operator hs-var">`sepBy1`</span></span><span> </span><span class="annot"><span class="annottext">Parser ()
+</span><a href="TmsParser.html#comma"><span class="hs-identifier hs-var">comma</span></a></span><span>
+</span><span id="line-75"></span><span>    </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679336949"><span class="annot"><span class="annottext">len :: Int
+</span><a href="#local-6989586621679336949"><span class="hs-identifier hs-var hs-var">len</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Char] -&gt; Int
+forall (t :: * -&gt; *) a. Foldable t =&gt; t a -&gt; Int
+</span><span class="hs-identifier hs-var">length</span></span><span> </span><span class="annot"><span class="annottext">[Char]
+</span><a href="#local-6989586621679336951"><span class="hs-identifier hs-var">iniChars</span></a></span><span>
+</span><span id="line-76"></span><span>    </span><span class="annot"><span class="annottext">ParsecT Void Text Identity [Char] -&gt; Parser ()
+forall (f :: * -&gt; *) a. Functor f =&gt; f a -&gt; f ()
+</span><span class="hs-identifier hs-var">void</span></span><span> </span><span class="annot"><span class="annottext">(ParsecT Void Text Identity [Char] -&gt; Parser ())
+-&gt; ParsecT Void Text Identity [Char] -&gt; Parser ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">ParsecT Void Text Identity Char
+-&gt; ParsecT Void Text Identity [Char]
+forall (m :: * -&gt; *) a. MonadPlus m =&gt; m a -&gt; m [a]
+</span><span class="hs-identifier hs-var">many</span></span><span> </span><span class="annot"><span class="annottext">ParsecT Void Text Identity Char
+forall e s (m :: * -&gt; *).
+(MonadParsec e s m, Token s ~ Char) =&gt;
+m (Token s)
+</span><span class="hs-identifier hs-var">newline</span></span><span>
+</span><span id="line-77"></span><span>    </span><span id="local-6989586621679336947"><span class="annot"><span class="annottext">[Char]
+</span><a href="#local-6989586621679336947"><span class="hs-identifier hs-var">finSt</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">ParsecT Void Text Identity [Char]
+</span><a href="TmsParser.html#pIdentifier"><span class="hs-identifier hs-var">pIdentifier</span></a></span><span>
+</span><span id="line-78"></span><span>    </span><span class="annot"><span class="annottext">Parser ()
+</span><a href="TmsParser.html#comma"><span class="hs-identifier hs-var">comma</span></a></span><span>
+</span><span id="line-79"></span><span>    </span><span id="local-6989586621679336946"><span class="annot"><span class="annottext">[Char]
+</span><a href="#local-6989586621679336946"><span class="hs-identifier hs-var">finCharsMoves</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">ParsecT Void Text Identity Char
+</span><a href="TmsParser.html#pChar"><span class="hs-identifier hs-var">pChar</span></a></span><span> </span><span class="annot"><span class="annottext">ParsecT Void Text Identity Char
+-&gt; ParsecT Void Text Identity Char
+-&gt; ParsecT Void Text Identity Char
+forall (f :: * -&gt; *) a. Alternative f =&gt; f a -&gt; f a -&gt; f a
+</span><span class="hs-operator hs-var">&lt;|&gt;</span></span><span> </span><span class="annot"><span class="annottext">ParsecT Void Text Identity Char
+</span><a href="TmsParser.html#pMove"><span class="hs-identifier hs-var">pMove</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">ParsecT Void Text Identity Char
+-&gt; Parser () -&gt; ParsecT Void Text Identity [Char]
+forall (m :: * -&gt; *) a sep. MonadPlus m =&gt; m a -&gt; m sep -&gt; m [a]
+</span><span class="hs-operator hs-var">`sepBy1`</span></span><span> </span><span class="annot"><span class="annottext">Parser ()
+</span><a href="TmsParser.html#comma"><span class="hs-identifier hs-var">comma</span></a></span><span>
+</span><span id="line-80"></span><span>    </span><span class="annot"><span class="annottext">Bool -&gt; Parser ()
+forall (f :: * -&gt; *). Alternative f =&gt; Bool -&gt; f ()
+</span><span class="hs-identifier hs-var">guard</span></span><span> </span><span class="annot"><span class="annottext">(Bool -&gt; Parser ()) -&gt; Bool -&gt; Parser ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">[Char] -&gt; Int
+forall (t :: * -&gt; *) a. Foldable t =&gt; t a -&gt; Int
+</span><span class="hs-identifier hs-var">length</span></span><span> </span><span class="annot"><span class="annottext">[Char]
+</span><a href="#local-6989586621679336946"><span class="hs-identifier hs-var">finCharsMoves</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Bool
+forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">==</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679336949"><span class="hs-identifier hs-var">len</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
+forall a. Num a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">*</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">2</span></span><span>
+</span><span id="line-81"></span><span>    </span><span class="hs-keyword">let</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679336944"><span class="annot"><span class="annottext">[Char]
+</span><a href="#local-6989586621679336944"><span class="hs-identifier hs-var">finChars</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679336943"><span class="annot"><span class="annottext">[Char]
+</span><a href="#local-6989586621679336943"><span class="hs-identifier hs-var">moveChars</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Int -&gt; [Char] -&gt; ([Char], [Char])
+forall a. Int -&gt; [a] -&gt; ([a], [a])
+</span><span class="hs-identifier hs-var">splitAt</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679336949"><span class="hs-identifier hs-var">len</span></a></span><span> </span><span class="annot"><span class="annottext">[Char]
+</span><a href="#local-6989586621679336946"><span class="hs-identifier hs-var">finCharsMoves</span></a></span><span>
+</span><span id="line-82"></span><span>    </span><span id="local-6989586621679336941"><span class="annot"><span class="annottext">[TmsTapeHeadMovement]
+</span><a href="#local-6989586621679336941"><span class="hs-identifier hs-var">moves</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">(Char -&gt; Maybe TmsTapeHeadMovement)
+-&gt; [Char] -&gt; Maybe [TmsTapeHeadMovement]
+forall (t :: * -&gt; *) (f :: * -&gt; *) a b.
+(Traversable t, Applicative f) =&gt;
+(a -&gt; f b) -&gt; t a -&gt; f (t b)
+</span><span class="hs-identifier hs-var">traverse</span></span><span> </span><span class="annot"><span class="annottext">Char -&gt; Maybe TmsTapeHeadMovement
+</span><a href="TmsParser.html#mvChar2TmsHeadMove"><span class="hs-identifier hs-var">mvChar2TmsHeadMove</span></a></span><span> </span><span class="annot"><span class="annottext">[Char]
+</span><a href="#local-6989586621679336943"><span class="hs-identifier hs-var">moveChars</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-83"></span><span>        </span><span class="annot"><span class="hs-identifier hs-type">Just</span></span><span> </span><span id="local-6989586621679336939"><span class="annot"><span class="annottext">[TmsTapeHeadMovement]
+</span><a href="#local-6989586621679336939"><span class="hs-identifier hs-var">m</span></a></span></span><span>  </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">[TmsTapeHeadMovement]
+-&gt; ParsecT Void Text Identity [TmsTapeHeadMovement]
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">[TmsTapeHeadMovement]
+</span><a href="#local-6989586621679336939"><span class="hs-identifier hs-var">m</span></a></span><span>
+</span><span id="line-84"></span><span>        </span><span class="annot"><span class="annottext">Maybe [TmsTapeHeadMovement]
+</span><span class="hs-identifier hs-var">Nothing</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">[Char] -&gt; ParsecT Void Text Identity [TmsTapeHeadMovement]
+forall (m :: * -&gt; *) a. MonadFail m =&gt; [Char] -&gt; m a
+</span><span class="hs-identifier hs-var">fail</span></span><span> </span><span class="annot"><span class="annottext">[Char]
+</span><span class="hs-string">&quot;Non move character found.&quot;</span></span><span>
+</span><span id="line-85"></span><span>    </span><span class="annot"><span class="annottext">(TmsCommand, Int) -&gt; Parser (TmsCommand, Int)
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">(TmsState, [TmsSingleTapeCommand], TmsState) -&gt; TmsCommand
+</span><a href="TmsType.html#TmsCommand"><span class="hs-identifier hs-var">TmsCommand</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[Char] -&gt; TmsState
+</span><a href="TmsType.html#TmsState"><span class="hs-identifier hs-var">TmsState</span></a></span><span> </span><span class="annot"><span class="annottext">[Char]
+</span><a href="#local-6989586621679336952"><span class="hs-identifier hs-var">iniSt</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">(Char -&gt; Char -&gt; TmsTapeHeadMovement -&gt; TmsSingleTapeCommand)
+-&gt; [Char]
+-&gt; [Char]
+-&gt; [TmsTapeHeadMovement]
+-&gt; [TmsSingleTapeCommand]
+forall a b c d. (a -&gt; b -&gt; c -&gt; d) -&gt; [a] -&gt; [b] -&gt; [c] -&gt; [d]
+</span><span class="hs-identifier hs-var">zipWith3</span></span><span> </span><span class="annot"><span class="annottext">Char -&gt; Char -&gt; TmsTapeHeadMovement -&gt; TmsSingleTapeCommand
+</span><a href="#local-6989586621679336935"><span class="hs-identifier hs-var">makeSTC</span></a></span><span> </span><span class="annot"><span class="annottext">[Char]
+</span><a href="#local-6989586621679336951"><span class="hs-identifier hs-var">iniChars</span></a></span><span> </span><span class="annot"><span class="annottext">[Char]
+</span><a href="#local-6989586621679336944"><span class="hs-identifier hs-var">finChars</span></a></span><span> </span><span class="annot"><span class="annottext">[TmsTapeHeadMovement]
+</span><a href="#local-6989586621679336941"><span class="hs-identifier hs-var">moves</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">[Char] -&gt; TmsState
+</span><a href="TmsType.html#TmsState"><span class="hs-identifier hs-var">TmsState</span></a></span><span> </span><span class="annot"><span class="annottext">[Char]
+</span><a href="#local-6989586621679336947"><span class="hs-identifier hs-var">finSt</span></a></span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679336949"><span class="hs-identifier hs-var">len</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-86"></span><span>    </span><span class="hs-keyword">where</span><span>
+</span><span id="line-87"></span><span>        </span><span class="annot"><a href="#local-6989586621679336935"><span class="hs-identifier hs-type">makeSTC</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Char</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Char</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TmsType.html#TmsTapeHeadMovement"><span class="hs-identifier hs-type">TmsTapeHeadMovement</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TmsType.html#TmsSingleTapeCommand"><span class="hs-identifier hs-type">TmsSingleTapeCommand</span></a></span><span>
+</span><span id="line-88"></span><span>        </span><span id="local-6989586621679336935"><span class="annot"><span class="annottext">makeSTC :: Char -&gt; Char -&gt; TmsTapeHeadMovement -&gt; TmsSingleTapeCommand
+</span><a href="#local-6989586621679336935"><span class="hs-identifier hs-var hs-var">makeSTC</span></a></span></span><span> </span><span id="local-6989586621679336934"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679336934"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span id="local-6989586621679336933"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679336933"><span class="hs-identifier hs-var">t</span></a></span></span><span> </span><span id="local-6989586621679336932"><span class="annot"><span class="annottext">TmsTapeHeadMovement
+</span><a href="#local-6989586621679336932"><span class="hs-identifier hs-var">m</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(TmsTapeSquare, TmsTapeHeadMovement) -&gt; TmsSingleTapeCommand
+</span><a href="TmsType.html#TmsSingleTapeCommand"><span class="hs-identifier hs-var">TmsSingleTapeCommand</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Char -&gt; Char -&gt; TmsTapeSquare
+</span><a href="TmsType.html#ChangeFromTo"><span class="hs-identifier hs-var">ChangeFromTo</span></a></span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679336934"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679336933"><span class="hs-identifier hs-var">t</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">TmsTapeHeadMovement
+</span><a href="#local-6989586621679336932"><span class="hs-identifier hs-var">m</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-89"></span><span>
+</span><span id="line-90"></span><span class="hs-comment">-- | Extract command tape alphabets.</span><span>
+</span><span id="line-91"></span><span class="annot"><a href="TmsParser.html#commandAlphabet"><span class="hs-identifier hs-type">commandAlphabet</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TmsType.html#TmsCommand"><span class="hs-identifier hs-type">TmsCommand</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span class="hs-special">]</span><span>
+</span><span id="line-92"></span><span id="commandAlphabet"><span class="annot"><span class="annottext">commandAlphabet :: TmsCommand -&gt; [[Char]]
+</span><a href="TmsParser.html#commandAlphabet"><span class="hs-identifier hs-var hs-var">commandAlphabet</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="TmsType.html#TmsCommand"><span class="hs-identifier hs-type">TmsCommand</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">TmsState
+</span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679336928"><span class="annot"><span class="annottext">[TmsSingleTapeCommand]
+</span><a href="#local-6989586621679336928"><span class="hs-identifier hs-var">cmds</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">TmsState
+</span><span class="hs-identifier">_</span></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">TmsSingleTapeCommand -&gt; [Char]
+</span><a href="#local-6989586621679336927"><span class="hs-identifier hs-var">tapeCmdAlphabet</span></a></span><span> </span><span class="annot"><span class="annottext">(TmsSingleTapeCommand -&gt; [Char])
+-&gt; [TmsSingleTapeCommand] -&gt; [[Char]]
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">[TmsSingleTapeCommand]
+</span><a href="#local-6989586621679336928"><span class="hs-identifier hs-var">cmds</span></a></span><span>
+</span><span id="line-93"></span><span>    </span><span class="hs-keyword">where</span><span>
+</span><span id="line-94"></span><span>        </span><span class="annot"><a href="#local-6989586621679336927"><span class="hs-identifier hs-type">tapeCmdAlphabet</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TmsType.html#TmsSingleTapeCommand"><span class="hs-identifier hs-type">TmsSingleTapeCommand</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-95"></span><span>        </span><span id="local-6989586621679336927"><span class="annot"><span class="annottext">tapeCmdAlphabet :: TmsSingleTapeCommand -&gt; [Char]
+</span><a href="#local-6989586621679336927"><span class="hs-identifier hs-var hs-var">tapeCmdAlphabet</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="TmsType.html#TmsSingleTapeCommand"><span class="hs-identifier hs-type">TmsSingleTapeCommand</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="TmsType.html#ChangeFromTo"><span class="hs-identifier hs-type">ChangeFromTo</span></a></span><span> </span><span id="local-6989586621679336925"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679336925"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span id="local-6989586621679336924"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679336924"><span class="hs-identifier hs-var">t</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">TmsTapeHeadMovement
+</span><span class="hs-identifier">_</span></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679336925"><span class="hs-identifier hs-var">f</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679336924"><span class="hs-identifier hs-var">t</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-96"></span><span>        </span><span class="annot"><a href="#local-6989586621679336927"><span class="hs-identifier hs-var">tapeCmdAlphabet</span></a></span><span> </span><span class="annot"><span class="annottext">TmsSingleTapeCommand
+</span><span class="hs-identifier">_</span></span><span>                                            </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Char]
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-97"></span><span>
+</span><span id="line-98"></span><span class="hs-comment">-- | Get alphabets of all commands.</span><span>
+</span><span id="line-99"></span><span class="annot"><a href="TmsParser.html#alphabet"><span class="hs-identifier hs-type">alphabet</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="TmsType.html#TmsCommand"><span class="hs-identifier hs-type">TmsCommand</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span class="hs-special">]</span><span>
+</span><span id="line-100"></span><span id="alphabet"><span class="annot"><span class="annottext">alphabet :: [TmsCommand] -&gt; [[Char]]
+</span><a href="TmsParser.html#alphabet"><span class="hs-identifier hs-var hs-var">alphabet</span></a></span></span><span> </span><span id="local-6989586621679336922"><span class="annot"><span class="annottext">[TmsCommand]
+</span><a href="#local-6989586621679336922"><span class="hs-identifier hs-var">tmsCommands</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">(Char -&gt; Bool) -&gt; [Char] -&gt; [Char]
+forall a. (a -&gt; Bool) -&gt; [a] -&gt; [a]
+</span><span class="hs-identifier hs-var">filter</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Char -&gt; Char -&gt; Bool
+forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">/=</span></span><span> </span><span class="annot"><span class="annottext">Char
+</span><span class="hs-char">'_'</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">([Char] -&gt; [Char]) -&gt; (Set Char -&gt; [Char]) -&gt; Set Char -&gt; [Char]
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">Set Char -&gt; [Char]
+forall a. Set a -&gt; [a]
+</span><span class="hs-identifier hs-var">Set.toList</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">(Set Char -&gt; [Char]) -&gt; ([Char] -&gt; Set Char) -&gt; [Char] -&gt; [Char]
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">[Char] -&gt; Set Char
+forall a. Ord a =&gt; [a] -&gt; Set a
+</span><span class="hs-identifier hs-var">Set.fromList</span></span><span> </span><span class="annot"><span class="annottext">([Char] -&gt; [Char]) -&gt; [[Char]] -&gt; [[Char]]
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span>
+</span><span id="line-101"></span><span>    </span><span class="annot"><span class="annottext">([[Char]] -&gt; [[Char]] -&gt; [[Char]]) -&gt; [[[Char]]] -&gt; [[Char]]
+forall (t :: * -&gt; *) a. Foldable t =&gt; (a -&gt; a -&gt; a) -&gt; t a -&gt; a
+</span><span class="hs-identifier hs-var">foldl1</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679336916"><span class="annot"><span class="annottext">[[Char]]
+</span><a href="#local-6989586621679336916"><span class="hs-identifier hs-var">x</span></a></span></span><span> </span><span id="local-6989586621679336915"><span class="annot"><span class="annottext">[[Char]]
+</span><a href="#local-6989586621679336915"><span class="hs-identifier hs-var">y</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">([Char] -&gt; [Char] -&gt; [Char]) -&gt; ([Char], [Char]) -&gt; [Char]
+forall a b c. (a -&gt; b -&gt; c) -&gt; (a, b) -&gt; c
+</span><span class="hs-identifier hs-var">uncurry</span></span><span> </span><span class="annot"><span class="annottext">[Char] -&gt; [Char] -&gt; [Char]
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">(++)</span></span><span> </span><span class="annot"><span class="annottext">(([Char], [Char]) -&gt; [Char]) -&gt; [([Char], [Char])] -&gt; [[Char]]
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">[[Char]] -&gt; [[Char]] -&gt; [([Char], [Char])]
+forall a b. [a] -&gt; [b] -&gt; [(a, b)]
+</span><span class="hs-identifier hs-var">zip</span></span><span> </span><span class="annot"><span class="annottext">[[Char]]
+</span><a href="#local-6989586621679336916"><span class="hs-identifier hs-var">x</span></a></span><span> </span><span class="annot"><span class="annottext">[[Char]]
+</span><a href="#local-6989586621679336915"><span class="hs-identifier hs-var">y</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">TmsCommand -&gt; [[Char]]
+</span><a href="TmsParser.html#commandAlphabet"><span class="hs-identifier hs-var">commandAlphabet</span></a></span><span> </span><span class="annot"><span class="annottext">(TmsCommand -&gt; [[Char]]) -&gt; [TmsCommand] -&gt; [[[Char]]]
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">[TmsCommand]
+</span><a href="#local-6989586621679336922"><span class="hs-identifier hs-var">tmsCommands</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-102"></span><span>
+</span><span id="line-103"></span><span class="hs-comment">-- | Tms.</span><span>
+</span><span id="line-104"></span><span class="hs-comment">-- Example:</span><span>
+</span><span id="line-105"></span><span class="hs-comment">--</span><span>
+</span><span id="line-106"></span><span class="hs-comment">-- name: TuringMachine_1</span><span>
+</span><span id="line-107"></span><span class="hs-comment">-- init: q1</span><span>
+</span><span id="line-108"></span><span class="hs-comment">-- accept: q2, q3</span><span>
+</span><span id="line-109"></span><span class="hs-comment">-- </span><span>
+</span><span id="line-110"></span><span class="hs-comment">-- q1, _, x</span><span>
+</span><span id="line-111"></span><span class="hs-comment">-- q2, a, y, -, &gt;</span><span>
+</span><span id="line-112"></span><span class="hs-comment">-- </span><span>
+</span><span id="line-113"></span><span class="hs-comment">-- q0, _, _</span><span>
+</span><span id="line-114"></span><span class="hs-comment">-- q3, a, _, &lt;, -</span><span>
+</span><span id="line-115"></span><span class="hs-comment">-- Note: lines should not end with ' ', also there could not be any newlines after Tms.</span><span>
+</span><span id="line-116"></span><span class="annot"><a href="TmsParser.html#pTms"><span class="hs-identifier hs-type">pTms</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="ParsingHelpers.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="annot"><a href="TmsType.html#Tms"><span class="hs-identifier hs-type">Tms</span></a></span><span>
+</span><span id="line-117"></span><span id="pTms"><span class="annot"><span class="annottext">pTms :: Parser Tms
+</span><a href="TmsParser.html#pTms"><span class="hs-identifier hs-var hs-var">pTms</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-118"></span><span>    </span><span id="local-6989586621679336913"><span class="annot"><span class="annottext">[Char]
+</span><a href="#local-6989586621679336913"><span class="hs-identifier hs-var">name</span></a></span></span><span>             </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Tokens Text
+-&gt; ParsecT Void Text Identity [Char]
+-&gt; ParsecT Void Text Identity [Char]
+forall a. Tokens Text -&gt; Parser a -&gt; Parser a
+</span><a href="TmsParser.html#pKeyValue"><span class="hs-identifier hs-var">pKeyValue</span></a></span><span> </span><span class="annot"><span class="annottext">Tokens Text
+</span><span class="hs-string">&quot;name&quot;</span></span><span>   </span><span class="annot"><span class="annottext">ParsecT Void Text Identity [Char]
+</span><a href="TmsParser.html#pIdentifier"><span class="hs-identifier hs-var">pIdentifier</span></a></span><span>
+</span><span id="line-119"></span><span>    </span><span id="local-6989586621679336912"><span class="annot"><span class="annottext">[Char]
+</span><a href="#local-6989586621679336912"><span class="hs-identifier hs-var">initStateName</span></a></span></span><span>    </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Tokens Text
+-&gt; ParsecT Void Text Identity [Char]
+-&gt; ParsecT Void Text Identity [Char]
+forall a. Tokens Text -&gt; Parser a -&gt; Parser a
+</span><a href="TmsParser.html#pKeyValue"><span class="hs-identifier hs-var">pKeyValue</span></a></span><span> </span><span class="annot"><span class="annottext">Tokens Text
+</span><span class="hs-string">&quot;init&quot;</span></span><span>   </span><span class="annot"><span class="annottext">ParsecT Void Text Identity [Char]
+</span><a href="TmsParser.html#pIdentifier"><span class="hs-identifier hs-var">pIdentifier</span></a></span><span>
+</span><span id="line-120"></span><span>    </span><span id="local-6989586621679336911"><span class="annot"><span class="annottext">[[Char]]
+</span><a href="#local-6989586621679336911"><span class="hs-identifier hs-var">acceptStateNames</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Tokens Text -&gt; Parser [[Char]] -&gt; Parser [[Char]]
+forall a. Tokens Text -&gt; Parser a -&gt; Parser a
+</span><a href="TmsParser.html#pKeyValue"><span class="hs-identifier hs-var">pKeyValue</span></a></span><span> </span><span class="annot"><span class="annottext">Tokens Text
+</span><span class="hs-string">&quot;accept&quot;</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">ParsecT Void Text Identity [Char]
+</span><a href="TmsParser.html#pIdentifier"><span class="hs-identifier hs-var">pIdentifier</span></a></span><span> </span><span class="annot"><span class="annottext">ParsecT Void Text Identity [Char] -&gt; Parser () -&gt; Parser [[Char]]
+forall (m :: * -&gt; *) a sep. MonadPlus m =&gt; m a -&gt; m sep -&gt; m [a]
+</span><span class="hs-operator hs-var">`sepBy1`</span></span><span> </span><span class="annot"><span class="annottext">Parser ()
+</span><a href="TmsParser.html#comma"><span class="hs-identifier hs-var">comma</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-121"></span><span>    </span><span id="local-6989586621679336910"><span class="annot"><span class="annottext">[(TmsCommand, Int)]
+</span><a href="#local-6989586621679336910"><span class="hs-identifier hs-var">cmdsLens</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser (TmsCommand, Int) -&gt; Parser (TmsCommand, Int)
+forall a. Parser a -&gt; Parser a
+</span><a href="TmsParser.html#tok"><span class="hs-identifier hs-var">tok</span></a></span><span> </span><span class="annot"><span class="annottext">Parser (TmsCommand, Int)
+</span><a href="TmsParser.html#pCommand"><span class="hs-identifier hs-var">pCommand</span></a></span><span> </span><span class="annot"><span class="annottext">Parser (TmsCommand, Int)
+-&gt; ParsecT Void Text Identity [Char]
+-&gt; ParsecT Void Text Identity [(TmsCommand, Int)]
+forall (m :: * -&gt; *) a sep. MonadPlus m =&gt; m a -&gt; m sep -&gt; m [a]
+</span><span class="hs-operator hs-var">`sepBy1`</span></span><span> </span><span class="annot"><span class="annottext">ParsecT Void Text Identity Char
+-&gt; ParsecT Void Text Identity [Char]
+forall (m :: * -&gt; *) a. MonadPlus m =&gt; m a -&gt; m [a]
+</span><span class="hs-identifier hs-var">some</span></span><span> </span><span class="annot"><span class="annottext">ParsecT Void Text Identity Char
+forall e s (m :: * -&gt; *).
+(MonadParsec e s m, Token s ~ Char) =&gt;
+m (Token s)
+</span><span class="hs-identifier hs-var">newline</span></span><span>
+</span><span id="line-122"></span><span>    </span><span class="hs-keyword">let</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679336908"><span class="annot"><span class="annottext">[TmsCommand]
+</span><a href="#local-6989586621679336908"><span class="hs-identifier hs-var">cmds</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679336907"><span class="annot"><span class="annottext">[Int]
+</span><a href="#local-6989586621679336907"><span class="hs-identifier hs-var">lens</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[(TmsCommand, Int)] -&gt; ([TmsCommand], [Int])
+forall a b. [(a, b)] -&gt; ([a], [b])
+</span><span class="hs-identifier hs-var">unzip</span></span><span> </span><span class="annot"><span class="annottext">[(TmsCommand, Int)]
+</span><a href="#local-6989586621679336910"><span class="hs-identifier hs-var">cmdsLens</span></a></span><span>
+</span><span id="line-123"></span><span>    </span><span class="annot"><span class="annottext">Bool
+</span><span class="hs-identifier hs-var">True</span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">[Int]
+</span><a href="#local-6989586621679336907"><span class="hs-identifier hs-var">lens</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-124"></span><span>        </span><span class="hs-special">(</span><span id="local-6989586621679336905"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679336905"><span class="hs-identifier hs-var">len</span></a></span></span><span> </span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span> </span><span id="local-6989586621679336904"><span class="annot"><span class="annottext">[Int]
+</span><a href="#local-6989586621679336904"><span class="hs-identifier hs-var">others</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679336905"><span class="hs-identifier hs-var">len</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Bool
+forall a. Ord a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">&gt;=</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">1</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Bool -&gt; ParsecT Void Text Identity Bool
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">(Bool -&gt; ParsecT Void Text Identity Bool)
+-&gt; Bool -&gt; ParsecT Void Text Identity Bool
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">(Int -&gt; Bool) -&gt; [Int] -&gt; Bool
+forall (t :: * -&gt; *) a. Foldable t =&gt; (a -&gt; Bool) -&gt; t a -&gt; Bool
+</span><span class="hs-identifier hs-var">all</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Bool
+forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">==</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679336905"><span class="hs-identifier hs-var">len</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[Int]
+</span><a href="#local-6989586621679336904"><span class="hs-identifier hs-var">others</span></a></span><span>
+</span><span id="line-125"></span><span>        </span><span class="annot"><span class="annottext">[Int]
+</span><span class="hs-identifier">_</span></span><span>                         </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">[Char] -&gt; ParsecT Void Text Identity Bool
+forall (m :: * -&gt; *) a. MonadFail m =&gt; [Char] -&gt; m a
+</span><span class="hs-identifier hs-var">fail</span></span><span> </span><span class="annot"><span class="annottext">[Char]
+</span><span class="hs-string">&quot;Not all commands has same length.&quot;</span></span><span>
+</span><span id="line-126"></span><span>    </span><span class="annot"><span class="annottext">Tms -&gt; Parser Tms
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">(Tms -&gt; Parser Tms) -&gt; Tms -&gt; Parser Tms
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">([Char], TmsState, [TmsState], [TmsCommand], [[Char]]) -&gt; Tms
+</span><a href="TmsType.html#Tms"><span class="hs-identifier hs-var">Tms</span></a></span><span> </span><span class="hs-special">(</span><span>
+</span><span id="line-127"></span><span>            </span><span class="annot"><span class="annottext">[Char]
+</span><a href="#local-6989586621679336913"><span class="hs-identifier hs-var">name</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-128"></span><span>            </span><span class="annot"><span class="annottext">[Char] -&gt; TmsState
+</span><a href="TmsType.html#TmsState"><span class="hs-identifier hs-var">TmsState</span></a></span><span> </span><span class="annot"><span class="annottext">[Char]
+</span><a href="#local-6989586621679336912"><span class="hs-identifier hs-var">initStateName</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-129"></span><span>            </span><span class="annot"><span class="annottext">[Char] -&gt; TmsState
+</span><a href="TmsType.html#TmsState"><span class="hs-identifier hs-var">TmsState</span></a></span><span> </span><span class="annot"><span class="annottext">([Char] -&gt; TmsState) -&gt; [[Char]] -&gt; [TmsState]
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">[[Char]]
+</span><a href="#local-6989586621679336911"><span class="hs-identifier hs-var">acceptStateNames</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-130"></span><span>            </span><span class="annot"><span class="annottext">[TmsCommand]
+</span><a href="#local-6989586621679336908"><span class="hs-identifier hs-var">cmds</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-131"></span><span>            </span><span class="annot"><span class="annottext">[TmsCommand] -&gt; [[Char]]
+</span><a href="TmsParser.html#alphabet"><span class="hs-identifier hs-var">alphabet</span></a></span><span> </span><span class="annot"><span class="annottext">[TmsCommand]
+</span><a href="#local-6989586621679336908"><span class="hs-identifier hs-var">cmds</span></a></span><span>
+</span><span id="line-132"></span><span>        </span><span class="hs-special">)</span><span>
+</span><span id="line-133"></span><span>
+</span><span id="line-134"></span><span>
+</span><span id="line-135"></span><span class="annot"><a href="TmsParser.html#parser"><span class="hs-identifier hs-type">parser</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="ParsingHelpers.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="annot"><a href="TmsType.html#Tms"><span class="hs-identifier hs-type">Tms</span></a></span><span>
+</span><span id="line-136"></span><span id="parser"><span class="annot"><span class="annottext">parser :: Parser Tms
+</span><a href="TmsParser.html#parser"><span class="hs-identifier hs-var hs-var">parser</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Parser Tms -&gt; Parser Tms
+forall a. Parser a -&gt; Parser a
+</span><a href="ParsingHelpers.html#makeEofParser"><span class="hs-identifier hs-var">makeEofParser</span></a></span><span> </span><span class="annot"><span class="annottext">Parser Tms
+</span><a href="TmsParser.html#pTms"><span class="hs-identifier hs-var">pTms</span></a></span><span>
+</span><span id="line-137"></span><span>
+</span><span id="line-138"></span><span class="hs-comment">-- | Parse Tms from file.</span><span>
+</span><span id="line-139"></span><span class="annot"><a href="TmsParser.html#parseTms"><span class="hs-identifier hs-type">parseTms</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">IO</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Either</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="annot"><a href="TmsType.html#Tms"><span class="hs-identifier hs-type">Tms</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-140"></span><span id="parseTms"><span class="annot"><span class="annottext">parseTms :: [Char] -&gt; [Char] -&gt; IO (Either [Char] Tms)
+</span><a href="TmsParser.html#parseTms"><span class="hs-identifier hs-var hs-var">parseTms</span></a></span></span><span> </span><span id="local-6989586621679336900"><span class="annot"><span class="annottext">[Char]
+</span><a href="#local-6989586621679336900"><span class="hs-identifier hs-var">inputFile</span></a></span></span><span> </span><span id="local-6989586621679336899"><span class="annot"><span class="annottext">[Char]
+</span><a href="#local-6989586621679336899"><span class="hs-identifier hs-var">errorFile</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-141"></span><span>    </span><span id="local-6989586621679336898"><span class="annot"><span class="annottext">Either (ParseErrorBundle Text Void) Tms
+</span><a href="#local-6989586621679336898"><span class="hs-identifier hs-var">result</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser Tms
+-&gt; [Char] -&gt; [Char] -&gt; IO (Either (ParseErrorBundle Text Void) Tms)
+forall a.
+Parser a
+-&gt; [Char] -&gt; [Char] -&gt; IO (Either (ParseErrorBundle Text Void) a)
+</span><a href="ParsingHelpers.html#parseFromFile"><span class="hs-identifier hs-var">parseFromFile</span></a></span><span> </span><span class="annot"><span class="annottext">Parser Tms
+</span><a href="TmsParser.html#parser"><span class="hs-identifier hs-var">TmsParser.parser</span></a></span><span> </span><span class="annot"><span class="annottext">[Char]
+</span><a href="#local-6989586621679336899"><span class="hs-identifier hs-var">errorFile</span></a></span><span> </span><span class="annot"><span class="annottext">[Char]
+</span><a href="#local-6989586621679336900"><span class="hs-identifier hs-var">inputFile</span></a></span><span>
+</span><span id="line-142"></span><span>    </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">Either (ParseErrorBundle Text Void) Tms
+</span><a href="#local-6989586621679336898"><span class="hs-identifier hs-var">result</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-143"></span><span>        </span><span class="annot"><span class="hs-identifier hs-type">Left</span></span><span> </span><span id="local-6989586621679336896"><span class="annot"><span class="annottext">ParseErrorBundle Text Void
+</span><a href="#local-6989586621679336896"><span class="hs-identifier hs-var">err</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span>
+</span><span id="line-144"></span><span>            </span><span class="annot"><span class="annottext">Either [Char] Tms -&gt; IO (Either [Char] Tms)
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">(Either [Char] Tms -&gt; IO (Either [Char] Tms))
+-&gt; Either [Char] Tms -&gt; IO (Either [Char] Tms)
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">[Char] -&gt; Either [Char] Tms
+forall a b. a -&gt; Either a b
+</span><span class="hs-identifier hs-var">Left</span></span><span> </span><span class="annot"><span class="annottext">([Char] -&gt; Either [Char] Tms) -&gt; [Char] -&gt; Either [Char] Tms
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">[Char]
+</span><span class="hs-string">&quot;Parsing error: &quot;</span></span><span> </span><span class="annot"><span class="annottext">[Char] -&gt; [Char] -&gt; [Char]
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">ParseErrorBundle Text Void -&gt; [Char]
+forall s e.
+(VisualStream s, TraversableStream s, ShowErrorComponent e) =&gt;
+ParseErrorBundle s e -&gt; [Char]
+</span><span class="hs-identifier hs-var">errorBundlePretty</span></span><span> </span><span class="annot"><span class="annottext">ParseErrorBundle Text Void
+</span><a href="#local-6989586621679336896"><span class="hs-identifier hs-var">err</span></a></span><span>
+</span><span id="line-145"></span><span>        </span><span class="annot"><span class="hs-identifier hs-type">Right</span></span><span> </span><span id="local-6989586621679336895"><span class="annot"><span class="annottext">Tms
+</span><a href="#local-6989586621679336895"><span class="hs-identifier hs-var">tms</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span>
+</span><span id="line-146"></span><span>            </span><span class="annot"><span class="annottext">Either [Char] Tms -&gt; IO (Either [Char] Tms)
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">(Either [Char] Tms -&gt; IO (Either [Char] Tms))
+-&gt; Either [Char] Tms -&gt; IO (Either [Char] Tms)
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Tms -&gt; Either [Char] Tms
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">Tms
+</span><a href="#local-6989586621679336895"><span class="hs-identifier hs-var">tms</span></a></span><span>
+</span><span id="line-147"></span></pre></body></html>

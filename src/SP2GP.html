@@ -1,0 +1,383 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-comment">-- |Module `SP2GP` include functions `groupBeta` and `groupBeta_1` for</span><span>
+</span><span id="line-2"></span><span class="hs-comment">--  converting semigroup presentation to group presentation.</span><span>
+</span><span id="line-3"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">SP2GP</span><span> </span><span class="hs-special">(</span><span>
+</span><span id="line-4"></span><span>    </span><span class="annot"><a href="SP2GP.html#groupBeta"><span class="hs-identifier">groupBeta</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-5"></span><span>    </span><span class="annot"><a href="SP2GP.html#groupBeta_1"><span class="hs-identifier">groupBeta_1</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-6"></span><span>  </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-7"></span><span>
+</span><span id="line-8"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="SP2GP.Generators.html"><span class="hs-identifier">SP2GP.Generators</span></a></span><span>
+</span><span id="line-9"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="SP2GP.Relations.html"><span class="hs-identifier">SP2GP.Relations</span></a></span><span>
+</span><span id="line-10"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="SemigroupPresentation.html"><span class="hs-identifier">SemigroupPresentation</span></a></span><span>
+</span><span id="line-11"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="GroupPresentation.html"><span class="hs-identifier">GroupPresentation</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">GP</span></span><span>
+</span><span id="line-12"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="TM2SP.html"><span class="hs-identifier">TM2SP</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="TM2SP.html#SemigroupPresentation_1"><span class="hs-identifier">SemigroupPresentation_1</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="TM2SP.html#unSP1"><span class="hs-identifier">unSP1</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><span id="line-13"></span><span>
+</span><span id="line-14"></span><span id="local-6989586621679340390"><span class="annot"><a href="SP2GP.html#sp2gp"><span class="hs-identifier hs-type">sp2gp</span></a></span><span> </span><span class="hs-glyph">::</span><span>
+</span><span id="line-15"></span><span>    </span><span class="annot"><span class="hs-identifier hs-type">MonadFail</span></span><span> </span><span class="annot"><a href="#local-6989586621679340390"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span>
+</span><span id="line-16"></span><span>    </span><span class="annot"><a href="SP2GP.Generators.html#Gens"><span class="hs-identifier hs-type">Gens</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span>
+</span><span id="line-17"></span><span>    </span><span class="annot"><a href="SP2GP.Relations.html#Rels"><span class="hs-identifier hs-type">Rels</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span>
+</span><span id="line-18"></span><span>    </span><span class="annot"><a href="SemigroupPresentation.html#SemigroupPresentation"><span class="hs-identifier hs-type">SemigroupPresentation</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span>
+</span><span id="line-19"></span><span>    </span><span class="annot"><a href="#local-6989586621679340390"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="annot"><a href="GroupPresentation.html#GroupPresentation"><span class="hs-identifier hs-type">GP.GroupPresentation</span></a></span></span><span>
+</span><span id="line-20"></span><span id="sp2gp"><span class="annot"><span class="annottext">sp2gp :: Gens -&gt; Rels -&gt; SemigroupPresentation -&gt; m GroupPresentation
+</span><a href="SP2GP.html#sp2gp"><span class="hs-identifier hs-var hs-var">sp2gp</span></a></span></span><span> </span><span id="local-6989586621679340361"><span class="annot"><span class="annottext">Gens
+</span><a href="#local-6989586621679340361"><span class="hs-identifier hs-var">gs</span></a></span></span><span> </span><span id="local-6989586621679340360"><span class="annot"><span class="annottext">Rels
+</span><a href="#local-6989586621679340360"><span class="hs-identifier hs-var">rs'</span></a></span></span><span> </span><span id="local-6989586621679340359"><span class="annot"><span class="annottext">SemigroupPresentation
+</span><a href="#local-6989586621679340359"><span class="hs-identifier hs-var">sp</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-21"></span><span>    </span><span id="local-6989586621679340358"><span class="annot"><span class="annottext">GeneratorsDescr
+</span><a href="#local-6989586621679340358"><span class="hs-identifier hs-var">gd</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Gens -&gt; SemigroupPresentation -&gt; m GeneratorsDescr
+forall (m :: * -&gt; *).
+MonadFail m =&gt;
+Gens -&gt; SemigroupPresentation -&gt; m GeneratorsDescr
+</span><a href="SP2GP.Generators.html#gens"><span class="hs-identifier hs-var">gens</span></a></span><span> </span><span class="annot"><span class="annottext">Gens
+</span><a href="#local-6989586621679340361"><span class="hs-identifier hs-var">gs</span></a></span><span> </span><span class="annot"><span class="annottext">SemigroupPresentation
+</span><a href="#local-6989586621679340359"><span class="hs-identifier hs-var">sp</span></a></span><span>
+</span><span id="line-22"></span><span>    </span><span id="local-6989586621679340356"><span class="annot"><span class="annottext">Relations
+</span><a href="#local-6989586621679340356"><span class="hs-identifier hs-var">rs</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Rels -&gt; GeneratorsDescr -&gt; SemigroupPresentation -&gt; m Relations
+forall (m :: * -&gt; *).
+MonadFail m =&gt;
+Rels -&gt; GeneratorsDescr -&gt; SemigroupPresentation -&gt; m Relations
+</span><a href="SP2GP.Relations.html#rels"><span class="hs-identifier hs-var">rels</span></a></span><span> </span><span class="annot"><span class="annottext">Rels
+</span><a href="#local-6989586621679340360"><span class="hs-identifier hs-var">rs'</span></a></span><span> </span><span class="annot"><span class="annottext">GeneratorsDescr
+</span><a href="#local-6989586621679340358"><span class="hs-identifier hs-var">gd</span></a></span><span> </span><span class="annot"><span class="annottext">SemigroupPresentation
+</span><a href="#local-6989586621679340359"><span class="hs-identifier hs-var">sp</span></a></span><span>
+</span><span id="line-23"></span><span>    </span><span class="annot"><span class="annottext">GroupPresentation -&gt; m GroupPresentation
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">(GroupPresentation -&gt; m GroupPresentation)
+-&gt; GroupPresentation -&gt; m GroupPresentation
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Relations -&gt; GeneratorsDescr -&gt; GroupPresentation
+</span><a href="GroupPresentation.html#groupPresentation"><span class="hs-identifier hs-var">GP.groupPresentation</span></a></span><span> </span><span class="annot"><span class="annottext">Relations
+</span><a href="#local-6989586621679340356"><span class="hs-identifier hs-var">rs</span></a></span><span> </span><span class="annot"><span class="annottext">GeneratorsDescr
+</span><a href="#local-6989586621679340358"><span class="hs-identifier hs-var">gd</span></a></span><span>
+</span><span id="line-24"></span><span>
+</span><span id="line-25"></span><span id="local-6989586621679340353"><span class="annot"><a href="SP2GP.html#groupBeta"><span class="hs-identifier hs-type">groupBeta</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">MonadFail</span></span><span> </span><span class="annot"><a href="#local-6989586621679340353"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><a href="SemigroupPresentation.html#SemigroupPresentation"><span class="hs-identifier hs-type">SemigroupPresentation</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679340353"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="annot"><a href="GroupPresentation.html#GroupPresentation"><span class="hs-identifier hs-type">GP.GroupPresentation</span></a></span></span><span>
+</span><span id="line-26"></span><span id="groupBeta"><span class="annot"><span class="annottext">groupBeta :: SemigroupPresentation -&gt; m GroupPresentation
+</span><a href="SP2GP.html#groupBeta"><span class="hs-identifier hs-var hs-var">groupBeta</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-27"></span><span>    </span><span class="annot"><span class="annottext">Gens -&gt; Rels -&gt; SemigroupPresentation -&gt; m GroupPresentation
+forall (m :: * -&gt; *).
+MonadFail m =&gt;
+Gens -&gt; Rels -&gt; SemigroupPresentation -&gt; m GroupPresentation
+</span><a href="SP2GP.html#sp2gp"><span class="hs-identifier hs-var">sp2gp</span></a></span><span> </span><span class="hs-special">[</span><span>
+</span><span id="line-28"></span><span>            </span><span class="annot"><span class="annottext">StrGetter -&gt; Gen
+</span><a href="SP2GP.Generators.html#group"><span class="hs-identifier hs-var">group</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">StrGetter
+</span><a href="SemigroupPresentation.html#strGenerators"><span class="hs-identifier hs-var">strGenerators</span></a></span><span class="annot"><span class="annottext">StrGetter
+-&gt; ((Set String -&gt; Const (Set String) (Set String))
+    -&gt; Set String -&gt; Const (Set String) (Set String))
+-&gt; StrGetter
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span class="annot"><span class="annottext">String -&gt; Getter (Set String) (Set String)
+</span><a href="SemigroupPresentation.Generator.html#filterByFormat"><span class="hs-identifier hs-var">filterByFormat</span></a></span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;q{}&quot;</span></span><span class="hs-special">)</span><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><span id="line-29"></span><span>            </span><span class="annot"><span class="annottext">String -&gt; Gen
+</span><a href="SP2GP.Generators.html#simple"><span class="hs-identifier hs-var">simple</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;s&quot;</span></span><span class="hs-special">,</span><span>
+</span><span id="line-30"></span><span>            </span><span class="annot"><span class="annottext">StrGetter -&gt; Gen
+</span><a href="SP2GP.Generators.html#group"><span class="hs-identifier hs-var">group</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">StrGetter
+</span><a href="SemigroupPresentation.html#strGenerators"><span class="hs-identifier hs-var">strGenerators</span></a></span><span class="annot"><span class="annottext">StrGetter
+-&gt; ((Set String -&gt; Const (Set String) (Set String))
+    -&gt; Set String -&gt; Const (Set String) (Set String))
+-&gt; StrGetter
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span class="annot"><span class="annottext">String -&gt; Getter (Set String) (Set String)
+</span><a href="SemigroupPresentation.Generator.html#filterByFormat"><span class="hs-identifier hs-var">filterByFormat</span></a></span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;s{}&quot;</span></span><span class="hs-special">)</span><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><span id="line-31"></span><span>            </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;r_{}&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; StrGetter -&gt; Gen
+</span><a href="SP2GP.Generators.html#from"><span class="hs-operator hs-var">`from`</span></a></span><span> </span><span class="annot"><span class="annottext">StrGetter
+</span><a href="SemigroupPresentation.html#strNumRelations"><span class="hs-identifier hs-var">strNumRelations</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-32"></span><span>            </span><span class="annot"><span class="annottext">String -&gt; Gen
+</span><a href="SP2GP.Generators.html#simple"><span class="hs-identifier hs-var">simple</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;x t k&quot;</span></span><span>
+</span><span id="line-33"></span><span>        </span><span class="hs-special">]</span><span> </span><span class="hs-special">[</span><span class="hs-special">[</span><span class="hs-special">[</span><span>
+</span><span id="line-34"></span><span>            </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;x s_B&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; Rel
+</span><a href="SP2GP.Relations.html#%3D%3D%3D"><span class="hs-operator hs-var">===</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;s_B x^2&quot;</span></span><span class="hs-special">,</span><span>
+</span><span id="line-35"></span><span>            </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;r_i s_B&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; Rel
+</span><a href="SP2GP.Relations.html#%3D%3D%3D"><span class="hs-operator hs-var">===</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;s_B x r_i x&quot;</span></span><span class="hs-special">,</span><span>
+</span><span id="line-36"></span><span>            </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;r_i^-1 F_i^# q_i_1 G_i r_i&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; Rel
+</span><a href="SP2GP.Relations.html#%3D%3D%3D"><span class="hs-operator hs-var">===</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;H_i^# q_i_2 K_i&quot;</span></span><span class="hs-special">,</span><span>
+</span><span id="line-37"></span><span>            </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;t r_i&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; Rel
+</span><a href="SP2GP.Relations.html#%3D%3D%3D"><span class="hs-operator hs-var">===</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;r_i t&quot;</span></span><span class="hs-special">,</span><span>
+</span><span id="line-38"></span><span>            </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;t x&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; Rel
+</span><a href="SP2GP.Relations.html#%3D%3D%3D"><span class="hs-operator hs-var">===</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;x t&quot;</span></span><span class="hs-special">,</span><span>
+</span><span id="line-39"></span><span>            </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;k r_i&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; Rel
+</span><a href="SP2GP.Relations.html#%3D%3D%3D"><span class="hs-operator hs-var">===</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;r_i k&quot;</span></span><span class="hs-special">,</span><span>
+</span><span id="line-40"></span><span>            </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;k x&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; Rel
+</span><a href="SP2GP.Relations.html#%3D%3D%3D"><span class="hs-operator hs-var">===</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;x k&quot;</span></span><span class="hs-special">,</span><span>
+</span><span id="line-41"></span><span>            </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;k q^-1 t q&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; Rel
+</span><a href="SP2GP.Relations.html#%3D%3D%3D"><span class="hs-operator hs-var">===</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;q^-1 t q k&quot;</span></span><span>
+</span><span id="line-42"></span><span>        </span><span class="hs-special">]</span><span> </span><span class="annot"><span class="annottext">Rels -&gt; (Rels -&gt; Rel) -&gt; Rel
+forall a b. a -&gt; (a -&gt; b) -&gt; b
+</span><span class="hs-operator hs-var">&amp;</span></span><span> </span><span class="annot"><span class="annottext">Range String StrGetter -&gt; Rels -&gt; Rel
+forall v c. RangeClass v c =&gt; Range v c -&gt; Rels -&gt; Rel
+</span><a href="SP2GP.Relations.html#for%27"><span class="hs-identifier hs-var">for'</span></a></span><span> </span><span class="hs-special">(</span><span>
+</span><span id="line-43"></span><span>            </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;{s_B}&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; StrGetter -&gt; Range String StrGetter
+forall v c. RangeClass v c =&gt; v -&gt; c -&gt; Range v c
+</span><a href="SP2GP.Relations.html#in%27"><span class="hs-operator hs-var">`in'`</span></a></span><span>
+</span><span id="line-44"></span><span>            </span><span class="hs-special">(</span><span class="annot"><span class="annottext">StrGetter
+</span><a href="SemigroupPresentation.html#strGenerators"><span class="hs-identifier hs-var">strGenerators</span></a></span><span class="annot"><span class="annottext">StrGetter
+-&gt; ((Set String -&gt; Const (Set String) (Set String))
+    -&gt; Set String -&gt; Const (Set String) (Set String))
+-&gt; StrGetter
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span class="annot"><span class="annottext">String -&gt; Getter (Set String) (Set String)
+</span><a href="SemigroupPresentation.Generator.html#filterByFormat"><span class="hs-identifier hs-var">filterByFormat</span></a></span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;s_{}&quot;</span></span><span class="hs-special">)</span><span class="annot"><span class="annottext">((Set String -&gt; Const (Set String) (Set String))
+ -&gt; Set String -&gt; Const (Set String) (Set String))
+-&gt; ((Set String -&gt; Const (Set String) (Set String))
+    -&gt; Set String -&gt; Const (Set String) (Set String))
+-&gt; (Set String -&gt; Const (Set String) (Set String))
+-&gt; Set String
+-&gt; Const (Set String) (Set String)
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span class="annot"><span class="annottext">String -&gt; Getter (Set String) (Set String)
+</span><a href="SemigroupPresentation.Generator.html#insertGen"><span class="hs-identifier hs-var">insertGen</span></a></span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;s&quot;</span></span><span class="hs-special">)</span><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><span id="line-45"></span><span>        </span><span class="hs-special">]</span><span> </span><span class="annot"><span class="annottext">Rels -&gt; (Rels -&gt; Rel) -&gt; Rel
+forall a b. a -&gt; (a -&gt; b) -&gt; b
+</span><span class="hs-operator hs-var">&amp;</span></span><span> </span><span class="annot"><span class="annottext">Range
+  (String, Rel)
+  (StrGetter,
+   (Set (Pair StrGWord)
+    -&gt; Const (Set (Pair StrGWord)) (Set (Pair StrGWord)))
+   -&gt; SemigroupPresentation
+   -&gt; Const (Set (Pair StrGWord)) SemigroupPresentation)
+-&gt; Rels -&gt; Rel
+forall v c. RangeClass v c =&gt; Range v c -&gt; Rels -&gt; Rel
+</span><a href="SP2GP.Relations.html#for%27"><span class="hs-identifier hs-var">for'</span></a></span><span> </span><span class="hs-special">(</span><span>
+</span><span id="line-46"></span><span>            </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;r_{i}&quot;</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;F_i q{_i_1} G_i&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; Rel
+</span><a href="SP2GP.Relations.html#%3D%3D%3D"><span class="hs-operator hs-var">===</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;H_i q{_i_2} K_i&quot;</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">(String, Rel)
+-&gt; (StrGetter,
+    (Set (Pair StrGWord)
+     -&gt; Const (Set (Pair StrGWord)) (Set (Pair StrGWord)))
+    -&gt; SemigroupPresentation
+    -&gt; Const (Set (Pair StrGWord)) SemigroupPresentation)
+-&gt; Range
+     (String, Rel)
+     (StrGetter,
+      (Set (Pair StrGWord)
+       -&gt; Const (Set (Pair StrGWord)) (Set (Pair StrGWord)))
+      -&gt; SemigroupPresentation
+      -&gt; Const (Set (Pair StrGWord)) SemigroupPresentation)
+forall v c. RangeClass v c =&gt; v -&gt; c -&gt; Range v c
+</span><a href="SP2GP.Relations.html#in%27"><span class="hs-operator hs-var">`in'`</span></a></span><span>
+</span><span id="line-47"></span><span>            </span><span class="hs-special">(</span><span class="annot"><span class="annottext">StrGetter
+</span><a href="SemigroupPresentation.html#strNumRelations"><span class="hs-identifier hs-var">strNumRelations</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">(Set (Pair StrGWord)
+ -&gt; Const (Set (Pair StrGWord)) (Set (Pair StrGWord)))
+-&gt; SemigroupPresentation
+-&gt; Const (Set (Pair StrGWord)) SemigroupPresentation
+</span><a href="SemigroupPresentation.html#strRelations"><span class="hs-identifier hs-var">strRelations</span></a></span><span class="annot"><span class="annottext">((Set (Pair StrGWord)
+  -&gt; Const (Set (Pair StrGWord)) (Set (Pair StrGWord)))
+ -&gt; SemigroupPresentation
+ -&gt; Const (Set (Pair StrGWord)) SemigroupPresentation)
+-&gt; ((Set (Pair StrGWord)
+     -&gt; Const (Set (Pair StrGWord)) (Set (Pair StrGWord)))
+    -&gt; Set (Pair StrGWord)
+    -&gt; Const (Set (Pair StrGWord)) (Set (Pair StrGWord)))
+-&gt; (Set (Pair StrGWord)
+    -&gt; Const (Set (Pair StrGWord)) (Set (Pair StrGWord)))
+-&gt; SemigroupPresentation
+-&gt; Const (Set (Pair StrGWord)) SemigroupPresentation
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span class="annot"><span class="annottext">(StrGWord -&gt; StrGWord)
+-&gt; Getter (Set (Pair StrGWord)) (Set (Pair StrGWord))
+forall b a.
+Ord b =&gt;
+(a -&gt; b) -&gt; Getter (Set (Pair a)) (Set (Pair b))
+</span><a href="SemigroupPresentation.Relation.html#forAll"><span class="hs-identifier hs-var">forAll</span></a></span><span class="hs-special">(</span><span class="annot"><span class="annottext">(String, String) -&gt; StrGWord -&gt; StrGWord
+</span><a href="SemigroupPresentation.Relation.html#replaceGenerator"><span class="hs-identifier hs-var">replaceGenerator</span></a></span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;h&quot;</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;s&quot;</span></span><span class="hs-special">)</span><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><span id="line-48"></span><span>          </span><span class="hs-special">)</span><span>
+</span><span id="line-49"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-50"></span><span>
+</span><span id="line-51"></span><span id="local-6989586621679340337"><span class="annot"><a href="SP2GP.html#groupBeta_1"><span class="hs-identifier hs-type">groupBeta_1</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">MonadFail</span></span><span> </span><span class="annot"><a href="#local-6989586621679340337"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><a href="TM2SP.html#SemigroupPresentation_1"><span class="hs-identifier hs-type">SemigroupPresentation_1</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679340337"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="annot"><a href="GroupPresentation.html#GroupPresentation"><span class="hs-identifier hs-type">GP.GroupPresentation</span></a></span></span><span>
+</span><span id="line-52"></span><span id="groupBeta_1"><span class="annot"><span class="annottext">groupBeta_1 :: SemigroupPresentation_1 -&gt; m GroupPresentation
+</span><a href="SP2GP.html#groupBeta_1"><span class="hs-identifier hs-var hs-var">groupBeta_1</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-53"></span><span>    </span><span class="hs-special">(</span><span class="annot"><span class="annottext">(SemigroupPresentation -&gt; m GroupPresentation)
+-&gt; (SemigroupPresentation_1 -&gt; SemigroupPresentation)
+-&gt; SemigroupPresentation_1
+-&gt; m GroupPresentation
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">SemigroupPresentation_1 -&gt; SemigroupPresentation
+</span><a href="TM2SP.html#unSP1"><span class="hs-identifier hs-var hs-var">unSP1</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">((SemigroupPresentation -&gt; m GroupPresentation)
+ -&gt; SemigroupPresentation_1 -&gt; m GroupPresentation)
+-&gt; (SemigroupPresentation -&gt; m GroupPresentation)
+-&gt; SemigroupPresentation_1
+-&gt; m GroupPresentation
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Gens -&gt; Rels -&gt; SemigroupPresentation -&gt; m GroupPresentation
+forall (m :: * -&gt; *).
+MonadFail m =&gt;
+Gens -&gt; Rels -&gt; SemigroupPresentation -&gt; m GroupPresentation
+</span><a href="SP2GP.html#sp2gp"><span class="hs-identifier hs-var">sp2gp</span></a></span><span> </span><span class="hs-special">[</span><span>
+</span><span id="line-54"></span><span>            </span><span class="annot"><span class="annottext">StrGetter -&gt; Gen
+</span><a href="SP2GP.Generators.html#group"><span class="hs-identifier hs-var">group</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">StrGetter
+</span><a href="SemigroupPresentation.html#strGenerators"><span class="hs-identifier hs-var">strGenerators</span></a></span><span class="annot"><span class="annottext">StrGetter
+-&gt; ((Set String -&gt; Const (Set String) (Set String))
+    -&gt; Set String -&gt; Const (Set String) (Set String))
+-&gt; StrGetter
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span class="annot"><span class="annottext">String -&gt; Getter (Set String) (Set String)
+</span><a href="SemigroupPresentation.Generator.html#filterByFormat"><span class="hs-identifier hs-var">filterByFormat</span></a></span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;q{}&quot;</span></span><span class="hs-special">)</span><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><span id="line-55"></span><span>            </span><span class="annot"><span class="annottext">String -&gt; Gen
+</span><a href="SP2GP.Generators.html#simple"><span class="hs-identifier hs-var">simple</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;s&quot;</span></span><span class="hs-special">,</span><span>
+</span><span id="line-56"></span><span>            </span><span class="annot"><span class="annottext">StrGetter -&gt; Gen
+</span><a href="SP2GP.Generators.html#group"><span class="hs-identifier hs-var">group</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">StrGetter
+</span><a href="SemigroupPresentation.html#strGenerators"><span class="hs-identifier hs-var">strGenerators</span></a></span><span class="annot"><span class="annottext">StrGetter
+-&gt; ((Set String -&gt; Const (Set String) (Set String))
+    -&gt; Set String -&gt; Const (Set String) (Set String))
+-&gt; StrGetter
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span class="annot"><span class="annottext">String -&gt; Getter (Set String) (Set String)
+</span><a href="SemigroupPresentation.Generator.html#filterByFormat"><span class="hs-identifier hs-var">filterByFormat</span></a></span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;s{}&quot;</span></span><span class="hs-special">)</span><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><span id="line-57"></span><span>            </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;r_{}&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; StrGetter -&gt; Gen
+</span><a href="SP2GP.Generators.html#from"><span class="hs-operator hs-var">`from`</span></a></span><span> </span><span class="annot"><span class="annottext">StrGetter
+</span><a href="SemigroupPresentation.html#strNumRelations"><span class="hs-identifier hs-var">strNumRelations</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-58"></span><span>            </span><span class="annot"><span class="annottext">String -&gt; Gen
+</span><a href="SP2GP.Generators.html#simple"><span class="hs-identifier hs-var">simple</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;x t k&quot;</span></span><span>
+</span><span id="line-59"></span><span>        </span><span class="hs-special">]</span><span> </span><span class="hs-special">[</span><span class="hs-special">[</span><span class="hs-special">[</span><span>
+</span><span id="line-60"></span><span>            </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;x s_B&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; Rel
+</span><a href="SP2GP.Relations.html#%3D%3D%3D"><span class="hs-operator hs-var">===</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;s_B x^2&quot;</span></span><span class="hs-special">,</span><span>
+</span><span id="line-61"></span><span>            </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;r_i s_B&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; Rel
+</span><a href="SP2GP.Relations.html#%3D%3D%3D"><span class="hs-operator hs-var">===</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;s_B x r_i x&quot;</span></span><span class="hs-special">,</span><span>
+</span><span id="line-62"></span><span>            </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;r_i^-1 F_i^# q_i_1 G_i r_i&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; Rel
+</span><a href="SP2GP.Relations.html#%3D%3D%3D"><span class="hs-operator hs-var">===</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;H_i^# q_i_2 K_i&quot;</span></span><span class="hs-special">,</span><span>
+</span><span id="line-63"></span><span>            </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;t r_i&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; Rel
+</span><a href="SP2GP.Relations.html#%3D%3D%3D"><span class="hs-operator hs-var">===</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;r_i t&quot;</span></span><span class="hs-special">,</span><span>
+</span><span id="line-64"></span><span>            </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;t x&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; Rel
+</span><a href="SP2GP.Relations.html#%3D%3D%3D"><span class="hs-operator hs-var">===</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;x t&quot;</span></span><span class="hs-special">,</span><span>
+</span><span id="line-65"></span><span>            </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;k r_i&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; Rel
+</span><a href="SP2GP.Relations.html#%3D%3D%3D"><span class="hs-operator hs-var">===</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;r_i k&quot;</span></span><span class="hs-special">,</span><span>
+</span><span id="line-66"></span><span>            </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;k x&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; Rel
+</span><a href="SP2GP.Relations.html#%3D%3D%3D"><span class="hs-operator hs-var">===</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;x k&quot;</span></span><span class="hs-special">,</span><span>
+</span><span id="line-67"></span><span>            </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;k s^-1 q_0^-1 s t s^-1 q_0 s&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; Rel
+</span><a href="SP2GP.Relations.html#%3D%3D%3D"><span class="hs-operator hs-var">===</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;s^-1 q_0^-1 s t s^-1 q_0 s k&quot;</span></span><span>
+</span><span id="line-68"></span><span>        </span><span class="hs-special">]</span><span> </span><span class="annot"><span class="annottext">Rels -&gt; (Rels -&gt; Rel) -&gt; Rel
+forall a b. a -&gt; (a -&gt; b) -&gt; b
+</span><span class="hs-operator hs-var">&amp;</span></span><span> </span><span class="annot"><span class="annottext">Range String StrGetter -&gt; Rels -&gt; Rel
+forall v c. RangeClass v c =&gt; Range v c -&gt; Rels -&gt; Rel
+</span><a href="SP2GP.Relations.html#for%27"><span class="hs-identifier hs-var">for'</span></a></span><span> </span><span class="hs-special">(</span><span>
+</span><span id="line-69"></span><span>            </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;{s_B}&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; StrGetter -&gt; Range String StrGetter
+forall v c. RangeClass v c =&gt; v -&gt; c -&gt; Range v c
+</span><a href="SP2GP.Relations.html#in%27"><span class="hs-operator hs-var">`in'`</span></a></span><span>
+</span><span id="line-70"></span><span>            </span><span class="hs-special">(</span><span class="annot"><span class="annottext">StrGetter
+</span><a href="SemigroupPresentation.html#strGenerators"><span class="hs-identifier hs-var">strGenerators</span></a></span><span class="annot"><span class="annottext">StrGetter
+-&gt; ((Set String -&gt; Const (Set String) (Set String))
+    -&gt; Set String -&gt; Const (Set String) (Set String))
+-&gt; StrGetter
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span class="annot"><span class="annottext">String -&gt; Getter (Set String) (Set String)
+</span><a href="SemigroupPresentation.Generator.html#filterByFormat"><span class="hs-identifier hs-var">filterByFormat</span></a></span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;s_{}&quot;</span></span><span class="hs-special">)</span><span class="annot"><span class="annottext">((Set String -&gt; Const (Set String) (Set String))
+ -&gt; Set String -&gt; Const (Set String) (Set String))
+-&gt; ((Set String -&gt; Const (Set String) (Set String))
+    -&gt; Set String -&gt; Const (Set String) (Set String))
+-&gt; (Set String -&gt; Const (Set String) (Set String))
+-&gt; Set String
+-&gt; Const (Set String) (Set String)
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span class="annot"><span class="annottext">String -&gt; Getter (Set String) (Set String)
+</span><a href="SemigroupPresentation.Generator.html#insertGen"><span class="hs-identifier hs-var">insertGen</span></a></span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;s&quot;</span></span><span class="hs-special">)</span><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><span id="line-71"></span><span>        </span><span class="hs-special">]</span><span> </span><span class="annot"><span class="annottext">Rels -&gt; (Rels -&gt; Rel) -&gt; Rel
+forall a b. a -&gt; (a -&gt; b) -&gt; b
+</span><span class="hs-operator hs-var">&amp;</span></span><span> </span><span class="annot"><span class="annottext">Range
+  (String, Rel)
+  (StrGetter,
+   (Set (Pair StrGWord)
+    -&gt; Const (Set (Pair StrGWord)) (Set (Pair StrGWord)))
+   -&gt; SemigroupPresentation
+   -&gt; Const (Set (Pair StrGWord)) SemigroupPresentation)
+-&gt; Rels -&gt; Rel
+forall v c. RangeClass v c =&gt; Range v c -&gt; Rels -&gt; Rel
+</span><a href="SP2GP.Relations.html#for%27"><span class="hs-identifier hs-var">for'</span></a></span><span> </span><span class="hs-special">(</span><span>
+</span><span id="line-72"></span><span>            </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;r_{i}&quot;</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;F_i q{_i_1} G_i&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; Rel
+</span><a href="SP2GP.Relations.html#%3D%3D%3D"><span class="hs-operator hs-var">===</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;H_i q{_i_2} K_i&quot;</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">(String, Rel)
+-&gt; (StrGetter,
+    (Set (Pair StrGWord)
+     -&gt; Const (Set (Pair StrGWord)) (Set (Pair StrGWord)))
+    -&gt; SemigroupPresentation
+    -&gt; Const (Set (Pair StrGWord)) SemigroupPresentation)
+-&gt; Range
+     (String, Rel)
+     (StrGetter,
+      (Set (Pair StrGWord)
+       -&gt; Const (Set (Pair StrGWord)) (Set (Pair StrGWord)))
+      -&gt; SemigroupPresentation
+      -&gt; Const (Set (Pair StrGWord)) SemigroupPresentation)
+forall v c. RangeClass v c =&gt; v -&gt; c -&gt; Range v c
+</span><a href="SP2GP.Relations.html#in%27"><span class="hs-operator hs-var">`in'`</span></a></span><span>
+</span><span id="line-73"></span><span>            </span><span class="hs-special">(</span><span class="annot"><span class="annottext">StrGetter
+</span><a href="SemigroupPresentation.html#strNumRelations"><span class="hs-identifier hs-var">strNumRelations</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">(Set (Pair StrGWord)
+ -&gt; Const (Set (Pair StrGWord)) (Set (Pair StrGWord)))
+-&gt; SemigroupPresentation
+-&gt; Const (Set (Pair StrGWord)) SemigroupPresentation
+</span><a href="SemigroupPresentation.html#strRelations"><span class="hs-identifier hs-var">strRelations</span></a></span><span class="annot"><span class="annottext">((Set (Pair StrGWord)
+  -&gt; Const (Set (Pair StrGWord)) (Set (Pair StrGWord)))
+ -&gt; SemigroupPresentation
+ -&gt; Const (Set (Pair StrGWord)) SemigroupPresentation)
+-&gt; ((Set (Pair StrGWord)
+     -&gt; Const (Set (Pair StrGWord)) (Set (Pair StrGWord)))
+    -&gt; Set (Pair StrGWord)
+    -&gt; Const (Set (Pair StrGWord)) (Set (Pair StrGWord)))
+-&gt; (Set (Pair StrGWord)
+    -&gt; Const (Set (Pair StrGWord)) (Set (Pair StrGWord)))
+-&gt; SemigroupPresentation
+-&gt; Const (Set (Pair StrGWord)) SemigroupPresentation
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span class="annot"><span class="annottext">(StrGWord -&gt; StrGWord)
+-&gt; Getter (Set (Pair StrGWord)) (Set (Pair StrGWord))
+forall b a.
+Ord b =&gt;
+(a -&gt; b) -&gt; Getter (Set (Pair a)) (Set (Pair b))
+</span><a href="SemigroupPresentation.Relation.html#forAll"><span class="hs-identifier hs-var">forAll</span></a></span><span class="hs-special">(</span><span class="annot"><span class="annottext">(String, String) -&gt; StrGWord -&gt; StrGWord
+</span><a href="SemigroupPresentation.Relation.html#replaceGenerator"><span class="hs-identifier hs-var">replaceGenerator</span></a></span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;h&quot;</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;s&quot;</span></span><span class="hs-special">)</span><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><span id="line-74"></span><span>          </span><span class="hs-special">)</span><span>
+</span><span id="line-75"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-76"></span></pre></body></html>

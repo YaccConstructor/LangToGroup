@@ -1,0 +1,309 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE TemplateHaskell, RankNTypes #-}</span><span>
+</span><span id="line-2"></span><span>
+</span><span id="line-3"></span><span class="hs-comment">-- |Module `GroupPresentation` include type of group presentation and useful</span><span>
+</span><span id="line-4"></span><span class="hs-comment">--  objects for working with it. This module also export other useful modules.</span><span>
+</span><span id="line-5"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">GroupPresentation</span><span> </span><span class="hs-special">(</span><span>
+</span><span id="line-6"></span><span>    </span><span class="annot"><a href="GroupPresentation.html#GeneratorsDescr"><span class="hs-identifier">GeneratorsDescr</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-7"></span><span>    </span><span class="annot"><a href="GroupPresentation.html#GroupPresentation"><span class="hs-identifier">GroupPresentation</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-8"></span><span>    </span><span class="annot"><a href="GroupPresentation.html#groupPresentation"><span class="hs-identifier">groupPresentation</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-9"></span><span>    </span><span class="annot"><a href="GroupPresentation.html#relations"><span class="hs-identifier">relations</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-10"></span><span>    </span><span class="annot"><a href="GroupPresentation.html#generatorsDescr"><span class="hs-identifier">generatorsDescr</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-11"></span><span>    </span><span class="annot"><a href="GroupPresentation.html#GPGetter"><span class="hs-identifier">GPGetter</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-12"></span><span>    </span><span class="annot"><a href="GroupPresentation.html#generators"><span class="hs-identifier">generators</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-13"></span><span>    </span><span class="annot"><a href="GroupPresentation.html#allGenerators"><span class="hs-identifier">allGenerators</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-14"></span><span>    </span><span class="annot"><a href="GroupPresentation.html#strGenerators"><span class="hs-identifier">strGenerators</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-15"></span><span>    </span><span class="hs-keyword">module</span><span> </span><span class="annot"><a href="GroupPresentation.Relation.html"><span class="hs-identifier">GroupPresentation.Relation</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-16"></span><span>    </span><span class="hs-keyword">module</span><span> </span><span class="annot"><a href="Containers.html"><span class="hs-identifier">Containers</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-17"></span><span>    </span><span class="hs-keyword">module</span><span> </span><span class="annot"><a href="Lens.html"><span class="hs-identifier">Lens</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-18"></span><span>  </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-19"></span><span>
+</span><span id="line-20"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="GroupPresentation.Relation.html"><span class="hs-identifier">GroupPresentation.Relation</span></a></span><span>
+</span><span id="line-21"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Containers.html"><span class="hs-identifier">Containers</span></a></span><span>
+</span><span id="line-22"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Lens.html"><span class="hs-identifier">Lens</span></a></span><span>
+</span><span id="line-23"></span><span>
+</span><span id="line-24"></span><span class="hs-keyword">type</span><span> </span><span id="GeneratorsDescr"><span class="annot"><a href="GroupPresentation.html#GeneratorsDescr"><span class="hs-identifier hs-var">GeneratorsDescr</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><a href="Containers.IsoMap.html#IsoMap"><span class="hs-identifier hs-type">IsoMap</span></a></span><span> </span><span class="annot"><a href="GroupPresentation.Generator.html#Generator"><span class="hs-identifier hs-type">Generator</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-25"></span><span>
+</span><span id="line-26"></span><span class="hs-keyword">data</span><span> </span><span id="GroupPresentation"><span class="annot"><a href="GroupPresentation.html#GroupPresentation"><span class="hs-identifier hs-var">GroupPresentation</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="GP"><span class="annot"><a href="GroupPresentation.html#GP"><span class="hs-identifier hs-var">GP</span></a></span></span><span>
+</span><span id="line-27"></span><span>  </span><span class="hs-special">{</span><span> </span><span id="_relations"><span class="annot"><span class="annottext">GroupPresentation -&gt; Relations
+</span><a href="GroupPresentation.html#_relations"><span class="hs-identifier hs-var hs-var">_relations</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="GroupPresentation.Relation.html#Relations"><span class="hs-identifier hs-type">Relations</span></a></span><span>
+</span><span id="line-28"></span><span>  </span><span class="hs-special">,</span><span> </span><span id="_generatorsDescr"><span class="annot"><span class="annottext">GroupPresentation -&gt; GeneratorsDescr
+</span><a href="GroupPresentation.html#_generatorsDescr"><span class="hs-identifier hs-var hs-var">_generatorsDescr</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="GroupPresentation.html#GeneratorsDescr"><span class="hs-identifier hs-type">GeneratorsDescr</span></a></span><span>
+</span><span id="line-29"></span><span>  </span><span class="hs-special">}</span><span>
+</span><span id="line-30"></span><span>
+</span><span id="line-31"></span><span class="annot"><a href="GroupPresentation.html#groupPresentation"><span class="hs-identifier hs-type">groupPresentation</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="GroupPresentation.Relation.html#Relations"><span class="hs-identifier hs-type">Relations</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="GroupPresentation.html#GeneratorsDescr"><span class="hs-identifier hs-type">GeneratorsDescr</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="GroupPresentation.html#GroupPresentation"><span class="hs-identifier hs-type">GroupPresentation</span></a></span><span>
+</span><span id="line-32"></span><span id="groupPresentation"><span class="annot"><span class="annottext">groupPresentation :: Relations -&gt; GeneratorsDescr -&gt; GroupPresentation
+</span><a href="GroupPresentation.html#groupPresentation"><span class="hs-identifier hs-var hs-var">groupPresentation</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Relations -&gt; GeneratorsDescr -&gt; GroupPresentation
+</span><a href="GroupPresentation.html#GP"><span class="hs-identifier hs-var">GP</span></a></span><span>
+</span><span id="line-33"></span><span>
+</span><span id="line-34"></span><span id="generatorsDescr"><span id="relations"><span class="hs-identifier">makeLenses</span><span> </span><span class="hs-special">''</span><span class="hs-identifier">GroupPresentation</span></span></span><span>
+</span><span id="line-35"></span><span>
+</span><span id="line-36"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679330902"><span id="local-6989586621679330905"><span class="annot"><span class="hs-identifier hs-type">Show</span></span><span> </span><span class="annot"><a href="GroupPresentation.html#GroupPresentation"><span class="hs-identifier hs-type">GroupPresentation</span></a></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-37"></span><span>    </span><span id="local-6989586621679330900"><span class="annot"><span class="annottext">show :: GroupPresentation -&gt; String
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">show</span></span></span><span> </span><span id="local-6989586621679330898"><span class="annot"><span class="annottext">GroupPresentation
+</span><a href="#local-6989586621679330898"><span class="hs-identifier hs-var">gp</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-38"></span><span>        </span><span class="annot"><span class="annottext">((Pair [Signed Generator] -&gt; String)
+ -&gt; [Pair [Signed Generator]] -&gt; String)
+-&gt; [Pair [Signed Generator]]
+-&gt; (Pair [Signed Generator] -&gt; String)
+-&gt; String
+forall a b c. (a -&gt; b -&gt; c) -&gt; b -&gt; a -&gt; c
+</span><span class="hs-identifier hs-var">flip</span></span><span> </span><span class="annot"><span class="annottext">(Pair [Signed Generator] -&gt; String)
+-&gt; [Pair [Signed Generator]] -&gt; String
+forall (t :: * -&gt; *) a b. Foldable t =&gt; (a -&gt; [b]) -&gt; t a -&gt; [b]
+</span><span class="hs-identifier hs-var">concatMap</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">GroupPresentation
+</span><a href="#local-6989586621679330898"><span class="hs-identifier hs-var">gp</span></a></span><span class="annot"><span class="annottext">GroupPresentation
+-&gt; Getting
+     [Pair [Signed Generator]]
+     GroupPresentation
+     [Pair [Signed Generator]]
+-&gt; [Pair [Signed Generator]]
+forall s a. s -&gt; Getting a s a -&gt; a
+</span><span class="hs-operator hs-var">^.</span></span><span class="annot"><span class="annottext">(Relations -&gt; Const [Pair [Signed Generator]] Relations)
+-&gt; GroupPresentation
+-&gt; Const [Pair [Signed Generator]] GroupPresentation
+Lens' GroupPresentation Relations
+</span><a href="GroupPresentation.html#relations"><span class="hs-identifier hs-var">relations</span></a></span><span class="annot"><span class="annottext">((Relations -&gt; Const [Pair [Signed Generator]] Relations)
+ -&gt; GroupPresentation
+ -&gt; Const [Pair [Signed Generator]] GroupPresentation)
+-&gt; (([Pair [Signed Generator]]
+     -&gt; Const [Pair [Signed Generator]] [Pair [Signed Generator]])
+    -&gt; Relations -&gt; Const [Pair [Signed Generator]] Relations)
+-&gt; Getting
+     [Pair [Signed Generator]]
+     GroupPresentation
+     [Pair [Signed Generator]]
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span class="annot"><span class="annottext">(Relations -&gt; [Pair [Signed Generator]])
+-&gt; ([Pair [Signed Generator]]
+    -&gt; Const [Pair [Signed Generator]] [Pair [Signed Generator]])
+-&gt; Relations
+-&gt; Const [Pair [Signed Generator]] Relations
+forall (p :: * -&gt; * -&gt; *) (f :: * -&gt; *) s a.
+(Profunctor p, Contravariant f) =&gt;
+(s -&gt; a) -&gt; Optic' p f s a
+</span><span class="hs-identifier hs-var">to</span></span><span> </span><span class="annot"><span class="annottext">Relations -&gt; [Pair [Signed Generator]]
+forall c v. Listable c v =&gt; c -&gt; [v]
+</span><a href="Containers.html#toList"><span class="hs-identifier hs-var">toList</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">((Pair [Signed Generator] -&gt; String) -&gt; String)
+-&gt; (Pair [Signed Generator] -&gt; String) -&gt; String
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span>
+</span><span id="line-39"></span><span>            </span><span class="hs-glyph">\</span><span class="hs-special">(</span><span class="annot"><a href="Containers.Pair.html#Pair"><span class="hs-identifier hs-type">Pair</span></a></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679330890"><span class="annot"><span class="annottext">[Signed Generator]
+</span><a href="#local-6989586621679330890"><span class="hs-identifier hs-var">ew1</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679330889"><span class="annot"><span class="annottext">[Signed Generator]
+</span><a href="#local-6989586621679330889"><span class="hs-identifier hs-var">ew2</span></a></span></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span>
+</span><span id="line-40"></span><span>                </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679330888"><span class="annot"><span class="annottext">showElem :: Signed Generator -&gt; String
+</span><a href="#local-6989586621679330888"><span class="hs-identifier hs-var hs-var">showElem</span></a></span></span><span> </span><span id="local-6989586621679330887"><span class="annot"><span class="annottext">Signed Generator
+</span><a href="#local-6989586621679330887"><span class="hs-identifier hs-var">e</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-41"></span><span>                        </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679330886"><span class="annot"><span class="annottext">g :: Generator
+</span><a href="#local-6989586621679330886"><span class="hs-identifier hs-var hs-var">g</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Signed Generator -&gt; Generator
+</span><a href="GroupPresentation.Element.html#getGenerator"><span class="hs-identifier hs-var">getGenerator</span></a></span><span> </span><span class="annot"><span class="annottext">Signed Generator
+</span><a href="#local-6989586621679330887"><span class="hs-identifier hs-var">e</span></a></span><span>
+</span><span id="line-42"></span><span>                            </span><span id="local-6989586621679330884"><span class="annot"><span class="annottext">s :: String
+</span><a href="#local-6989586621679330884"><span class="hs-identifier hs-var hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">if</span><span> </span><span class="annot"><span class="annottext">Signed Generator -&gt; Bool
+forall a. Signed a -&gt; Bool
+</span><a href="GroupPresentation.Element.html#isPositive"><span class="hs-identifier hs-var">isPositive</span></a></span><span> </span><span class="annot"><span class="annottext">Signed Generator
+</span><a href="#local-6989586621679330887"><span class="hs-identifier hs-var">e</span></a></span><span> </span><span class="hs-keyword">then</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;&quot;</span></span><span> </span><span class="hs-keyword">else</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;^-1&quot;</span></span><span>
+</span><span id="line-43"></span><span>                        </span><span class="hs-keyword">in</span><span>  </span><span class="annot"><span class="annottext">String -&gt; ShowS -&gt; Maybe String -&gt; String
+forall b a. b -&gt; (a -&gt; b) -&gt; Maybe a -&gt; b
+</span><span class="hs-identifier hs-var">maybe</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;???&quot;</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679330884"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">GroupPresentation
+</span><a href="#local-6989586621679330898"><span class="hs-identifier hs-var">gp</span></a></span><span class="annot"><span class="annottext">GroupPresentation
+-&gt; Getting (Maybe String) GroupPresentation (Maybe String)
+-&gt; Maybe String
+forall s a. s -&gt; Getting a s a -&gt; a
+</span><span class="hs-operator hs-var">^.</span></span><span class="annot"><span class="annottext">(GeneratorsDescr -&gt; Const (Maybe String) GeneratorsDescr)
+-&gt; GroupPresentation -&gt; Const (Maybe String) GroupPresentation
+Lens' GroupPresentation GeneratorsDescr
+</span><a href="GroupPresentation.html#generatorsDescr"><span class="hs-identifier hs-var">generatorsDescr</span></a></span><span class="annot"><span class="annottext">((GeneratorsDescr -&gt; Const (Maybe String) GeneratorsDescr)
+ -&gt; GroupPresentation -&gt; Const (Maybe String) GroupPresentation)
+-&gt; Generator
+-&gt; Getting (Maybe String) GroupPresentation (Maybe String)
+forall c k v (m :: * -&gt; *) x y.
+(Indexable c k v, MonadFail m) =&gt;
+Getting x y c -&gt; k -&gt; Getting x y (m v)
+</span><a href="Containers.html#.%40"><span class="hs-operator hs-var">.@</span></a></span><span class="annot"><span class="annottext">Generator
+</span><a href="#local-6989586621679330886"><span class="hs-identifier hs-var">g</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-44"></span><span>                </span><span class="hs-keyword">in</span><span>
+</span><span id="line-45"></span><span>                    </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><span class="hs-identifier hs-var">unwords</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">(Signed Generator -&gt; String) -&gt; [Signed Generator] -&gt; [String]
+forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="annot"><span class="annottext">Signed Generator -&gt; String
+</span><a href="#local-6989586621679330888"><span class="hs-identifier hs-var">showElem</span></a></span><span> </span><span class="annot"><span class="annottext">[Signed Generator]
+</span><a href="#local-6989586621679330890"><span class="hs-identifier hs-var">ew1</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span>
+</span><span id="line-46"></span><span>                    </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot; = &quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span>
+</span><span id="line-47"></span><span>                    </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><span class="hs-identifier hs-var">unwords</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">(Signed Generator -&gt; String) -&gt; [Signed Generator] -&gt; [String]
+forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="annot"><span class="annottext">Signed Generator -&gt; String
+</span><a href="#local-6989586621679330888"><span class="hs-identifier hs-var">showElem</span></a></span><span> </span><span class="annot"><span class="annottext">[Signed Generator]
+</span><a href="#local-6989586621679330889"><span class="hs-identifier hs-var">ew2</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span>
+</span><span id="line-48"></span><span>                    </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;\n&quot;</span></span><span>
+</span><span id="line-49"></span><span>
+</span><span id="line-50"></span><span class="hs-keyword">type</span><span> </span><span id="GPGetter"><span class="annot"><a href="GroupPresentation.html#GPGetter"><span class="hs-identifier hs-var">GPGetter</span></a></span></span><span> </span><span id="local-6989586621679330879"><span class="annot"><a href="#local-6989586621679330879"><span class="hs-identifier hs-type">a</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Getter</span></span><span> </span><span class="annot"><a href="GroupPresentation.html#GroupPresentation"><span class="hs-identifier hs-type">GroupPresentation</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679330879"><span class="hs-identifier hs-type">a</span></a></span><span>
+</span><span id="line-51"></span><span>
+</span><span id="line-52"></span><span class="annot"><a href="GroupPresentation.html#generators"><span class="hs-identifier hs-type">generators</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="GroupPresentation.html#GPGetter"><span class="hs-identifier hs-type">GPGetter</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Set</span></span><span> </span><span class="annot"><a href="GroupPresentation.Generator.html#Generator"><span class="hs-identifier hs-type">Generator</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-53"></span><span id="generators"><span class="annot"><span class="annottext">generators :: (Set Generator -&gt; f (Set Generator))
+-&gt; GroupPresentation -&gt; f GroupPresentation
+</span><a href="GroupPresentation.html#generators"><span class="hs-identifier hs-var hs-var">generators</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(GeneratorsDescr -&gt; f GeneratorsDescr)
+-&gt; GroupPresentation -&gt; f GroupPresentation
+Lens' GroupPresentation GeneratorsDescr
+</span><a href="GroupPresentation.html#generatorsDescr"><span class="hs-identifier hs-var">generatorsDescr</span></a></span><span> </span><span class="annot"><span class="annottext">((GeneratorsDescr -&gt; f GeneratorsDescr)
+ -&gt; GroupPresentation -&gt; f GroupPresentation)
+-&gt; ((Set Generator -&gt; f (Set Generator))
+    -&gt; GeneratorsDescr -&gt; f GeneratorsDescr)
+-&gt; (Set Generator -&gt; f (Set Generator))
+-&gt; GroupPresentation
+-&gt; f GroupPresentation
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">(GeneratorsDescr -&gt; Set Generator)
+-&gt; (Set Generator -&gt; f (Set Generator))
+-&gt; GeneratorsDescr
+-&gt; f GeneratorsDescr
+forall (p :: * -&gt; * -&gt; *) (f :: * -&gt; *) s a.
+(Profunctor p, Contravariant f) =&gt;
+(s -&gt; a) -&gt; Optic' p f s a
+</span><span class="hs-identifier hs-var">to</span></span><span> </span><span class="annot"><span class="annottext">GeneratorsDescr -&gt; Set Generator
+forall c v. (Valuable c v, Ord v) =&gt; c -&gt; Set v
+</span><a href="Containers.html#valuesSet"><span class="hs-identifier hs-var">valuesSet</span></a></span><span>
+</span><span id="line-54"></span><span>
+</span><span id="line-55"></span><span class="annot"><a href="GroupPresentation.html#allGenerators"><span class="hs-identifier hs-type">allGenerators</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="GroupPresentation.html#GPGetter"><span class="hs-identifier hs-type">GPGetter</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Set</span></span><span> </span><span class="annot"><a href="GroupPresentation.Generator.html#Generator"><span class="hs-identifier hs-type">Generator</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-56"></span><span id="allGenerators"><span class="annot"><span class="annottext">allGenerators :: (Set Generator -&gt; f (Set Generator))
+-&gt; GroupPresentation -&gt; f GroupPresentation
+</span><a href="GroupPresentation.html#allGenerators"><span class="hs-identifier hs-var hs-var">allGenerators</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(GroupPresentation -&gt; Set Generator)
+-&gt; (Set Generator -&gt; f (Set Generator))
+-&gt; GroupPresentation
+-&gt; f GroupPresentation
+forall (p :: * -&gt; * -&gt; *) (f :: * -&gt; *) s a.
+(Profunctor p, Contravariant f) =&gt;
+(s -&gt; a) -&gt; Optic' p f s a
+</span><span class="hs-identifier hs-var">to</span></span><span> </span><span class="annot"><span class="annottext">((GroupPresentation -&gt; Set Generator)
+ -&gt; (Set Generator -&gt; f (Set Generator))
+ -&gt; GroupPresentation
+ -&gt; f GroupPresentation)
+-&gt; (GroupPresentation -&gt; Set Generator)
+-&gt; (Set Generator -&gt; f (Set Generator))
+-&gt; GroupPresentation
+-&gt; f GroupPresentation
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-57"></span><span>    </span><span id="local-6989586621679330876"><span class="annot"><span class="annottext">Relations
+</span><a href="#local-6989586621679330876"><span class="hs-identifier hs-var">rs</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Getting Relations GroupPresentation Relations
+-&gt; GroupPresentation -&gt; Relations
+forall s (m :: * -&gt; *) a. MonadReader s m =&gt; Getting a s a -&gt; m a
+</span><span class="hs-identifier hs-var">view</span></span><span> </span><span class="annot"><span class="annottext">Getting Relations GroupPresentation Relations
+Lens' GroupPresentation Relations
+</span><a href="GroupPresentation.html#relations"><span class="hs-identifier hs-var">relations</span></a></span><span>
+</span><span id="line-58"></span><span>    </span><span id="local-6989586621679330874"><span class="annot"><span class="annottext">GeneratorsDescr
+</span><a href="#local-6989586621679330874"><span class="hs-identifier hs-var">gd</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Getting GeneratorsDescr GroupPresentation GeneratorsDescr
+-&gt; GroupPresentation -&gt; GeneratorsDescr
+forall s (m :: * -&gt; *) a. MonadReader s m =&gt; Getting a s a -&gt; m a
+</span><span class="hs-identifier hs-var">view</span></span><span> </span><span class="annot"><span class="annottext">Getting GeneratorsDescr GroupPresentation GeneratorsDescr
+Lens' GroupPresentation GeneratorsDescr
+</span><a href="GroupPresentation.html#generatorsDescr"><span class="hs-identifier hs-var">generatorsDescr</span></a></span><span>
+</span><span id="line-59"></span><span>    </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679330873"><span class="annot"><span class="annottext">generatorsFromGD :: Set Generator
+</span><a href="#local-6989586621679330873"><span class="hs-identifier hs-var hs-var">generatorsFromGD</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">GeneratorsDescr -&gt; Set Generator
+forall c v. (Valuable c v, Ord v) =&gt; c -&gt; Set v
+</span><a href="Containers.html#valuesSet"><span class="hs-identifier hs-var">valuesSet</span></a></span><span> </span><span class="annot"><span class="annottext">GeneratorsDescr
+</span><a href="#local-6989586621679330874"><span class="hs-identifier hs-var">gd</span></a></span><span>
+</span><span id="line-60"></span><span>        </span><span id="local-6989586621679330872"><span class="annot"><span class="annottext">generatorsFromR :: Pair [Signed Generator] -&gt; Set Generator
+</span><a href="#local-6989586621679330872"><span class="hs-identifier hs-var hs-var">generatorsFromR</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Generator] -&gt; Set Generator
+forall c v. UnsafeListable c v =&gt; [v] -&gt; c
+</span><a href="Containers.html#fromList"><span class="hs-identifier hs-var">fromList</span></a></span><span> </span><span class="annot"><span class="annottext">([Generator] -&gt; Set Generator)
+-&gt; (Pair [Signed Generator] -&gt; [Generator])
+-&gt; Pair [Signed Generator]
+-&gt; Set Generator
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">(Signed Generator -&gt; Generator)
+-&gt; [Signed Generator] -&gt; [Generator]
+forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="annot"><span class="annottext">Signed Generator -&gt; Generator
+forall a. Signed a -&gt; a
+</span><a href="GroupPresentation.Element.html#unSigned"><span class="hs-identifier hs-var hs-var">unSigned</span></a></span><span> </span><span class="annot"><span class="annottext">([Signed Generator] -&gt; [Generator])
+-&gt; (Pair [Signed Generator] -&gt; [Signed Generator])
+-&gt; Pair [Signed Generator]
+-&gt; [Generator]
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">Getting
+  [Signed Generator]
+  ([Signed Generator], [Signed Generator])
+  [Signed Generator]
+-&gt; ([Signed Generator], [Signed Generator]) -&gt; [Signed Generator]
+forall s (m :: * -&gt; *) a. MonadReader s m =&gt; Getting a s a -&gt; m a
+</span><span class="hs-identifier hs-var">view</span></span><span> </span><span class="annot"><span class="annottext">Getting
+  [Signed Generator]
+  ([Signed Generator], [Signed Generator])
+  [Signed Generator]
+forall (r :: * -&gt; * -&gt; *) a b.
+Bitraversable r =&gt;
+Traversal (r a a) (r b b) a b
+</span><span class="hs-identifier hs-var">both</span></span><span> </span><span class="annot"><span class="annottext">(([Signed Generator], [Signed Generator]) -&gt; [Signed Generator])
+-&gt; (Pair [Signed Generator]
+    -&gt; ([Signed Generator], [Signed Generator]))
+-&gt; Pair [Signed Generator]
+-&gt; [Signed Generator]
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">Pair [Signed Generator] -&gt; ([Signed Generator], [Signed Generator])
+forall a. Pair a -&gt; (a, a)
+</span><a href="Containers.Pair.html#unPair"><span class="hs-identifier hs-var hs-var">unPair</span></a></span><span>
+</span><span id="line-61"></span><span>    </span><span class="annot"><span class="annottext">Set Generator -&gt; GroupPresentation -&gt; Set Generator
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">(Set Generator -&gt; GroupPresentation -&gt; Set Generator)
+-&gt; Set Generator -&gt; GroupPresentation -&gt; Set Generator
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">(Set Generator -&gt; Set Generator -&gt; Set Generator)
+-&gt; Set Generator -&gt; [Set Generator] -&gt; Set Generator
+forall (t :: * -&gt; *) a b.
+Foldable t =&gt;
+(a -&gt; b -&gt; b) -&gt; b -&gt; t a -&gt; b
+</span><span class="hs-identifier hs-var">foldr</span></span><span> </span><span class="annot"><span class="annottext">Set Generator -&gt; Set Generator -&gt; Set Generator
+forall c. Operable c =&gt; c -&gt; c -&gt; c
+</span><a href="Containers.html#%5C%2F"><span class="hs-operator hs-var">(\/)</span></a></span><span> </span><span class="annot"><span class="annottext">Set Generator
+</span><a href="#local-6989586621679330873"><span class="hs-identifier hs-var">generatorsFromGD</span></a></span><span> </span><span class="annot"><span class="annottext">([Set Generator] -&gt; Set Generator)
+-&gt; [Set Generator] -&gt; Set Generator
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Pair [Signed Generator] -&gt; Set Generator
+</span><a href="#local-6989586621679330872"><span class="hs-identifier hs-var">generatorsFromR</span></a></span><span> </span><span class="annot"><span class="annottext">(Pair [Signed Generator] -&gt; Set Generator)
+-&gt; [Pair [Signed Generator]] -&gt; [Set Generator]
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">Relations -&gt; [Pair [Signed Generator]]
+forall c v. Listable c v =&gt; c -&gt; [v]
+</span><a href="Containers.html#toList"><span class="hs-identifier hs-var">toList</span></a></span><span> </span><span class="annot"><span class="annottext">Relations
+</span><a href="#local-6989586621679330876"><span class="hs-identifier hs-var">rs</span></a></span><span>
+</span><span id="line-62"></span><span>
+</span><span id="line-63"></span><span class="annot"><a href="GroupPresentation.html#strGenerators"><span class="hs-identifier hs-type">strGenerators</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="GroupPresentation.html#GPGetter"><span class="hs-identifier hs-type">GPGetter</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Set</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span class="hs-special">)</span><span>
+</span><span id="line-64"></span><span id="strGenerators"><span class="annot"><span class="annottext">strGenerators :: (Set String -&gt; f (Set String))
+-&gt; GroupPresentation -&gt; f GroupPresentation
+</span><a href="GroupPresentation.html#strGenerators"><span class="hs-identifier hs-var hs-var">strGenerators</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(GeneratorsDescr -&gt; f GeneratorsDescr)
+-&gt; GroupPresentation -&gt; f GroupPresentation
+Lens' GroupPresentation GeneratorsDescr
+</span><a href="GroupPresentation.html#generatorsDescr"><span class="hs-identifier hs-var">generatorsDescr</span></a></span><span> </span><span class="annot"><span class="annottext">((GeneratorsDescr -&gt; f GeneratorsDescr)
+ -&gt; GroupPresentation -&gt; f GroupPresentation)
+-&gt; ((Set String -&gt; f (Set String))
+    -&gt; GeneratorsDescr -&gt; f GeneratorsDescr)
+-&gt; (Set String -&gt; f (Set String))
+-&gt; GroupPresentation
+-&gt; f GroupPresentation
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">(GeneratorsDescr -&gt; Set String)
+-&gt; (Set String -&gt; f (Set String))
+-&gt; GeneratorsDescr
+-&gt; f GeneratorsDescr
+forall (p :: * -&gt; * -&gt; *) (f :: * -&gt; *) s a.
+(Profunctor p, Contravariant f) =&gt;
+(s -&gt; a) -&gt; Optic' p f s a
+</span><span class="hs-identifier hs-var">to</span></span><span> </span><span class="annot"><span class="annottext">GeneratorsDescr -&gt; Set String
+forall c v. (Valuable c v, Ord v) =&gt; c -&gt; Set v
+</span><a href="Containers.html#valuesSet"><span class="hs-identifier hs-var">valuesSet</span></a></span><span>
+</span><span id="line-65"></span></pre></body></html>

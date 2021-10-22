@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE RankNTypes #-}</span><span>
+</span><span id="line-2"></span><span>
+</span><span id="line-3"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">SemigroupPresentation.Relation</span><span> </span><span class="hs-special">(</span><span>
+</span><span id="line-4"></span><span>    </span><span class="annot"><a href="SemigroupPresentation.Relation.html#Relation"><span class="hs-identifier">Relation</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-5"></span><span>    </span><span class="annot"><a href="SemigroupPresentation.Relation.html#relation"><span class="hs-identifier">relation</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-6"></span><span>    </span><span class="annot"><a href="SemigroupPresentation.Relation.html#relator"><span class="hs-identifier">relator</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-7"></span><span>    </span><span class="annot"><a href="SemigroupPresentation.Relation.html#Relations"><span class="hs-identifier">Relations</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-8"></span><span>    </span><span class="annot"><a href="SemigroupPresentation.Relation.html#StrRelation"><span class="hs-identifier">StrRelation</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-9"></span><span>    </span><span class="annot"><a href="SemigroupPresentation.Relation.html#forAll"><span class="hs-identifier">forAll</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-10"></span><span>    </span><span class="annot"><a href="SemigroupPresentation.Relation.html#replaceGenerator"><span class="hs-identifier">replaceGenerator</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-11"></span><span>    </span><span class="hs-keyword">module</span><span> </span><span class="annot"><a href="SemigroupPresentation.Generator.html"><span class="hs-identifier">SemigroupPresentation.Generator</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-12"></span><span>  </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-13"></span><span>
+</span><span id="line-14"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="SemigroupPresentation.Generator.html"><span class="hs-identifier">SemigroupPresentation.Generator</span></a></span><span>
+</span><span id="line-15"></span><span>
+</span><span id="line-16"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Containers.html"><span class="hs-identifier">Containers</span></a></span><span>
+</span><span id="line-17"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Lens.html"><span class="hs-identifier">Lens</span></a></span><span>
+</span><span id="line-18"></span><span>
+</span><span id="line-19"></span><span class="hs-keyword">type</span><span> </span><span id="Relation"><span class="annot"><a href="SemigroupPresentation.Relation.html#Relation"><span class="hs-identifier hs-var">Relation</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><a href="Containers.Pair.html#Pair"><span class="hs-identifier hs-type">Pair</span></a></span><span> </span><span class="annot"><a href="SemigroupPresentation.Generator.html#GWord"><span class="hs-identifier hs-type">GWord</span></a></span><span>
+</span><span id="line-20"></span><span>
+</span><span id="line-21"></span><span class="annot"><a href="SemigroupPresentation.Relation.html#relation"><span class="hs-identifier hs-type">relation</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="SemigroupPresentation.Generator.html#GWord"><span class="hs-identifier hs-type">GWord</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="SemigroupPresentation.Generator.html#GWord"><span class="hs-identifier hs-type">GWord</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="SemigroupPresentation.Relation.html#Relation"><span class="hs-identifier hs-type">Relation</span></a></span><span>
+</span><span id="line-22"></span><span id="relation"><span class="annot"><span class="annottext">relation :: GWord -&gt; GWord -&gt; Relation
+</span><a href="SemigroupPresentation.Relation.html#relation"><span class="hs-identifier hs-var hs-var">relation</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">((GWord, GWord) -&gt; Relation) -&gt; GWord -&gt; GWord -&gt; Relation
+forall a b c. ((a, b) -&gt; c) -&gt; a -&gt; b -&gt; c
+</span><span class="hs-identifier hs-var">curry</span></span><span> </span><span class="annot"><span class="annottext">(GWord, GWord) -&gt; Relation
+forall a. (a, a) -&gt; Pair a
+</span><a href="Containers.Pair.html#Pair"><span class="hs-identifier hs-var">Pair</span></a></span><span>
+</span><span id="line-23"></span><span>
+</span><span id="line-24"></span><span class="annot"><a href="SemigroupPresentation.Relation.html#relator"><span class="hs-identifier hs-type">relator</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="SemigroupPresentation.Generator.html#GWord"><span class="hs-identifier hs-type">GWord</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="SemigroupPresentation.Relation.html#Relation"><span class="hs-identifier hs-type">Relation</span></a></span><span>
+</span><span id="line-25"></span><span id="relator"><span class="annot"><span class="annottext">relator :: GWord -&gt; Relation
+</span><a href="SemigroupPresentation.Relation.html#relator"><span class="hs-identifier hs-var hs-var">relator</span></a></span></span><span> </span><span id="local-6989586621679331483"><span class="annot"><span class="annottext">GWord
+</span><a href="#local-6989586621679331483"><span class="hs-identifier hs-var">gw</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">GWord -&gt; GWord -&gt; Relation
+</span><a href="SemigroupPresentation.Relation.html#relation"><span class="hs-identifier hs-var">relation</span></a></span><span> </span><span class="annot"><span class="annottext">GWord
+</span><a href="#local-6989586621679331483"><span class="hs-identifier hs-var">gw</span></a></span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span>
+</span><span id="line-26"></span><span>
+</span><span id="line-27"></span><span class="hs-keyword">type</span><span> </span><span id="Relations"><span class="annot"><a href="SemigroupPresentation.Relation.html#Relations"><span class="hs-identifier hs-var">Relations</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Set</span></span><span> </span><span class="annot"><a href="SemigroupPresentation.Relation.html#Relation"><span class="hs-identifier hs-type">Relation</span></a></span><span>
+</span><span id="line-28"></span><span>
+</span><span id="line-29"></span><span class="hs-keyword">type</span><span> </span><span id="StrRelation"><span class="annot"><a href="SemigroupPresentation.Relation.html#StrRelation"><span class="hs-identifier hs-var">StrRelation</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><a href="Containers.Pair.html#Pair"><span class="hs-identifier hs-type">Pair</span></a></span><span> </span><span class="annot"><a href="SemigroupPresentation.Generator.html#StrGWord"><span class="hs-identifier hs-type">StrGWord</span></a></span><span>
+</span><span id="line-30"></span><span>
+</span><span id="line-31"></span><span id="local-6989586621679331481"><span id="local-6989586621679331482"><span class="annot"><a href="SemigroupPresentation.Relation.html#forAll"><span class="hs-identifier hs-type">forAll</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Ord</span></span><span> </span><span class="annot"><a href="#local-6989586621679331482"><span class="hs-identifier hs-type">b</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="#local-6989586621679331481"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679331482"><span class="hs-identifier hs-type">b</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Getter</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Set</span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Containers.Pair.html#Pair"><span class="hs-identifier hs-type">Pair</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679331481"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Set</span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Containers.Pair.html#Pair"><span class="hs-identifier hs-type">Pair</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679331482"><span class="hs-identifier hs-type">b</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span></span></span><span>
+</span><span id="line-32"></span><span id="forAll"><span class="annot"><span class="annottext">forAll :: (a -&gt; b) -&gt; Getter (Set (Pair a)) (Set (Pair b))
+</span><a href="SemigroupPresentation.Relation.html#forAll"><span class="hs-identifier hs-var hs-var">forAll</span></a></span></span><span> </span><span id="local-6989586621679331480"><span class="annot"><span class="annottext">a -&gt; b
+</span><a href="#local-6989586621679331480"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(Set (Pair a) -&gt; Set (Pair b))
+-&gt; Optic' (-&gt;) f (Set (Pair a)) (Set (Pair b))
+forall (p :: * -&gt; * -&gt; *) (f :: * -&gt; *) s a.
+(Profunctor p, Contravariant f) =&gt;
+(s -&gt; a) -&gt; Optic' p f s a
+</span><span class="hs-identifier hs-var">to</span></span><span> </span><span class="annot"><span class="annottext">((Set (Pair a) -&gt; Set (Pair b))
+ -&gt; Optic' (-&gt;) f (Set (Pair a)) (Set (Pair b)))
+-&gt; (Set (Pair a) -&gt; Set (Pair b))
+-&gt; Optic' (-&gt;) f (Set (Pair a)) (Set (Pair b))
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">(Pair a -&gt; Pair b) -&gt; Set (Pair a) -&gt; Set (Pair b)
+forall c1 c2 v1 v2. Gunctor c1 c2 v1 v2 =&gt; (v1 -&gt; v2) -&gt; c1 -&gt; c2
+</span><a href="Containers.html#gmap"><span class="hs-identifier hs-var">gmap</span></a></span><span class="annot"><span class="annottext">((Pair a -&gt; Pair b) -&gt; Set (Pair a) -&gt; Set (Pair b))
+-&gt; ((a -&gt; b) -&gt; Pair a -&gt; Pair b)
+-&gt; (a -&gt; b)
+-&gt; Set (Pair a)
+-&gt; Set (Pair b)
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span class="annot"><span class="annottext">(a -&gt; b) -&gt; Pair a -&gt; Pair b
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-identifier hs-var">fmap</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">a -&gt; b
+</span><a href="#local-6989586621679331480"><span class="hs-identifier hs-var">f</span></a></span><span>
+</span><span id="line-33"></span><span>
+</span><span id="line-34"></span><span class="annot"><a href="SemigroupPresentation.Relation.html#replaceGenerator"><span class="hs-identifier hs-type">replaceGenerator</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="SemigroupPresentation.Generator.html#StrGWord"><span class="hs-identifier hs-type">StrGWord</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="SemigroupPresentation.Generator.html#StrGWord"><span class="hs-identifier hs-type">StrGWord</span></a></span><span>
+</span><span id="line-35"></span><span id="replaceGenerator"><span class="annot"><span class="annottext">replaceGenerator :: (String, String) -&gt; StrGWord -&gt; StrGWord
+</span><a href="SemigroupPresentation.Relation.html#replaceGenerator"><span class="hs-identifier hs-var hs-var">replaceGenerator</span></a></span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679331476"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679331476"><span class="hs-identifier hs-var">gFrom</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679331475"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679331475"><span class="hs-identifier hs-var">gTo</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(String -&gt; String) -&gt; StrGWord -&gt; StrGWord
+forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679331474"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679331474"><span class="hs-identifier hs-var">g</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">if</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679331474"><span class="hs-identifier hs-var">g</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; Bool
+forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">==</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679331476"><span class="hs-identifier hs-var">gFrom</span></a></span><span> </span><span class="hs-keyword">then</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679331475"><span class="hs-identifier hs-var">gTo</span></a></span><span> </span><span class="hs-keyword">else</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679331474"><span class="hs-identifier hs-var">g</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-36"></span></pre></body></html>

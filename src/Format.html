@@ -1,0 +1,799 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE MultiParamTypeClasses, TypeSynonymInstances, FlexibleInstances, FlexibleContexts, UndecidableInstances #-}</span><span>
+</span><span id="line-2"></span><span>
+</span><span id="line-3"></span><span class="hs-comment">-- |Module `Format` include types of so called &quot;formats&quot; and methods for work</span><span>
+</span><span id="line-4"></span><span class="hs-comment">--  with them.</span><span>
+</span><span id="line-5"></span><span class="hs-comment">--</span><span>
+</span><span id="line-6"></span><span class="hs-comment">--  Format is object for simple pattern matching and generating strings by</span><span>
+</span><span id="line-7"></span><span class="hs-comment">--  template.</span><span>
+</span><span id="line-8"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Format</span><span> </span><span class="hs-special">(</span><span>
+</span><span id="line-9"></span><span>    </span><span class="annot"><a href="Format.html#SimpleFormat"><span class="hs-identifier">SimpleFormat</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-10"></span><span>    </span><span class="annot"><a href="Format.html#TaggedFormat"><span class="hs-identifier">TaggedFormat</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-11"></span><span>    </span><span class="annot"><a href="Format.html#MultiFormat"><span class="hs-identifier">MultiFormat</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-12"></span><span>    </span><span class="annot"><a href="Format.html#MaybeFormat"><span class="hs-identifier">MaybeFormat</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><span id="line-13"></span><span>    </span><span class="annot"><a href="Format.html#isFormat"><span class="hs-identifier">isFormat</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-14"></span><span>    </span><span class="annot"><a href="Format.html#MaybeSimpleFormat"><span class="hs-identifier">MaybeSimpleFormat</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-15"></span><span>    </span><span class="annot"><a href="Format.html#MaybeTaggedFormat"><span class="hs-identifier">MaybeTaggedFormat</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-16"></span><span>    </span><span class="annot"><a href="Format.html#format"><span class="hs-identifier">format</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-17"></span><span>    </span><span class="annot"><a href="Format.html#apply"><span class="hs-identifier">apply</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-18"></span><span>    </span><span class="annot"><a href="Format.html#format2str"><span class="hs-identifier">format2str</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-19"></span><span>    </span><span class="annot"><a href="Format.html#match"><span class="hs-identifier">match</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-20"></span><span>  </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-21"></span><span>
+</span><span id="line-22"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.List</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">isPrefixOf</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">isSuffixOf</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">intercalate</span></span><span class="hs-special">)</span><span>
+</span><span id="line-23"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Function</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-operator">(&amp;)</span></span><span class="hs-special">)</span><span>
+</span><span id="line-24"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Maybe</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">isJust</span></span><span class="hs-special">)</span><span>
+</span><span id="line-25"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Control.Applicative</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-operator">(&lt;|&gt;)</span></span><span class="hs-special">)</span><span>
+</span><span id="line-26"></span><span>
+</span><span id="line-27"></span><span class="hs-keyword">data</span><span> </span><span id="SimpleFormat"><span class="annot"><a href="Format.html#SimpleFormat"><span class="hs-identifier hs-var">SimpleFormat</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="SimpleFormat"><span class="annot"><a href="Format.html#SimpleFormat"><span class="hs-identifier hs-var">SimpleFormat</span></a></span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-28"></span><span>
+</span><span id="line-29"></span><span class="hs-keyword">data</span><span> </span><span id="TaggedFormat"><span class="annot"><a href="Format.html#TaggedFormat"><span class="hs-identifier hs-var">TaggedFormat</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="TaggedFormat"><span class="annot"><a href="Format.html#TaggedFormat"><span class="hs-identifier hs-var">TaggedFormat</span></a></span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-30"></span><span>
+</span><span id="line-31"></span><span class="annot"><a href="Format.html#unTagged"><span class="hs-identifier hs-type">unTagged</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Format.html#TaggedFormat"><span class="hs-identifier hs-type">TaggedFormat</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Format.html#SimpleFormat"><span class="hs-identifier hs-type">SimpleFormat</span></a></span><span>
+</span><span id="line-32"></span><span id="unTagged"><span class="annot"><span class="annottext">unTagged :: TaggedFormat -&gt; SimpleFormat
+</span><a href="Format.html#unTagged"><span class="hs-identifier hs-var hs-var">unTagged</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Format.html#TaggedFormat"><span class="hs-identifier hs-type">TaggedFormat</span></a></span><span> </span><span id="local-6989586621679327891"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327891"><span class="hs-identifier hs-var">st</span></a></span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-identifier">_</span></span><span> </span><span id="local-6989586621679327890"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327890"><span class="hs-identifier hs-var">fn</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; SimpleFormat
+</span><a href="Format.html#SimpleFormat"><span class="hs-identifier hs-var">SimpleFormat</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327891"><span class="hs-identifier hs-var">st</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327890"><span class="hs-identifier hs-var">fn</span></a></span><span>
+</span><span id="line-33"></span><span>
+</span><span id="line-34"></span><span class="hs-keyword">newtype</span><span> </span><span id="MultiFormat"><span class="annot"><a href="Format.html#MultiFormat"><span class="hs-identifier hs-var">MultiFormat</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="MultiFormat"><span class="annot"><a href="Format.html#MultiFormat"><span class="hs-identifier hs-var">MultiFormat</span></a></span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span class="hs-special">]</span><span>
+</span><span id="line-35"></span><span>
+</span><span id="line-36"></span><span class="hs-keyword">data</span><span> </span><span id="MaybeFormat"><span class="annot"><a href="Format.html#MaybeFormat"><span class="hs-identifier hs-var">MaybeFormat</span></a></span></span><span> </span><span id="local-6989586621679327948"><span class="annot"><a href="#local-6989586621679327948"><span class="hs-identifier hs-type">f</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-37"></span><span>      </span><span id="JustFormat"><span class="annot"><a href="Format.html#JustFormat"><span class="hs-identifier hs-var">JustFormat</span></a></span></span><span> </span><span class="annot"><a href="#local-6989586621679327948"><span class="hs-identifier hs-type">f</span></a></span><span>
+</span><span id="line-38"></span><span>    </span><span class="hs-glyph">|</span><span> </span><span id="JustString"><span class="annot"><a href="Format.html#JustString"><span class="hs-identifier hs-var">JustString</span></a></span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-39"></span><span>
+</span><span id="line-40"></span><span id="local-6989586621679327886"><span class="annot"><a href="Format.html#isFormat"><span class="hs-identifier hs-type">isFormat</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Format.html#MaybeFormat"><span class="hs-identifier hs-type">MaybeFormat</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679327886"><span class="hs-identifier hs-type">f</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span></span><span>
+</span><span id="line-41"></span><span id="isFormat"><span class="annot"><span class="annottext">isFormat :: MaybeFormat f -&gt; Bool
+</span><a href="Format.html#isFormat"><span class="hs-identifier hs-var hs-var">isFormat</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Format.html#JustFormat"><span class="hs-identifier hs-type">JustFormat</span></a></span><span> </span><span class="annot"><span class="annottext">f
+</span><span class="hs-identifier">_</span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Bool
+</span><span class="hs-identifier hs-var">True</span></span><span>
+</span><span id="line-42"></span><span class="annot"><a href="Format.html#isFormat"><span class="hs-identifier hs-var">isFormat</span></a></span><span> </span><span class="annot"><span class="annottext">MaybeFormat f
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Bool
+</span><span class="hs-identifier hs-var">False</span></span><span>
+</span><span id="line-43"></span><span>
+</span><span id="line-44"></span><span class="hs-keyword">type</span><span> </span><span id="MaybeSimpleFormat"><span class="annot"><a href="Format.html#MaybeSimpleFormat"><span class="hs-identifier hs-var">MaybeSimpleFormat</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><a href="Format.html#MaybeFormat"><span class="hs-identifier hs-type">MaybeFormat</span></a></span><span> </span><span class="annot"><a href="Format.html#SimpleFormat"><span class="hs-identifier hs-type">SimpleFormat</span></a></span><span>
+</span><span id="line-45"></span><span>
+</span><span id="line-46"></span><span class="hs-keyword">type</span><span> </span><span id="MaybeTaggedFormat"><span class="annot"><a href="Format.html#MaybeTaggedFormat"><span class="hs-identifier hs-var">MaybeTaggedFormat</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><a href="Format.html#MaybeFormat"><span class="hs-identifier hs-type">MaybeFormat</span></a></span><span> </span><span class="annot"><a href="Format.html#TaggedFormat"><span class="hs-identifier hs-type">TaggedFormat</span></a></span><span>
+</span><span id="line-47"></span><span>
+</span><span id="line-48"></span><span class="hs-keyword">class</span><span> </span><span id="Format"><span class="annot"><a href="Format.html#Format"><span class="hs-identifier hs-var">Format</span></a></span></span><span> </span><span id="local-6989586621679327978"><span class="annot"><a href="#local-6989586621679327978"><span class="hs-identifier hs-type">f</span></a></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-49"></span><span>    </span><span id="local-6989586621679327980"><span id="format_"><span class="annot"><a href="Format.html#format_"><span class="hs-identifier hs-type">format_</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">MonadFail</span></span><span> </span><span class="annot"><a href="#local-6989586621679327980"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Char</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Char</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679327980"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679327978"><span class="hs-identifier hs-type">f</span></a></span></span><span>
+</span><span id="line-50"></span><span>
+</span><span id="line-51"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="Format.html#Format"><span class="hs-identifier hs-type">Format</span></a></span><span> </span><span class="annot"><a href="Format.html#SimpleFormat"><span class="hs-identifier hs-type">SimpleFormat</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-52"></span><span>    </span><span id="local-6989586621679327882"><span class="annot"><span class="annottext">format_ :: Char -&gt; Char -&gt; String -&gt; m SimpleFormat
+</span><a href="#local-6989586621679327882"><span class="hs-identifier hs-var hs-var hs-var hs-var">format_</span></a></span></span><span> </span><span id="local-6989586621679327881"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327881"><span class="hs-identifier hs-var">op</span></a></span></span><span> </span><span id="local-6989586621679327880"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327880"><span class="hs-identifier hs-var">cp</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; m SimpleFormat
+forall (m :: * -&gt; *).
+MonadFail m =&gt;
+String -&gt; String -&gt; m SimpleFormat
+</span><a href="#local-6989586621679327879"><span class="hs-identifier hs-var">go</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;&quot;</span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-53"></span><span>        </span><span id="local-6989586621679327879"><span class="annot"><span class="annottext">go :: String -&gt; String -&gt; m SimpleFormat
+</span><a href="#local-6989586621679327879"><span class="hs-identifier hs-var hs-var">go</span></a></span></span><span> </span><span id="local-6989586621679327878"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327878"><span class="hs-identifier hs-var">acc</span></a></span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679327877"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327877"><span class="hs-identifier hs-var">op'</span></a></span></span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679327876"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327876"><span class="hs-identifier hs-var">cp'</span></a></span></span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679327875"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327875"><span class="hs-identifier hs-var">cs</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327877"><span class="hs-identifier hs-var">op'</span></a></span><span> </span><span class="annot"><span class="annottext">Char -&gt; Char -&gt; Bool
+forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">==</span></span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327881"><span class="hs-identifier hs-var">op</span></a></span><span> </span><span class="annot"><span class="annottext">Bool -&gt; Bool -&gt; Bool
+</span><span class="hs-operator hs-var">&amp;&amp;</span></span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327876"><span class="hs-identifier hs-var">cp'</span></a></span><span> </span><span class="annot"><span class="annottext">Char -&gt; Char -&gt; Bool
+forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">==</span></span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327880"><span class="hs-identifier hs-var">cp</span></a></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-54"></span><span>            </span><span class="annot"><span class="annottext">SimpleFormat -&gt; m SimpleFormat
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">(SimpleFormat -&gt; m SimpleFormat) -&gt; SimpleFormat -&gt; m SimpleFormat
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; SimpleFormat
+</span><a href="Format.html#SimpleFormat"><span class="hs-identifier hs-var">SimpleFormat</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String -&gt; String
+forall a. [a] -&gt; [a]
+</span><span class="hs-identifier hs-var">reverse</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327878"><span class="hs-identifier hs-var">acc</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327875"><span class="hs-identifier hs-var">cs</span></a></span><span>
+</span><span id="line-55"></span><span>        </span><span class="annot"><a href="#local-6989586621679327879"><span class="hs-identifier hs-var">go</span></a></span><span> </span><span id="local-6989586621679327872"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327872"><span class="hs-identifier hs-var">acc</span></a></span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679327871"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327871"><span class="hs-identifier hs-var">c</span></a></span></span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679327870"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327870"><span class="hs-identifier hs-var">cs</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; m SimpleFormat
+</span><a href="#local-6989586621679327879"><span class="hs-identifier hs-var">go</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327871"><span class="hs-identifier hs-var">c</span></a></span><span class="annot"><span class="annottext">Char -&gt; String -&gt; String
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327872"><span class="hs-identifier hs-var">acc</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327870"><span class="hs-identifier hs-var">cs</span></a></span><span>
+</span><span id="line-56"></span><span>        </span><span class="annot"><a href="#local-6989586621679327879"><span class="hs-identifier hs-var">go</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-identifier">_</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;&quot;</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; m SimpleFormat
+forall (m :: * -&gt; *) a. MonadFail m =&gt; String -&gt; m a
+</span><span class="hs-identifier hs-var">fail</span></span><span> </span><span class="annot"><span class="annottext">(String -&gt; m SimpleFormat) -&gt; String -&gt; m SimpleFormat
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span>
+</span><span id="line-57"></span><span>            </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;SimpleFormat must contain \&quot;&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327881"><span class="hs-identifier hs-var">op</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327880"><span class="hs-identifier hs-var">cp</span></a></span><span class="hs-special">]</span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;\&quot; substring&quot;</span></span><span>
+</span><span id="line-58"></span><span>
+</span><span id="line-59"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="Format.html#Format"><span class="hs-identifier hs-type">Format</span></a></span><span> </span><span class="annot"><a href="Format.html#TaggedFormat"><span class="hs-identifier hs-type">TaggedFormat</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-60"></span><span>    </span><span id="local-6989586621679327868"><span class="annot"><span class="annottext">format_ :: Char -&gt; Char -&gt; String -&gt; m TaggedFormat
+</span><a href="#local-6989586621679327868"><span class="hs-identifier hs-var hs-var hs-var hs-var">format_</span></a></span></span><span> </span><span id="local-6989586621679327867"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327867"><span class="hs-identifier hs-var">op</span></a></span></span><span> </span><span id="local-6989586621679327866"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327866"><span class="hs-identifier hs-var">cp</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Bool -&gt; String -&gt; String -&gt; String -&gt; m TaggedFormat
+forall (m :: * -&gt; *).
+MonadFail m =&gt;
+Bool -&gt; String -&gt; String -&gt; String -&gt; m TaggedFormat
+</span><a href="#local-6989586621679327865"><span class="hs-identifier hs-var">go</span></a></span><span> </span><span class="annot"><span class="annottext">Bool
+</span><span class="hs-identifier hs-var">False</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;&quot;</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;&quot;</span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-61"></span><span>        </span><span id="local-6989586621679327865"><span class="annot"><span class="annottext">go :: Bool -&gt; String -&gt; String -&gt; String -&gt; m TaggedFormat
+</span><a href="#local-6989586621679327865"><span class="hs-identifier hs-var hs-var">go</span></a></span></span><span> </span><span class="annot"><span class="annottext">Bool
+</span><span class="hs-identifier hs-var">False</span></span><span> </span><span id="local-6989586621679327864"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327864"><span class="hs-identifier hs-var">acc1</span></a></span></span><span> </span><span id="local-6989586621679327863"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327863"><span class="hs-identifier hs-var">acc2</span></a></span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679327862"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327862"><span class="hs-identifier hs-var">op'</span></a></span></span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679327861"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327861"><span class="hs-identifier hs-var">cs</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327862"><span class="hs-identifier hs-var">op'</span></a></span><span> </span><span class="annot"><span class="annottext">Char -&gt; Char -&gt; Bool
+forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">==</span></span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327867"><span class="hs-identifier hs-var">op</span></a></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-62"></span><span>            </span><span class="annot"><span class="annottext">Bool -&gt; String -&gt; String -&gt; String -&gt; m TaggedFormat
+</span><a href="#local-6989586621679327865"><span class="hs-identifier hs-var">go</span></a></span><span> </span><span class="annot"><span class="annottext">Bool
+</span><span class="hs-identifier hs-var">True</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327864"><span class="hs-identifier hs-var">acc1</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327863"><span class="hs-identifier hs-var">acc2</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327861"><span class="hs-identifier hs-var">cs</span></a></span><span>
+</span><span id="line-63"></span><span>        </span><span class="annot"><a href="#local-6989586621679327865"><span class="hs-identifier hs-var">go</span></a></span><span> </span><span class="annot"><span class="annottext">Bool
+</span><span class="hs-identifier hs-var">True</span></span><span> </span><span id="local-6989586621679327860"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327860"><span class="hs-identifier hs-var">acc1</span></a></span></span><span> </span><span id="local-6989586621679327859"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327859"><span class="hs-identifier hs-var">acc2</span></a></span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679327858"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327858"><span class="hs-identifier hs-var">cp'</span></a></span></span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679327857"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327857"><span class="hs-identifier hs-var">cs</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327858"><span class="hs-identifier hs-var">cp'</span></a></span><span> </span><span class="annot"><span class="annottext">Char -&gt; Char -&gt; Bool
+forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">==</span></span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327866"><span class="hs-identifier hs-var">cp</span></a></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-64"></span><span>            </span><span class="annot"><span class="annottext">TaggedFormat -&gt; m TaggedFormat
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">(TaggedFormat -&gt; m TaggedFormat) -&gt; TaggedFormat -&gt; m TaggedFormat
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String -&gt; TaggedFormat
+</span><a href="Format.html#TaggedFormat"><span class="hs-identifier hs-var">TaggedFormat</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String -&gt; String
+forall a. [a] -&gt; [a]
+</span><span class="hs-identifier hs-var">reverse</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327860"><span class="hs-identifier hs-var">acc1</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String -&gt; String
+forall a. [a] -&gt; [a]
+</span><span class="hs-identifier hs-var">reverse</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327859"><span class="hs-identifier hs-var">acc2</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327857"><span class="hs-identifier hs-var">cs</span></a></span><span>
+</span><span id="line-65"></span><span>        </span><span class="annot"><a href="#local-6989586621679327865"><span class="hs-identifier hs-var">go</span></a></span><span> </span><span class="annot"><span class="annottext">Bool
+</span><span class="hs-identifier hs-var">False</span></span><span> </span><span id="local-6989586621679327856"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327856"><span class="hs-identifier hs-var">acc1</span></a></span></span><span> </span><span id="local-6989586621679327855"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327855"><span class="hs-identifier hs-var">acc2</span></a></span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679327854"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327854"><span class="hs-identifier hs-var">c</span></a></span></span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679327853"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327853"><span class="hs-identifier hs-var">cs</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Bool -&gt; String -&gt; String -&gt; String -&gt; m TaggedFormat
+</span><a href="#local-6989586621679327865"><span class="hs-identifier hs-var">go</span></a></span><span> </span><span class="annot"><span class="annottext">Bool
+</span><span class="hs-identifier hs-var">False</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327854"><span class="hs-identifier hs-var">c</span></a></span><span class="annot"><span class="annottext">Char -&gt; String -&gt; String
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327856"><span class="hs-identifier hs-var">acc1</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327855"><span class="hs-identifier hs-var">acc2</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327853"><span class="hs-identifier hs-var">cs</span></a></span><span>
+</span><span id="line-66"></span><span>        </span><span class="annot"><a href="#local-6989586621679327865"><span class="hs-identifier hs-var">go</span></a></span><span> </span><span class="annot"><span class="annottext">Bool
+</span><span class="hs-identifier hs-var">True</span></span><span> </span><span id="local-6989586621679327852"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327852"><span class="hs-identifier hs-var">acc1</span></a></span></span><span> </span><span id="local-6989586621679327851"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327851"><span class="hs-identifier hs-var">acc2</span></a></span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679327850"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327850"><span class="hs-identifier hs-var">c</span></a></span></span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679327849"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327849"><span class="hs-identifier hs-var">cs</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Bool -&gt; String -&gt; String -&gt; String -&gt; m TaggedFormat
+</span><a href="#local-6989586621679327865"><span class="hs-identifier hs-var">go</span></a></span><span> </span><span class="annot"><span class="annottext">Bool
+</span><span class="hs-identifier hs-var">True</span></span><span>  </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327852"><span class="hs-identifier hs-var">acc1</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327850"><span class="hs-identifier hs-var">c</span></a></span><span class="annot"><span class="annottext">Char -&gt; String -&gt; String
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327851"><span class="hs-identifier hs-var">acc2</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327849"><span class="hs-identifier hs-var">cs</span></a></span><span>
+</span><span id="line-67"></span><span>        </span><span class="annot"><a href="#local-6989586621679327865"><span class="hs-identifier hs-var">go</span></a></span><span> </span><span class="annot"><span class="annottext">Bool
+</span><span class="hs-identifier">_</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-identifier">_</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-identifier">_</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; m TaggedFormat
+forall (m :: * -&gt; *) a. MonadFail m =&gt; String -&gt; m a
+</span><span class="hs-identifier hs-var">fail</span></span><span> </span><span class="annot"><span class="annottext">(String -&gt; m TaggedFormat) -&gt; String -&gt; m TaggedFormat
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span>
+</span><span id="line-68"></span><span>            </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;TaggedFormat must contain substring surrounded by '&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span>
+</span><span id="line-69"></span><span>            </span><span class="hs-special">[</span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327867"><span class="hs-identifier hs-var">op</span></a></span><span class="hs-special">]</span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;' and '&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327866"><span class="hs-identifier hs-var">cp</span></a></span><span class="hs-special">]</span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;' chars&quot;</span></span><span>
+</span><span id="line-70"></span><span>
+</span><span id="line-71"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="Format.html#Format"><span class="hs-identifier hs-type">Format</span></a></span><span> </span><span class="annot"><a href="Format.html#MultiFormat"><span class="hs-identifier hs-type">MultiFormat</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-72"></span><span>    </span><span id="local-6989586621679327847"><span class="annot"><span class="annottext">format_ :: Char -&gt; Char -&gt; String -&gt; m MultiFormat
+</span><a href="#local-6989586621679327847"><span class="hs-identifier hs-var hs-var hs-var hs-var">format_</span></a></span></span><span> </span><span id="local-6989586621679327846"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327846"><span class="hs-identifier hs-var">op</span></a></span></span><span> </span><span id="local-6989586621679327845"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327845"><span class="hs-identifier hs-var">cp</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">([String] -&gt; MultiFormat) -&gt; m [String] -&gt; m MultiFormat
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-identifier hs-var">fmap</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; MultiFormat
+</span><a href="Format.html#MultiFormat"><span class="hs-identifier hs-var">MultiFormat</span></a></span><span> </span><span class="annot"><span class="annottext">(m [String] -&gt; m MultiFormat)
+-&gt; (String -&gt; m [String]) -&gt; String -&gt; m MultiFormat
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; m [String]
+forall (m :: * -&gt; *). MonadFail m =&gt; String -&gt; String -&gt; m [String]
+</span><a href="#local-6989586621679327843"><span class="hs-identifier hs-var">go</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;&quot;</span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-73"></span><span>        </span><span id="local-6989586621679327843"><span class="annot"><span class="annottext">go :: String -&gt; String -&gt; m [String]
+</span><a href="#local-6989586621679327843"><span class="hs-identifier hs-var hs-var">go</span></a></span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679327842"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327842"><span class="hs-identifier hs-var">op1</span></a></span></span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679327841"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327841"><span class="hs-identifier hs-var">cp1</span></a></span></span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679327840"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327840"><span class="hs-identifier hs-var">op2</span></a></span></span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679327839"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327839"><span class="hs-identifier hs-var">cp2</span></a></span></span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span class="annot"><span class="annottext">String
+</span><span class="hs-identifier">_</span></span><span class="hs-special">)</span><span>
+</span><span id="line-74"></span><span>            </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327842"><span class="hs-identifier hs-var">op1</span></a></span><span> </span><span class="annot"><span class="annottext">Char -&gt; Char -&gt; Bool
+forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">==</span></span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327846"><span class="hs-identifier hs-var">op</span></a></span><span> </span><span class="annot"><span class="annottext">Bool -&gt; Bool -&gt; Bool
+</span><span class="hs-operator hs-var">&amp;&amp;</span></span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327841"><span class="hs-identifier hs-var">cp1</span></a></span><span> </span><span class="annot"><span class="annottext">Char -&gt; Char -&gt; Bool
+forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">==</span></span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327845"><span class="hs-identifier hs-var">cp</span></a></span><span> </span><span class="annot"><span class="annottext">Bool -&gt; Bool -&gt; Bool
+</span><span class="hs-operator hs-var">&amp;&amp;</span></span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327840"><span class="hs-identifier hs-var">op2</span></a></span><span> </span><span class="annot"><span class="annottext">Char -&gt; Char -&gt; Bool
+forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">==</span></span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327846"><span class="hs-identifier hs-var">op</span></a></span><span> </span><span class="annot"><span class="annottext">Bool -&gt; Bool -&gt; Bool
+</span><span class="hs-operator hs-var">&amp;&amp;</span></span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327839"><span class="hs-identifier hs-var">cp2</span></a></span><span> </span><span class="annot"><span class="annottext">Char -&gt; Char -&gt; Bool
+forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">==</span></span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327845"><span class="hs-identifier hs-var">cp</span></a></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-75"></span><span>                </span><span class="annot"><span class="annottext">String -&gt; m [String]
+forall (m :: * -&gt; *) a. MonadFail m =&gt; String -&gt; m a
+</span><span class="hs-identifier hs-var">fail</span></span><span> </span><span class="annot"><span class="annottext">(String -&gt; m [String]) -&gt; String -&gt; m [String]
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span>
+</span><span id="line-76"></span><span>                    </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;MultiFormat mustn't contain \&quot;&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span>
+</span><span id="line-77"></span><span>                    </span><span class="hs-special">[</span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327846"><span class="hs-identifier hs-var">op</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327845"><span class="hs-identifier hs-var">cp</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327846"><span class="hs-identifier hs-var">op</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327845"><span class="hs-identifier hs-var">cp</span></a></span><span class="hs-special">]</span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;\&quot; substring&quot;</span></span><span>
+</span><span id="line-78"></span><span>        </span><span class="annot"><a href="#local-6989586621679327843"><span class="hs-identifier hs-var">go</span></a></span><span> </span><span id="local-6989586621679327838"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327838"><span class="hs-identifier hs-var">acc</span></a></span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679327837"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327837"><span class="hs-identifier hs-var">op'</span></a></span></span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679327836"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327836"><span class="hs-identifier hs-var">cp'</span></a></span></span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679327835"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327835"><span class="hs-identifier hs-var">cs</span></a></span></span><span class="hs-special">)</span><span>
+</span><span id="line-79"></span><span>            </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327837"><span class="hs-identifier hs-var">op'</span></a></span><span> </span><span class="annot"><span class="annottext">Char -&gt; Char -&gt; Bool
+forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">==</span></span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327846"><span class="hs-identifier hs-var">op</span></a></span><span> </span><span class="annot"><span class="annottext">Bool -&gt; Bool -&gt; Bool
+</span><span class="hs-operator hs-var">&amp;&amp;</span></span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327836"><span class="hs-identifier hs-var">cp'</span></a></span><span> </span><span class="annot"><span class="annottext">Char -&gt; Char -&gt; Bool
+forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">==</span></span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327845"><span class="hs-identifier hs-var">cp</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String -&gt; String
+forall a. [a] -&gt; [a]
+</span><span class="hs-identifier hs-var">reverse</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327838"><span class="hs-identifier hs-var">acc</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; [String] -&gt; [String]
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">([String] -&gt; [String]) -&gt; m [String] -&gt; m [String]
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; m [String]
+</span><a href="#local-6989586621679327843"><span class="hs-identifier hs-var">go</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;&quot;</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327835"><span class="hs-identifier hs-var">cs</span></a></span><span>
+</span><span id="line-80"></span><span>        </span><span class="annot"><a href="#local-6989586621679327843"><span class="hs-identifier hs-var">go</span></a></span><span> </span><span id="local-6989586621679327833"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327833"><span class="hs-identifier hs-var">acc</span></a></span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679327832"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327832"><span class="hs-identifier hs-var">c</span></a></span></span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679327831"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327831"><span class="hs-identifier hs-var">cs</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; m [String]
+</span><a href="#local-6989586621679327843"><span class="hs-identifier hs-var">go</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327832"><span class="hs-identifier hs-var">c</span></a></span><span class="annot"><span class="annottext">Char -&gt; String -&gt; String
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327833"><span class="hs-identifier hs-var">acc</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327831"><span class="hs-identifier hs-var">cs</span></a></span><span>
+</span><span id="line-81"></span><span>        </span><span class="annot"><a href="#local-6989586621679327843"><span class="hs-identifier hs-var">go</span></a></span><span> </span><span id="local-6989586621679327830"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327830"><span class="hs-identifier hs-var">acc</span></a></span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;&quot;</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[String] -&gt; m [String]
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">String -&gt; String
+forall a. [a] -&gt; [a]
+</span><span class="hs-identifier hs-var">reverse</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327830"><span class="hs-identifier hs-var">acc</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-82"></span><span>
+</span><span id="line-83"></span><span id="local-6989586621679327829"><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="Format.html#Format"><span class="hs-identifier hs-type">Format</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679327829"><span class="hs-identifier hs-type">f</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><a href="Format.html#Format"><span class="hs-identifier hs-type">Format</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Format.html#MaybeFormat"><span class="hs-identifier hs-type">MaybeFormat</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679327829"><span class="hs-identifier hs-type">f</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-84"></span><span>    </span><span id="local-6989586621679327827"><span class="annot"><span class="annottext">format_ :: Char -&gt; Char -&gt; String -&gt; m (MaybeFormat f)
+</span><a href="#local-6989586621679327827"><span class="hs-identifier hs-var hs-var hs-var hs-var">format_</span></a></span></span><span> </span><span id="local-6989586621679327826"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327826"><span class="hs-identifier hs-var">op</span></a></span></span><span> </span><span id="local-6989586621679327825"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327825"><span class="hs-identifier hs-var">cp</span></a></span></span><span> </span><span id="local-6989586621679327824"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327824"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">MaybeFormat f -&gt; m (MaybeFormat f)
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">(MaybeFormat f -&gt; m (MaybeFormat f))
+-&gt; MaybeFormat f -&gt; m (MaybeFormat f)
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span>
+</span><span id="line-85"></span><span>        </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">Char -&gt; Char -&gt; String -&gt; Maybe f
+forall f (m :: * -&gt; *).
+(Format f, MonadFail m) =&gt;
+Char -&gt; Char -&gt; String -&gt; m f
+</span><a href="Format.html#format_"><span class="hs-identifier hs-var">format_</span></a></span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327826"><span class="hs-identifier hs-var">op</span></a></span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327825"><span class="hs-identifier hs-var">cp</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327824"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-86"></span><span>            </span><span class="annot"><span class="hs-identifier hs-type">Just</span></span><span> </span><span id="local-6989586621679327823"><span class="annot"><span class="annottext">f
+</span><a href="#local-6989586621679327823"><span class="hs-identifier hs-var">f</span></a></span></span><span>  </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">f -&gt; MaybeFormat f
+forall f. f -&gt; MaybeFormat f
+</span><a href="Format.html#JustFormat"><span class="hs-identifier hs-var">JustFormat</span></a></span><span> </span><span class="annot"><span class="annottext">f
+</span><a href="#local-6989586621679327823"><span class="hs-identifier hs-var">f</span></a></span><span>
+</span><span id="line-87"></span><span>            </span><span class="annot"><span class="annottext">Maybe f
+</span><span class="hs-identifier hs-var">Nothing</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">String -&gt; MaybeFormat f
+forall f. String -&gt; MaybeFormat f
+</span><a href="Format.html#JustString"><span class="hs-identifier hs-var">JustString</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327824"><span class="hs-identifier hs-var">s</span></a></span></span><span>
+</span><span id="line-88"></span><span>
+</span><span id="line-89"></span><span id="local-6989586621679327821"><span id="local-6989586621679327822"><span class="annot"><a href="Format.html#format"><span class="hs-identifier hs-type">format</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Format.html#Format"><span class="hs-identifier hs-type">Format</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679327822"><span class="hs-identifier hs-type">f</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">MonadFail</span></span><span> </span><span class="annot"><a href="#local-6989586621679327821"><span class="hs-identifier hs-type">m</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679327821"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679327822"><span class="hs-identifier hs-type">f</span></a></span></span></span><span>
+</span><span id="line-90"></span><span id="format"><span class="annot"><span class="annottext">format :: String -&gt; m f
+</span><a href="Format.html#format"><span class="hs-identifier hs-var hs-var">format</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Char -&gt; Char -&gt; String -&gt; m f
+forall f (m :: * -&gt; *).
+(Format f, MonadFail m) =&gt;
+Char -&gt; Char -&gt; String -&gt; m f
+</span><a href="Format.html#format_"><span class="hs-identifier hs-var">format_</span></a></span><span> </span><span class="annot"><span class="annottext">Char
+</span><span class="hs-char">'{'</span></span><span> </span><span class="annot"><span class="annottext">Char
+</span><span class="hs-char">'}'</span></span><span>
+</span><span id="line-91"></span><span>
+</span><span id="line-92"></span><span class="hs-keyword">class</span><span> </span><span class="annot"><a href="Format.html#Format"><span class="hs-identifier hs-type">Format</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679327944"><span class="hs-identifier hs-type">f</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span id="Apply"><span class="annot"><a href="Format.html#Apply"><span class="hs-identifier hs-var">Apply</span></a></span></span><span> </span><span id="local-6989586621679327944"><span class="annot"><a href="#local-6989586621679327944"><span class="hs-identifier hs-type">f</span></a></span></span><span> </span><span id="local-6989586621679327943"><span class="annot"><a href="#local-6989586621679327943"><span class="hs-identifier hs-type">i</span></a></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-93"></span><span>    </span><span id="apply"><span class="annot"><a href="Format.html#apply"><span class="hs-identifier hs-type">apply</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="#local-6989586621679327944"><span class="hs-identifier hs-type">f</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679327943"><span class="hs-identifier hs-type">i</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-94"></span><span>
+</span><span id="line-95"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="Format.html#Apply"><span class="hs-identifier hs-type">Apply</span></a></span><span> </span><span class="annot"><a href="Format.html#SimpleFormat"><span class="hs-identifier hs-type">SimpleFormat</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-96"></span><span>    </span><span id="local-6989586621679327817"><span class="annot"><span class="annottext">apply :: SimpleFormat -&gt; String -&gt; String
+</span><a href="#local-6989586621679327817"><span class="hs-identifier hs-var hs-var hs-var hs-var">apply</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Format.html#SimpleFormat"><span class="hs-identifier hs-type">SimpleFormat</span></a></span><span> </span><span id="local-6989586621679327816"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327816"><span class="hs-identifier hs-var">st</span></a></span></span><span> </span><span id="local-6989586621679327815"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327815"><span class="hs-identifier hs-var">fn</span></a></span></span><span class="hs-special">)</span><span> </span><span id="local-6989586621679327814"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327814"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327816"><span class="hs-identifier hs-var">st</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327814"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327815"><span class="hs-identifier hs-var">fn</span></a></span><span>
+</span><span id="line-97"></span><span>
+</span><span id="line-98"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="Format.html#Apply"><span class="hs-identifier hs-type">Apply</span></a></span><span> </span><span class="annot"><a href="Format.html#TaggedFormat"><span class="hs-identifier hs-type">TaggedFormat</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-99"></span><span>    </span><span id="local-6989586621679327811"><span class="annot"><span class="annottext">apply :: TaggedFormat -&gt; String -&gt; String
+</span><a href="#local-6989586621679327811"><span class="hs-identifier hs-var hs-var hs-var hs-var">apply</span></a></span></span><span> </span><span id="local-6989586621679327810"><span class="annot"><span class="annottext">TaggedFormat
+</span><a href="#local-6989586621679327810"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span id="local-6989586621679327809"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327809"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">SimpleFormat -&gt; String -&gt; String
+forall f i. Apply f i =&gt; f -&gt; i -&gt; String
+</span><a href="Format.html#apply"><span class="hs-identifier hs-var">apply</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">TaggedFormat -&gt; SimpleFormat
+</span><a href="Format.html#unTagged"><span class="hs-identifier hs-var">unTagged</span></a></span><span> </span><span class="annot"><span class="annottext">TaggedFormat
+</span><a href="#local-6989586621679327810"><span class="hs-identifier hs-var">f</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327809"><span class="hs-identifier hs-var">s</span></a></span><span>
+</span><span id="line-100"></span><span>
+</span><span id="line-101"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="Format.html#Apply"><span class="hs-identifier hs-type">Apply</span></a></span><span> </span><span class="annot"><a href="Format.html#TaggedFormat"><span class="hs-identifier hs-type">TaggedFormat</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-102"></span><span>    </span><span id="local-6989586621679327806"><span class="annot"><span class="annottext">apply :: TaggedFormat -&gt; () -&gt; String
+</span><a href="#local-6989586621679327806"><span class="hs-identifier hs-var hs-var hs-var hs-var">apply</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Format.html#TaggedFormat"><span class="hs-identifier hs-type">TaggedFormat</span></a></span><span> </span><span id="local-6989586621679327805"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327805"><span class="hs-identifier hs-var">st</span></a></span></span><span> </span><span id="local-6989586621679327804"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327804"><span class="hs-identifier hs-var">md</span></a></span></span><span> </span><span id="local-6989586621679327803"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327803"><span class="hs-identifier hs-var">fn</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327805"><span class="hs-identifier hs-var">st</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327804"><span class="hs-identifier hs-var">md</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327803"><span class="hs-identifier hs-var">fn</span></a></span><span>
+</span><span id="line-103"></span><span>
+</span><span id="line-104"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="Format.html#Apply"><span class="hs-identifier hs-type">Apply</span></a></span><span> </span><span class="annot"><a href="Format.html#MultiFormat"><span class="hs-identifier hs-type">MultiFormat</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span class="hs-special">]</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-105"></span><span>    </span><span id="local-6989586621679327800"><span class="annot"><span class="annottext">apply :: MultiFormat -&gt; [String] -&gt; String
+</span><a href="#local-6989586621679327800"><span class="hs-identifier hs-var hs-var hs-var hs-var">apply</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Format.html#MultiFormat"><span class="hs-identifier hs-type">MultiFormat</span></a></span><span> </span><span id="local-6989586621679327799"><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679327799"><span class="hs-identifier hs-var">ss</span></a></span></span><span class="hs-special">)</span><span> </span><span id="local-6989586621679327798"><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679327798"><span class="hs-identifier hs-var">ss'</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(String -&gt; String -&gt; String) -&gt; String -&gt; [String] -&gt; String
+forall (t :: * -&gt; *) a b.
+Foldable t =&gt;
+(a -&gt; b -&gt; b) -&gt; b -&gt; t a -&gt; b
+</span><span class="hs-identifier hs-var">foldr</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">(++)</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;&quot;</span></span><span> </span><span class="annot"><span class="annottext">([String] -&gt; String) -&gt; [String] -&gt; String
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">(String -&gt; String -&gt; String) -&gt; [String] -&gt; [String] -&gt; [String]
+forall a b c. (a -&gt; b -&gt; c) -&gt; [a] -&gt; [b] -&gt; [c]
+</span><span class="hs-identifier hs-var">zipWith</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">(++)</span></span><span> </span><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679327799"><span class="hs-identifier hs-var">ss</span></a></span><span> </span><span class="annot"><span class="annottext">([String] -&gt; [String]) -&gt; [String] -&gt; [String]
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679327798"><span class="hs-identifier hs-var">ss'</span></a></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; [String] -&gt; [String]
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; [String]
+forall a. a -&gt; [a]
+</span><span class="hs-identifier hs-var">repeat</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;&quot;</span></span><span>
+</span><span id="line-106"></span><span>
+</span><span id="line-107"></span><span id="local-6989586621679327793"><span id="local-6989586621679327794"><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="Format.html#Apply"><span class="hs-identifier hs-type">Apply</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679327794"><span class="hs-identifier hs-type">f</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679327793"><span class="hs-identifier hs-type">i</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><a href="Format.html#Apply"><span class="hs-identifier hs-type">Apply</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Format.html#MaybeFormat"><span class="hs-identifier hs-type">MaybeFormat</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679327794"><span class="hs-identifier hs-type">f</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><a href="#local-6989586621679327793"><span class="hs-identifier hs-type">i</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-108"></span><span>    </span><span id="local-6989586621679327790"><span class="annot"><span class="annottext">apply :: MaybeFormat f -&gt; i -&gt; String
+</span><a href="#local-6989586621679327790"><span class="hs-identifier hs-var hs-var hs-var hs-var">apply</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Format.html#JustFormat"><span class="hs-identifier hs-type">JustFormat</span></a></span><span> </span><span id="local-6989586621679327789"><span class="annot"><span class="annottext">f
+</span><a href="#local-6989586621679327789"><span class="hs-identifier hs-var">f</span></a></span></span><span class="hs-special">)</span><span> </span><span id="local-6989586621679327788"><span class="annot"><span class="annottext">i
+</span><a href="#local-6989586621679327788"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">f -&gt; i -&gt; String
+forall f i. Apply f i =&gt; f -&gt; i -&gt; String
+</span><a href="Format.html#apply"><span class="hs-identifier hs-var">apply</span></a></span><span> </span><span class="annot"><span class="annottext">f
+</span><a href="#local-6989586621679327789"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">i
+</span><a href="#local-6989586621679327788"><span class="hs-identifier hs-var">s</span></a></span><span>
+</span><span id="line-109"></span><span>    </span><span class="annot"><a href="Format.html#apply"><span class="hs-identifier hs-var">apply</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Format.html#JustString"><span class="hs-identifier hs-type">JustString</span></a></span><span> </span><span id="local-6989586621679327787"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327787"><span class="hs-identifier hs-var">s</span></a></span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">i
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327787"><span class="hs-identifier hs-var">s</span></a></span></span></span><span>
+</span><span id="line-110"></span><span>
+</span><span id="line-111"></span><span id="local-6989586621679327786"><span class="annot"><a href="Format.html#format2str"><span class="hs-identifier hs-type">format2str</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Format.html#Apply"><span class="hs-identifier hs-type">Apply</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679327786"><span class="hs-identifier hs-type">f</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679327786"><span class="hs-identifier hs-type">f</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span></span><span>
+</span><span id="line-112"></span><span id="format2str"><span class="annot"><span class="annottext">format2str :: f -&gt; String
+</span><a href="Format.html#format2str"><span class="hs-identifier hs-var hs-var">format2str</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(f -&gt; () -&gt; String) -&gt; () -&gt; f -&gt; String
+forall a b c. (a -&gt; b -&gt; c) -&gt; b -&gt; a -&gt; c
+</span><span class="hs-identifier hs-var">flip</span></span><span> </span><span class="annot"><span class="annottext">f -&gt; () -&gt; String
+forall f i. Apply f i =&gt; f -&gt; i -&gt; String
+</span><a href="Format.html#apply"><span class="hs-identifier hs-var">apply</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
+</span><span id="line-113"></span><span>
+</span><span id="line-114"></span><span class="hs-keyword">class</span><span> </span><span class="annot"><a href="Format.html#Format"><span class="hs-identifier hs-type">Format</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679327928"><span class="hs-identifier hs-type">f</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span id="Match"><span class="annot"><a href="Format.html#Match"><span class="hs-identifier hs-var">Match</span></a></span></span><span> </span><span id="local-6989586621679327928"><span class="annot"><a href="#local-6989586621679327928"><span class="hs-identifier hs-type">f</span></a></span></span><span> </span><span id="local-6989586621679327927"><span class="annot"><a href="#local-6989586621679327927"><span class="hs-identifier hs-type">r</span></a></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-115"></span><span>    </span><span id="match"><span class="annot"><a href="Format.html#match"><span class="hs-identifier hs-type">match</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="#local-6989586621679327928"><span class="hs-identifier hs-type">f</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679327927"><span class="hs-identifier hs-type">r</span></a></span><span>
+</span><span id="line-116"></span><span>
+</span><span id="line-117"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="Format.html#Match"><span class="hs-identifier hs-type">Match</span></a></span><span> </span><span class="annot"><a href="Format.html#SimpleFormat"><span class="hs-identifier hs-type">SimpleFormat</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-118"></span><span>    </span><span id="local-6989586621679327781"><span class="annot"><span class="annottext">match :: SimpleFormat -&gt; String -&gt; Bool
+</span><a href="#local-6989586621679327781"><span class="hs-identifier hs-var hs-var hs-var hs-var">match</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Format.html#SimpleFormat"><span class="hs-identifier hs-type">SimpleFormat</span></a></span><span> </span><span id="local-6989586621679327780"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327780"><span class="hs-identifier hs-var">st</span></a></span></span><span> </span><span id="local-6989586621679327779"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327779"><span class="hs-identifier hs-var">fn</span></a></span></span><span class="hs-special">)</span><span> </span><span id="local-6989586621679327778"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327778"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-119"></span><span>        </span><span class="annot"><span class="annottext">String -&gt; String -&gt; Bool
+forall a. Eq a =&gt; [a] -&gt; [a] -&gt; Bool
+</span><span class="hs-identifier hs-var">isPrefixOf</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327780"><span class="hs-identifier hs-var">st</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327778"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">Bool -&gt; Bool -&gt; Bool
+</span><span class="hs-operator hs-var">&amp;&amp;</span></span><span>
+</span><span id="line-120"></span><span>        </span><span class="annot"><span class="annottext">String -&gt; String -&gt; Bool
+forall a. Eq a =&gt; [a] -&gt; [a] -&gt; Bool
+</span><span class="hs-identifier hs-var">isSuffixOf</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327779"><span class="hs-identifier hs-var">fn</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327778"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">Bool -&gt; Bool -&gt; Bool
+</span><span class="hs-operator hs-var">&amp;&amp;</span></span><span>
+</span><span id="line-121"></span><span>        </span><span class="annot"><span class="annottext">String -&gt; Int
+forall (t :: * -&gt; *) a. Foldable t =&gt; t a -&gt; Int
+</span><span class="hs-identifier hs-var">length</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327778"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Bool
+forall a. Ord a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">&gt;=</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Int
+forall (t :: * -&gt; *) a. Foldable t =&gt; t a -&gt; Int
+</span><span class="hs-identifier hs-var">length</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327780"><span class="hs-identifier hs-var">st</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
+forall a. Num a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">+</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Int
+forall (t :: * -&gt; *) a. Foldable t =&gt; t a -&gt; Int
+</span><span class="hs-identifier hs-var">length</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327779"><span class="hs-identifier hs-var">fn</span></a></span><span>
+</span><span id="line-122"></span><span>
+</span><span id="line-123"></span><span id="local-6989586621679327775"><span class="hs-keyword">instance</span><span> </span><span class="annot"><span class="hs-identifier hs-type">MonadFail</span></span><span> </span><span class="annot"><a href="#local-6989586621679327775"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><a href="Format.html#Match"><span class="hs-identifier hs-type">Match</span></a></span><span> </span><span class="annot"><a href="Format.html#SimpleFormat"><span class="hs-identifier hs-type">SimpleFormat</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="#local-6989586621679327775"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-124"></span><span>    </span><span id="local-6989586621679327772"><span class="annot"><span class="annottext">match :: SimpleFormat -&gt; String -&gt; m String
+</span><a href="#local-6989586621679327772"><span class="hs-identifier hs-var hs-var hs-var hs-var">match</span></a></span></span><span> </span><span id="local-6989586621679327771"><span class="annot"><span class="annottext">f :: SimpleFormat
+</span><a href="#local-6989586621679327771"><span class="hs-identifier hs-var">f</span></a></span></span><span class="hs-glyph">@</span><span class="hs-special">(</span><span class="annot"><a href="Format.html#SimpleFormat"><span class="hs-identifier hs-type">SimpleFormat</span></a></span><span> </span><span id="local-6989586621679327770"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327770"><span class="hs-identifier hs-var">st</span></a></span></span><span> </span><span id="local-6989586621679327769"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327769"><span class="hs-identifier hs-var">fn</span></a></span></span><span class="hs-special">)</span><span> </span><span id="local-6989586621679327768"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327768"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-125"></span><span>        </span><span class="hs-keyword">if</span><span> </span><span class="annot"><span class="annottext">SimpleFormat -&gt; String -&gt; Bool
+forall f r. Match f r =&gt; f -&gt; String -&gt; r
+</span><a href="Format.html#match"><span class="hs-identifier hs-var">match</span></a></span><span> </span><span class="annot"><span class="annottext">SimpleFormat
+</span><a href="#local-6989586621679327771"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327768"><span class="hs-identifier hs-var">s</span></a></span><span>
+</span><span id="line-126"></span><span>        </span><span class="hs-keyword">then</span><span> </span><span class="annot"><span class="annottext">String -&gt; m String
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">(String -&gt; m String) -&gt; String -&gt; m String
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Int -&gt; String -&gt; String
+forall a. Int -&gt; [a] -&gt; [a]
+</span><span class="hs-identifier hs-var">drop</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String -&gt; Int
+forall (t :: * -&gt; *) a. Foldable t =&gt; t a -&gt; Int
+</span><span class="hs-identifier hs-var">length</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327770"><span class="hs-identifier hs-var">st</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">(String -&gt; String) -&gt; String -&gt; String
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Int -&gt; String -&gt; String
+forall a. Int -&gt; [a] -&gt; [a]
+</span><span class="hs-identifier hs-var">take</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String -&gt; Int
+forall (t :: * -&gt; *) a. Foldable t =&gt; t a -&gt; Int
+</span><span class="hs-identifier hs-var">length</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327768"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
+forall a. Num a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-glyph hs-var">-</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Int
+forall (t :: * -&gt; *) a. Foldable t =&gt; t a -&gt; Int
+</span><span class="hs-identifier hs-var">length</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327769"><span class="hs-identifier hs-var">fn</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327768"><span class="hs-identifier hs-var">s</span></a></span><span>
+</span><span id="line-127"></span><span>        </span><span class="hs-keyword">else</span><span> </span><span class="annot"><span class="annottext">String -&gt; m String
+forall (m :: * -&gt; *) a. MonadFail m =&gt; String -&gt; m a
+</span><span class="hs-identifier hs-var">fail</span></span><span> </span><span class="annot"><span class="annottext">(String -&gt; m String) -&gt; String -&gt; m String
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span>
+</span><span id="line-128"></span><span>            </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;Can't match string \&quot;&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327768"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;\&quot; with format \&quot;&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span>
+</span><span id="line-129"></span><span>            </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327770"><span class="hs-identifier hs-var">st</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;{...}&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327769"><span class="hs-identifier hs-var">fn</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;\&quot;&quot;</span></span></span><span>
+</span><span id="line-130"></span><span>
+</span><span id="line-131"></span><span id="local-6989586621679327765"><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="Format.html#Match"><span class="hs-identifier hs-type">Match</span></a></span><span> </span><span class="annot"><a href="Format.html#SimpleFormat"><span class="hs-identifier hs-type">SimpleFormat</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679327765"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><a href="Format.html#Match"><span class="hs-identifier hs-type">Match</span></a></span><span> </span><span class="annot"><a href="Format.html#TaggedFormat"><span class="hs-identifier hs-type">TaggedFormat</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679327765"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-132"></span><span>    </span><span id="local-6989586621679327762"><span class="annot"><span class="annottext">match :: TaggedFormat -&gt; String -&gt; a
+</span><a href="#local-6989586621679327762"><span class="hs-identifier hs-var hs-var hs-var hs-var">match</span></a></span></span><span> </span><span id="local-6989586621679327761"><span class="annot"><span class="annottext">TaggedFormat
+</span><a href="#local-6989586621679327761"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span id="local-6989586621679327760"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327760"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">SimpleFormat -&gt; String -&gt; a
+forall f r. Match f r =&gt; f -&gt; String -&gt; r
+</span><a href="Format.html#match"><span class="hs-identifier hs-var">match</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">TaggedFormat -&gt; SimpleFormat
+</span><a href="Format.html#unTagged"><span class="hs-identifier hs-var">unTagged</span></a></span><span> </span><span class="annot"><span class="annottext">TaggedFormat
+</span><a href="#local-6989586621679327761"><span class="hs-identifier hs-var">f</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327760"><span class="hs-identifier hs-var">s</span></a></span></span><span>
+</span><span id="line-133"></span><span>
+</span><span id="line-134"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="Format.html#Match"><span class="hs-identifier hs-type">Match</span></a></span><span> </span><span class="annot"><a href="Format.html#MultiFormat"><span class="hs-identifier hs-type">MultiFormat</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span class="hs-special">]</span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-135"></span><span>    </span><span id="local-6989586621679327757"><span class="annot"><span class="annottext">match :: MultiFormat -&gt; String -&gt; Maybe [String]
+</span><a href="#local-6989586621679327757"><span class="hs-identifier hs-var hs-var hs-var hs-var">match</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Format.html#MultiFormat"><span class="hs-identifier hs-type">MultiFormat</span></a></span><span> </span><span id="local-6989586621679327756"><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679327756"><span class="hs-identifier hs-var">ss</span></a></span></span><span class="hs-special">)</span><span> </span><span id="local-6989586621679327755"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327755"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-136"></span><span>        </span><span class="annot"><span class="annottext">Maybe String -&gt; String -&gt; [String] -&gt; Maybe [String]
+</span><a href="#local-6989586621679327754"><span class="hs-identifier hs-var">go</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe String
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327755"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679327756"><span class="hs-identifier hs-var">ss</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe [String]
+-&gt; (Maybe [String] -&gt; Maybe [String]) -&gt; Maybe [String]
+forall a b. a -&gt; (a -&gt; b) -&gt; b
+</span><span class="hs-operator hs-var">&amp;</span></span><span> </span><span class="hs-special">(</span><span>
+</span><span id="line-137"></span><span>            </span><span class="annot"><span class="annottext">(Maybe [String]
+ -&gt; ([String] -&gt; Maybe [String])
+ -&gt; Maybe [String]
+ -&gt; Maybe [String])
+-&gt; ([String] -&gt; Maybe [String])
+-&gt; Maybe [String]
+-&gt; Maybe [String]
+-&gt; Maybe [String]
+forall a b c. (a -&gt; b -&gt; c) -&gt; b -&gt; a -&gt; c
+</span><span class="hs-identifier hs-var">flip</span></span><span> </span><span class="annot"><span class="annottext">Maybe [String]
+-&gt; ([String] -&gt; Maybe [String]) -&gt; Maybe [String] -&gt; Maybe [String]
+forall b a. b -&gt; (a -&gt; b) -&gt; Maybe a -&gt; b
+</span><span class="hs-identifier hs-var">maybe</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; Maybe [String]
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">(Maybe [String] -&gt; Maybe [String] -&gt; Maybe [String])
+-&gt; Maybe [String] -&gt; Maybe [String] -&gt; Maybe [String]
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe [String]
+forall (m :: * -&gt; *) a. MonadFail m =&gt; String -&gt; m a
+</span><span class="hs-identifier hs-var">fail</span></span><span> </span><span class="annot"><span class="annottext">(String -&gt; Maybe [String]) -&gt; String -&gt; Maybe [String]
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span>
+</span><span id="line-138"></span><span>                </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;Can't match string \&quot;&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327755"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;\&quot; with format \&quot;&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span>
+</span><span id="line-139"></span><span>                </span><span class="annot"><span class="annottext">String -&gt; [String] -&gt; String
+forall a. [a] -&gt; [[a]] -&gt; [a]
+</span><span class="hs-identifier hs-var">intercalate</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;{...}&quot;</span></span><span> </span><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679327756"><span class="hs-identifier hs-var">ss</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;\&quot;&quot;</span></span><span>
+</span><span id="line-140"></span><span>          </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-141"></span><span>            </span><span id="local-6989586621679327754"><span class="annot"><span class="annottext">go :: Maybe String -&gt; String -&gt; [String] -&gt; Maybe [String]
+</span><a href="#local-6989586621679327754"><span class="hs-identifier hs-var hs-var">go</span></a></span></span><span> </span><span class="annot"><span class="annottext">Maybe String
+</span><span class="hs-identifier">_</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;&quot;</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;&quot;</span></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[String] -&gt; Maybe [String]
+forall a. a -&gt; Maybe a
+</span><span class="hs-identifier hs-var">Just</span></span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span>
+</span><span id="line-142"></span><span>            </span><span class="annot"><a href="#local-6989586621679327754"><span class="hs-identifier hs-var">go</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe String
+</span><span class="hs-identifier">_</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;&quot;</span></span><span> </span><span class="annot"><span class="annottext">[String]
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe [String]
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-143"></span><span>            </span><span class="annot"><a href="#local-6989586621679327754"><span class="hs-identifier hs-var">go</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe String
+</span><span class="hs-identifier hs-var">Nothing</span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679327752"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327752"><span class="hs-identifier hs-var">c</span></a></span></span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679327751"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327751"><span class="hs-identifier hs-var">cs</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="hs-special">(</span><span id="local-6989586621679327750"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327750"><span class="hs-identifier hs-var">c'</span></a></span></span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679327749"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327749"><span class="hs-identifier hs-var">cs'</span></a></span></span><span class="hs-special">)</span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679327748"><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679327748"><span class="hs-identifier hs-var">ss'</span></a></span></span><span class="hs-special">)</span><span>
+</span><span id="line-144"></span><span>                </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327752"><span class="hs-identifier hs-var">c</span></a></span><span> </span><span class="annot"><span class="annottext">Char -&gt; Char -&gt; Bool
+forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">==</span></span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327750"><span class="hs-identifier hs-var">c'</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe String -&gt; String -&gt; [String] -&gt; Maybe [String]
+</span><a href="#local-6989586621679327754"><span class="hs-identifier hs-var">go</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe String
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327751"><span class="hs-identifier hs-var">cs</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327749"><span class="hs-identifier hs-var">cs'</span></a></span><span class="annot"><span class="annottext">String -&gt; [String] -&gt; [String]
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679327748"><span class="hs-identifier hs-var">ss'</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-145"></span><span>                </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Bool
+</span><span class="hs-identifier hs-var">otherwise</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe [String]
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-146"></span><span>            </span><span class="annot"><a href="#local-6989586621679327754"><span class="hs-identifier hs-var">go</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe String
+</span><span class="hs-identifier hs-var">Nothing</span></span><span> </span><span id="local-6989586621679327747"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327747"><span class="hs-identifier hs-var">cs</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;&quot;</span></span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679327746"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327746"><span class="hs-identifier hs-var">s'</span></a></span></span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679327745"><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679327745"><span class="hs-identifier hs-var">ss'</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe String -&gt; String -&gt; [String] -&gt; Maybe [String]
+</span><a href="#local-6989586621679327754"><span class="hs-identifier hs-var">go</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String -&gt; Maybe String
+forall a. a -&gt; Maybe a
+</span><span class="hs-identifier hs-var">Just</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;&quot;</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327747"><span class="hs-identifier hs-var">cs</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327746"><span class="hs-identifier hs-var">s'</span></a></span><span class="annot"><span class="annottext">String -&gt; [String] -&gt; [String]
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679327745"><span class="hs-identifier hs-var">ss'</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-147"></span><span>            </span><span class="annot"><a href="#local-6989586621679327754"><span class="hs-identifier hs-var">go</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe String
+</span><span class="hs-identifier hs-var">Nothing</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;&quot;</span></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe [String]
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-148"></span><span>            </span><span class="annot"><a href="#local-6989586621679327754"><span class="hs-identifier hs-var">go</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Just</span></span><span> </span><span id="local-6989586621679327744"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327744"><span class="hs-identifier hs-var">acc</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679327743"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327743"><span class="hs-identifier hs-var">c</span></a></span></span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679327742"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327742"><span class="hs-identifier hs-var">cs</span></a></span></span><span class="hs-special">)</span><span> </span><span id="local-6989586621679327741"><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679327741"><span class="hs-identifier hs-var">ss'</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-149"></span><span>                </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String -&gt; String
+forall a. [a] -&gt; [a]
+</span><span class="hs-identifier hs-var">reverse</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327744"><span class="hs-identifier hs-var">acc</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; [String] -&gt; [String]
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">([String] -&gt; [String]) -&gt; Maybe [String] -&gt; Maybe [String]
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">Maybe String -&gt; String -&gt; [String] -&gt; Maybe [String]
+</span><a href="#local-6989586621679327754"><span class="hs-identifier hs-var">go</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe String
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327743"><span class="hs-identifier hs-var">c</span></a></span><span class="annot"><span class="annottext">Char -&gt; String -&gt; String
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327742"><span class="hs-identifier hs-var">cs</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679327741"><span class="hs-identifier hs-var">ss'</span></a></span><span>
+</span><span id="line-150"></span><span>                  </span><span class="annot"><span class="annottext">Maybe [String] -&gt; Maybe [String] -&gt; Maybe [String]
+forall (f :: * -&gt; *) a. Alternative f =&gt; f a -&gt; f a -&gt; f a
+</span><span class="hs-operator hs-var">&lt;|&gt;</span></span><span>
+</span><span id="line-151"></span><span>                </span><span class="annot"><span class="annottext">Maybe String -&gt; String -&gt; [String] -&gt; Maybe [String]
+</span><a href="#local-6989586621679327754"><span class="hs-identifier hs-var">go</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String -&gt; Maybe String
+forall a. a -&gt; Maybe a
+</span><span class="hs-identifier hs-var">Just</span></span><span> </span><span class="annot"><span class="annottext">(String -&gt; Maybe String) -&gt; String -&gt; Maybe String
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679327743"><span class="hs-identifier hs-var">c</span></a></span><span class="annot"><span class="annottext">Char -&gt; String -&gt; String
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327744"><span class="hs-identifier hs-var">acc</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327742"><span class="hs-identifier hs-var">cs</span></a></span><span> </span><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679327741"><span class="hs-identifier hs-var">ss'</span></a></span><span>
+</span><span id="line-152"></span><span>            </span><span class="annot"><a href="#local-6989586621679327754"><span class="hs-identifier hs-var">go</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe String
+</span><span class="hs-identifier">_</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-identifier">_</span></span><span> </span><span class="annot"><span class="annottext">[String]
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe [String]
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-153"></span><span>
+</span><span id="line-154"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="Format.html#Match"><span class="hs-identifier hs-type">Match</span></a></span><span> </span><span class="annot"><a href="Format.html#MultiFormat"><span class="hs-identifier hs-type">MultiFormat</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-155"></span><span>    </span><span id="local-6989586621679327738"><span class="annot"><span class="annottext">match :: MultiFormat -&gt; String -&gt; Bool
+</span><a href="#local-6989586621679327738"><span class="hs-identifier hs-var hs-var hs-var hs-var">match</span></a></span></span><span> </span><span id="local-6989586621679327737"><span class="annot"><span class="annottext">MultiFormat
+</span><a href="#local-6989586621679327737"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span id="local-6989586621679327736"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327736"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe [String] -&gt; Bool
+forall a. Maybe a -&gt; Bool
+</span><span class="hs-identifier hs-var">isJust</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">MultiFormat -&gt; String -&gt; Maybe [String]
+forall f r. Match f r =&gt; f -&gt; String -&gt; r
+</span><a href="Format.html#match"><span class="hs-identifier hs-var">match</span></a></span><span> </span><span class="annot"><span class="annottext">MultiFormat
+</span><a href="#local-6989586621679327737"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327736"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span class="hs-special">]</span><span class="hs-special">)</span><span>
+</span><span id="line-156"></span><span>
+</span><span id="line-157"></span><span id="local-6989586621679327735"><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="Format.html#Match"><span class="hs-identifier hs-type">Match</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679327735"><span class="hs-identifier hs-type">f</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><a href="Format.html#Match"><span class="hs-identifier hs-type">Match</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Format.html#MaybeFormat"><span class="hs-identifier hs-type">MaybeFormat</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679327735"><span class="hs-identifier hs-type">f</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-158"></span><span>    </span><span id="local-6989586621679327732"><span class="annot"><span class="annottext">match :: MaybeFormat f -&gt; String -&gt; Bool
+</span><a href="#local-6989586621679327732"><span class="hs-identifier hs-var hs-var hs-var hs-var">match</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Format.html#JustFormat"><span class="hs-identifier hs-type">JustFormat</span></a></span><span> </span><span id="local-6989586621679327731"><span class="annot"><span class="annottext">f
+</span><a href="#local-6989586621679327731"><span class="hs-identifier hs-var">f</span></a></span></span><span class="hs-special">)</span><span> </span><span id="local-6989586621679327730"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327730"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">f -&gt; String -&gt; Bool
+forall f r. Match f r =&gt; f -&gt; String -&gt; r
+</span><a href="Format.html#match"><span class="hs-identifier hs-var">match</span></a></span><span> </span><span class="annot"><span class="annottext">f
+</span><a href="#local-6989586621679327731"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327730"><span class="hs-identifier hs-var">s</span></a></span><span>
+</span><span id="line-159"></span><span>    </span><span class="annot"><a href="Format.html#match"><span class="hs-identifier hs-var">match</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Format.html#JustString"><span class="hs-identifier hs-type">JustString</span></a></span><span> </span><span id="local-6989586621679327729"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327729"><span class="hs-identifier hs-var">s'</span></a></span></span><span class="hs-special">)</span><span> </span><span id="local-6989586621679327728"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327728"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327729"><span class="hs-identifier hs-var">s'</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; Bool
+forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">==</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327728"><span class="hs-identifier hs-var">s</span></a></span></span><span>
+</span><span id="line-160"></span><span>
+</span><span id="line-161"></span><span id="local-6989586621679327726"><span id="local-6989586621679327727"><span class="hs-keyword">instance</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">MonadFail</span></span><span> </span><span class="annot"><a href="#local-6989586621679327727"><span class="hs-identifier hs-type">m</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Format.html#Match"><span class="hs-identifier hs-type">Match</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679327726"><span class="hs-identifier hs-type">f</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="#local-6989586621679327727"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><a href="Format.html#Match"><span class="hs-identifier hs-type">Match</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Format.html#MaybeFormat"><span class="hs-identifier hs-type">MaybeFormat</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679327726"><span class="hs-identifier hs-type">f</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="#local-6989586621679327727"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-162"></span><span>    </span><span id="local-6989586621679327723"><span class="annot"><span class="annottext">match :: MaybeFormat f -&gt; String -&gt; m String
+</span><a href="#local-6989586621679327723"><span class="hs-identifier hs-var hs-var hs-var hs-var">match</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Format.html#JustFormat"><span class="hs-identifier hs-type">JustFormat</span></a></span><span> </span><span id="local-6989586621679327722"><span class="annot"><span class="annottext">f
+</span><a href="#local-6989586621679327722"><span class="hs-identifier hs-var">f</span></a></span></span><span class="hs-special">)</span><span> </span><span id="local-6989586621679327721"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327721"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">f -&gt; String -&gt; m String
+forall f r. Match f r =&gt; f -&gt; String -&gt; r
+</span><a href="Format.html#match"><span class="hs-identifier hs-var">match</span></a></span><span> </span><span class="annot"><span class="annottext">f
+</span><a href="#local-6989586621679327722"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327721"><span class="hs-identifier hs-var">s</span></a></span><span>
+</span><span id="line-163"></span><span>    </span><span class="annot"><a href="Format.html#match"><span class="hs-identifier hs-var">match</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Format.html#JustString"><span class="hs-identifier hs-type">JustString</span></a></span><span> </span><span id="local-6989586621679327720"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327720"><span class="hs-identifier hs-var">s'</span></a></span></span><span class="hs-special">)</span><span> </span><span id="local-6989586621679327719"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327719"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-164"></span><span>        </span><span class="hs-keyword">if</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327720"><span class="hs-identifier hs-var">s'</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; Bool
+forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">==</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327719"><span class="hs-identifier hs-var">s</span></a></span><span>
+</span><span id="line-165"></span><span>        </span><span class="hs-keyword">then</span><span> </span><span class="annot"><span class="annottext">String -&gt; m String
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;&quot;</span></span><span>
+</span><span id="line-166"></span><span>        </span><span class="hs-keyword">else</span><span> </span><span class="annot"><span class="annottext">String -&gt; m String
+forall (m :: * -&gt; *) a. MonadFail m =&gt; String -&gt; m a
+</span><span class="hs-identifier hs-var">fail</span></span><span> </span><span class="annot"><span class="annottext">(String -&gt; m String) -&gt; String -&gt; m String
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span>
+</span><span id="line-167"></span><span>            </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;Can't match string \&quot;&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327719"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;\&quot; with format \&quot;&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679327720"><span class="hs-identifier hs-var">s'</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;\&quot;&quot;</span></span></span></span><span>
+</span><span id="line-168"></span></pre></body></html>

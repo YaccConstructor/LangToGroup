@@ -1,0 +1,185 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">StringRewriting.KnuthBendix</span><span> </span><span class="hs-special">(</span><span>
+</span><span id="line-2"></span><span>    </span><span class="annot"><a href="StringRewriting.KnuthBendix.html#Order"><span class="hs-identifier">Order</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-3"></span><span>    </span><span class="annot"><a href="StringRewriting.KnuthBendix.html#knuthBendix"><span class="hs-identifier">knuthBendix</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-4"></span><span>    </span><span class="annot"><a href="StringRewriting.KnuthBendix.html#knuthBendixBy"><span class="hs-identifier">knuthBendixBy</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-5"></span><span>    </span><span class="hs-keyword">module</span><span> </span><span class="annot"><a href="StringRewriting.html"><span class="hs-identifier">StringRewriting</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-6"></span><span>  </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-7"></span><span>
+</span><span id="line-8"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="StringRewriting.html"><span class="hs-identifier">StringRewriting</span></a></span><span>
+</span><span id="line-9"></span><span>
+</span><span id="line-10"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Math.Algebra.Group.StringRewriting</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">SR</span></span><span>
+</span><span id="line-11"></span><span>
+</span><span id="line-12"></span><span class="hs-keyword">type</span><span> </span><span id="Order"><span class="annot"><a href="StringRewriting.KnuthBendix.html#Order"><span class="hs-identifier hs-var">Order</span></a></span></span><span> </span><span id="local-6989586621679333121"><span class="annot"><a href="#local-6989586621679333121"><span class="hs-identifier hs-type">a</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><a href="#local-6989586621679333121"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679333121"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Ordering</span></span><span>
+</span><span id="line-13"></span><span>
+</span><span id="line-14"></span><span class="hs-keyword">type</span><span> </span><span id="GenOrder"><span class="annot"><a href="StringRewriting.KnuthBendix.html#GenOrder"><span class="hs-identifier hs-var">GenOrder</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><a href="StringRewriting.KnuthBendix.html#Order"><span class="hs-identifier hs-type">Order</span></a></span><span> </span><span class="annot"><a href="StringRewriting.Generator.html#Generator"><span class="hs-identifier hs-type">Generator</span></a></span><span>
+</span><span id="line-15"></span><span>
+</span><span id="line-16"></span><span class="hs-keyword">data</span><span> </span><span id="GenWithOrder"><span class="annot"><a href="StringRewriting.KnuthBendix.html#GenWithOrder"><span class="hs-identifier hs-var">GenWithOrder</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="GWO"><span class="annot"><a href="StringRewriting.KnuthBendix.html#GWO"><span class="hs-identifier hs-var">GWO</span></a></span></span><span>
+</span><span id="line-17"></span><span>  </span><span class="hs-special">{</span><span> </span><span id="genOrder"><span class="annot"><span class="annottext">GenWithOrder -&gt; GenOrder
+</span><a href="StringRewriting.KnuthBendix.html#genOrder"><span class="hs-identifier hs-var hs-var">genOrder</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="StringRewriting.KnuthBendix.html#GenOrder"><span class="hs-identifier hs-type">GenOrder</span></a></span><span>
+</span><span id="line-18"></span><span>  </span><span class="hs-special">,</span><span> </span><span id="gen"><span class="annot"><span class="annottext">GenWithOrder -&gt; Generator
+</span><a href="StringRewriting.KnuthBendix.html#gen"><span class="hs-identifier hs-var hs-var">gen</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="StringRewriting.Generator.html#Generator"><span class="hs-identifier hs-type">Generator</span></a></span><span>
+</span><span id="line-19"></span><span>  </span><span class="hs-special">}</span><span>
+</span><span id="line-20"></span><span>
+</span><span id="line-21"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679333115"><span class="annot"><span class="hs-identifier hs-type">Eq</span></span><span> </span><span class="annot"><a href="StringRewriting.KnuthBendix.html#GenWithOrder"><span class="hs-identifier hs-type">GenWithOrder</span></a></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-22"></span><span>    </span><span class="hs-special">(</span><span class="annot"><a href="StringRewriting.KnuthBendix.html#GWO"><span class="hs-identifier hs-type">GWO</span></a></span><span> </span><span id="local-6989586621679333113"><span class="annot"><span class="annottext">GenOrder
+</span><a href="#local-6989586621679333113"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span id="local-6989586621679333112"><span class="annot"><span class="annottext">Generator
+</span><a href="#local-6989586621679333112"><span class="hs-identifier hs-var">x</span></a></span></span><span class="hs-special">)</span><span> </span><span id="local-6989586621679333111"><span class="annot"><span class="annottext">== :: GenWithOrder -&gt; GenWithOrder -&gt; Bool
+</span><span class="hs-operator hs-var hs-var hs-var hs-var">==</span></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="StringRewriting.KnuthBendix.html#GWO"><span class="hs-identifier hs-type">GWO</span></a></span><span> </span><span class="annot"><span class="annottext">GenOrder
+</span><span class="hs-identifier">_</span></span><span> </span><span id="local-6989586621679333110"><span class="annot"><span class="annottext">Generator
+</span><a href="#local-6989586621679333110"><span class="hs-identifier hs-var">y</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">GenOrder
+</span><a href="#local-6989586621679333113"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">Generator
+</span><a href="#local-6989586621679333112"><span class="hs-identifier hs-var">x</span></a></span><span> </span><span class="annot"><span class="annottext">Generator
+</span><a href="#local-6989586621679333110"><span class="hs-identifier hs-var">y</span></a></span><span> </span><span class="annot"><span class="annottext">Ordering -&gt; Ordering -&gt; Bool
+forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">==</span></span><span> </span><span class="annot"><span class="annottext">Ordering
+</span><span class="hs-identifier hs-var">EQ</span></span><span>
+</span><span id="line-23"></span><span>
+</span><span id="line-24"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679333096"><span id="local-6989586621679333098"><span id="local-6989586621679333100"><span id="local-6989586621679333102"><span id="local-6989586621679333104"><span id="local-6989586621679333106"><span class="annot"><span class="hs-identifier hs-type">Ord</span></span><span> </span><span class="annot"><a href="StringRewriting.KnuthBendix.html#GenWithOrder"><span class="hs-identifier hs-type">GenWithOrder</span></a></span></span></span></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-25"></span><span>    </span><span id="local-6989586621679333094"><span class="annot"><span class="annottext">compare :: GenWithOrder -&gt; GenWithOrder -&gt; Ordering
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">compare</span></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="StringRewriting.KnuthBendix.html#GWO"><span class="hs-identifier hs-type">GWO</span></a></span><span> </span><span id="local-6989586621679333092"><span class="annot"><span class="annottext">GenOrder
+</span><a href="#local-6989586621679333092"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span id="local-6989586621679333091"><span class="annot"><span class="annottext">Generator
+</span><a href="#local-6989586621679333091"><span class="hs-identifier hs-var">x</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="StringRewriting.KnuthBendix.html#GWO"><span class="hs-identifier hs-type">GWO</span></a></span><span> </span><span class="annot"><span class="annottext">GenOrder
+</span><span class="hs-identifier">_</span></span><span> </span><span id="local-6989586621679333090"><span class="annot"><span class="annottext">Generator
+</span><a href="#local-6989586621679333090"><span class="hs-identifier hs-var">y</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">GenOrder
+</span><a href="#local-6989586621679333092"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">Generator
+</span><a href="#local-6989586621679333091"><span class="hs-identifier hs-var">x</span></a></span><span> </span><span class="annot"><span class="annottext">Generator
+</span><a href="#local-6989586621679333090"><span class="hs-identifier hs-var">y</span></a></span><span>
+</span><span id="line-26"></span><span>
+</span><span id="line-27"></span><span class="annot"><a href="StringRewriting.KnuthBendix.html#knuthBendix"><span class="hs-identifier hs-type">knuthBendix</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Set</span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Containers.Pair.html#Pair"><span class="hs-identifier hs-type">Pair</span></a></span><span> </span><span class="annot"><a href="StringRewriting.Generator.html#GWord"><span class="hs-identifier hs-type">GWord</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="StringRewriting.html#GeneratorsDescr"><span class="hs-identifier hs-type">GeneratorsDescr</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="StringRewriting.html#StringRewriting"><span class="hs-identifier hs-type">StringRewriting</span></a></span><span>
+</span><span id="line-28"></span><span id="knuthBendix"><span class="annot"><span class="annottext">knuthBendix :: Set (Pair GWord) -&gt; GeneratorsDescr -&gt; StringRewriting
+</span><a href="StringRewriting.KnuthBendix.html#knuthBendix"><span class="hs-identifier hs-var hs-var">knuthBendix</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">GenOrder -&gt; Set (Pair GWord) -&gt; GeneratorsDescr -&gt; StringRewriting
+</span><a href="StringRewriting.KnuthBendix.html#knuthBendixBy"><span class="hs-identifier hs-var">knuthBendixBy</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Ordering
+forall a. Ord a =&gt; a -&gt; a -&gt; Ordering
+</span><span class="hs-identifier hs-var">compare</span></span><span> </span><span class="annot"><span class="annottext">(Int -&gt; Int -&gt; Ordering) -&gt; (Generator -&gt; Int) -&gt; GenOrder
+forall b c a. (b -&gt; b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">`on`</span></span><span> </span><span class="annot"><span class="annottext">Generator -&gt; Int
+</span><a href="StringRewriting.Generator.html#numGenerator"><span class="hs-identifier hs-var hs-var">numGenerator</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-29"></span><span>
+</span><span id="line-30"></span><span id="local-6989586621679333133"><span id="local-6989586621679333134"><span class="annot"><a href="StringRewriting.KnuthBendix.html#mapPair"><span class="hs-identifier hs-type">mapPair</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="#local-6989586621679333134"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679333133"><span class="hs-identifier hs-type">b</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="#local-6989586621679333134"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="#local-6989586621679333134"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="#local-6989586621679333133"><span class="hs-identifier hs-type">b</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="#local-6989586621679333133"><span class="hs-identifier hs-type">b</span></a></span><span class="hs-special">)</span></span></span><span>
+</span><span id="line-31"></span><span id="mapPair"><span class="annot"><span class="annottext">mapPair :: (a -&gt; b) -&gt; (a, a) -&gt; (b, b)
+</span><a href="StringRewriting.KnuthBendix.html#mapPair"><span class="hs-identifier hs-var hs-var">mapPair</span></a></span></span><span> </span><span id="local-6989586621679333086"><span class="annot"><span class="annottext">a -&gt; b
+</span><a href="#local-6989586621679333086"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679333085"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679333085"><span class="hs-identifier hs-var">x</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679333084"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679333084"><span class="hs-identifier hs-var">y</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">a -&gt; b
+</span><a href="#local-6989586621679333086"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679333085"><span class="hs-identifier hs-var">x</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">a -&gt; b
+</span><a href="#local-6989586621679333086"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679333084"><span class="hs-identifier hs-var">y</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-32"></span><span>
+</span><span id="line-33"></span><span class="annot"><a href="StringRewriting.KnuthBendix.html#knuthBendixBy"><span class="hs-identifier hs-type">knuthBendixBy</span></a></span><span> </span><span class="hs-glyph">::</span><span>
+</span><span id="line-34"></span><span>    </span><span class="annot"><a href="StringRewriting.KnuthBendix.html#GenOrder"><span class="hs-identifier hs-type">GenOrder</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span>
+</span><span id="line-35"></span><span>    </span><span class="annot"><span class="hs-identifier hs-type">Set</span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Containers.Pair.html#Pair"><span class="hs-identifier hs-type">Pair</span></a></span><span> </span><span class="annot"><a href="StringRewriting.Generator.html#GWord"><span class="hs-identifier hs-type">GWord</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span>
+</span><span id="line-36"></span><span>    </span><span class="annot"><a href="StringRewriting.html#GeneratorsDescr"><span class="hs-identifier hs-type">GeneratorsDescr</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span>
+</span><span id="line-37"></span><span>    </span><span class="annot"><a href="StringRewriting.html#StringRewriting"><span class="hs-identifier hs-type">StringRewriting</span></a></span><span>
+</span><span id="line-38"></span><span id="knuthBendixBy"><span class="annot"><span class="annottext">knuthBendixBy :: GenOrder -&gt; Set (Pair GWord) -&gt; GeneratorsDescr -&gt; StringRewriting
+</span><a href="StringRewriting.KnuthBendix.html#knuthBendixBy"><span class="hs-identifier hs-var hs-var">knuthBendixBy</span></a></span></span><span> </span><span id="local-6989586621679333083"><span class="annot"><span class="annottext">GenOrder
+</span><a href="#local-6989586621679333083"><span class="hs-identifier hs-var">ord</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-39"></span><span>    </span><span class="annot"><span class="annottext">Rules -&gt; GeneratorsDescr -&gt; StringRewriting
+</span><a href="StringRewriting.html#stringRewriting"><span class="hs-identifier hs-var">stringRewriting</span></a></span><span> </span><span class="annot"><span class="annottext">(Rules -&gt; GeneratorsDescr -&gt; StringRewriting)
+-&gt; (Set (Pair GWord) -&gt; Rules)
+-&gt; Set (Pair GWord)
+-&gt; GeneratorsDescr
+-&gt; StringRewriting
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span>
+</span><span id="line-40"></span><span>    </span><span class="annot"><span class="annottext">[Rule] -&gt; Rules
+forall c v. UnsafeListable c v =&gt; [v] -&gt; c
+</span><a href="Containers.html#fromList"><span class="hs-identifier hs-var">fromList</span></a></span><span> </span><span class="annot"><span class="annottext">([Rule] -&gt; Rules)
+-&gt; (Set (Pair GWord) -&gt; [Rule]) -&gt; Set (Pair GWord) -&gt; Rules
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span>
+</span><span id="line-41"></span><span>    </span><span class="annot"><span class="annottext">((GWord, GWord) -&gt; Rule) -&gt; [(GWord, GWord)] -&gt; [Rule]
+forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">(GWord -&gt; GWord -&gt; Rule) -&gt; (GWord, GWord) -&gt; Rule
+forall a b c. (a -&gt; b -&gt; c) -&gt; (a, b) -&gt; c
+</span><span class="hs-identifier hs-var">uncurry</span></span><span> </span><span class="annot"><span class="annottext">GWord -&gt; GWord -&gt; Rule
+</span><a href="StringRewriting.Rule.html#rule"><span class="hs-identifier hs-var">rule</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">([(GWord, GWord)] -&gt; [Rule])
+-&gt; (Set (Pair GWord) -&gt; [(GWord, GWord)])
+-&gt; Set (Pair GWord)
+-&gt; [Rule]
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span>
+</span><span id="line-42"></span><span>    </span><span class="hs-special">(</span><span class="annot"><span class="annottext">(([GenWithOrder], [GenWithOrder]) -&gt; (GWord, GWord))
+-&gt; [([GenWithOrder], [GenWithOrder])] -&gt; [(GWord, GWord)]
+forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span class="annot"><span class="annottext">((([GenWithOrder], [GenWithOrder]) -&gt; (GWord, GWord))
+ -&gt; [([GenWithOrder], [GenWithOrder])] -&gt; [(GWord, GWord)])
+-&gt; ((GenWithOrder -&gt; Generator)
+    -&gt; ([GenWithOrder], [GenWithOrder]) -&gt; (GWord, GWord))
+-&gt; (GenWithOrder -&gt; Generator)
+-&gt; [([GenWithOrder], [GenWithOrder])]
+-&gt; [(GWord, GWord)]
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span class="annot"><span class="annottext">([GenWithOrder] -&gt; GWord)
+-&gt; ([GenWithOrder], [GenWithOrder]) -&gt; (GWord, GWord)
+forall a b. (a -&gt; b) -&gt; (a, a) -&gt; (b, b)
+</span><a href="StringRewriting.KnuthBendix.html#mapPair"><span class="hs-identifier hs-var">mapPair</span></a></span><span class="annot"><span class="annottext">(([GenWithOrder] -&gt; GWord)
+ -&gt; ([GenWithOrder], [GenWithOrder]) -&gt; (GWord, GWord))
+-&gt; ((GenWithOrder -&gt; Generator) -&gt; [GenWithOrder] -&gt; GWord)
+-&gt; (GenWithOrder -&gt; Generator)
+-&gt; ([GenWithOrder], [GenWithOrder])
+-&gt; (GWord, GWord)
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span class="annot"><span class="annottext">(GenWithOrder -&gt; Generator) -&gt; [GenWithOrder] -&gt; GWord
+forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">GenWithOrder -&gt; Generator
+</span><a href="StringRewriting.KnuthBendix.html#gen"><span class="hs-identifier hs-var hs-var">gen</span></a></span><span> </span><span class="annot"><span class="annottext">([([GenWithOrder], [GenWithOrder])] -&gt; [(GWord, GWord)])
+-&gt; (Set (Pair GWord) -&gt; [([GenWithOrder], [GenWithOrder])])
+-&gt; Set (Pair GWord)
+-&gt; [(GWord, GWord)]
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span>
+</span><span id="line-43"></span><span>    </span><span class="annot"><span class="annottext">[([GenWithOrder], [GenWithOrder])]
+-&gt; [([GenWithOrder], [GenWithOrder])]
+forall a. Ord a =&gt; [([a], [a])] -&gt; [([a], [a])]
+</span><span class="hs-identifier hs-var">SR.knuthBendix</span></span><span> </span><span class="annot"><span class="annottext">([([GenWithOrder], [GenWithOrder])]
+ -&gt; [([GenWithOrder], [GenWithOrder])])
+-&gt; (Set (Pair GWord) -&gt; [([GenWithOrder], [GenWithOrder])])
+-&gt; Set (Pair GWord)
+-&gt; [([GenWithOrder], [GenWithOrder])]
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span>
+</span><span id="line-44"></span><span>    </span><span class="annot"><span class="annottext">(Pair [GenWithOrder] -&gt; ([GenWithOrder], [GenWithOrder]))
+-&gt; [Pair [GenWithOrder]] -&gt; [([GenWithOrder], [GenWithOrder])]
+forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="annot"><span class="annottext">Pair [GenWithOrder] -&gt; ([GenWithOrder], [GenWithOrder])
+forall a. Pair a -&gt; (a, a)
+</span><a href="Containers.Pair.html#unPair"><span class="hs-identifier hs-var hs-var">unPair</span></a></span><span> </span><span class="annot"><span class="annottext">([Pair [GenWithOrder]] -&gt; [([GenWithOrder], [GenWithOrder])])
+-&gt; (Set (Pair GWord) -&gt; [Pair [GenWithOrder]])
+-&gt; Set (Pair GWord)
+-&gt; [([GenWithOrder], [GenWithOrder])]
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span>
+</span><span id="line-45"></span><span>    </span><span class="hs-special">(</span><span class="annot"><span class="annottext">(Pair GWord -&gt; Pair [GenWithOrder])
+-&gt; [Pair GWord] -&gt; [Pair [GenWithOrder]]
+forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span class="annot"><span class="annottext">((Pair GWord -&gt; Pair [GenWithOrder])
+ -&gt; [Pair GWord] -&gt; [Pair [GenWithOrder]])
+-&gt; ((Generator -&gt; GenWithOrder)
+    -&gt; Pair GWord -&gt; Pair [GenWithOrder])
+-&gt; (Generator -&gt; GenWithOrder)
+-&gt; [Pair GWord]
+-&gt; [Pair [GenWithOrder]]
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span class="annot"><span class="annottext">(GWord -&gt; [GenWithOrder]) -&gt; Pair GWord -&gt; Pair [GenWithOrder]
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-identifier hs-var">fmap</span></span><span class="annot"><span class="annottext">((GWord -&gt; [GenWithOrder]) -&gt; Pair GWord -&gt; Pair [GenWithOrder])
+-&gt; ((Generator -&gt; GenWithOrder) -&gt; GWord -&gt; [GenWithOrder])
+-&gt; (Generator -&gt; GenWithOrder)
+-&gt; Pair GWord
+-&gt; Pair [GenWithOrder]
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span class="annot"><span class="annottext">(Generator -&gt; GenWithOrder) -&gt; GWord -&gt; [GenWithOrder]
+forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">GenOrder -&gt; Generator -&gt; GenWithOrder
+</span><a href="StringRewriting.KnuthBendix.html#GWO"><span class="hs-identifier hs-var">GWO</span></a></span><span> </span><span class="annot"><span class="annottext">GenOrder
+</span><a href="#local-6989586621679333083"><span class="hs-identifier hs-var">ord</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">([Pair GWord] -&gt; [Pair [GenWithOrder]])
+-&gt; (Set (Pair GWord) -&gt; [Pair GWord])
+-&gt; Set (Pair GWord)
+-&gt; [Pair [GenWithOrder]]
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span>
+</span><span id="line-46"></span><span>    </span><span class="annot"><span class="annottext">Set (Pair GWord) -&gt; [Pair GWord]
+forall c v. Listable c v =&gt; c -&gt; [v]
+</span><a href="Containers.html#toList"><span class="hs-identifier hs-var">toList</span></a></span><span>
+</span><span id="line-47"></span></pre></body></html>

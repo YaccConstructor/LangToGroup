@@ -1,0 +1,611 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">TM2SMHelpers</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-2"></span><span>
+</span><span id="line-3"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="SMType.html"><span class="hs-identifier">SMType</span></a></span><span>
+</span><span id="line-4"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Set</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">Set</span></span><span class="hs-special">)</span><span>
+</span><span id="line-5"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Set</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">Set</span></span><span>
+</span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TMType.html"><span class="hs-identifier">TMType</span></a></span><span>
+</span><span id="line-7"></span><span>
+</span><span id="line-8"></span><span class="annot"><a href="TM2SMHelpers.html#eTag"><span class="hs-identifier hs-type">eTag</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Set</span></span><span> </span><span class="annot"><a href="SMType.html#Tag"><span class="hs-identifier hs-type">Tag</span></a></span><span>
+</span><span id="line-9"></span><span id="eTag"><span class="annot"><span class="annottext">eTag :: Set Tag
+</span><a href="TM2SMHelpers.html#eTag"><span class="hs-identifier hs-var hs-var">eTag</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Tag] -&gt; Set Tag
+forall a. Ord a =&gt; [a] -&gt; Set a
+</span><span class="hs-identifier hs-var">Set.fromList</span></span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span>
+</span><span id="line-10"></span><span class="annot"><a href="TM2SMHelpers.html#standardV"><span class="hs-identifier hs-type">standardV</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="SMType.html#StateVal"><span class="hs-identifier hs-type">StateVal</span></a></span><span>
+</span><span id="line-11"></span><span id="standardV"><span class="annot"><span class="annottext">standardV :: Int -&gt; Maybe StateVal
+</span><a href="TM2SMHelpers.html#standardV"><span class="hs-identifier hs-var hs-var">standardV</span></a></span></span><span> </span><span id="local-6989586621679334134"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679334134"><span class="hs-identifier hs-var">i</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">StateVal -&gt; Maybe StateVal
+forall a. a -&gt; Maybe a
+</span><span class="hs-identifier hs-var">Just</span></span><span> </span><span class="annot"><span class="annottext">(StateVal -&gt; Maybe StateVal) -&gt; StateVal -&gt; Maybe StateVal
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Maybe TMCMD -&gt; Maybe SMTag -&gt; StateVal
+</span><a href="SMType.html#StateVal"><span class="hs-identifier hs-var">StateVal</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679334134"><span class="hs-identifier hs-var">i</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe TMCMD
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span> </span><span class="annot"><span class="annottext">Maybe SMTag
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-12"></span><span class="annot"><a href="TM2SMHelpers.html#eTagState"><span class="hs-identifier hs-type">eTagState</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="SMType.html#StateName"><span class="hs-identifier hs-type">StateName</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="SMType.html#State"><span class="hs-identifier hs-type">State</span></a></span><span>
+</span><span id="line-13"></span><span id="eTagState"><span class="annot"><span class="annottext">eTagState :: StateName -&gt; String -&gt; State
+</span><a href="TM2SMHelpers.html#eTagState"><span class="hs-identifier hs-var hs-var">eTagState</span></a></span></span><span> </span><span id="local-6989586621679334131"><span class="annot"><span class="annottext">StateName
+</span><a href="#local-6989586621679334131"><span class="hs-identifier hs-var">name</span></a></span></span><span> </span><span id="local-6989586621679334130"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679334130"><span class="hs-identifier hs-var">i</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">StateName -&gt; String -&gt; Set Tag -&gt; Maybe StateVal -&gt; State
+</span><a href="SMType.html#State"><span class="hs-identifier hs-var">State</span></a></span><span> </span><span class="annot"><span class="annottext">StateName
+</span><a href="#local-6989586621679334131"><span class="hs-identifier hs-var">name</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679334130"><span class="hs-identifier hs-var">i</span></a></span><span> </span><span class="annot"><span class="annottext">Set Tag
+</span><a href="TM2SMHelpers.html#eTag"><span class="hs-identifier hs-var">eTag</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe StateVal
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-14"></span><span id="local-6989586621679334152"><span class="annot"><a href="TM2SMHelpers.html#genRange"><span class="hs-identifier hs-type">genRange</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Show</span></span><span> </span><span class="annot"><a href="#local-6989586621679334152"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><a href="SMType.html#StateName"><span class="hs-identifier hs-type">StateName</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="#local-6989586621679334152"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="SMType.html#State"><span class="hs-identifier hs-type">State</span></a></span><span class="hs-special">]</span></span><span>
+</span><span id="line-15"></span><span id="genRange"><span class="annot"><span class="annottext">genRange :: StateName -&gt; [a] -&gt; [State]
+</span><a href="TM2SMHelpers.html#genRange"><span class="hs-identifier hs-var hs-var">genRange</span></a></span></span><span> </span><span id="local-6989586621679334127"><span class="annot"><span class="annottext">StateName
+</span><a href="#local-6989586621679334127"><span class="hs-identifier hs-var">name</span></a></span></span><span> </span><span id="local-6989586621679334126"><span class="annot"><span class="annottext">[a]
+</span><a href="#local-6989586621679334126"><span class="hs-identifier hs-var">range</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">StateName -&gt; String -&gt; State
+</span><a href="TM2SMHelpers.html#eTagState"><span class="hs-identifier hs-var">eTagState</span></a></span><span> </span><span class="annot"><span class="annottext">StateName
+</span><a href="#local-6989586621679334127"><span class="hs-identifier hs-var">name</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">a -&gt; String
+forall a. Show a =&gt; a -&gt; String
+</span><span class="hs-identifier hs-var">show</span></span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679334124"><span class="hs-identifier hs-var">i</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">|</span><span> </span><span id="local-6989586621679334124"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679334124"><span class="hs-identifier hs-var">i</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">[a]
+</span><a href="#local-6989586621679334126"><span class="hs-identifier hs-var">range</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-16"></span><span class="annot"><a href="TM2SMHelpers.html#gen"><span class="hs-identifier hs-type">gen</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="SMType.html#StateName"><span class="hs-identifier hs-type">StateName</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="SMType.html#State"><span class="hs-identifier hs-type">State</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-17"></span><span id="gen"><span class="annot"><span class="annottext">gen :: StateName -&gt; [State]
+</span><a href="TM2SMHelpers.html#gen"><span class="hs-identifier hs-var hs-var">gen</span></a></span></span><span> </span><span id="local-6989586621679334122"><span class="annot"><span class="annottext">StateName
+</span><a href="#local-6989586621679334122"><span class="hs-identifier hs-var">name</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">StateName -&gt; [Integer] -&gt; [State]
+forall a. Show a =&gt; StateName -&gt; [a] -&gt; [State]
+</span><a href="TM2SMHelpers.html#genRange"><span class="hs-identifier hs-var">genRange</span></a></span><span> </span><span class="annot"><span class="annottext">StateName
+</span><a href="#local-6989586621679334122"><span class="hs-identifier hs-var">name</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">Integer
+</span><span class="hs-number">0</span></span><span class="hs-glyph">..</span><span class="annot"><span class="annottext">Integer
+</span><span class="hs-number">4</span></span><span class="hs-special">]</span><span>
+</span><span id="line-18"></span><span class="annot"><a href="TM2SMHelpers.html#addTag"><span class="hs-identifier hs-type">addTag</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="SMType.html#Tag"><span class="hs-identifier hs-type">Tag</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="SMType.html#State"><span class="hs-identifier hs-type">State</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="SMType.html#State"><span class="hs-identifier hs-type">State</span></a></span><span>
+</span><span id="line-19"></span><span id="addTag"><span class="annot"><span class="annottext">addTag :: Tag -&gt; State -&gt; State
+</span><a href="TM2SMHelpers.html#addTag"><span class="hs-identifier hs-var hs-var">addTag</span></a></span></span><span> </span><span id="local-6989586621679334120"><span class="annot"><span class="annottext">Tag
+</span><a href="#local-6989586621679334120"><span class="hs-identifier hs-var">newTag</span></a></span></span><span> </span><span id="local-6989586621679334119"><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679334119"><span class="hs-identifier hs-var">q</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679334119"><span class="hs-identifier hs-var">q</span></a></span><span> </span><span class="hs-special">{</span><span class="annot"><span class="annottext">s_tags :: Set Tag
+</span><a href="SMType.html#s_tags"><span class="hs-identifier hs-var">s_tags</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Tag -&gt; Set Tag -&gt; Set Tag
+forall a. Ord a =&gt; a -&gt; Set a -&gt; Set a
+</span><span class="hs-identifier hs-var">Set.insert</span></span><span> </span><span class="annot"><span class="annottext">Tag
+</span><a href="#local-6989586621679334120"><span class="hs-identifier hs-var">newTag</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">State -&gt; Set Tag
+</span><a href="SMType.html#s_tags"><span class="hs-identifier hs-var hs-var">s_tags</span></a></span><span> </span><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679334119"><span class="hs-identifier hs-var">q</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">}</span><span>
+</span><span id="line-20"></span><span class="annot"><a href="TM2SMHelpers.html#addTags"><span class="hs-identifier hs-type">addTags</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="SMType.html#Tag"><span class="hs-identifier hs-type">Tag</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="SMType.html#State"><span class="hs-identifier hs-type">State</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="SMType.html#State"><span class="hs-identifier hs-type">State</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-21"></span><span id="addTags"><span class="annot"><span class="annottext">addTags :: [Tag] -&gt; [State] -&gt; [State]
+</span><a href="TM2SMHelpers.html#addTags"><span class="hs-identifier hs-var hs-var">addTags</span></a></span></span><span> </span><span id="local-6989586621679334115"><span class="annot"><span class="annottext">[Tag]
+</span><a href="#local-6989586621679334115"><span class="hs-identifier hs-var">newTags</span></a></span></span><span> </span><span id="local-6989586621679334114"><span class="annot"><span class="annottext">[State]
+</span><a href="#local-6989586621679334114"><span class="hs-identifier hs-var">qs</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">Tag -&gt; State -&gt; State
+</span><a href="TM2SMHelpers.html#addTag"><span class="hs-identifier hs-var">addTag</span></a></span><span> </span><span class="annot"><span class="annottext">Tag
+</span><a href="#local-6989586621679334113"><span class="hs-identifier hs-var">newTag</span></a></span><span> </span><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679334112"><span class="hs-identifier hs-var">p</span></a></span><span> </span><span class="hs-glyph">|</span><span> </span><span id="local-6989586621679334112"><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679334112"><span class="hs-identifier hs-var">p</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">[State]
+</span><a href="#local-6989586621679334114"><span class="hs-identifier hs-var">qs</span></a></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679334113"><span class="annot"><span class="annottext">Tag
+</span><a href="#local-6989586621679334113"><span class="hs-identifier hs-var">newTag</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">[Tag]
+</span><a href="#local-6989586621679334115"><span class="hs-identifier hs-var">newTags</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-22"></span><span class="annot"><a href="TM2SMHelpers.html#getai"><span class="hs-identifier hs-type">getai</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="TMType.html#TapeCommand"><span class="hs-identifier hs-type">TMType.TapeCommand</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="TMType.html#Square"><span class="hs-identifier hs-type">TMType.Square</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span class="hs-special">)</span><span>
+</span><span id="line-23"></span><span id="getai"><span class="annot"><span class="annottext">getai :: [TapeCommand] -&gt; (Square, Int)
+</span><a href="TM2SMHelpers.html#getai"><span class="hs-identifier hs-var hs-var">getai</span></a></span></span><span> </span><span id="local-6989586621679334110"><span class="annot"><span class="annottext">[TapeCommand]
+</span><a href="#local-6989586621679334110"><span class="hs-identifier hs-var">c</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-24"></span><span>    </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679334109"><span class="annot"><span class="annottext">get :: [TapeCommand] -&gt; t -&gt; (Square, t)
+</span><a href="#local-6989586621679334109"><span class="hs-identifier hs-var hs-var">get</span></a></span></span><span> </span><span id="local-6989586621679334108"><span class="annot"><span class="annottext">[TapeCommand]
+</span><a href="#local-6989586621679334108"><span class="hs-identifier hs-var">cmd</span></a></span></span><span> </span><span id="local-6989586621679334107"><span class="annot"><span class="annottext">t
+</span><a href="#local-6989586621679334107"><span class="hs-identifier hs-var">i</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-25"></span><span>            </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">[TapeCommand]
+</span><a href="#local-6989586621679334108"><span class="hs-identifier hs-var">cmd</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-26"></span><span>                </span><span class="annot"><a href="TMType.html#PreSMCommand"><span class="hs-identifier hs-type">TMType.PreSMCommand</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-special">(</span><span id="local-6989586621679334105"><span class="annot"><span class="annottext">Square
+</span><a href="#local-6989586621679334105"><span class="hs-identifier hs-var">a</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">StateOmega
+</span><span class="hs-identifier">_</span></span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">(Square, StateOmega)
+</span><span class="hs-identifier">_</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span> </span><span id="local-6989586621679334104"><span class="annot"><span class="annottext">[TapeCommand]
+</span><a href="#local-6989586621679334104"><span class="hs-identifier hs-var">t</span></a></span></span><span>
+</span><span id="line-27"></span><span>                    </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Square
+</span><a href="#local-6989586621679334105"><span class="hs-identifier hs-var">a</span></a></span><span> </span><span class="annot"><span class="annottext">Square -&gt; Square -&gt; Bool
+forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">/=</span></span><span> </span><span class="annot"><span class="annottext">Square
+</span><a href="TMType.html#ES"><span class="hs-identifier hs-var">TMType.ES</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Square
+</span><a href="#local-6989586621679334105"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">t
+</span><a href="#local-6989586621679334107"><span class="hs-identifier hs-var">i</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-28"></span><span>                    </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Bool
+</span><span class="hs-identifier hs-var">otherwise</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">[TapeCommand] -&gt; t -&gt; (Square, t)
+</span><a href="#local-6989586621679334109"><span class="hs-identifier hs-var">get</span></a></span><span> </span><span class="annot"><span class="annottext">[TapeCommand]
+</span><a href="#local-6989586621679334104"><span class="hs-identifier hs-var">t</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">t
+</span><a href="#local-6989586621679334107"><span class="hs-identifier hs-var">i</span></a></span><span> </span><span class="annot"><span class="annottext">t -&gt; t -&gt; t
+forall a. Num a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">+</span></span><span> </span><span class="annot"><span class="annottext">t
+</span><span class="hs-number">1</span></span><span class="hs-special">)</span><span>
+</span><span id="line-29"></span><span>                </span><span class="annot"><span class="annottext">[TapeCommand]
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">String -&gt; (Square, t)
+forall a. HasCallStack =&gt; String -&gt; a
+</span><span class="hs-identifier hs-var">error</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;Must be PreSMCommand&quot;</span></span><span>
+</span><span id="line-30"></span><span>    </span><span class="hs-keyword">in</span><span>
+</span><span id="line-31"></span><span>    </span><span class="annot"><span class="annottext">[TapeCommand] -&gt; Int -&gt; (Square, Int)
+forall t. Num t =&gt; [TapeCommand] -&gt; t -&gt; (Square, t)
+</span><a href="#local-6989586621679334109"><span class="hs-identifier hs-var">get</span></a></span><span> </span><span class="annot"><span class="annottext">[TapeCommand]
+</span><a href="#local-6989586621679334110"><span class="hs-identifier hs-var">c</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">1</span></span><span>
+</span><span id="line-32"></span><span>
+</span><span id="line-33"></span><span class="annot"><a href="TM2SMHelpers.html#addICmdSmTag"><span class="hs-identifier hs-type">addICmdSmTag</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="SMType.html#TMCMD"><span class="hs-identifier hs-type">TMCMD</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="SMType.html#SMTag"><span class="hs-identifier hs-type">SMTag</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="SMType.html#State"><span class="hs-identifier hs-type">State</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="SMType.html#State"><span class="hs-identifier hs-type">State</span></a></span><span>
+</span><span id="line-34"></span><span id="addICmdSmTag"><span class="annot"><span class="annottext">addICmdSmTag :: TMCMD -&gt; SMTag -&gt; State -&gt; State
+</span><a href="TM2SMHelpers.html#addICmdSmTag"><span class="hs-identifier hs-var hs-var">addICmdSmTag</span></a></span></span><span> </span><span id="local-6989586621679334098"><span class="annot"><span class="annottext">TMCMD
+</span><a href="#local-6989586621679334098"><span class="hs-identifier hs-var">cmd</span></a></span></span><span> </span><span id="local-6989586621679334097"><span class="annot"><span class="annottext">SMTag
+</span><a href="#local-6989586621679334097"><span class="hs-identifier hs-var">tag</span></a></span></span><span> </span><span id="local-6989586621679334096"><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679334096"><span class="hs-identifier hs-var">q</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-35"></span><span>    </span><span class="hs-keyword">let</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="SMType.html#Command"><span class="hs-identifier hs-type">Command</span></a></span><span> </span><span id="local-6989586621679334094"><span class="annot"><span class="annottext">[TapeCommand]
+</span><a href="#local-6989586621679334094"><span class="hs-identifier hs-var">c</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">TMCMD
+</span><a href="#local-6989586621679334098"><span class="hs-identifier hs-var">cmd</span></a></span><span>
+</span><span id="line-36"></span><span>        </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Square
+</span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679334093"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679334093"><span class="hs-identifier hs-var">j</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[TapeCommand] -&gt; (Square, Int)
+</span><a href="TM2SMHelpers.html#getai"><span class="hs-identifier hs-var">getai</span></a></span><span> </span><span class="annot"><span class="annottext">[TapeCommand]
+</span><a href="#local-6989586621679334094"><span class="hs-identifier hs-var">c</span></a></span><span>
+</span><span id="line-37"></span><span>    </span><span class="hs-keyword">in</span><span>
+</span><span id="line-38"></span><span>    </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">SMTag
+</span><a href="#local-6989586621679334097"><span class="hs-identifier hs-var">tag</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-39"></span><span>        </span><span class="annot"><span class="annottext">SMTag
+</span><a href="SMType.html#T4"><span class="hs-identifier hs-var">T4</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679334096"><span class="hs-identifier hs-var">q</span></a></span><span> </span><span class="hs-special">{</span><span class="annot"><span class="annottext">s_val :: Maybe StateVal
+</span><a href="SMType.html#s_val"><span class="hs-identifier hs-var">s_val</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">StateVal -&gt; Maybe StateVal
+forall a. a -&gt; Maybe a
+</span><span class="hs-identifier hs-var">Just</span></span><span> </span><span class="annot"><span class="annottext">(StateVal -&gt; Maybe StateVal) -&gt; StateVal -&gt; Maybe StateVal
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Maybe TMCMD -&gt; Maybe SMTag -&gt; StateVal
+</span><a href="SMType.html#StateVal"><span class="hs-identifier hs-var">StateVal</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679334093"><span class="hs-identifier hs-var">j</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe TMCMD
+</span><a href="#local-6989586621679334090"><span class="hs-identifier hs-var">jcmd</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe SMTag
+</span><a href="#local-6989586621679334089"><span class="hs-identifier hs-var">jsmtag</span></a></span><span class="hs-special">}</span><span>
+</span><span id="line-40"></span><span>        </span><span class="annot"><span class="annottext">SMTag
+</span><a href="SMType.html#T9"><span class="hs-identifier hs-var">T9</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679334096"><span class="hs-identifier hs-var">q</span></a></span><span> </span><span class="hs-special">{</span><span class="annot"><span class="annottext">s_val :: Maybe StateVal
+</span><a href="SMType.html#s_val"><span class="hs-identifier hs-var">s_val</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">StateVal -&gt; Maybe StateVal
+forall a. a -&gt; Maybe a
+</span><span class="hs-identifier hs-var">Just</span></span><span> </span><span class="annot"><span class="annottext">(StateVal -&gt; Maybe StateVal) -&gt; StateVal -&gt; Maybe StateVal
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Maybe TMCMD -&gt; Maybe SMTag -&gt; StateVal
+</span><a href="SMType.html#StateVal"><span class="hs-identifier hs-var">StateVal</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679334093"><span class="hs-identifier hs-var">j</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe TMCMD
+</span><a href="#local-6989586621679334090"><span class="hs-identifier hs-var">jcmd</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe SMTag
+</span><a href="#local-6989586621679334089"><span class="hs-identifier hs-var">jsmtag</span></a></span><span class="hs-special">}</span><span>
+</span><span id="line-41"></span><span>        </span><span class="annot"><span class="annottext">SMTag
+</span><a href="SMType.html#TAlpha"><span class="hs-identifier hs-var">TAlpha</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679334096"><span class="hs-identifier hs-var">q</span></a></span><span> </span><span class="hs-special">{</span><span class="annot"><span class="annottext">s_val :: Maybe StateVal
+</span><a href="SMType.html#s_val"><span class="hs-identifier hs-var">s_val</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">StateVal -&gt; Maybe StateVal
+forall a. a -&gt; Maybe a
+</span><span class="hs-identifier hs-var">Just</span></span><span> </span><span class="annot"><span class="annottext">(StateVal -&gt; Maybe StateVal) -&gt; StateVal -&gt; Maybe StateVal
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Maybe TMCMD -&gt; Maybe SMTag -&gt; StateVal
+</span><a href="SMType.html#StateVal"><span class="hs-identifier hs-var">StateVal</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">0</span></span><span> </span><span class="annot"><span class="annottext">Maybe TMCMD
+</span><a href="#local-6989586621679334090"><span class="hs-identifier hs-var">jcmd</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe SMTag
+</span><a href="#local-6989586621679334089"><span class="hs-identifier hs-var">jsmtag</span></a></span><span class="hs-special">}</span><span>
+</span><span id="line-42"></span><span>        </span><span class="annot"><span class="annottext">SMTag
+</span><a href="SMType.html#TOmega"><span class="hs-identifier hs-var">TOmega</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679334096"><span class="hs-identifier hs-var">q</span></a></span><span> </span><span class="hs-special">{</span><span class="annot"><span class="annottext">s_val :: Maybe StateVal
+</span><a href="SMType.html#s_val"><span class="hs-identifier hs-var">s_val</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">StateVal -&gt; Maybe StateVal
+forall a. a -&gt; Maybe a
+</span><span class="hs-identifier hs-var">Just</span></span><span> </span><span class="annot"><span class="annottext">(StateVal -&gt; Maybe StateVal) -&gt; StateVal -&gt; Maybe StateVal
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Maybe TMCMD -&gt; Maybe SMTag -&gt; StateVal
+</span><a href="SMType.html#StateVal"><span class="hs-identifier hs-var">StateVal</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679334085"><span class="hs-identifier hs-var">k</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
+forall a. Num a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">+</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">1</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Maybe TMCMD
+</span><a href="#local-6989586621679334090"><span class="hs-identifier hs-var">jcmd</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe SMTag
+</span><a href="#local-6989586621679334089"><span class="hs-identifier hs-var">jsmtag</span></a></span><span class="hs-special">}</span><span>
+</span><span id="line-43"></span><span>            </span><span class="hs-keyword">where</span><span>
+</span><span id="line-44"></span><span>                </span><span id="local-6989586621679334085"><span class="annot"><span class="annottext">k :: Int
+</span><a href="#local-6989586621679334085"><span class="hs-identifier hs-var hs-var">k</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[TapeCommand] -&gt; Int
+forall (t :: * -&gt; *) a. Foldable t =&gt; t a -&gt; Int
+</span><span class="hs-identifier hs-var">length</span></span><span> </span><span class="annot"><span class="annottext">[TapeCommand]
+</span><a href="#local-6989586621679334094"><span class="hs-identifier hs-var">c</span></a></span><span>
+</span><span id="line-45"></span><span>    </span><span class="hs-keyword">where</span><span>   </span><span id="local-6989586621679334090"><span class="annot"><span class="annottext">jcmd :: Maybe TMCMD
+</span><a href="#local-6989586621679334090"><span class="hs-identifier hs-var hs-var">jcmd</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">TMCMD -&gt; Maybe TMCMD
+forall a. a -&gt; Maybe a
+</span><span class="hs-identifier hs-var">Just</span></span><span> </span><span class="annot"><span class="annottext">TMCMD
+</span><a href="#local-6989586621679334098"><span class="hs-identifier hs-var">cmd</span></a></span><span>
+</span><span id="line-46"></span><span>            </span><span id="local-6989586621679334089"><span class="annot"><span class="annottext">jsmtag :: Maybe SMTag
+</span><a href="#local-6989586621679334089"><span class="hs-identifier hs-var hs-var">jsmtag</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">SMTag -&gt; Maybe SMTag
+forall a. a -&gt; Maybe a
+</span><span class="hs-identifier hs-var">Just</span></span><span> </span><span class="annot"><span class="annottext">SMTag
+</span><a href="#local-6989586621679334097"><span class="hs-identifier hs-var">tag</span></a></span><span>
+</span><span id="line-47"></span><span>
+</span><span id="line-48"></span><span class="annot"><a href="TM2SMHelpers.html#quoteTag"><span class="hs-identifier hs-type">quoteTag</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Set</span></span><span> </span><span class="annot"><a href="SMType.html#Tag"><span class="hs-identifier hs-type">Tag</span></a></span><span>
+</span><span id="line-49"></span><span id="quoteTag"><span class="annot"><span class="annottext">quoteTag :: Set Tag
+</span><a href="TM2SMHelpers.html#quoteTag"><span class="hs-identifier hs-var hs-var">quoteTag</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Tag] -&gt; Set Tag
+forall a. Ord a =&gt; [a] -&gt; Set a
+</span><span class="hs-identifier hs-var">Set.fromList</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">Tag
+</span><a href="SMType.html#Quote"><span class="hs-identifier hs-var">Quote</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-50"></span><span class="annot"><a href="TM2SMHelpers.html#dashTag"><span class="hs-identifier hs-type">dashTag</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Set</span></span><span> </span><span class="annot"><a href="SMType.html#Tag"><span class="hs-identifier hs-type">Tag</span></a></span><span>
+</span><span id="line-51"></span><span id="dashTag"><span class="annot"><span class="annottext">dashTag :: Set Tag
+</span><a href="TM2SMHelpers.html#dashTag"><span class="hs-identifier hs-var hs-var">dashTag</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Tag] -&gt; Set Tag
+forall a. Ord a =&gt; [a] -&gt; Set a
+</span><span class="hs-identifier hs-var">Set.fromList</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">Tag
+</span><a href="SMType.html#Dash"><span class="hs-identifier hs-var">Dash</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-52"></span><span class="annot"><a href="TM2SMHelpers.html#hatTag"><span class="hs-identifier hs-type">hatTag</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Set</span></span><span> </span><span class="annot"><a href="SMType.html#Tag"><span class="hs-identifier hs-type">Tag</span></a></span><span>
+</span><span id="line-53"></span><span id="hatTag"><span class="annot"><span class="annottext">hatTag :: Set Tag
+</span><a href="TM2SMHelpers.html#hatTag"><span class="hs-identifier hs-var hs-var">hatTag</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Tag] -&gt; Set Tag
+forall a. Ord a =&gt; [a] -&gt; Set a
+</span><span class="hs-identifier hs-var">Set.fromList</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">Tag
+</span><a href="SMType.html#Hat"><span class="hs-identifier hs-var">Hat</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-54"></span><span class="annot"><a href="TM2SMHelpers.html#hatdashTag"><span class="hs-identifier hs-type">hatdashTag</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Set</span></span><span> </span><span class="annot"><a href="SMType.html#Tag"><span class="hs-identifier hs-type">Tag</span></a></span><span>
+</span><span id="line-55"></span><span id="hatdashTag"><span class="annot"><span class="annottext">hatdashTag :: Set Tag
+</span><a href="TM2SMHelpers.html#hatdashTag"><span class="hs-identifier hs-var hs-var">hatdashTag</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Tag] -&gt; Set Tag
+forall a. Ord a =&gt; [a] -&gt; Set a
+</span><span class="hs-identifier hs-var">Set.fromList</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">Tag
+</span><a href="SMType.html#Hat"><span class="hs-identifier hs-var">Hat</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Tag
+</span><a href="SMType.html#Dash"><span class="hs-identifier hs-var">Dash</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-56"></span><span class="annot"><a href="TM2SMHelpers.html#newState"><span class="hs-identifier hs-type">newState</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="SMType.html#StateName"><span class="hs-identifier hs-type">StateName</span></a></span><span>
+</span><span id="line-57"></span><span>                  </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Set</span></span><span> </span><span class="annot"><a href="SMType.html#Tag"><span class="hs-identifier hs-type">Tag</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="SMType.html#TMCMD"><span class="hs-identifier hs-type">TMCMD</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="SMType.html#SMTag"><span class="hs-identifier hs-type">SMTag</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="SMType.html#State"><span class="hs-identifier hs-type">State</span></a></span><span>
+</span><span id="line-58"></span><span id="newState"><span class="annot"><span class="annottext">newState :: StateName
+-&gt; String -&gt; Set Tag -&gt; Int -&gt; Maybe TMCMD -&gt; Maybe SMTag -&gt; State
+</span><a href="TM2SMHelpers.html#newState"><span class="hs-identifier hs-var hs-var">newState</span></a></span></span><span> </span><span id="local-6989586621679334075"><span class="annot"><span class="annottext">StateName
+</span><a href="#local-6989586621679334075"><span class="hs-identifier hs-var">name</span></a></span></span><span> </span><span id="local-6989586621679334074"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679334074"><span class="hs-identifier hs-var">idx</span></a></span></span><span> </span><span id="local-6989586621679334073"><span class="annot"><span class="annottext">Set Tag
+</span><a href="#local-6989586621679334073"><span class="hs-identifier hs-var">tags</span></a></span></span><span> </span><span id="local-6989586621679334072"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679334072"><span class="hs-identifier hs-var">i</span></a></span></span><span> </span><span id="local-6989586621679334071"><span class="annot"><span class="annottext">Maybe TMCMD
+</span><a href="#local-6989586621679334071"><span class="hs-identifier hs-var">cmd</span></a></span></span><span> </span><span id="local-6989586621679334070"><span class="annot"><span class="annottext">Maybe SMTag
+</span><a href="#local-6989586621679334070"><span class="hs-identifier hs-var">tag</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">StateName -&gt; String -&gt; Set Tag -&gt; Maybe StateVal -&gt; State
+</span><a href="SMType.html#State"><span class="hs-identifier hs-var">State</span></a></span><span> </span><span class="annot"><span class="annottext">StateName
+</span><a href="#local-6989586621679334075"><span class="hs-identifier hs-var">name</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679334074"><span class="hs-identifier hs-var">idx</span></a></span><span> </span><span class="annot"><span class="annottext">Set Tag
+</span><a href="#local-6989586621679334073"><span class="hs-identifier hs-var">tags</span></a></span><span> </span><span class="annot"><span class="annottext">(Maybe StateVal -&gt; State) -&gt; Maybe StateVal -&gt; State
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">StateVal -&gt; Maybe StateVal
+forall a. a -&gt; Maybe a
+</span><span class="hs-identifier hs-var">Just</span></span><span> </span><span class="annot"><span class="annottext">(StateVal -&gt; Maybe StateVal) -&gt; StateVal -&gt; Maybe StateVal
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Maybe TMCMD -&gt; Maybe SMTag -&gt; StateVal
+</span><a href="SMType.html#StateVal"><span class="hs-identifier hs-var">StateVal</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679334072"><span class="hs-identifier hs-var">i</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe TMCMD
+</span><a href="#local-6989586621679334071"><span class="hs-identifier hs-var">cmd</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe SMTag
+</span><a href="#local-6989586621679334070"><span class="hs-identifier hs-var">tag</span></a></span><span>
+</span><span id="line-59"></span><span class="annot"><a href="TM2SMHelpers.html#eX"><span class="hs-identifier hs-type">eX</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="SMType.html#Smb"><span class="hs-identifier hs-type">Smb</span></a></span><span>
+</span><span id="line-60"></span><span id="eX"><span class="annot"><span class="annottext">eX :: Int -&gt; Smb
+</span><a href="TM2SMHelpers.html#eX"><span class="hs-identifier hs-var hs-var">eX</span></a></span></span><span> </span><span id="local-6989586621679334068"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679334068"><span class="hs-identifier hs-var">j</span></a></span></span><span>       </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">State -&gt; Smb
+</span><a href="SMType.html#SmbQ"><span class="hs-identifier hs-var">SmbQ</span></a></span><span> </span><span class="annot"><span class="annottext">(State -&gt; Smb) -&gt; State -&gt; Smb
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">StateName
+-&gt; String -&gt; Set Tag -&gt; Int -&gt; Maybe TMCMD -&gt; Maybe SMTag -&gt; State
+</span><a href="TM2SMHelpers.html#newState"><span class="hs-identifier hs-var">newState</span></a></span><span> </span><span class="annot"><span class="annottext">StateName
+</span><a href="SMType.html#X"><span class="hs-identifier hs-var">X</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;&quot;</span></span><span> </span><span class="annot"><span class="annottext">Set Tag
+</span><a href="TM2SMHelpers.html#eTag"><span class="hs-identifier hs-var">eTag</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679334068"><span class="hs-identifier hs-var">j</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe TMCMD
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span> </span><span class="annot"><span class="annottext">Maybe SMTag
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-61"></span><span class="annot"><a href="TM2SMHelpers.html#eX%27"><span class="hs-identifier hs-type">eX'</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="SMType.html#Smb"><span class="hs-identifier hs-type">Smb</span></a></span><span>
+</span><span id="line-62"></span><span id="eX%27"><span class="annot"><span class="annottext">eX' :: Int -&gt; Smb
+</span><a href="TM2SMHelpers.html#eX%27"><span class="hs-identifier hs-var hs-var">eX'</span></a></span></span><span> </span><span id="local-6989586621679334064"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679334064"><span class="hs-identifier hs-var">j</span></a></span></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">State -&gt; Smb
+</span><a href="SMType.html#SmbQ"><span class="hs-identifier hs-var">SmbQ</span></a></span><span> </span><span class="annot"><span class="annottext">(State -&gt; Smb) -&gt; State -&gt; Smb
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">StateName
+-&gt; String -&gt; Set Tag -&gt; Int -&gt; Maybe TMCMD -&gt; Maybe SMTag -&gt; State
+</span><a href="TM2SMHelpers.html#newState"><span class="hs-identifier hs-var">newState</span></a></span><span> </span><span class="annot"><span class="annottext">StateName
+</span><a href="SMType.html#X"><span class="hs-identifier hs-var">X</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;&quot;</span></span><span> </span><span class="annot"><span class="annottext">Set Tag
+</span><a href="TM2SMHelpers.html#quoteTag"><span class="hs-identifier hs-var">quoteTag</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679334064"><span class="hs-identifier hs-var">j</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe TMCMD
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span> </span><span class="annot"><span class="annottext">Maybe SMTag
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-63"></span><span class="annot"><a href="TM2SMHelpers.html#eF"><span class="hs-identifier hs-type">eF</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="SMType.html#Smb"><span class="hs-identifier hs-type">Smb</span></a></span><span>
+</span><span id="line-64"></span><span id="eF"><span class="annot"><span class="annottext">eF :: String -&gt; Int -&gt; Smb
+</span><a href="TM2SMHelpers.html#eF"><span class="hs-identifier hs-var hs-var">eF</span></a></span></span><span> </span><span id="local-6989586621679334062"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679334062"><span class="hs-identifier hs-var">idx</span></a></span></span><span> </span><span id="local-6989586621679334061"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679334061"><span class="hs-identifier hs-var">j</span></a></span></span><span>   </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">State -&gt; Smb
+</span><a href="SMType.html#SmbQ"><span class="hs-identifier hs-var">SmbQ</span></a></span><span> </span><span class="annot"><span class="annottext">(State -&gt; Smb) -&gt; State -&gt; Smb
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">StateName
+-&gt; String -&gt; Set Tag -&gt; Int -&gt; Maybe TMCMD -&gt; Maybe SMTag -&gt; State
+</span><a href="TM2SMHelpers.html#newState"><span class="hs-identifier hs-var">newState</span></a></span><span> </span><span class="annot"><span class="annottext">StateName
+</span><a href="SMType.html#F"><span class="hs-identifier hs-var">F</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679334062"><span class="hs-identifier hs-var">idx</span></a></span><span> </span><span class="annot"><span class="annottext">Set Tag
+</span><a href="TM2SMHelpers.html#eTag"><span class="hs-identifier hs-var">eTag</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679334061"><span class="hs-identifier hs-var">j</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe TMCMD
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span> </span><span class="annot"><span class="annottext">Maybe SMTag
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-65"></span><span class="annot"><a href="TM2SMHelpers.html#eF%27"><span class="hs-identifier hs-type">eF'</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="SMType.html#Smb"><span class="hs-identifier hs-type">Smb</span></a></span><span>
+</span><span id="line-66"></span><span id="eF%27"><span class="annot"><span class="annottext">eF' :: String -&gt; Int -&gt; Smb
+</span><a href="TM2SMHelpers.html#eF%27"><span class="hs-identifier hs-var hs-var">eF'</span></a></span></span><span> </span><span id="local-6989586621679334058"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679334058"><span class="hs-identifier hs-var">idx</span></a></span></span><span> </span><span id="local-6989586621679334057"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679334057"><span class="hs-identifier hs-var">j</span></a></span></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">State -&gt; Smb
+</span><a href="SMType.html#SmbQ"><span class="hs-identifier hs-var">SmbQ</span></a></span><span> </span><span class="annot"><span class="annottext">(State -&gt; Smb) -&gt; State -&gt; Smb
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">StateName
+-&gt; String -&gt; Set Tag -&gt; Int -&gt; Maybe TMCMD -&gt; Maybe SMTag -&gt; State
+</span><a href="TM2SMHelpers.html#newState"><span class="hs-identifier hs-var">newState</span></a></span><span> </span><span class="annot"><span class="annottext">StateName
+</span><a href="SMType.html#F"><span class="hs-identifier hs-var">F</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679334058"><span class="hs-identifier hs-var">idx</span></a></span><span> </span><span class="annot"><span class="annottext">Set Tag
+</span><a href="TM2SMHelpers.html#quoteTag"><span class="hs-identifier hs-var">quoteTag</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679334057"><span class="hs-identifier hs-var">j</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe TMCMD
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span> </span><span class="annot"><span class="annottext">Maybe SMTag
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-67"></span><span class="annot"><a href="TM2SMHelpers.html#eE"><span class="hs-identifier hs-type">eE</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="SMType.html#Smb"><span class="hs-identifier hs-type">Smb</span></a></span><span>
+</span><span id="line-68"></span><span id="eE"><span class="annot"><span class="annottext">eE :: Int -&gt; Smb
+</span><a href="TM2SMHelpers.html#eE"><span class="hs-identifier hs-var hs-var">eE</span></a></span></span><span> </span><span id="local-6989586621679334055"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679334055"><span class="hs-identifier hs-var">j</span></a></span></span><span>       </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">State -&gt; Smb
+</span><a href="SMType.html#SmbQ"><span class="hs-identifier hs-var">SmbQ</span></a></span><span> </span><span class="annot"><span class="annottext">(State -&gt; Smb) -&gt; State -&gt; Smb
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">StateName
+-&gt; String -&gt; Set Tag -&gt; Int -&gt; Maybe TMCMD -&gt; Maybe SMTag -&gt; State
+</span><a href="TM2SMHelpers.html#newState"><span class="hs-identifier hs-var">newState</span></a></span><span> </span><span class="annot"><span class="annottext">StateName
+</span><a href="SMType.html#E"><span class="hs-identifier hs-var">E</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;&quot;</span></span><span> </span><span class="annot"><span class="annottext">Set Tag
+</span><a href="TM2SMHelpers.html#eTag"><span class="hs-identifier hs-var">eTag</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679334055"><span class="hs-identifier hs-var">j</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe TMCMD
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span> </span><span class="annot"><span class="annottext">Maybe SMTag
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-69"></span><span class="annot"><a href="TM2SMHelpers.html#eE%27"><span class="hs-identifier hs-type">eE'</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="SMType.html#Smb"><span class="hs-identifier hs-type">Smb</span></a></span><span>
+</span><span id="line-70"></span><span id="eE%27"><span class="annot"><span class="annottext">eE' :: Int -&gt; Smb
+</span><a href="TM2SMHelpers.html#eE%27"><span class="hs-identifier hs-var hs-var">eE'</span></a></span></span><span> </span><span id="local-6989586621679334052"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679334052"><span class="hs-identifier hs-var">j</span></a></span></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">State -&gt; Smb
+</span><a href="SMType.html#SmbQ"><span class="hs-identifier hs-var">SmbQ</span></a></span><span> </span><span class="annot"><span class="annottext">(State -&gt; Smb) -&gt; State -&gt; Smb
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">StateName
+-&gt; String -&gt; Set Tag -&gt; Int -&gt; Maybe TMCMD -&gt; Maybe SMTag -&gt; State
+</span><a href="TM2SMHelpers.html#newState"><span class="hs-identifier hs-var">newState</span></a></span><span> </span><span class="annot"><span class="annottext">StateName
+</span><a href="SMType.html#E"><span class="hs-identifier hs-var">E</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;&quot;</span></span><span> </span><span class="annot"><span class="annottext">Set Tag
+</span><a href="TM2SMHelpers.html#quoteTag"><span class="hs-identifier hs-var">quoteTag</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679334052"><span class="hs-identifier hs-var">j</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe TMCMD
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span> </span><span class="annot"><span class="annottext">Maybe SMTag
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-71"></span><span class="annot"><a href="TM2SMHelpers.html#eP"><span class="hs-identifier hs-type">eP</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="SMType.html#Smb"><span class="hs-identifier hs-type">Smb</span></a></span><span>
+</span><span id="line-72"></span><span id="eP"><span class="annot"><span class="annottext">eP :: Int -&gt; Smb
+</span><a href="TM2SMHelpers.html#eP"><span class="hs-identifier hs-var hs-var">eP</span></a></span></span><span> </span><span id="local-6989586621679334050"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679334050"><span class="hs-identifier hs-var">j</span></a></span></span><span>       </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">State -&gt; Smb
+</span><a href="SMType.html#SmbQ"><span class="hs-identifier hs-var">SmbQ</span></a></span><span> </span><span class="annot"><span class="annottext">(State -&gt; Smb) -&gt; State -&gt; Smb
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">StateName
+-&gt; String -&gt; Set Tag -&gt; Int -&gt; Maybe TMCMD -&gt; Maybe SMTag -&gt; State
+</span><a href="TM2SMHelpers.html#newState"><span class="hs-identifier hs-var">newState</span></a></span><span> </span><span class="annot"><span class="annottext">StateName
+</span><a href="SMType.html#P"><span class="hs-identifier hs-var">P</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;&quot;</span></span><span> </span><span class="annot"><span class="annottext">Set Tag
+</span><a href="TM2SMHelpers.html#eTag"><span class="hs-identifier hs-var">eTag</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679334050"><span class="hs-identifier hs-var">j</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe TMCMD
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span> </span><span class="annot"><span class="annottext">Maybe SMTag
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-73"></span><span class="annot"><a href="TM2SMHelpers.html#eQ"><span class="hs-identifier hs-type">eQ</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="SMType.html#Smb"><span class="hs-identifier hs-type">Smb</span></a></span><span>
+</span><span id="line-74"></span><span id="eQ"><span class="annot"><span class="annottext">eQ :: Int -&gt; Smb
+</span><a href="TM2SMHelpers.html#eQ"><span class="hs-identifier hs-var hs-var">eQ</span></a></span></span><span> </span><span id="local-6989586621679334047"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679334047"><span class="hs-identifier hs-var">j</span></a></span></span><span>       </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">State -&gt; Smb
+</span><a href="SMType.html#SmbQ"><span class="hs-identifier hs-var">SmbQ</span></a></span><span> </span><span class="annot"><span class="annottext">(State -&gt; Smb) -&gt; State -&gt; Smb
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">StateName
+-&gt; String -&gt; Set Tag -&gt; Int -&gt; Maybe TMCMD -&gt; Maybe SMTag -&gt; State
+</span><a href="TM2SMHelpers.html#newState"><span class="hs-identifier hs-var">newState</span></a></span><span> </span><span class="annot"><span class="annottext">StateName
+</span><a href="SMType.html#Q"><span class="hs-identifier hs-var">Q</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;&quot;</span></span><span> </span><span class="annot"><span class="annottext">Set Tag
+</span><a href="TM2SMHelpers.html#eTag"><span class="hs-identifier hs-var">eTag</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679334047"><span class="hs-identifier hs-var">j</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe TMCMD
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span> </span><span class="annot"><span class="annottext">Maybe SMTag
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-75"></span><span class="annot"><a href="TM2SMHelpers.html#eR"><span class="hs-identifier hs-type">eR</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="SMType.html#Smb"><span class="hs-identifier hs-type">Smb</span></a></span><span>
+</span><span id="line-76"></span><span id="eR"><span class="annot"><span class="annottext">eR :: Int -&gt; Smb
+</span><a href="TM2SMHelpers.html#eR"><span class="hs-identifier hs-var hs-var">eR</span></a></span></span><span> </span><span id="local-6989586621679334044"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679334044"><span class="hs-identifier hs-var">j</span></a></span></span><span>       </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">State -&gt; Smb
+</span><a href="SMType.html#SmbQ"><span class="hs-identifier hs-var">SmbQ</span></a></span><span> </span><span class="annot"><span class="annottext">(State -&gt; Smb) -&gt; State -&gt; Smb
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">StateName
+-&gt; String -&gt; Set Tag -&gt; Int -&gt; Maybe TMCMD -&gt; Maybe SMTag -&gt; State
+</span><a href="TM2SMHelpers.html#newState"><span class="hs-identifier hs-var">newState</span></a></span><span> </span><span class="annot"><span class="annottext">StateName
+</span><a href="SMType.html#R"><span class="hs-identifier hs-var">R</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;&quot;</span></span><span> </span><span class="annot"><span class="annottext">Set Tag
+</span><a href="TM2SMHelpers.html#eTag"><span class="hs-identifier hs-var">eTag</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679334044"><span class="hs-identifier hs-var">j</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe TMCMD
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span> </span><span class="annot"><span class="annottext">Maybe SMTag
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-77"></span><span class="annot"><a href="TM2SMHelpers.html#eS"><span class="hs-identifier hs-type">eS</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="SMType.html#Smb"><span class="hs-identifier hs-type">Smb</span></a></span><span>
+</span><span id="line-78"></span><span id="eS"><span class="annot"><span class="annottext">eS :: Int -&gt; Smb
+</span><a href="TM2SMHelpers.html#eS"><span class="hs-identifier hs-var hs-var">eS</span></a></span></span><span> </span><span id="local-6989586621679334041"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679334041"><span class="hs-identifier hs-var">j</span></a></span></span><span>       </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">State -&gt; Smb
+</span><a href="SMType.html#SmbQ"><span class="hs-identifier hs-var">SmbQ</span></a></span><span> </span><span class="annot"><span class="annottext">(State -&gt; Smb) -&gt; State -&gt; Smb
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">StateName
+-&gt; String -&gt; Set Tag -&gt; Int -&gt; Maybe TMCMD -&gt; Maybe SMTag -&gt; State
+</span><a href="TM2SMHelpers.html#newState"><span class="hs-identifier hs-var">newState</span></a></span><span> </span><span class="annot"><span class="annottext">StateName
+</span><a href="SMType.html#S"><span class="hs-identifier hs-var">S</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;&quot;</span></span><span> </span><span class="annot"><span class="annottext">Set Tag
+</span><a href="TM2SMHelpers.html#eTag"><span class="hs-identifier hs-var">eTag</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679334041"><span class="hs-identifier hs-var">j</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe TMCMD
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span> </span><span class="annot"><span class="annottext">Maybe SMTag
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-79"></span><span class="annot"><a href="TM2SMHelpers.html#eT"><span class="hs-identifier hs-type">eT</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="SMType.html#Smb"><span class="hs-identifier hs-type">Smb</span></a></span><span>
+</span><span id="line-80"></span><span id="eT"><span class="annot"><span class="annottext">eT :: Int -&gt; Smb
+</span><a href="TM2SMHelpers.html#eT"><span class="hs-identifier hs-var hs-var">eT</span></a></span></span><span> </span><span id="local-6989586621679334038"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679334038"><span class="hs-identifier hs-var">j</span></a></span></span><span>       </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">State -&gt; Smb
+</span><a href="SMType.html#SmbQ"><span class="hs-identifier hs-var">SmbQ</span></a></span><span> </span><span class="annot"><span class="annottext">(State -&gt; Smb) -&gt; State -&gt; Smb
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">StateName
+-&gt; String -&gt; Set Tag -&gt; Int -&gt; Maybe TMCMD -&gt; Maybe SMTag -&gt; State
+</span><a href="TM2SMHelpers.html#newState"><span class="hs-identifier hs-var">newState</span></a></span><span> </span><span class="annot"><span class="annottext">StateName
+</span><a href="SMType.html#T"><span class="hs-identifier hs-var">T</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;&quot;</span></span><span> </span><span class="annot"><span class="annottext">Set Tag
+</span><a href="TM2SMHelpers.html#eTag"><span class="hs-identifier hs-var">eTag</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679334038"><span class="hs-identifier hs-var">j</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe TMCMD
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span> </span><span class="annot"><span class="annottext">Maybe SMTag
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-81"></span><span class="annot"><a href="TM2SMHelpers.html#eU"><span class="hs-identifier hs-type">eU</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="SMType.html#Smb"><span class="hs-identifier hs-type">Smb</span></a></span><span>
+</span><span id="line-82"></span><span id="eU"><span class="annot"><span class="annottext">eU :: Int -&gt; Smb
+</span><a href="TM2SMHelpers.html#eU"><span class="hs-identifier hs-var hs-var">eU</span></a></span></span><span> </span><span id="local-6989586621679334035"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679334035"><span class="hs-identifier hs-var">j</span></a></span></span><span>       </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">State -&gt; Smb
+</span><a href="SMType.html#SmbQ"><span class="hs-identifier hs-var">SmbQ</span></a></span><span> </span><span class="annot"><span class="annottext">(State -&gt; Smb) -&gt; State -&gt; Smb
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">StateName
+-&gt; String -&gt; Set Tag -&gt; Int -&gt; Maybe TMCMD -&gt; Maybe SMTag -&gt; State
+</span><a href="TM2SMHelpers.html#newState"><span class="hs-identifier hs-var">newState</span></a></span><span> </span><span class="annot"><span class="annottext">StateName
+</span><a href="SMType.html#U"><span class="hs-identifier hs-var">U</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;&quot;</span></span><span> </span><span class="annot"><span class="annottext">Set Tag
+</span><a href="TM2SMHelpers.html#eTag"><span class="hs-identifier hs-var">eTag</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679334035"><span class="hs-identifier hs-var">j</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe TMCMD
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span> </span><span class="annot"><span class="annottext">Maybe SMTag
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-83"></span><span class="annot"><a href="TM2SMHelpers.html#ePd"><span class="hs-identifier hs-type">ePd</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="SMType.html#Smb"><span class="hs-identifier hs-type">Smb</span></a></span><span>
+</span><span id="line-84"></span><span id="ePd"><span class="annot"><span class="annottext">ePd :: Int -&gt; Smb
+</span><a href="TM2SMHelpers.html#ePd"><span class="hs-identifier hs-var hs-var">ePd</span></a></span></span><span> </span><span id="local-6989586621679334032"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679334032"><span class="hs-identifier hs-var">j</span></a></span></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">State -&gt; Smb
+</span><a href="SMType.html#SmbQ"><span class="hs-identifier hs-var">SmbQ</span></a></span><span> </span><span class="annot"><span class="annottext">(State -&gt; Smb) -&gt; State -&gt; Smb
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">StateName
+-&gt; String -&gt; Set Tag -&gt; Int -&gt; Maybe TMCMD -&gt; Maybe SMTag -&gt; State
+</span><a href="TM2SMHelpers.html#newState"><span class="hs-identifier hs-var">newState</span></a></span><span> </span><span class="annot"><span class="annottext">StateName
+</span><a href="SMType.html#P"><span class="hs-identifier hs-var">P</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;&quot;</span></span><span> </span><span class="annot"><span class="annottext">Set Tag
+</span><a href="TM2SMHelpers.html#dashTag"><span class="hs-identifier hs-var">dashTag</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679334032"><span class="hs-identifier hs-var">j</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe TMCMD
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span> </span><span class="annot"><span class="annottext">Maybe SMTag
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-85"></span><span class="annot"><a href="TM2SMHelpers.html#eQd"><span class="hs-identifier hs-type">eQd</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="SMType.html#Smb"><span class="hs-identifier hs-type">Smb</span></a></span><span>
+</span><span id="line-86"></span><span id="eQd"><span class="annot"><span class="annottext">eQd :: Int -&gt; Smb
+</span><a href="TM2SMHelpers.html#eQd"><span class="hs-identifier hs-var hs-var">eQd</span></a></span></span><span> </span><span id="local-6989586621679334030"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679334030"><span class="hs-identifier hs-var">j</span></a></span></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">State -&gt; Smb
+</span><a href="SMType.html#SmbQ"><span class="hs-identifier hs-var">SmbQ</span></a></span><span> </span><span class="annot"><span class="annottext">(State -&gt; Smb) -&gt; State -&gt; Smb
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">StateName
+-&gt; String -&gt; Set Tag -&gt; Int -&gt; Maybe TMCMD -&gt; Maybe SMTag -&gt; State
+</span><a href="TM2SMHelpers.html#newState"><span class="hs-identifier hs-var">newState</span></a></span><span> </span><span class="annot"><span class="annottext">StateName
+</span><a href="SMType.html#Q"><span class="hs-identifier hs-var">Q</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;&quot;</span></span><span> </span><span class="annot"><span class="annottext">Set Tag
+</span><a href="TM2SMHelpers.html#dashTag"><span class="hs-identifier hs-var">dashTag</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679334030"><span class="hs-identifier hs-var">j</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe TMCMD
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span> </span><span class="annot"><span class="annottext">Maybe SMTag
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-87"></span><span class="annot"><a href="TM2SMHelpers.html#eRd"><span class="hs-identifier hs-type">eRd</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="SMType.html#Smb"><span class="hs-identifier hs-type">Smb</span></a></span><span>
+</span><span id="line-88"></span><span id="eRd"><span class="annot"><span class="annottext">eRd :: Int -&gt; Smb
+</span><a href="TM2SMHelpers.html#eRd"><span class="hs-identifier hs-var hs-var">eRd</span></a></span></span><span> </span><span id="local-6989586621679334028"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679334028"><span class="hs-identifier hs-var">j</span></a></span></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">State -&gt; Smb
+</span><a href="SMType.html#SmbQ"><span class="hs-identifier hs-var">SmbQ</span></a></span><span> </span><span class="annot"><span class="annottext">(State -&gt; Smb) -&gt; State -&gt; Smb
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">StateName
+-&gt; String -&gt; Set Tag -&gt; Int -&gt; Maybe TMCMD -&gt; Maybe SMTag -&gt; State
+</span><a href="TM2SMHelpers.html#newState"><span class="hs-identifier hs-var">newState</span></a></span><span> </span><span class="annot"><span class="annottext">StateName
+</span><a href="SMType.html#R"><span class="hs-identifier hs-var">R</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;&quot;</span></span><span> </span><span class="annot"><span class="annottext">Set Tag
+</span><a href="TM2SMHelpers.html#dashTag"><span class="hs-identifier hs-var">dashTag</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679334028"><span class="hs-identifier hs-var">j</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe TMCMD
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span> </span><span class="annot"><span class="annottext">Maybe SMTag
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-89"></span><span class="annot"><a href="TM2SMHelpers.html#eSd"><span class="hs-identifier hs-type">eSd</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="SMType.html#Smb"><span class="hs-identifier hs-type">Smb</span></a></span><span>
+</span><span id="line-90"></span><span id="eSd"><span class="annot"><span class="annottext">eSd :: Int -&gt; Smb
+</span><a href="TM2SMHelpers.html#eSd"><span class="hs-identifier hs-var hs-var">eSd</span></a></span></span><span> </span><span id="local-6989586621679334026"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679334026"><span class="hs-identifier hs-var">j</span></a></span></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">State -&gt; Smb
+</span><a href="SMType.html#SmbQ"><span class="hs-identifier hs-var">SmbQ</span></a></span><span> </span><span class="annot"><span class="annottext">(State -&gt; Smb) -&gt; State -&gt; Smb
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">StateName
+-&gt; String -&gt; Set Tag -&gt; Int -&gt; Maybe TMCMD -&gt; Maybe SMTag -&gt; State
+</span><a href="TM2SMHelpers.html#newState"><span class="hs-identifier hs-var">newState</span></a></span><span> </span><span class="annot"><span class="annottext">StateName
+</span><a href="SMType.html#S"><span class="hs-identifier hs-var">S</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;&quot;</span></span><span> </span><span class="annot"><span class="annottext">Set Tag
+</span><a href="TM2SMHelpers.html#dashTag"><span class="hs-identifier hs-var">dashTag</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679334026"><span class="hs-identifier hs-var">j</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe TMCMD
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span> </span><span class="annot"><span class="annottext">Maybe SMTag
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-91"></span><span class="annot"><a href="TM2SMHelpers.html#eTd"><span class="hs-identifier hs-type">eTd</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="SMType.html#Smb"><span class="hs-identifier hs-type">Smb</span></a></span><span>
+</span><span id="line-92"></span><span id="eTd"><span class="annot"><span class="annottext">eTd :: Int -&gt; Smb
+</span><a href="TM2SMHelpers.html#eTd"><span class="hs-identifier hs-var hs-var">eTd</span></a></span></span><span> </span><span id="local-6989586621679334024"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679334024"><span class="hs-identifier hs-var">j</span></a></span></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">State -&gt; Smb
+</span><a href="SMType.html#SmbQ"><span class="hs-identifier hs-var">SmbQ</span></a></span><span> </span><span class="annot"><span class="annottext">(State -&gt; Smb) -&gt; State -&gt; Smb
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">StateName
+-&gt; String -&gt; Set Tag -&gt; Int -&gt; Maybe TMCMD -&gt; Maybe SMTag -&gt; State
+</span><a href="TM2SMHelpers.html#newState"><span class="hs-identifier hs-var">newState</span></a></span><span> </span><span class="annot"><span class="annottext">StateName
+</span><a href="SMType.html#T"><span class="hs-identifier hs-var">T</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;&quot;</span></span><span> </span><span class="annot"><span class="annottext">Set Tag
+</span><a href="TM2SMHelpers.html#dashTag"><span class="hs-identifier hs-var">dashTag</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679334024"><span class="hs-identifier hs-var">j</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe TMCMD
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span> </span><span class="annot"><span class="annottext">Maybe SMTag
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-93"></span><span class="annot"><a href="TM2SMHelpers.html#eUd"><span class="hs-identifier hs-type">eUd</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="SMType.html#Smb"><span class="hs-identifier hs-type">Smb</span></a></span><span>
+</span><span id="line-94"></span><span id="eUd"><span class="annot"><span class="annottext">eUd :: Int -&gt; Smb
+</span><a href="TM2SMHelpers.html#eUd"><span class="hs-identifier hs-var hs-var">eUd</span></a></span></span><span> </span><span id="local-6989586621679334022"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679334022"><span class="hs-identifier hs-var">j</span></a></span></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">State -&gt; Smb
+</span><a href="SMType.html#SmbQ"><span class="hs-identifier hs-var">SmbQ</span></a></span><span> </span><span class="annot"><span class="annottext">(State -&gt; Smb) -&gt; State -&gt; Smb
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">StateName
+-&gt; String -&gt; Set Tag -&gt; Int -&gt; Maybe TMCMD -&gt; Maybe SMTag -&gt; State
+</span><a href="TM2SMHelpers.html#newState"><span class="hs-identifier hs-var">newState</span></a></span><span> </span><span class="annot"><span class="annottext">StateName
+</span><a href="SMType.html#U"><span class="hs-identifier hs-var">U</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;&quot;</span></span><span> </span><span class="annot"><span class="annottext">Set Tag
+</span><a href="TM2SMHelpers.html#dashTag"><span class="hs-identifier hs-var">dashTag</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679334022"><span class="hs-identifier hs-var">j</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe TMCMD
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span> </span><span class="annot"><span class="annottext">Maybe SMTag
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-95"></span><span>
+</span><span id="line-96"></span><span class="annot"><a href="TM2SMHelpers.html#getJIdx"><span class="hs-identifier hs-type">getJIdx</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="TMType.html#TapeCommand"><span class="hs-identifier hs-type">TMType.TapeCommand</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span class="hs-special">)</span><span>
+</span><span id="line-97"></span><span id="getJIdx"><span class="annot"><span class="annottext">getJIdx :: [TapeCommand] -&gt; Int -&gt; (String, String)
+</span><a href="TM2SMHelpers.html#getJIdx"><span class="hs-identifier hs-var hs-var">getJIdx</span></a></span></span><span> </span><span id="local-6989586621679334020"><span class="annot"><span class="annottext">[TapeCommand]
+</span><a href="#local-6989586621679334020"><span class="hs-identifier hs-var">c</span></a></span></span><span> </span><span id="local-6989586621679334019"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679334019"><span class="hs-identifier hs-var">j</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-98"></span><span>    </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679334018"><span class="annot"><span class="annottext">internal :: [TapeCommand] -&gt; Int -&gt; (String, String)
+</span><a href="#local-6989586621679334018"><span class="hs-identifier hs-var hs-var">internal</span></a></span></span><span> </span><span id="local-6989586621679334017"><span class="annot"><span class="annottext">[TapeCommand]
+</span><a href="#local-6989586621679334017"><span class="hs-identifier hs-var">cmd</span></a></span></span><span> </span><span id="local-6989586621679334016"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679334016"><span class="hs-identifier hs-var">i</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-99"></span><span>            </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">[TapeCommand]
+</span><a href="#local-6989586621679334017"><span class="hs-identifier hs-var">cmd</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-100"></span><span>                </span><span class="annot"><a href="TMType.html#PreSMCommand"><span class="hs-identifier hs-type">TMType.PreSMCommand</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-special">(</span><span class="annot"><span class="annottext">Square
+</span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="TMType.html#StateOmega"><span class="hs-identifier hs-type">TMType.StateOmega</span></a></span><span class="hs-special">(</span><span class="annot"><a href="TMType.html#State"><span class="hs-identifier hs-type">TMType.State</span></a></span><span> </span><span id="local-6989586621679334013"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679334013"><span class="hs-identifier hs-var">b</span></a></span></span><span class="hs-special">)</span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Square
+</span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="TMType.html#StateOmega"><span class="hs-identifier hs-type">TMType.StateOmega</span></a></span><span class="hs-special">(</span><span class="annot"><a href="TMType.html#State"><span class="hs-identifier hs-type">TMType.State</span></a></span><span> </span><span id="local-6989586621679334012"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679334012"><span class="hs-identifier hs-var">b1</span></a></span></span><span class="hs-special">)</span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span> </span><span id="local-6989586621679334011"><span class="annot"><span class="annottext">[TapeCommand]
+</span><a href="#local-6989586621679334011"><span class="hs-identifier hs-var">t</span></a></span></span><span>
+</span><span id="line-101"></span><span>                    </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679334019"><span class="hs-identifier hs-var">j</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Bool
+forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">==</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679334016"><span class="hs-identifier hs-var">i</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679334013"><span class="hs-identifier hs-var">b</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679334012"><span class="hs-identifier hs-var">b1</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-102"></span><span>                    </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Bool
+</span><span class="hs-identifier hs-var">otherwise</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">[TapeCommand] -&gt; Int -&gt; (String, String)
+</span><a href="#local-6989586621679334018"><span class="hs-identifier hs-var">internal</span></a></span><span> </span><span class="annot"><span class="annottext">[TapeCommand]
+</span><a href="#local-6989586621679334011"><span class="hs-identifier hs-var">t</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679334016"><span class="hs-identifier hs-var">i</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
+forall a. Num a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">+</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">1</span></span><span class="hs-special">)</span><span>
+</span><span id="line-103"></span><span>                </span><span class="annot"><span class="annottext">[TapeCommand]
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">String -&gt; (String, String)
+forall a. HasCallStack =&gt; String -&gt; a
+</span><span class="hs-identifier hs-var">error</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;Not found j&quot;</span></span><span>
+</span><span id="line-104"></span><span>    </span><span class="hs-keyword">in</span><span>
+</span><span id="line-105"></span><span>        </span><span class="annot"><span class="annottext">[TapeCommand] -&gt; Int -&gt; (String, String)
+</span><a href="#local-6989586621679334018"><span class="hs-identifier hs-var">internal</span></a></span><span> </span><span class="annot"><span class="annottext">[TapeCommand]
+</span><a href="#local-6989586621679334020"><span class="hs-identifier hs-var">c</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">1</span></span><span>
+</span><span id="line-106"></span></pre></body></html>
