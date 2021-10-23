@@ -33,6 +33,5 @@ getConfig = go defaultConfig
         OutputFile fp -> go (applyApproach & apprConfig . outputFile .~ fp) os
         ErrorFile  fp -> go (applyApproach & apprConfig . errorFile  .~ fp) os
         UsedApproach appr' -> go (applyApproach & approach .~ appr') os
-        GPinLaTeX -> go applyApproach os
         InfoAbout objs -> go (applyApproach & apprConfig . infoAbout \/~ objs) os
         Help -> return PrintHelp

@@ -16,7 +16,6 @@ data Option =
     | OutputFile FilePath
     | ErrorFile FilePath
     | UsedApproach Approach
-    | GPinLaTeX
     | InfoAbout (Set Object)
     | Help
 
@@ -30,8 +29,6 @@ options =
         "Full path to file, where errors should be recorded during parsing"
     , Option "a" ["approach"] (ReqArg (fmap UsedApproach . getApproach) "approach")
         "Used approach (see section `Approaches`)"
-    , Option "L" ["LaTeX"]    (NoArg  (return GPinLaTeX))
-        "Print result in LaTeX format (while doesn't work)"
     , Option "I" ["info"]     (ReqArg (fmap InfoAbout . getObjects) "objects")
         "Print useful information about objects (see section `Objects`)"
     , Option "h" ["help"]     (NoArg  (return Help))

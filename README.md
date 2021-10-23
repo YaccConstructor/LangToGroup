@@ -1,5 +1,7 @@
 # LangToGroup
 
+[![Build Status](https://travis-ci.org/YaccConstructor/LangToGroup.svg?branch=master)](https://travis-ci.org/YaccConstructor/LangToGroup)
+
 This project provides an opportunity to build a grammar group representation in two ways, which is displayed in the following picture:
 ![](media/approaches.png)
 
@@ -36,65 +38,68 @@ This conversion uses different set of generators as opposed to the first convers
 
 <img src="https://latex.codecogs.com/png.latex?\\&space;G(T)&space;=&space;\{&space;q,&space;h,&space;s_0,&space;\ldots,&space;s_M,&space;q_0,&space;\ldots,&space;q_N,&space;q^R_0,&space;\ldots,&space;q^R_N&space;\}&space;\\&space;R(T)&space;=&space;\forall&space;\alpha&space;\in&space;0..N,&space;\beta&space;\in&space;0..M&space;:&space;\\&space;\begin{array}{r@{~=~}lc@{~if~}c@{~\in&space;T}}&space;q_i&space;s_j&space;&&space;q_l&space;s_k&space;&&space;&&space;q_i&space;s_j&space;s_k&space;q_l&space;\\&space;q_i&space;s_j&space;&&space;s_j&space;q_l&space;&&space;&&space;q_i&space;s_i&space;R&space;q_l&space;\\&space;s_j&space;q^R_i&space;&&space;q^R_l&space;s_j&space;&&space;&&space;q_i&space;s_i&space;L&space;q_l&space;\\&space;q_\alpha&space;s_\beta&space;&&space;s_\beta&space;q^R_\alpha&space;\\&space;q_\alpha&space;h&space;&&space;s_0&space;q^R_\alpha&space;h&space;\\&space;h&space;q^R_\alpha&space;&&space;h&space;q_\alpha&space;s_0&space;\\&space;q_0&space;s_\beta&space;&&space;q_0&space;\\&space;s_\beta&space;q_0&space;h&space;&&space;q_0&space;h&space;\\&space;h&space;q_0&space;h&space;&&space;q&space;\end{array}" />
 
-## Build status
-[![Build Status](https://travis-ci.org/YaccConstructor/LangToGroup.svg?branch=master)](https://travis-ci.org/YaccConstructor/LangToGroup)
-
 ## Building 
-To build run:
-
-``stack build``
+```bash
+stack build
+```
 
 ## Testing
-For run the tests:
-
-``stack test``
+```bash
+stack test
+```
 
 ## Usage
 ```bash
-stack run -- LangToGroup-cli
+stack run -- LangToGroup-cli <options>
 ```
 
-```
-Usage: LangToGroup-cli <options>
+### Options
+  * `-i file_path`  `--input=file_path`  
+    Full path to file with grammar definition
+  * `-o file_path`  `--output=file_path`  
+    Full path to file for printing results
+  * `-e file_path`  `--error=file_path`  
+    Full path to file, where errors should be recorded during parsing
+  * `-a approach`   `--approach=approach`  
+    Used approach (see section [Approaches](#approaches))
+  * `-I objects`    `--info=objects`  
+    Print useful information about objects (see section [Objects](#objects))
+  * `-h`            `--help`  
+    Print help and exit
 
-Options:
-  -i file_path  --input=file_path    Full path to file with grammar definition
-  -o file_path  --output=file_path   Full path to file for printing results
-  -e file_path  --error=file_path    Full path to file, where errors should be recorded during parsing
-  -a approach   --approach=approach  Used approach (see section `Approaches`)
-  -L            --LaTeX              Print result in LaTeX format (while doesn't work)
-  -I objects    --info=objects       Print useful information about objects (see section `Objects`)
-  -h            --help               Print help and exit
+### Approaches
+  * `first`  
+    Implementation of algorithm from [Isoperimetric and Isodiametric Functions of Groups](https://arxiv.org/abs/math/9811105)
+  * `second`  
+    Implementation of algorithms from [Boolean grammars](https://doi.org/10.1016/j.ic.2004.03.006) and [An Introduction to the Theory of Groups](https://doi.org/10.1007/978-1-4612-4176-8)
+  * `second_a`  
+    Modifications of `second` approach with modified algorithm from [An Introduction to the Theory of Groups](https://doi.org/10.1007/978-1-4612-4176-8)
+  * `second_b`  
+    Modifications of `second` approach with modified algorithm from [An Introduction to the Theory of Groups](https://doi.org/10.1007/978-1-4612-4176-8)
 
-Approaches:
-  first
-    Implementation of algorithm from "Isoperimetric and Isodiametric Functions of Groups"
-  second
-    Implementation of algorithms from "Boolean grammars" and "An Introduction to the Theory of Groups"
-  second_a
-    Modifications of `second` approach with modified algorithm from "An Introduction to the Theory of Groups"
-  second_b
-    Modifications of `second` approach with modified algorithm from "An Introduction to the Theory of Groups"
-
-Objects:
-  grammar
+### Objects
+  * `grammar`  
     Input grammar (context-free, conjunctive or boolean)
-  turing_machine, tm
+  * `turing_machine`, `tm`  
     Produced Turing machine (its type depends on used approach)
-  group_presentation, gp
+  * `group_presentation`, `gp`  
     Produced group presentation
-Note: When enumerating objects, they must be separated by commas WITHOUT SPACES!
 
-For more information see https://github.com/YaccConstructor/LangToGroup/blob/master/README.md
-```
+> **NOTE**: When enumerating objects, they must be separated by commas WITHOUT SPACES!
 
-For example, if you want build presentation of grammar via second modification of the second approach and get metrics of produced group presentation and Turing machine, you should type options:
-`-i grammar.txt -a second_b -I tm,gp`
+### Examples
 
-And if you want to build presentation of grammar via first approach and save produced group presentation to file, you should type options:
-`-i grammar.txt -o group_presentation.txt -a first`
+  * ```bash
+    stack run -- LangToGroup-cli -i grammar.txt -a second_b -I tm,gp
+    ```
+    If you want build presentation of grammar via second modification of the second approach and get metrics of produced group presentation and Turing machine
 
-Examples of grammar files given below.
+  * ```bash
+    stack run -- LangToGroup-cli -i grammar.txt -o group_presentation.txt -a first
+    ```
+    If you want to build presentation of grammar via first approach and save produced group presentation to file
+
+### Examples of grammar
 
 **Boolean grammar**
 
@@ -168,3 +173,45 @@ Here are the tables with some examples of building group presentations by differ
 | <img src="https://render.githubusercontent.com/render/math?math=\{ww \mid w \in \{a,b\}*\}">| Boolean| 14 | 2498 | 20200 | 455220 |
 | <img src="https://render.githubusercontent.com/render/math?math=\{a^{m} b^{n} c^{n} \mid (m != n), m, n \in N\}"> | Boolean | 14 | 3461 | 27655 | 683100 | 
 
+## Execution (old version)
+
+> **NOTE**: Old CLI was saved because some of posibilities aren't available in new CLI.
+
+For run experiments and print its numerical results you can use `is_det <bool>` flag.
+
+So, for print experiments' results using deterministic symmetrization:
+
+```bash
+stack exec -- LangToGroup-printer --is_det true
+```
+
+using nondeterministic symmetrization:
+
+```bash
+stack exec -- LangToGroup-printer --is_det false
+```
+
+
+### Printing example transformations in LaTeX
+Grammar's transformations also can be printed in LaTeX. For this should be used `--print_example <grammar>` flag.
+The following grammars can be used as print examples: "one\" --- one rule grammar, \"a*\" --- grammar for regular language 
+<img src="https://render.githubusercontent.com/render/math?math=L = \{a*\}">
+, \"dyck\" --- Dyck language grammar. 
+
+For example,
+
+```bash
+stack exec -- LangToGroup-printer --is_det true --print_example one
+```
+
+Output filename can be specified by ``-o <filename>`` flag.
+
+### Printing example group presentation in Gap-format file
+For this you can use `-G` flag without a parameter, but with `--is_det <bool>` and `--print_example <grammar>` flags.
+Also, output filename can be specified by `-o <filename>` flag, if it does not speccified it been printing with default filename "out.txt".
+
+For example, following prints in "out.txt" a group presentation, which obtained from Dyck language grammar using nondeterministic symmetrization: 
+
+```bash
+stack exec -- LangToGroup-printer -G --is_det false --print_example dyck
+```
