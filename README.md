@@ -149,7 +149,7 @@ Here are the tables with some examples of building group presentations by differ
 | <img src="https://render.githubusercontent.com/render/math?math=\{a^{n} b^{n} \mid n \in N \}"> | CFG| 5 | 719 |  29510 | 719150 | 
 | <img src="https://render.githubusercontent.com/render/math?math=\{a^{n} b^{n} c^{n} \mid n \in N \}"> | Conjunctive | 14 | 3459 |  179112 | 5619872 | 
 | <img src="https://render.githubusercontent.com/render/math?math=\{ww \mid w \in \{a,b\}*\}">| Boolean| 14 | 2498 | 125587 | 3691770 |
-| <img src="https://render.githubusercontent.com/render/math?math=\{a^{m} b^{n} c^{n} \mid (m != n), m, n \in N\}"> | Boolean | 14 | 3461 |185307 | 5999829| 
+| <img src="https://render.githubusercontent.com/render/math?math=\{a^{m} b^{n} c^{n} \mid (m \ne n), m, n \in N\}"> | Boolean | 14 | 3461 |185307 | 5999829| 
 
 ### Running experiments for the second approach, modification `a`
 | Language | Grammar | N | States | Generators | Relations | 
@@ -160,7 +160,7 @@ Here are the tables with some examples of building group presentations by differ
 | <img src="https://render.githubusercontent.com/render/math?math=\{a^{n} b^{n} \mid n \in N \}"> | CFG| 5 | 719 |  14350 | 340150 | 
 | <img src="https://render.githubusercontent.com/render/math?math=\{a^{n} b^{n} c^{n} \mid n \in N \}"> | Conjunctive | 14 | 3459 |  79023 | 2417024 | 
 | <img src="https://render.githubusercontent.com/render/math?math=\{ww \mid w \in \{a,b\}*\}">| Boolean| 14 | 2498 | 58360 | 1674960 |
-| <img src="https://render.githubusercontent.com/render/math?math=\{a^{m} b^{n} c^{n} \mid (m != n), m, n \in N\}"> | Boolean | 14 | 3461 |81376 | 2570106| 
+| <img src="https://render.githubusercontent.com/render/math?math=\{a^{m} b^{n} c^{n} \mid (m \ne n), m, n \in N\}"> | Boolean | 14 | 3461 |81376 | 2570106| 
 
 ### Running experiments for the second approach, modification `b`
 | Language | Grammar | N | States | Generators | Relations | 
@@ -171,7 +171,7 @@ Here are the tables with some examples of building group presentations by differ
 | <img src="https://render.githubusercontent.com/render/math?math=\{a^{n} b^{n} \mid n \in N \}"> | CFG| 5 | 719 |  5701 | 105950 | 
 | <img src="https://render.githubusercontent.com/render/math?math=\{a^{n} b^{n} c^{n} \mid n \in N \}"> | Conjunctive | 14 | 3459 | 27624 | 661568 | 
 | <img src="https://render.githubusercontent.com/render/math?math=\{ww \mid w \in \{a,b\}*\}">| Boolean| 14 | 2498 | 20200 | 455220 |
-| <img src="https://render.githubusercontent.com/render/math?math=\{a^{m} b^{n} c^{n} \mid (m != n), m, n \in N\}"> | Boolean | 14 | 3461 | 27655 | 683100 | 
+| <img src="https://render.githubusercontent.com/render/math?math=\{a^{m} b^{n} c^{n} \mid (m \ne n), m, n \in N\}"> | Boolean | 14 | 3461 | 27655 | 683100 | 
 
 ## Execution (old version)
 
