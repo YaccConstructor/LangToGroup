@@ -9,39 +9,39 @@
 </span><span id="line-9"></span><span>
 </span><span id="line-10"></span><span class="annot"><a href="GapFuncWriter.html#writeGenerators"><span class="hs-identifier hs-type">writeGenerators</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="GRType.html#A"><span class="hs-identifier hs-type">A</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Map.Map</span></span><span> </span><span class="annot"><a href="GRType.html#A"><span class="hs-identifier hs-type">A</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Handle</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">IO</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
 </span><span id="line-11"></span><span id="writeGenerators"><span class="annot"><span class="annottext">writeGenerators :: [A] -&gt; Map A String -&gt; Handle -&gt; IO ()
-</span><a href="GapFuncWriter.html#writeGenerators"><span class="hs-identifier hs-var hs-var">writeGenerators</span></a></span></span><span> </span><span id="local-6989586621679336058"><span class="annot"><span class="annottext">[A]
-</span><a href="#local-6989586621679336058"><span class="hs-identifier hs-var">generators</span></a></span></span><span> </span><span id="local-6989586621679336057"><span class="annot"><span class="annottext">Map A String
-</span><a href="#local-6989586621679336057"><span class="hs-identifier hs-var">amap</span></a></span></span><span> </span><span id="local-6989586621679336056"><span class="annot"><span class="annottext">Handle
-</span><a href="#local-6989586621679336056"><span class="hs-identifier hs-var">handle</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><a href="GapFuncWriter.html#writeGenerators"><span class="hs-identifier hs-var hs-var">writeGenerators</span></a></span></span><span> </span><span id="local-6989586621679335224"><span class="annot"><span class="annottext">[A]
+</span><a href="#local-6989586621679335224"><span class="hs-identifier hs-var">generators</span></a></span></span><span> </span><span id="local-6989586621679335223"><span class="annot"><span class="annottext">Map A String
+</span><a href="#local-6989586621679335223"><span class="hs-identifier hs-var">amap</span></a></span></span><span> </span><span id="local-6989586621679335222"><span class="annot"><span class="annottext">Handle
+</span><a href="#local-6989586621679335222"><span class="hs-identifier hs-var">handle</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
 </span><span id="line-12"></span><span>    </span><span class="hs-keyword">do</span><span>
 </span><span id="line-13"></span><span>        </span><span class="annot"><span class="annottext">Handle -&gt; String -&gt; IO ()
 </span><span class="hs-identifier hs-var">hPutStr</span></span><span> </span><span class="annot"><span class="annottext">Handle
-</span><a href="#local-6989586621679336056"><span class="hs-identifier hs-var">handle</span></a></span><span> </span><span class="annot"><span class="annottext">(String -&gt; IO ()) -&gt; String -&gt; IO ()
+</span><a href="#local-6989586621679335222"><span class="hs-identifier hs-var">handle</span></a></span><span> </span><span class="annot"><span class="annottext">(String -&gt; IO ()) -&gt; String -&gt; IO ()
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
 forall a. [a] -&gt; a
 </span><span class="hs-identifier hs-var">head</span></span><span> </span><span class="annot"><span class="annottext">[String]
-</span><a href="#local-6989586621679336053"><span class="hs-identifier hs-var">mdata</span></a></span><span>
+</span><a href="#local-6989586621679335219"><span class="hs-identifier hs-var">mdata</span></a></span><span>
 </span><span id="line-14"></span><span>        </span><span class="annot"><span class="annottext">(String -&gt; IO ()) -&gt; [String] -&gt; IO ()
 forall (t :: * -&gt; *) (m :: * -&gt; *) a b.
 (Foldable t, Monad m) =&gt;
 (a -&gt; m b) -&gt; t a -&gt; m ()
-</span><span class="hs-identifier hs-var">mapM_</span></span><span> </span><span class="hs-special">(</span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679336051"><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679336051"><span class="hs-identifier hs-var">x</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Handle -&gt; String -&gt; IO ()
+</span><span class="hs-identifier hs-var">mapM_</span></span><span> </span><span class="hs-special">(</span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679335217"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679335217"><span class="hs-identifier hs-var">x</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Handle -&gt; String -&gt; IO ()
 </span><span class="hs-identifier hs-var">hPutStr</span></span><span> </span><span class="annot"><span class="annottext">Handle
-</span><a href="#local-6989586621679336056"><span class="hs-identifier hs-var">handle</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679335222"><span class="hs-identifier hs-var">handle</span></a></span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;, &quot;</span></span><span> </span><span class="annot"><span class="annottext">IO () -&gt; IO () -&gt; IO ()
 forall a. Semigroup a =&gt; a -&gt; a -&gt; a
 </span><span class="hs-operator hs-var">&lt;&gt;</span></span><span> </span><span class="annot"><span class="annottext">Handle -&gt; String -&gt; IO ()
 </span><span class="hs-identifier hs-var">hPutStr</span></span><span> </span><span class="annot"><span class="annottext">Handle
-</span><a href="#local-6989586621679336056"><span class="hs-identifier hs-var">handle</span></a></span><span> </span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679336051"><span class="hs-identifier hs-var">x</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[String] -&gt; [String]
+</span><a href="#local-6989586621679335222"><span class="hs-identifier hs-var">handle</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679335217"><span class="hs-identifier hs-var">x</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[String] -&gt; [String]
 forall a. [a] -&gt; [a]
 </span><span class="hs-identifier hs-var">tail</span></span><span> </span><span class="annot"><span class="annottext">[String]
-</span><a href="#local-6989586621679336053"><span class="hs-identifier hs-var">mdata</span></a></span><span class="hs-special">)</span><span>
-</span><span id="line-15"></span><span>        </span><span class="hs-keyword">where</span><span>   </span><span id="local-6989586621679336049"><span class="annot"><span class="annottext">toStr :: A -&gt; String
-</span><a href="#local-6989586621679336049"><span class="hs-identifier hs-var hs-var">toStr</span></a></span></span><span> </span><span id="local-6989586621679336048"><span class="annot"><span class="annottext">A
-</span><a href="#local-6989586621679336048"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe String -&gt; String
+</span><a href="#local-6989586621679335219"><span class="hs-identifier hs-var">mdata</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-15"></span><span>        </span><span class="hs-keyword">where</span><span>   </span><span id="local-6989586621679335215"><span class="annot"><span class="annottext">toStr :: A -&gt; String
+</span><a href="#local-6989586621679335215"><span class="hs-identifier hs-var hs-var">toStr</span></a></span></span><span> </span><span id="local-6989586621679335214"><span class="annot"><span class="annottext">A
+</span><a href="#local-6989586621679335214"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe String -&gt; String
 forall a. a -&gt; Maybe a -&gt; a
 </span><span class="hs-identifier hs-var">fromMaybe</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String -&gt; String
 forall a. HasCallStack =&gt; String -&gt; a
@@ -50,225 +50,225 @@ forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">A -&gt; String
 forall a. Show a =&gt; a -&gt; String
 </span><span class="hs-identifier hs-var">show</span></span><span> </span><span class="annot"><span class="annottext">A
-</span><a href="#local-6989586621679336048"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">A -&gt; Map A String -&gt; Maybe String
+</span><a href="#local-6989586621679335214"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">A -&gt; Map A String -&gt; Maybe String
 forall k a. Ord k =&gt; k -&gt; Map k a -&gt; Maybe a
 </span><span class="hs-identifier hs-var">Map.lookup</span></span><span> </span><span class="annot"><span class="annottext">A
-</span><a href="#local-6989586621679336048"><span class="hs-identifier hs-var">a</span></a></span><span> </span><span class="annot"><span class="annottext">Map A String
-</span><a href="#local-6989586621679336057"><span class="hs-identifier hs-var">amap</span></a></span><span class="hs-special">)</span><span>
-</span><span id="line-16"></span><span>                </span><span id="local-6989586621679336044"><span class="annot"><span class="annottext">quotes :: String -&gt; String
-</span><a href="#local-6989586621679336044"><span class="hs-identifier hs-var hs-var">quotes</span></a></span></span><span> </span><span id="local-6989586621679336043"><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679336043"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679335214"><span class="hs-identifier hs-var">a</span></a></span><span> </span><span class="annot"><span class="annottext">Map A String
+</span><a href="#local-6989586621679335223"><span class="hs-identifier hs-var">amap</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-16"></span><span>                </span><span id="local-6989586621679335210"><span class="annot"><span class="annottext">quotes :: String -&gt; String
+</span><a href="#local-6989586621679335210"><span class="hs-identifier hs-var hs-var">quotes</span></a></span></span><span> </span><span id="local-6989586621679335209"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679335209"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;\&quot;&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679336043"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+</span><a href="#local-6989586621679335209"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;\&quot;&quot;</span></span><span>
-</span><span id="line-17"></span><span>                </span><span id="local-6989586621679336053"><span class="annot"><span class="annottext">mdata :: [String]
-</span><a href="#local-6989586621679336053"><span class="hs-identifier hs-var hs-var">mdata</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(A -&gt; String) -&gt; [A] -&gt; [String]
+</span><span id="line-17"></span><span>                </span><span id="local-6989586621679335219"><span class="annot"><span class="annottext">mdata :: [String]
+</span><a href="#local-6989586621679335219"><span class="hs-identifier hs-var hs-var">mdata</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(A -&gt; String) -&gt; [A] -&gt; [String]
 forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
 </span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String -&gt; String
-</span><a href="#local-6989586621679336044"><span class="hs-identifier hs-var">quotes</span></a></span><span> </span><span class="annot"><span class="annottext">(String -&gt; String) -&gt; (A -&gt; String) -&gt; A -&gt; String
+</span><a href="#local-6989586621679335210"><span class="hs-identifier hs-var">quotes</span></a></span><span> </span><span class="annot"><span class="annottext">(String -&gt; String) -&gt; (A -&gt; String) -&gt; A -&gt; String
 forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
 </span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">A -&gt; String
-</span><a href="#local-6989586621679336049"><span class="hs-identifier hs-var">toStr</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[A]
-</span><a href="#local-6989586621679336058"><span class="hs-identifier hs-var">generators</span></a></span><span>
+</span><a href="#local-6989586621679335215"><span class="hs-identifier hs-var">toStr</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[A]
+</span><a href="#local-6989586621679335224"><span class="hs-identifier hs-var">generators</span></a></span><span>
 </span><span id="line-18"></span><span>
 </span><span id="line-19"></span><span class="annot"><a href="GapFuncWriter.html#writeRelations"><span class="hs-identifier hs-type">writeRelations</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="GRType.html#GrRelation"><span class="hs-identifier hs-type">GrRelation</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Map.Map</span></span><span> </span><span class="annot"><a href="GRType.html#A"><span class="hs-identifier hs-type">A</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Handle</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">IO</span></span><span class="hs-special">(</span><span class="hs-special">)</span><span>
 </span><span id="line-20"></span><span id="writeRelations"><span class="annot"><span class="annottext">writeRelations :: [GrRelation] -&gt; Map A String -&gt; Handle -&gt; IO ()
-</span><a href="GapFuncWriter.html#writeRelations"><span class="hs-identifier hs-var hs-var">writeRelations</span></a></span></span><span> </span><span id="local-6989586621679336040"><span class="annot"><span class="annottext">[GrRelation]
-</span><a href="#local-6989586621679336040"><span class="hs-identifier hs-var">relations</span></a></span></span><span> </span><span id="local-6989586621679336039"><span class="annot"><span class="annottext">Map A String
-</span><a href="#local-6989586621679336039"><span class="hs-identifier hs-var">genmap</span></a></span></span><span> </span><span id="local-6989586621679336038"><span class="annot"><span class="annottext">Handle
-</span><a href="#local-6989586621679336038"><span class="hs-identifier hs-var">handle</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><a href="GapFuncWriter.html#writeRelations"><span class="hs-identifier hs-var hs-var">writeRelations</span></a></span></span><span> </span><span id="local-6989586621679335206"><span class="annot"><span class="annottext">[GrRelation]
+</span><a href="#local-6989586621679335206"><span class="hs-identifier hs-var">relations</span></a></span></span><span> </span><span id="local-6989586621679335205"><span class="annot"><span class="annottext">Map A String
+</span><a href="#local-6989586621679335205"><span class="hs-identifier hs-var">genmap</span></a></span></span><span> </span><span id="local-6989586621679335204"><span class="annot"><span class="annottext">Handle
+</span><a href="#local-6989586621679335204"><span class="hs-identifier hs-var">handle</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
 </span><span id="line-21"></span><span>    </span><span class="hs-keyword">do</span><span>
 </span><span id="line-22"></span><span>        </span><span class="annot"><span class="annottext">Handle -&gt; String -&gt; IO ()
 </span><span class="hs-identifier hs-var">hPutStr</span></span><span> </span><span class="annot"><span class="annottext">Handle
-</span><a href="#local-6989586621679336038"><span class="hs-identifier hs-var">handle</span></a></span><span> </span><span class="annot"><span class="annottext">(String -&gt; IO ()) -&gt; String -&gt; IO ()
+</span><a href="#local-6989586621679335204"><span class="hs-identifier hs-var">handle</span></a></span><span> </span><span class="annot"><span class="annottext">(String -&gt; IO ()) -&gt; String -&gt; IO ()
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
 forall a. [a] -&gt; a
 </span><span class="hs-identifier hs-var">head</span></span><span> </span><span class="annot"><span class="annottext">[String]
-</span><a href="#local-6989586621679336037"><span class="hs-identifier hs-var">mdata</span></a></span><span>
+</span><a href="#local-6989586621679335203"><span class="hs-identifier hs-var">mdata</span></a></span><span>
 </span><span id="line-23"></span><span>        </span><span class="annot"><span class="annottext">(String -&gt; IO ()) -&gt; [String] -&gt; IO ()
 forall (t :: * -&gt; *) (m :: * -&gt; *) a b.
 (Foldable t, Monad m) =&gt;
 (a -&gt; m b) -&gt; t a -&gt; m ()
-</span><span class="hs-identifier hs-var">mapM_</span></span><span> </span><span class="hs-special">(</span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679336036"><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679336036"><span class="hs-identifier hs-var">x</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Handle -&gt; String -&gt; IO ()
+</span><span class="hs-identifier hs-var">mapM_</span></span><span> </span><span class="hs-special">(</span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679335202"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679335202"><span class="hs-identifier hs-var">x</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Handle -&gt; String -&gt; IO ()
 </span><span class="hs-identifier hs-var">hPutStr</span></span><span> </span><span class="annot"><span class="annottext">Handle
-</span><a href="#local-6989586621679336038"><span class="hs-identifier hs-var">handle</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679335204"><span class="hs-identifier hs-var">handle</span></a></span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;, &quot;</span></span><span> </span><span class="annot"><span class="annottext">IO () -&gt; IO () -&gt; IO ()
 forall a. Semigroup a =&gt; a -&gt; a -&gt; a
 </span><span class="hs-operator hs-var">&lt;&gt;</span></span><span> </span><span class="annot"><span class="annottext">Handle -&gt; String -&gt; IO ()
 </span><span class="hs-identifier hs-var">hPutStr</span></span><span> </span><span class="annot"><span class="annottext">Handle
-</span><a href="#local-6989586621679336038"><span class="hs-identifier hs-var">handle</span></a></span><span> </span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679336036"><span class="hs-identifier hs-var">x</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[String] -&gt; [String]
+</span><a href="#local-6989586621679335204"><span class="hs-identifier hs-var">handle</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679335202"><span class="hs-identifier hs-var">x</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[String] -&gt; [String]
 forall a. [a] -&gt; [a]
 </span><span class="hs-identifier hs-var">tail</span></span><span> </span><span class="annot"><span class="annottext">[String]
-</span><a href="#local-6989586621679336037"><span class="hs-identifier hs-var">mdata</span></a></span><span class="hs-special">)</span><span>
+</span><a href="#local-6989586621679335203"><span class="hs-identifier hs-var">mdata</span></a></span><span class="hs-special">)</span><span>
 </span><span id="line-24"></span><span>    </span><span class="hs-keyword">where</span><span>
-</span><span id="line-25"></span><span>            </span><span id="local-6989586621679336037"><span class="annot"><span class="annottext">mdata :: [String]
-</span><a href="#local-6989586621679336037"><span class="hs-identifier hs-var hs-var">mdata</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(GrRelation -&gt; String) -&gt; [GrRelation] -&gt; [String]
+</span><span id="line-25"></span><span>            </span><span id="local-6989586621679335203"><span class="annot"><span class="annottext">mdata :: [String]
+</span><a href="#local-6989586621679335203"><span class="hs-identifier hs-var hs-var">mdata</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(GrRelation -&gt; String) -&gt; [GrRelation] -&gt; [String]
 forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
 </span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">(String -&gt; String -&gt; String) -&gt; [String] -&gt; String
 forall (t :: * -&gt; *) a. Foldable t =&gt; (a -&gt; a -&gt; a) -&gt; t a -&gt; a
-</span><span class="hs-identifier hs-var">foldl1</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679336034"><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679336034"><span class="hs-identifier hs-var">x</span></a></span></span><span> </span><span id="local-6989586621679336033"><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679336033"><span class="hs-identifier hs-var">y</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679336034"><span class="hs-identifier hs-var">x</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+</span><span class="hs-identifier hs-var">foldl1</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679335200"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679335200"><span class="hs-identifier hs-var">x</span></a></span></span><span> </span><span id="local-6989586621679335199"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679335199"><span class="hs-identifier hs-var">y</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679335200"><span class="hs-identifier hs-var">x</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;*&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679336033"><span class="hs-identifier hs-var">y</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">([String] -&gt; String)
+</span><a href="#local-6989586621679335199"><span class="hs-identifier hs-var">y</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">([String] -&gt; String)
 -&gt; (GrRelation -&gt; [String]) -&gt; GrRelation -&gt; String
 forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
 </span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">(SmbR -&gt; String) -&gt; [SmbR] -&gt; [String]
 forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
 </span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Map A String -&gt; SmbR -&gt; String
 </span><a href="Helpers.html#printSmb"><span class="hs-identifier hs-var">printSmb</span></a></span><span> </span><span class="annot"><span class="annottext">Map A String
-</span><a href="#local-6989586621679336039"><span class="hs-identifier hs-var">genmap</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">([SmbR] -&gt; [String])
+</span><a href="#local-6989586621679335205"><span class="hs-identifier hs-var">genmap</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">([SmbR] -&gt; [String])
 -&gt; (GrRelation -&gt; [SmbR]) -&gt; GrRelation -&gt; [String]
 forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
 </span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">GrRelation -&gt; [SmbR]
 </span><a href="Helpers.html#revertRel"><span class="hs-identifier hs-var">revertRel</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[GrRelation]
-</span><a href="#local-6989586621679336040"><span class="hs-identifier hs-var">relations</span></a></span><span>
+</span><a href="#local-6989586621679335206"><span class="hs-identifier hs-var">relations</span></a></span><span>
 </span><span id="line-26"></span><span>
 </span><span id="line-27"></span><span class="annot"><a href="GapFuncWriter.html#writeGap"><span class="hs-identifier hs-type">writeGap</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="GRType.html#GR"><span class="hs-identifier hs-type">GR</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Handle</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Map.Map</span></span><span> </span><span class="annot"><a href="GRType.html#A"><span class="hs-identifier hs-type">A</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="GRType.html#SmbR"><span class="hs-identifier hs-type">SmbR</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">IO</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
 </span><span id="line-28"></span><span id="writeGap"><span class="annot"><span class="annottext">writeGap :: GR -&gt; Handle -&gt; Map A String -&gt; [SmbR] -&gt; IO ()
-</span><a href="GapFuncWriter.html#writeGap"><span class="hs-identifier hs-var hs-var">writeGap</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="GRType.html#GR"><span class="hs-identifier hs-type">GR</span></a></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679336028"><span class="annot"><span class="annottext">Set A
-</span><a href="#local-6989586621679336028"><span class="hs-identifier hs-var">g</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679336027"><span class="annot"><span class="annottext">Set GrRelation
-</span><a href="#local-6989586621679336027"><span class="hs-identifier hs-var">r</span></a></span></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span id="local-6989586621679336026"><span class="annot"><span class="annottext">Handle
-</span><a href="#local-6989586621679336026"><span class="hs-identifier hs-var">handle</span></a></span></span><span> </span><span id="local-6989586621679336025"><span class="annot"><span class="annottext">Map A String
-</span><a href="#local-6989586621679336025"><span class="hs-identifier hs-var">genmap</span></a></span></span><span> </span><span id="local-6989586621679336024"><span class="annot"><span class="annottext">[SmbR]
-</span><a href="#local-6989586621679336024"><span class="hs-identifier hs-var">hub</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><a href="GapFuncWriter.html#writeGap"><span class="hs-identifier hs-var hs-var">writeGap</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="GRType.html#GR"><span class="hs-identifier hs-type">GR</span></a></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679335194"><span class="annot"><span class="annottext">Set A
+</span><a href="#local-6989586621679335194"><span class="hs-identifier hs-var">g</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679335193"><span class="annot"><span class="annottext">Set GrRelation
+</span><a href="#local-6989586621679335193"><span class="hs-identifier hs-var">r</span></a></span></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span id="local-6989586621679335192"><span class="annot"><span class="annottext">Handle
+</span><a href="#local-6989586621679335192"><span class="hs-identifier hs-var">handle</span></a></span></span><span> </span><span id="local-6989586621679335191"><span class="annot"><span class="annottext">Map A String
+</span><a href="#local-6989586621679335191"><span class="hs-identifier hs-var">genmap</span></a></span></span><span> </span><span id="local-6989586621679335190"><span class="annot"><span class="annottext">[SmbR]
+</span><a href="#local-6989586621679335190"><span class="hs-identifier hs-var">hub</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
 </span><span id="line-29"></span><span class="hs-comment">--            do  hPutStr handle &quot;local f, g, p;\n&quot;</span><span>
 </span><span id="line-30"></span><span>            </span><span class="hs-keyword">do</span><span>  </span><span class="annot"><span class="annottext">Handle -&gt; String -&gt; IO ()
 </span><span class="hs-identifier hs-var">hPutStr</span></span><span> </span><span class="annot"><span class="annottext">Handle
-</span><a href="#local-6989586621679336026"><span class="hs-identifier hs-var">handle</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679335192"><span class="hs-identifier hs-var">handle</span></a></span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;local f, g;\n&quot;</span></span><span>
 </span><span id="line-31"></span><span>                </span><span class="annot"><span class="annottext">Handle -&gt; String -&gt; IO ()
 </span><span class="hs-identifier hs-var">hPutStr</span></span><span> </span><span class="annot"><span class="annottext">Handle
-</span><a href="#local-6989586621679336026"><span class="hs-identifier hs-var">handle</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679335192"><span class="hs-identifier hs-var">handle</span></a></span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;f := FreeGroup( &quot;</span></span><span>
 </span><span id="line-32"></span><span>                </span><span class="annot"><span class="annottext">[A] -&gt; Map A String -&gt; Handle -&gt; IO ()
 </span><a href="GapFuncWriter.html#writeGenerators"><span class="hs-identifier hs-var">writeGenerators</span></a></span><span> </span><span class="annot"><span class="annottext">[A]
-</span><a href="#local-6989586621679336023"><span class="hs-identifier hs-var">generators</span></a></span><span> </span><span class="annot"><span class="annottext">Map A String
-</span><a href="#local-6989586621679336025"><span class="hs-identifier hs-var">genmap</span></a></span><span> </span><span class="annot"><span class="annottext">Handle
-</span><a href="#local-6989586621679336026"><span class="hs-identifier hs-var">handle</span></a></span><span>
+</span><a href="#local-6989586621679335189"><span class="hs-identifier hs-var">generators</span></a></span><span> </span><span class="annot"><span class="annottext">Map A String
+</span><a href="#local-6989586621679335191"><span class="hs-identifier hs-var">genmap</span></a></span><span> </span><span class="annot"><span class="annottext">Handle
+</span><a href="#local-6989586621679335192"><span class="hs-identifier hs-var">handle</span></a></span><span>
 </span><span id="line-33"></span><span>                </span><span class="annot"><span class="annottext">Handle -&gt; String -&gt; IO ()
 </span><span class="hs-identifier hs-var">hPutStr</span></span><span> </span><span class="annot"><span class="annottext">Handle
-</span><a href="#local-6989586621679336026"><span class="hs-identifier hs-var">handle</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679335192"><span class="hs-identifier hs-var">handle</span></a></span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot; );\n&quot;</span></span><span>
 </span><span id="line-34"></span><span>                </span><span class="annot"><span class="annottext">Handle -&gt; IO ()
 </span><span class="hs-identifier hs-var">hFlush</span></span><span> </span><span class="annot"><span class="annottext">Handle
-</span><a href="#local-6989586621679336026"><span class="hs-identifier hs-var">handle</span></a></span><span>
+</span><a href="#local-6989586621679335192"><span class="hs-identifier hs-var">handle</span></a></span><span>
 </span><span id="line-35"></span><span>                </span><span class="annot"><span class="annottext">Handle -&gt; String -&gt; IO ()
 </span><span class="hs-identifier hs-var">hPutStr</span></span><span> </span><span class="annot"><span class="annottext">Handle
-</span><a href="#local-6989586621679336026"><span class="hs-identifier hs-var">handle</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679335192"><span class="hs-identifier hs-var">handle</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;hub := &quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679336021"><span class="hs-identifier hs-var">hubstr</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+</span><a href="#local-6989586621679335187"><span class="hs-identifier hs-var">hubstr</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;;\n&quot;</span></span><span class="hs-special">)</span><span>
 </span><span id="line-36"></span><span>                </span><span class="annot"><span class="annottext">Handle -&gt; IO ()
 </span><span class="hs-identifier hs-var">hFlush</span></span><span> </span><span class="annot"><span class="annottext">Handle
-</span><a href="#local-6989586621679336026"><span class="hs-identifier hs-var">handle</span></a></span><span>
+</span><a href="#local-6989586621679335192"><span class="hs-identifier hs-var">handle</span></a></span><span>
 </span><span id="line-37"></span><span>                </span><span class="annot"><span class="annottext">Handle -&gt; String -&gt; IO ()
 </span><span class="hs-identifier hs-var">hPutStr</span></span><span> </span><span class="annot"><span class="annottext">Handle
-</span><a href="#local-6989586621679336026"><span class="hs-identifier hs-var">handle</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679335192"><span class="hs-identifier hs-var">handle</span></a></span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;g := f / [ &quot;</span></span><span>
 </span><span id="line-38"></span><span>                </span><span class="annot"><span class="annottext">[GrRelation] -&gt; Map A String -&gt; Handle -&gt; IO ()
 </span><a href="GapFuncWriter.html#writeRelations"><span class="hs-identifier hs-var">writeRelations</span></a></span><span> </span><span class="annot"><span class="annottext">[GrRelation]
-</span><a href="#local-6989586621679336020"><span class="hs-identifier hs-var">relations</span></a></span><span> </span><span class="annot"><span class="annottext">Map A String
-</span><a href="#local-6989586621679336025"><span class="hs-identifier hs-var">genmap</span></a></span><span> </span><span class="annot"><span class="annottext">Handle
-</span><a href="#local-6989586621679336026"><span class="hs-identifier hs-var">handle</span></a></span><span>
+</span><a href="#local-6989586621679335186"><span class="hs-identifier hs-var">relations</span></a></span><span> </span><span class="annot"><span class="annottext">Map A String
+</span><a href="#local-6989586621679335191"><span class="hs-identifier hs-var">genmap</span></a></span><span> </span><span class="annot"><span class="annottext">Handle
+</span><a href="#local-6989586621679335192"><span class="hs-identifier hs-var">handle</span></a></span><span>
 </span><span id="line-39"></span><span>                </span><span class="annot"><span class="annottext">Handle -&gt; String -&gt; IO ()
 </span><span class="hs-identifier hs-var">hPutStr</span></span><span> </span><span class="annot"><span class="annottext">Handle
-</span><a href="#local-6989586621679336026"><span class="hs-identifier hs-var">handle</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679335192"><span class="hs-identifier hs-var">handle</span></a></span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot; ];\n&quot;</span></span><span>
 </span><span id="line-40"></span><span>                </span><span class="annot"><span class="annottext">Handle -&gt; IO ()
 </span><span class="hs-identifier hs-var">hFlush</span></span><span> </span><span class="annot"><span class="annottext">Handle
-</span><a href="#local-6989586621679336026"><span class="hs-identifier hs-var">handle</span></a></span><span>
+</span><a href="#local-6989586621679335192"><span class="hs-identifier hs-var">handle</span></a></span><span>
 </span><span id="line-41"></span><span>                </span><span class="hs-comment">--hPutStr handle &quot;p := SimplifiedFpGroup( g );\n&quot;</span><span>
 </span><span id="line-42"></span><span>                </span><span class="hs-comment">--hPutStr handle &quot;return p;\n&quot;</span><span>
 </span><span id="line-43"></span><span>                </span><span class="annot"><span class="annottext">Handle -&gt; String -&gt; IO ()
 </span><span class="hs-identifier hs-var">hPutStr</span></span><span> </span><span class="annot"><span class="annottext">Handle
-</span><a href="#local-6989586621679336026"><span class="hs-identifier hs-var">handle</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679335192"><span class="hs-identifier hs-var">handle</span></a></span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;return g;\n&quot;</span></span><span>
 </span><span id="line-44"></span><span>
 </span><span id="line-45"></span><span>                    </span><span class="hs-keyword">where</span><span>
-</span><span id="line-46"></span><span>                        </span><span id="local-6989586621679336023"><span class="annot"><span class="annottext">generators :: [A]
-</span><a href="#local-6989586621679336023"><span class="hs-identifier hs-var hs-var">generators</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Set A -&gt; [A]
+</span><span id="line-46"></span><span>                        </span><span id="local-6989586621679335189"><span class="annot"><span class="annottext">generators :: [A]
+</span><a href="#local-6989586621679335189"><span class="hs-identifier hs-var hs-var">generators</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Set A -&gt; [A]
 forall a. Set a -&gt; [a]
 </span><span class="hs-identifier hs-var">Set.toList</span></span><span> </span><span class="annot"><span class="annottext">Set A
-</span><a href="#local-6989586621679336028"><span class="hs-identifier hs-var">g</span></a></span><span>
-</span><span id="line-47"></span><span>                        </span><span id="local-6989586621679336020"><span class="annot"><span class="annottext">relations :: [GrRelation]
-</span><a href="#local-6989586621679336020"><span class="hs-identifier hs-var hs-var">relations</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Set GrRelation -&gt; [GrRelation]
+</span><a href="#local-6989586621679335194"><span class="hs-identifier hs-var">g</span></a></span><span>
+</span><span id="line-47"></span><span>                        </span><span id="local-6989586621679335186"><span class="annot"><span class="annottext">relations :: [GrRelation]
+</span><a href="#local-6989586621679335186"><span class="hs-identifier hs-var hs-var">relations</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Set GrRelation -&gt; [GrRelation]
 forall a. Set a -&gt; [a]
 </span><span class="hs-identifier hs-var">Set.toList</span></span><span> </span><span class="annot"><span class="annottext">Set GrRelation
-</span><a href="#local-6989586621679336027"><span class="hs-identifier hs-var">r</span></a></span><span>
-</span><span id="line-48"></span><span>                        </span><span id="local-6989586621679336021"><span class="annot"><span class="annottext">hubstr :: String
-</span><a href="#local-6989586621679336021"><span class="hs-identifier hs-var hs-var">hubstr</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(String -&gt; String -&gt; String) -&gt; [String] -&gt; String
+</span><a href="#local-6989586621679335193"><span class="hs-identifier hs-var">r</span></a></span><span>
+</span><span id="line-48"></span><span>                        </span><span id="local-6989586621679335187"><span class="annot"><span class="annottext">hubstr :: String
+</span><a href="#local-6989586621679335187"><span class="hs-identifier hs-var hs-var">hubstr</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(String -&gt; String -&gt; String) -&gt; [String] -&gt; String
 forall (t :: * -&gt; *) a. Foldable t =&gt; (a -&gt; a -&gt; a) -&gt; t a -&gt; a
-</span><span class="hs-identifier hs-var">foldl1</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679336018"><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679336018"><span class="hs-identifier hs-var">x</span></a></span></span><span> </span><span id="local-6989586621679336017"><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679336017"><span class="hs-identifier hs-var">y</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679336018"><span class="hs-identifier hs-var">x</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+</span><span class="hs-identifier hs-var">foldl1</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679335184"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679335184"><span class="hs-identifier hs-var">x</span></a></span></span><span> </span><span id="local-6989586621679335183"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679335183"><span class="hs-identifier hs-var">y</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679335184"><span class="hs-identifier hs-var">x</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;*&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679336017"><span class="hs-identifier hs-var">y</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">([String] -&gt; String) -&gt; [String] -&gt; String
+</span><a href="#local-6989586621679335183"><span class="hs-identifier hs-var">y</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">([String] -&gt; String) -&gt; [String] -&gt; String
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">(SmbR -&gt; String) -&gt; [SmbR] -&gt; [String]
 forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
 </span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Map A String -&gt; SmbR -&gt; String
 </span><a href="Helpers.html#printSmb"><span class="hs-identifier hs-var">printSmb</span></a></span><span> </span><span class="annot"><span class="annottext">Map A String
-</span><a href="#local-6989586621679336025"><span class="hs-identifier hs-var">genmap</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[SmbR]
-</span><a href="#local-6989586621679336024"><span class="hs-identifier hs-var">hub</span></a></span><span>
+</span><a href="#local-6989586621679335191"><span class="hs-identifier hs-var">genmap</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[SmbR]
+</span><a href="#local-6989586621679335190"><span class="hs-identifier hs-var">hub</span></a></span><span>
 </span><span id="line-49"></span><span>
 </span><span id="line-50"></span><span class="annot"><a href="GapFuncWriter.html#writeWord"><span class="hs-identifier hs-type">writeWord</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="GRType.html#SmbR"><span class="hs-identifier hs-type">SmbR</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Handle</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Map.Map</span></span><span> </span><span class="annot"><a href="GRType.html#A"><span class="hs-identifier hs-type">A</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">IO</span></span><span class="hs-special">(</span><span class="hs-special">)</span><span>
 </span><span id="line-51"></span><span id="writeWord"><span class="annot"><span class="annottext">writeWord :: [SmbR] -&gt; Handle -&gt; Map A String -&gt; IO ()
-</span><a href="GapFuncWriter.html#writeWord"><span class="hs-identifier hs-var hs-var">writeWord</span></a></span></span><span> </span><span id="local-6989586621679336015"><span class="annot"><span class="annottext">[SmbR]
-</span><a href="#local-6989586621679336015"><span class="hs-keyword hs-var">as</span></a></span></span><span> </span><span id="local-6989586621679336014"><span class="annot"><span class="annottext">Handle
-</span><a href="#local-6989586621679336014"><span class="hs-identifier hs-var">handle</span></a></span></span><span> </span><span id="local-6989586621679336013"><span class="annot"><span class="annottext">Map A String
-</span><a href="#local-6989586621679336013"><span class="hs-identifier hs-var">genmap</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><a href="GapFuncWriter.html#writeWord"><span class="hs-identifier hs-var hs-var">writeWord</span></a></span></span><span> </span><span id="local-6989586621679335181"><span class="annot"><span class="annottext">[SmbR]
+</span><a href="#local-6989586621679335181"><span class="hs-keyword hs-var">as</span></a></span></span><span> </span><span id="local-6989586621679335180"><span class="annot"><span class="annottext">Handle
+</span><a href="#local-6989586621679335180"><span class="hs-identifier hs-var">handle</span></a></span></span><span> </span><span id="local-6989586621679335179"><span class="annot"><span class="annottext">Map A String
+</span><a href="#local-6989586621679335179"><span class="hs-identifier hs-var">genmap</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
 </span><span id="line-52"></span><span>            </span><span class="hs-keyword">do</span><span>  </span><span class="annot"><span class="annottext">Handle -&gt; String -&gt; IO ()
 </span><span class="hs-identifier hs-var">hPutStr</span></span><span> </span><span class="annot"><span class="annottext">Handle
-</span><a href="#local-6989586621679336014"><span class="hs-identifier hs-var">handle</span></a></span><span> </span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679336012"><span class="hs-identifier hs-var">mdata</span></a></span><span>
+</span><a href="#local-6989586621679335180"><span class="hs-identifier hs-var">handle</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679335178"><span class="hs-identifier hs-var">mdata</span></a></span><span>
 </span><span id="line-53"></span><span>                </span><span class="annot"><span class="annottext">Handle -&gt; String -&gt; IO ()
 </span><span class="hs-identifier hs-var">hPutStr</span></span><span> </span><span class="annot"><span class="annottext">Handle
-</span><a href="#local-6989586621679336014"><span class="hs-identifier hs-var">handle</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679335180"><span class="hs-identifier hs-var">handle</span></a></span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;;&quot;</span></span><span>
 </span><span id="line-54"></span><span>                </span><span class="annot"><span class="annottext">Handle -&gt; IO ()
 </span><span class="hs-identifier hs-var">hFlush</span></span><span> </span><span class="annot"><span class="annottext">Handle
-</span><a href="#local-6989586621679336014"><span class="hs-identifier hs-var">handle</span></a></span><span>
+</span><a href="#local-6989586621679335180"><span class="hs-identifier hs-var">handle</span></a></span><span>
 </span><span id="line-55"></span><span>            </span><span class="hs-keyword">where</span><span>
-</span><span id="line-56"></span><span>                </span><span id="local-6989586621679336012"><span class="annot"><span class="annottext">mdata :: String
-</span><a href="#local-6989586621679336012"><span class="hs-identifier hs-var hs-var">mdata</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(String -&gt; String -&gt; String) -&gt; [String] -&gt; String
+</span><span id="line-56"></span><span>                </span><span id="local-6989586621679335178"><span class="annot"><span class="annottext">mdata :: String
+</span><a href="#local-6989586621679335178"><span class="hs-identifier hs-var hs-var">mdata</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(String -&gt; String -&gt; String) -&gt; [String] -&gt; String
 forall (t :: * -&gt; *) a. Foldable t =&gt; (a -&gt; a -&gt; a) -&gt; t a -&gt; a
-</span><span class="hs-identifier hs-var">foldl1</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679336011"><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679336011"><span class="hs-identifier hs-var">x</span></a></span></span><span> </span><span id="local-6989586621679336010"><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679336010"><span class="hs-identifier hs-var">y</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679336011"><span class="hs-identifier hs-var">x</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+</span><span class="hs-identifier hs-var">foldl1</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679335177"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679335177"><span class="hs-identifier hs-var">x</span></a></span></span><span> </span><span id="local-6989586621679335176"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679335176"><span class="hs-identifier hs-var">y</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679335177"><span class="hs-identifier hs-var">x</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;*&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679336010"><span class="hs-identifier hs-var">y</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">([String] -&gt; String) -&gt; [String] -&gt; String
+</span><a href="#local-6989586621679335176"><span class="hs-identifier hs-var">y</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">([String] -&gt; String) -&gt; [String] -&gt; String
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">(SmbR -&gt; String) -&gt; [SmbR] -&gt; [String]
 forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
 </span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Map A String -&gt; SmbR -&gt; String
 </span><a href="Helpers.html#printSmb"><span class="hs-identifier hs-var">printSmb</span></a></span><span> </span><span class="annot"><span class="annottext">Map A String
-</span><a href="#local-6989586621679336013"><span class="hs-identifier hs-var">genmap</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[SmbR]
-</span><a href="#local-6989586621679336015"><span class="hs-keyword hs-var">as</span></a></span><span>
+</span><a href="#local-6989586621679335179"><span class="hs-identifier hs-var">genmap</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[SmbR]
+</span><a href="#local-6989586621679335181"><span class="hs-keyword hs-var">as</span></a></span><span>
 </span><span id="line-57"></span></pre></body></html>

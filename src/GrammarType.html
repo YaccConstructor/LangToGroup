@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span id="%24con2tag_AmbNZrwlOMnKvQrC9juvID"><span id="%24con2tag_DLdEjGDx8FU56aGf38egEp"><span id="%24con2tag_1sKZnyxkENvH55VQgNiWz3"><span id="%24con2tag_G5CWPHhRvrHD4E0fSZhVd9"></span></span></span></span><span> </span><span class="hs-comment">-- |This module represents types of formal grammar.</span><span>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span id="%24con2tag_LqOUHcqNPA4EIC4lL9aCrH"><span id="%24con2tag_49Yky84JVEDHJ6agf5T4In"><span id="%24con2tag_FJrgc1WugvE8xcaJWvE9rL"><span id="%24con2tag_HRao2ybO24F9MEBzB7UMTB"></span></span></span></span><span> </span><span class="hs-comment">-- |This module represents types of formal grammar.</span><span>
 </span><span id="line-2"></span><span class="hs-comment">--</span><span>
 </span><span id="line-3"></span><span class="hs-comment">-- In the moment we use it to represent a context-free grammar, conjunctive grammar, boolean grammar.</span><span>
 </span><span id="line-4"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">GrammarType</span><span> </span><span class="hs-keyword">where</span><span>
@@ -8,7 +8,7 @@
 </span><span id="line-8"></span><span class="hs-comment">-- |'Terminal' is a type that represents terminal in the formal grammar 'Grammar'.</span><span>
 </span><span id="line-9"></span><span class="hs-keyword">newtype</span><span> </span><span id="Terminal"><span class="annot"><a href="GrammarType.html#Terminal"><span class="hs-identifier hs-var">Terminal</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="Terminal"><span class="annot"><a href="GrammarType.html#Terminal"><span class="hs-identifier hs-var">Terminal</span></a></span></span><span> </span><span class="hs-special">{</span><span id="terminalValue"><span class="annot"><span class="annottext">Terminal -&gt; String
 </span><a href="GrammarType.html#terminalValue"><span class="hs-identifier hs-var hs-var">terminalValue</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span class="hs-special">}</span><span>
-</span><span id="line-10"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679328175"><span id="local-6989586621679328177"><span class="annot"><span class="annottext">Terminal -&gt; Terminal -&gt; Bool
+</span><span id="line-10"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679327253"><span id="local-6989586621679327255"><span class="annot"><span class="annottext">Terminal -&gt; Terminal -&gt; Bool
 (Terminal -&gt; Terminal -&gt; Bool)
 -&gt; (Terminal -&gt; Terminal -&gt; Bool) -&gt; Eq Terminal
 forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
@@ -16,7 +16,7 @@ forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
 $c/= :: Terminal -&gt; Terminal -&gt; Bool
 == :: Terminal -&gt; Terminal -&gt; Bool
 $c== :: Terminal -&gt; Terminal -&gt; Bool
-</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679328159"><span id="local-6989586621679328161"><span id="local-6989586621679328163"><span id="local-6989586621679328165"><span id="local-6989586621679328167"><span id="local-6989586621679328169"><span id="local-6989586621679328171"><span class="annot"><span class="annottext">Eq Terminal
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679327237"><span id="local-6989586621679327239"><span id="local-6989586621679327241"><span id="local-6989586621679327243"><span id="local-6989586621679327245"><span id="local-6989586621679327247"><span id="local-6989586621679327249"><span class="annot"><span class="annottext">Eq Terminal
 Eq Terminal
 -&gt; (Terminal -&gt; Terminal -&gt; Ordering)
 -&gt; (Terminal -&gt; Terminal -&gt; Bool)
@@ -54,7 +54,7 @@ $c&lt; :: Terminal -&gt; Terminal -&gt; Bool
 compare :: Terminal -&gt; Terminal -&gt; Ordering
 $ccompare :: Terminal -&gt; Terminal -&gt; Ordering
 $cp1Ord :: Eq Terminal
-</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Ord</span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679328152"><span id="local-6989586621679328154"><span id="local-6989586621679328156"><span class="annot"><span class="annottext">Int -&gt; Terminal -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Ord</span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679327230"><span id="local-6989586621679327232"><span id="local-6989586621679327234"><span class="annot"><span class="annottext">Int -&gt; Terminal -&gt; ShowS
 [Terminal] -&gt; ShowS
 Terminal -&gt; String
 (Int -&gt; Terminal -&gt; ShowS)
@@ -72,7 +72,7 @@ $cshowsPrec :: Int -&gt; Terminal -&gt; ShowS
 </span><span id="line-12"></span><span class="hs-comment">-- |'Nonterminal' is a type that represents nonterminal in the formal grammar 'Grammar'.</span><span>
 </span><span id="line-13"></span><span class="hs-keyword">newtype</span><span> </span><span id="Nonterminal"><span class="annot"><a href="GrammarType.html#Nonterminal"><span class="hs-identifier hs-var">Nonterminal</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="Nonterminal"><span class="annot"><a href="GrammarType.html#Nonterminal"><span class="hs-identifier hs-var">Nonterminal</span></a></span></span><span> </span><span class="hs-special">{</span><span id="nonterminalValue"><span class="annot"><span class="annottext">Nonterminal -&gt; String
 </span><a href="GrammarType.html#nonterminalValue"><span class="hs-identifier hs-var hs-var">nonterminalValue</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span class="hs-special">}</span><span>
-</span><span id="line-14"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679328145"><span id="local-6989586621679328147"><span class="annot"><span class="annottext">Nonterminal -&gt; Nonterminal -&gt; Bool
+</span><span id="line-14"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679327223"><span id="local-6989586621679327225"><span class="annot"><span class="annottext">Nonterminal -&gt; Nonterminal -&gt; Bool
 (Nonterminal -&gt; Nonterminal -&gt; Bool)
 -&gt; (Nonterminal -&gt; Nonterminal -&gt; Bool) -&gt; Eq Nonterminal
 forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
@@ -80,7 +80,7 @@ forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
 $c/= :: Nonterminal -&gt; Nonterminal -&gt; Bool
 == :: Nonterminal -&gt; Nonterminal -&gt; Bool
 $c== :: Nonterminal -&gt; Nonterminal -&gt; Bool
-</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679328130"><span id="local-6989586621679328132"><span id="local-6989586621679328134"><span id="local-6989586621679328136"><span id="local-6989586621679328138"><span id="local-6989586621679328140"><span id="local-6989586621679328142"><span class="annot"><span class="annottext">Eq Nonterminal
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679327208"><span id="local-6989586621679327210"><span id="local-6989586621679327212"><span id="local-6989586621679327214"><span id="local-6989586621679327216"><span id="local-6989586621679327218"><span id="local-6989586621679327220"><span class="annot"><span class="annottext">Eq Nonterminal
 Eq Nonterminal
 -&gt; (Nonterminal -&gt; Nonterminal -&gt; Ordering)
 -&gt; (Nonterminal -&gt; Nonterminal -&gt; Bool)
@@ -118,7 +118,7 @@ $c&lt; :: Nonterminal -&gt; Nonterminal -&gt; Bool
 compare :: Nonterminal -&gt; Nonterminal -&gt; Ordering
 $ccompare :: Nonterminal -&gt; Nonterminal -&gt; Ordering
 $cp1Ord :: Eq Nonterminal
-</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Ord</span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679328124"><span id="local-6989586621679328126"><span id="local-6989586621679328128"><span class="annot"><span class="annottext">Int -&gt; Nonterminal -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Ord</span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679327202"><span id="local-6989586621679327204"><span id="local-6989586621679327206"><span class="annot"><span class="annottext">Int -&gt; Nonterminal -&gt; ShowS
 [Nonterminal] -&gt; ShowS
 Nonterminal -&gt; String
 (Int -&gt; Nonterminal -&gt; ShowS)
@@ -143,7 +143,7 @@ $cshowsPrec :: Int -&gt; Nonterminal -&gt; ShowS
 </span><span id="line-21"></span><span class="hs-comment">--</span><span>
 </span><span id="line-22"></span><span class="hs-comment">-- And 'Eps' is for empty symbol, epsilon.</span><span>
 </span><span id="line-23"></span><span class="hs-keyword">data</span><span> </span><span id="Symbol"><span class="annot"><a href="GrammarType.html#Symbol"><span class="hs-identifier hs-var">Symbol</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="T"><span class="annot"><a href="GrammarType.html#T"><span class="hs-identifier hs-var">T</span></a></span></span><span> </span><span class="annot"><a href="GrammarType.html#Terminal"><span class="hs-identifier hs-type">Terminal</span></a></span><span> </span><span class="hs-glyph">|</span><span> </span><span id="N"><span class="annot"><a href="GrammarType.html#N"><span class="hs-identifier hs-var">N</span></a></span></span><span> </span><span class="annot"><a href="GrammarType.html#Nonterminal"><span class="hs-identifier hs-type">Nonterminal</span></a></span><span> </span><span class="hs-glyph">|</span><span> </span><span id="Eps"><span class="annot"><a href="GrammarType.html#Eps"><span class="hs-identifier hs-var">Eps</span></a></span></span><span>
-</span><span id="line-24"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679328117"><span id="local-6989586621679328119"><span class="annot"><span class="annottext">Symbol -&gt; Symbol -&gt; Bool
+</span><span id="line-24"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679327195"><span id="local-6989586621679327197"><span class="annot"><span class="annottext">Symbol -&gt; Symbol -&gt; Bool
 (Symbol -&gt; Symbol -&gt; Bool)
 -&gt; (Symbol -&gt; Symbol -&gt; Bool) -&gt; Eq Symbol
 forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
@@ -151,7 +151,7 @@ forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
 $c/= :: Symbol -&gt; Symbol -&gt; Bool
 == :: Symbol -&gt; Symbol -&gt; Bool
 $c== :: Symbol -&gt; Symbol -&gt; Bool
-</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679328102"><span id="local-6989586621679328104"><span id="local-6989586621679328106"><span id="local-6989586621679328108"><span id="local-6989586621679328110"><span id="local-6989586621679328112"><span id="local-6989586621679328114"><span class="annot"><span class="annottext">Eq Symbol
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679327180"><span id="local-6989586621679327182"><span id="local-6989586621679327184"><span id="local-6989586621679327186"><span id="local-6989586621679327188"><span id="local-6989586621679327190"><span id="local-6989586621679327192"><span class="annot"><span class="annottext">Eq Symbol
 Eq Symbol
 -&gt; (Symbol -&gt; Symbol -&gt; Ordering)
 -&gt; (Symbol -&gt; Symbol -&gt; Bool)
@@ -189,7 +189,7 @@ $c&lt; :: Symbol -&gt; Symbol -&gt; Bool
 compare :: Symbol -&gt; Symbol -&gt; Ordering
 $ccompare :: Symbol -&gt; Symbol -&gt; Ordering
 $cp1Ord :: Eq Symbol
-</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Ord</span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679328096"><span id="local-6989586621679328098"><span id="local-6989586621679328100"><span class="annot"><span class="annottext">Int -&gt; Symbol -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Ord</span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679327174"><span id="local-6989586621679327176"><span id="local-6989586621679327178"><span class="annot"><span class="annottext">Int -&gt; Symbol -&gt; ShowS
 [Symbol] -&gt; ShowS
 Symbol -&gt; String
 (Int -&gt; Symbol -&gt; ShowS)
@@ -208,14 +208,14 @@ $cshowsPrec :: Int -&gt; Symbol -&gt; ShowS
 </span><span id="line-27"></span><span class="hs-keyword">data</span><span> </span><span id="Conj"><span class="annot"><a href="GrammarType.html#Conj"><span class="hs-identifier hs-var">Conj</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="PosConj"><span class="annot"><a href="GrammarType.html#PosConj"><span class="hs-identifier hs-var">PosConj</span></a></span></span><span> </span><span class="hs-special">{</span><span id="symbols"><span class="annot"><span class="annottext">Conj -&gt; [Symbol]
 </span><a href="GrammarType.html#symbols"><span class="hs-identifier hs-var hs-var">symbols</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="GrammarType.html#Symbol"><span class="hs-identifier hs-type">Symbol</span></a></span><span class="hs-special">]</span><span class="hs-special">}</span><span>
 </span><span id="line-28"></span><span>          </span><span class="hs-glyph">|</span><span> </span><span id="NegConj"><span class="annot"><a href="GrammarType.html#NegConj"><span class="hs-identifier hs-var">NegConj</span></a></span></span><span> </span><span class="hs-special">{</span><span id="symbols"><span class="annot"><a href="GrammarType.html#symbols"><span class="hs-identifier hs-var">symbols</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="GrammarType.html#Symbol"><span class="hs-identifier hs-type">Symbol</span></a></span><span class="hs-special">]</span><span class="hs-special">}</span><span>
-</span><span id="line-29"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679328089"><span id="local-6989586621679328091"><span class="annot"><span class="annottext">Conj -&gt; Conj -&gt; Bool
+</span><span id="line-29"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679327167"><span id="local-6989586621679327169"><span class="annot"><span class="annottext">Conj -&gt; Conj -&gt; Bool
 (Conj -&gt; Conj -&gt; Bool) -&gt; (Conj -&gt; Conj -&gt; Bool) -&gt; Eq Conj
 forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
 /= :: Conj -&gt; Conj -&gt; Bool
 $c/= :: Conj -&gt; Conj -&gt; Bool
 == :: Conj -&gt; Conj -&gt; Bool
 $c== :: Conj -&gt; Conj -&gt; Bool
-</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679328074"><span id="local-6989586621679328076"><span id="local-6989586621679328078"><span id="local-6989586621679328080"><span id="local-6989586621679328082"><span id="local-6989586621679328084"><span id="local-6989586621679328086"><span class="annot"><span class="annottext">Eq Conj
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679327152"><span id="local-6989586621679327154"><span id="local-6989586621679327156"><span id="local-6989586621679327158"><span id="local-6989586621679327160"><span id="local-6989586621679327162"><span id="local-6989586621679327164"><span class="annot"><span class="annottext">Eq Conj
 Eq Conj
 -&gt; (Conj -&gt; Conj -&gt; Ordering)
 -&gt; (Conj -&gt; Conj -&gt; Bool)
@@ -253,7 +253,7 @@ $c&lt; :: Conj -&gt; Conj -&gt; Bool
 compare :: Conj -&gt; Conj -&gt; Ordering
 $ccompare :: Conj -&gt; Conj -&gt; Ordering
 $cp1Ord :: Eq Conj
-</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Ord</span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679328068"><span id="local-6989586621679328070"><span id="local-6989586621679328072"><span class="annot"><span class="annottext">Int -&gt; Conj -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Ord</span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679327146"><span id="local-6989586621679327148"><span id="local-6989586621679327150"><span class="annot"><span class="annottext">Int -&gt; Conj -&gt; ShowS
 [Conj] -&gt; ShowS
 Conj -&gt; String
 (Int -&gt; Conj -&gt; ShowS)
@@ -277,7 +277,7 @@ $cshowsPrec :: Int -&gt; Conj -&gt; ShowS
 </span><span id="line-37"></span><span class="hs-comment">-- though it might be used for defining grammars too</span><span>
 </span><span id="line-38"></span><span class="hs-comment">-- (right part of CFG relation is one PosConj in right part of boolean relation)   </span><span>
 </span><span id="line-39"></span><span class="hs-keyword">data</span><span> </span><span id="Relation"><span class="annot"><a href="GrammarType.html#Relation"><span class="hs-identifier hs-var">Relation</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="Relation"><span class="annot"><a href="GrammarType.html#Relation"><span class="hs-identifier hs-var">Relation</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="GrammarType.html#Nonterminal"><span class="hs-identifier hs-type">Nonterminal</span></a></span><span class="hs-special">,</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="GrammarType.html#Symbol"><span class="hs-identifier hs-type">Symbol</span></a></span><span class="hs-special">]</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">|</span><span> </span><span id="BooleanRelation"><span class="annot"><a href="GrammarType.html#BooleanRelation"><span class="hs-identifier hs-var">BooleanRelation</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="GrammarType.html#Nonterminal"><span class="hs-identifier hs-type">Nonterminal</span></a></span><span class="hs-special">,</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="GrammarType.html#Conj"><span class="hs-identifier hs-type">Conj</span></a></span><span class="hs-special">]</span><span class="hs-special">)</span><span>
-</span><span id="line-40"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679328061"><span id="local-6989586621679328063"><span class="annot"><span class="annottext">Relation -&gt; Relation -&gt; Bool
+</span><span id="line-40"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679327139"><span id="local-6989586621679327141"><span class="annot"><span class="annottext">Relation -&gt; Relation -&gt; Bool
 (Relation -&gt; Relation -&gt; Bool)
 -&gt; (Relation -&gt; Relation -&gt; Bool) -&gt; Eq Relation
 forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
@@ -285,7 +285,7 @@ forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
 $c/= :: Relation -&gt; Relation -&gt; Bool
 == :: Relation -&gt; Relation -&gt; Bool
 $c== :: Relation -&gt; Relation -&gt; Bool
-</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679328046"><span id="local-6989586621679328048"><span id="local-6989586621679328050"><span id="local-6989586621679328052"><span id="local-6989586621679328054"><span id="local-6989586621679328056"><span id="local-6989586621679328058"><span class="annot"><span class="annottext">Eq Relation
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679327124"><span id="local-6989586621679327126"><span id="local-6989586621679327128"><span id="local-6989586621679327130"><span id="local-6989586621679327132"><span id="local-6989586621679327134"><span id="local-6989586621679327136"><span class="annot"><span class="annottext">Eq Relation
 Eq Relation
 -&gt; (Relation -&gt; Relation -&gt; Ordering)
 -&gt; (Relation -&gt; Relation -&gt; Bool)
@@ -323,7 +323,7 @@ $c&lt; :: Relation -&gt; Relation -&gt; Bool
 compare :: Relation -&gt; Relation -&gt; Ordering
 $ccompare :: Relation -&gt; Relation -&gt; Ordering
 $cp1Ord :: Eq Relation
-</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Ord</span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679328040"><span id="local-6989586621679328042"><span id="local-6989586621679328044"><span class="annot"><span class="annottext">Int -&gt; Relation -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Ord</span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679327118"><span id="local-6989586621679327120"><span id="local-6989586621679327122"><span class="annot"><span class="annottext">Int -&gt; Relation -&gt; ShowS
 [Relation] -&gt; ShowS
 Relation -&gt; String
 (Int -&gt; Relation -&gt; ShowS)
@@ -340,7 +340,7 @@ $cshowsPrec :: Int -&gt; Relation -&gt; ShowS
 </span><span id="line-41"></span><span>
 </span><span id="line-42"></span><span class="hs-comment">-- |This type we using to classify grammars.</span><span>
 </span><span id="line-43"></span><span class="hs-keyword">data</span><span> </span><span id="GrammarType"><span class="annot"><a href="GrammarType.html#GrammarType"><span class="hs-identifier hs-var">GrammarType</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="CFG"><span class="annot"><a href="GrammarType.html#CFG"><span class="hs-identifier hs-var">CFG</span></a></span></span><span> </span><span class="hs-glyph">|</span><span> </span><span id="Conjunctive"><span class="annot"><a href="GrammarType.html#Conjunctive"><span class="hs-identifier hs-var">Conjunctive</span></a></span></span><span> </span><span class="hs-glyph">|</span><span> </span><span id="Boolean"><span class="annot"><a href="GrammarType.html#Boolean"><span class="hs-identifier hs-var">Boolean</span></a></span></span><span>
-</span><span id="line-44"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679328033"><span id="local-6989586621679328035"><span class="annot"><span class="annottext">GrammarType -&gt; GrammarType -&gt; Bool
+</span><span id="line-44"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679327111"><span id="local-6989586621679327113"><span class="annot"><span class="annottext">GrammarType -&gt; GrammarType -&gt; Bool
 (GrammarType -&gt; GrammarType -&gt; Bool)
 -&gt; (GrammarType -&gt; GrammarType -&gt; Bool) -&gt; Eq GrammarType
 forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
@@ -348,7 +348,7 @@ forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
 $c/= :: GrammarType -&gt; GrammarType -&gt; Bool
 == :: GrammarType -&gt; GrammarType -&gt; Bool
 $c== :: GrammarType -&gt; GrammarType -&gt; Bool
-</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679328018"><span id="local-6989586621679328020"><span id="local-6989586621679328022"><span id="local-6989586621679328024"><span id="local-6989586621679328026"><span id="local-6989586621679328028"><span id="local-6989586621679328030"><span class="annot"><span class="annottext">Eq GrammarType
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679327096"><span id="local-6989586621679327098"><span id="local-6989586621679327100"><span id="local-6989586621679327102"><span id="local-6989586621679327104"><span id="local-6989586621679327106"><span id="local-6989586621679327108"><span class="annot"><span class="annottext">Eq GrammarType
 Eq GrammarType
 -&gt; (GrammarType -&gt; GrammarType -&gt; Ordering)
 -&gt; (GrammarType -&gt; GrammarType -&gt; Bool)
@@ -386,7 +386,7 @@ $c&lt; :: GrammarType -&gt; GrammarType -&gt; Bool
 compare :: GrammarType -&gt; GrammarType -&gt; Ordering
 $ccompare :: GrammarType -&gt; GrammarType -&gt; Ordering
 $cp1Ord :: Eq GrammarType
-</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Ord</span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679328012"><span id="local-6989586621679328014"><span id="local-6989586621679328016"><span class="annot"><span class="annottext">Int -&gt; GrammarType -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Ord</span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679327090"><span id="local-6989586621679327092"><span id="local-6989586621679327094"><span class="annot"><span class="annottext">Int -&gt; GrammarType -&gt; ShowS
 [GrammarType] -&gt; ShowS
 GrammarType -&gt; String
 (Int -&gt; GrammarType -&gt; ShowS)
@@ -405,7 +405,7 @@ $cshowsPrec :: Int -&gt; GrammarType -&gt; ShowS
 </span><span id="line-45"></span><span>
 </span><span id="line-46"></span><span class="hs-comment">-- |This type we using to represent a formal grammar.</span><span>
 </span><span id="line-47"></span><span class="hs-keyword">newtype</span><span> </span><span id="Grammar"><span class="annot"><a href="GrammarType.html#Grammar"><span class="hs-identifier hs-var">Grammar</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="Grammar"><span class="annot"><a href="GrammarType.html#Grammar"><span class="hs-identifier hs-var">Grammar</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Set</span></span><span> </span><span class="annot"><a href="GrammarType.html#Nonterminal"><span class="hs-identifier hs-type">Nonterminal</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Set</span></span><span> </span><span class="annot"><a href="GrammarType.html#Terminal"><span class="hs-identifier hs-type">Terminal</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Set</span></span><span> </span><span class="annot"><a href="GrammarType.html#Relation"><span class="hs-identifier hs-type">Relation</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="GrammarType.html#StartSymbol"><span class="hs-identifier hs-type">StartSymbol</span></a></span><span class="hs-special">)</span><span>
-</span><span id="line-48"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679328007"><span id="local-6989586621679328009"><span class="annot"><span class="annottext">Grammar -&gt; Grammar -&gt; Bool
+</span><span id="line-48"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679327085"><span id="local-6989586621679327087"><span class="annot"><span class="annottext">Grammar -&gt; Grammar -&gt; Bool
 (Grammar -&gt; Grammar -&gt; Bool)
 -&gt; (Grammar -&gt; Grammar -&gt; Bool) -&gt; Eq Grammar
 forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
@@ -413,7 +413,7 @@ forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
 $c/= :: Grammar -&gt; Grammar -&gt; Bool
 == :: Grammar -&gt; Grammar -&gt; Bool
 $c== :: Grammar -&gt; Grammar -&gt; Bool
-</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679327992"><span id="local-6989586621679327994"><span id="local-6989586621679327996"><span id="local-6989586621679327998"><span id="local-6989586621679328000"><span id="local-6989586621679328002"><span id="local-6989586621679328004"><span class="annot"><span class="annottext">Eq Grammar
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679327070"><span id="local-6989586621679327072"><span id="local-6989586621679327074"><span id="local-6989586621679327076"><span id="local-6989586621679327078"><span id="local-6989586621679327080"><span id="local-6989586621679327082"><span class="annot"><span class="annottext">Eq Grammar
 Eq Grammar
 -&gt; (Grammar -&gt; Grammar -&gt; Ordering)
 -&gt; (Grammar -&gt; Grammar -&gt; Bool)
@@ -451,7 +451,7 @@ $c&lt; :: Grammar -&gt; Grammar -&gt; Bool
 compare :: Grammar -&gt; Grammar -&gt; Ordering
 $ccompare :: Grammar -&gt; Grammar -&gt; Ordering
 $cp1Ord :: Eq Grammar
-</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Ord</span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679327986"><span id="local-6989586621679327988"><span id="local-6989586621679327990"><span class="annot"><span class="annottext">Int -&gt; Grammar -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Ord</span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679327064"><span id="local-6989586621679327066"><span id="local-6989586621679327068"><span class="annot"><span class="annottext">Int -&gt; Grammar -&gt; ShowS
 [Grammar] -&gt; ShowS
 Grammar -&gt; String
 (Int -&gt; Grammar -&gt; ShowS)

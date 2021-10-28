@@ -9,7 +9,7 @@
 </span><span id="line-9"></span><span>
 </span><span id="line-10"></span><span class="hs-keyword">newtype</span><span> </span><span id="Symbol"><span class="annot"><a href="TuringMachine.Symbol.html#Symbol"><span class="hs-identifier hs-var">Symbol</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="S"><span class="annot"><a href="TuringMachine.Symbol.html#S"><span class="hs-identifier hs-var">S</span></a></span></span><span> </span><span class="hs-special">{</span><span> </span><span id="numSymbol"><span class="annot"><span class="annottext">Symbol -&gt; Int
 </span><a href="TuringMachine.Symbol.html#numSymbol"><span class="hs-identifier hs-var hs-var">numSymbol</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-special">}</span><span>
-</span><span id="line-11"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679337619"><span id="local-6989586621679337621"><span class="annot"><span class="annottext">Symbol -&gt; Symbol -&gt; Bool
+</span><span id="line-11"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679336776"><span id="local-6989586621679336778"><span class="annot"><span class="annottext">Symbol -&gt; Symbol -&gt; Bool
 (Symbol -&gt; Symbol -&gt; Bool)
 -&gt; (Symbol -&gt; Symbol -&gt; Bool) -&gt; Eq Symbol
 forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
@@ -17,7 +17,7 @@ forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
 $c/= :: Symbol -&gt; Symbol -&gt; Bool
 == :: Symbol -&gt; Symbol -&gt; Bool
 $c== :: Symbol -&gt; Symbol -&gt; Bool
-</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679337603"><span id="local-6989586621679337605"><span id="local-6989586621679337607"><span id="local-6989586621679337609"><span id="local-6989586621679337611"><span id="local-6989586621679337613"><span id="local-6989586621679337615"><span class="annot"><span class="annottext">Eq Symbol
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679336760"><span id="local-6989586621679336762"><span id="local-6989586621679336764"><span id="local-6989586621679336766"><span id="local-6989586621679336768"><span id="local-6989586621679336770"><span id="local-6989586621679336772"><span class="annot"><span class="annottext">Eq Symbol
 Eq Symbol
 -&gt; (Symbol -&gt; Symbol -&gt; Ordering)
 -&gt; (Symbol -&gt; Symbol -&gt; Bool)
@@ -55,7 +55,7 @@ $c&lt; :: Symbol -&gt; Symbol -&gt; Bool
 compare :: Symbol -&gt; Symbol -&gt; Ordering
 $ccompare :: Symbol -&gt; Symbol -&gt; Ordering
 $cp1Ord :: Eq Symbol
-</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Ord</span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679337588"><span id="local-6989586621679337590"><span id="local-6989586621679337592"><span id="local-6989586621679337594"><span id="local-6989586621679337596"><span id="local-6989586621679337598"><span id="local-6989586621679337600"><span class="annot"><span class="annottext">Integer -&gt; Symbol
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Ord</span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679336745"><span id="local-6989586621679336747"><span id="local-6989586621679336749"><span id="local-6989586621679336751"><span id="local-6989586621679336753"><span id="local-6989586621679336755"><span id="local-6989586621679336757"><span class="annot"><span class="annottext">Integer -&gt; Symbol
 Symbol -&gt; Symbol
 Symbol -&gt; Symbol -&gt; Symbol
 (Symbol -&gt; Symbol -&gt; Symbol)
@@ -89,7 +89,7 @@ $c* :: Symbol -&gt; Symbol -&gt; Symbol
 $c- :: Symbol -&gt; Symbol -&gt; Symbol
 + :: Symbol -&gt; Symbol -&gt; Symbol
 $c+ :: Symbol -&gt; Symbol -&gt; Symbol
-</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Num</span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679337571"><span id="local-6989586621679337573"><span id="local-6989586621679337575"><span id="local-6989586621679337577"><span id="local-6989586621679337579"><span id="local-6989586621679337581"><span id="local-6989586621679337583"><span id="local-6989586621679337585"><span class="annot"><span class="annottext">Int -&gt; Symbol
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Num</span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679336728"><span id="local-6989586621679336730"><span id="local-6989586621679336732"><span id="local-6989586621679336734"><span id="local-6989586621679336736"><span id="local-6989586621679336738"><span id="local-6989586621679336740"><span id="local-6989586621679336742"><span class="annot"><span class="annottext">Int -&gt; Symbol
 Symbol -&gt; Int
 Symbol -&gt; [Symbol]
 Symbol -&gt; Symbol
@@ -133,11 +133,11 @@ $csucc :: Symbol -&gt; Symbol
 </span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Enum</span></span></span></span></span></span></span></span></span></span><span class="hs-special">)</span><span>
 </span><span id="line-12"></span><span>
 </span><span id="line-13"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bounded</span></span><span> </span><span class="annot"><a href="TuringMachine.Symbol.html#Symbol"><span class="hs-identifier hs-type">Symbol</span></a></span><span> </span><span class="hs-keyword">where</span><span>
-</span><span id="line-14"></span><span>    </span><span id="local-6989586621679337566"><span class="annot"><span class="annottext">minBound :: Symbol
+</span><span id="line-14"></span><span>    </span><span id="local-6989586621679336723"><span class="annot"><span class="annottext">minBound :: Symbol
 </span><span class="hs-identifier hs-var hs-var hs-var hs-var">minBound</span></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Int -&gt; Symbol
 </span><a href="TuringMachine.Symbol.html#S"><span class="hs-identifier hs-var">S</span></a></span><span> </span><span class="annot"><span class="annottext">Int
 </span><span class="hs-number">0</span></span><span>
-</span><span id="line-15"></span><span>    </span><span id="local-6989586621679337564"><span class="annot"><span class="annottext">maxBound :: Symbol
+</span><span id="line-15"></span><span>    </span><span id="local-6989586621679336721"><span class="annot"><span class="annottext">maxBound :: Symbol
 </span><span class="hs-identifier hs-var hs-var hs-var hs-var">maxBound</span></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Int -&gt; Symbol
 </span><a href="TuringMachine.Symbol.html#S"><span class="hs-identifier hs-var">S</span></a></span><span> </span><span class="annot"><span class="annottext">Int
 forall a. Bounded a =&gt; a

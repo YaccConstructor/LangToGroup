@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span id="%24con2tag_8Or2qvhIGDk2NddHWeCM1I"></span><span class="hs-pragma">{-# LANGUAGE LambdaCase, ScopedTypeVariables #-}</span><span>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span id="%24con2tag_3Dc6cdxmqqU32VK077Ye2x"></span><span class="hs-pragma">{-# LANGUAGE LambdaCase, ScopedTypeVariables #-}</span><span>
 </span><span id="line-2"></span><span>
 </span><span id="line-3"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">DebuggingTMTypes</span><span> </span><span class="hs-keyword">where</span><span>
 </span><span id="line-4"></span><span>
@@ -9,7 +9,7 @@
 </span><span id="line-9"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Control.Monad</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">forM</span></span><span class="hs-special">)</span><span>
 </span><span id="line-10"></span><span>
 </span><span id="line-11"></span><span class="hs-keyword">newtype</span><span> </span><span id="DebuggingState"><span class="annot"><a href="DebuggingTMTypes.html#DebuggingState"><span class="hs-identifier hs-var">DebuggingState</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="DState"><span class="annot"><a href="DebuggingTMTypes.html#DState"><span class="hs-identifier hs-var">DState</span></a></span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
-</span><span id="line-12"></span><span>        </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679340586"><span id="local-6989586621679340588"><span class="annot"><span class="annottext">DebuggingState -&gt; DebuggingState -&gt; Bool
+</span><span id="line-12"></span><span>        </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679339712"><span id="local-6989586621679339714"><span class="annot"><span class="annottext">DebuggingState -&gt; DebuggingState -&gt; Bool
 (DebuggingState -&gt; DebuggingState -&gt; Bool)
 -&gt; (DebuggingState -&gt; DebuggingState -&gt; Bool) -&gt; Eq DebuggingState
 forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
@@ -17,7 +17,7 @@ forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
 $c/= :: DebuggingState -&gt; DebuggingState -&gt; Bool
 == :: DebuggingState -&gt; DebuggingState -&gt; Bool
 $c== :: DebuggingState -&gt; DebuggingState -&gt; Bool
-</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679340570"><span id="local-6989586621679340572"><span id="local-6989586621679340574"><span id="local-6989586621679340576"><span id="local-6989586621679340578"><span id="local-6989586621679340580"><span id="local-6989586621679340582"><span class="annot"><span class="annottext">Eq DebuggingState
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679339696"><span id="local-6989586621679339698"><span id="local-6989586621679339700"><span id="local-6989586621679339702"><span id="local-6989586621679339704"><span id="local-6989586621679339706"><span id="local-6989586621679339708"><span class="annot"><span class="annottext">Eq DebuggingState
 Eq DebuggingState
 -&gt; (DebuggingState -&gt; DebuggingState -&gt; Ordering)
 -&gt; (DebuggingState -&gt; DebuggingState -&gt; Bool)
@@ -55,7 +55,7 @@ $c&lt; :: DebuggingState -&gt; DebuggingState -&gt; Bool
 compare :: DebuggingState -&gt; DebuggingState -&gt; Ordering
 $ccompare :: DebuggingState -&gt; DebuggingState -&gt; Ordering
 $cp1Ord :: Eq DebuggingState
-</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Ord</span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679340563"><span id="local-6989586621679340565"><span id="local-6989586621679340567"><span class="annot"><span class="annottext">Int -&gt; DebuggingState -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Ord</span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679339689"><span id="local-6989586621679339691"><span id="local-6989586621679339693"><span class="annot"><span class="annottext">Int -&gt; DebuggingState -&gt; ShowS
 [DebuggingState] -&gt; ShowS
 DebuggingState -&gt; String
 (Int -&gt; DebuggingState -&gt; ShowS)
@@ -74,7 +74,7 @@ $cshowsPrec :: Int -&gt; DebuggingState -&gt; ShowS
 </span><span id="line-13"></span><span>
 </span><span id="line-14"></span><span class="hs-keyword">newtype</span><span> </span><span id="DebuggingSymbol"><span class="annot"><a href="DebuggingTMTypes.html#DebuggingSymbol"><span class="hs-identifier hs-var">DebuggingSymbol</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="DSymbol"><span class="annot"><a href="DebuggingTMTypes.html#DSymbol"><span class="hs-identifier hs-var">DSymbol</span></a></span></span><span> </span><span class="hs-special">{</span><span> </span><span id="unDSymbol"><span class="annot"><span class="annottext">DebuggingSymbol -&gt; String
 </span><a href="DebuggingTMTypes.html#unDSymbol"><span class="hs-identifier hs-var hs-var">unDSymbol</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-special">}</span><span>
-</span><span id="line-15"></span><span>        </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679340556"><span id="local-6989586621679340558"><span class="annot"><span class="annottext">DebuggingSymbol -&gt; DebuggingSymbol -&gt; Bool
+</span><span id="line-15"></span><span>        </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679339682"><span id="local-6989586621679339684"><span class="annot"><span class="annottext">DebuggingSymbol -&gt; DebuggingSymbol -&gt; Bool
 (DebuggingSymbol -&gt; DebuggingSymbol -&gt; Bool)
 -&gt; (DebuggingSymbol -&gt; DebuggingSymbol -&gt; Bool)
 -&gt; Eq DebuggingSymbol
@@ -83,7 +83,7 @@ forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
 $c/= :: DebuggingSymbol -&gt; DebuggingSymbol -&gt; Bool
 == :: DebuggingSymbol -&gt; DebuggingSymbol -&gt; Bool
 $c== :: DebuggingSymbol -&gt; DebuggingSymbol -&gt; Bool
-</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679340541"><span id="local-6989586621679340543"><span id="local-6989586621679340545"><span id="local-6989586621679340547"><span id="local-6989586621679340549"><span id="local-6989586621679340551"><span id="local-6989586621679340553"><span class="annot"><span class="annottext">Eq DebuggingSymbol
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679339667"><span id="local-6989586621679339669"><span id="local-6989586621679339671"><span id="local-6989586621679339673"><span id="local-6989586621679339675"><span id="local-6989586621679339677"><span id="local-6989586621679339679"><span class="annot"><span class="annottext">Eq DebuggingSymbol
 Eq DebuggingSymbol
 -&gt; (DebuggingSymbol -&gt; DebuggingSymbol -&gt; Ordering)
 -&gt; (DebuggingSymbol -&gt; DebuggingSymbol -&gt; Bool)
@@ -121,7 +121,7 @@ $c&lt; :: DebuggingSymbol -&gt; DebuggingSymbol -&gt; Bool
 compare :: DebuggingSymbol -&gt; DebuggingSymbol -&gt; Ordering
 $ccompare :: DebuggingSymbol -&gt; DebuggingSymbol -&gt; Ordering
 $cp1Ord :: Eq DebuggingSymbol
-</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Ord</span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679340535"><span id="local-6989586621679340537"><span id="local-6989586621679340539"><span class="annot"><span class="annottext">Int -&gt; DebuggingSymbol -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Ord</span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679339661"><span id="local-6989586621679339663"><span id="local-6989586621679339665"><span class="annot"><span class="annottext">Int -&gt; DebuggingSymbol -&gt; ShowS
 [DebuggingSymbol] -&gt; ShowS
 DebuggingSymbol -&gt; String
 (Int -&gt; DebuggingSymbol -&gt; ShowS)
@@ -139,7 +139,7 @@ $cshowsPrec :: Int -&gt; DebuggingSymbol -&gt; ShowS
 </span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
 </span><span id="line-16"></span><span>
 </span><span id="line-17"></span><span class="hs-keyword">data</span><span> </span><span id="DebuggingMove"><span class="annot"><a href="DebuggingTMTypes.html#DebuggingMove"><span class="hs-identifier hs-var">DebuggingMove</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="D"><span class="annot"><a href="DebuggingTMTypes.html#D"><span class="hs-identifier hs-var">D</span></a></span></span><span> </span><span class="annot"><a href="DebuggingTMTypes.html#DebuggingSymbol"><span class="hs-identifier hs-type">DebuggingSymbol</span></a></span><span> </span><span class="hs-glyph">|</span><span> </span><span id="L"><span class="annot"><a href="DebuggingTMTypes.html#L"><span class="hs-identifier hs-var">L</span></a></span></span><span> </span><span class="hs-glyph">|</span><span> </span><span id="R"><span class="annot"><a href="DebuggingTMTypes.html#R"><span class="hs-identifier hs-var">R</span></a></span></span><span>
-</span><span id="line-18"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679340528"><span id="local-6989586621679340530"><span class="annot"><span class="annottext">DebuggingMove -&gt; DebuggingMove -&gt; Bool
+</span><span id="line-18"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679339654"><span id="local-6989586621679339656"><span class="annot"><span class="annottext">DebuggingMove -&gt; DebuggingMove -&gt; Bool
 (DebuggingMove -&gt; DebuggingMove -&gt; Bool)
 -&gt; (DebuggingMove -&gt; DebuggingMove -&gt; Bool) -&gt; Eq DebuggingMove
 forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
@@ -147,7 +147,7 @@ forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
 $c/= :: DebuggingMove -&gt; DebuggingMove -&gt; Bool
 == :: DebuggingMove -&gt; DebuggingMove -&gt; Bool
 $c== :: DebuggingMove -&gt; DebuggingMove -&gt; Bool
-</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679340513"><span id="local-6989586621679340515"><span id="local-6989586621679340517"><span id="local-6989586621679340519"><span id="local-6989586621679340521"><span id="local-6989586621679340523"><span id="local-6989586621679340525"><span class="annot"><span class="annottext">Eq DebuggingMove
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679339639"><span id="local-6989586621679339641"><span id="local-6989586621679339643"><span id="local-6989586621679339645"><span id="local-6989586621679339647"><span id="local-6989586621679339649"><span id="local-6989586621679339651"><span class="annot"><span class="annottext">Eq DebuggingMove
 Eq DebuggingMove
 -&gt; (DebuggingMove -&gt; DebuggingMove -&gt; Ordering)
 -&gt; (DebuggingMove -&gt; DebuggingMove -&gt; Bool)
@@ -185,7 +185,7 @@ $c&lt; :: DebuggingMove -&gt; DebuggingMove -&gt; Bool
 compare :: DebuggingMove -&gt; DebuggingMove -&gt; Ordering
 $ccompare :: DebuggingMove -&gt; DebuggingMove -&gt; Ordering
 $cp1Ord :: Eq DebuggingMove
-</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Ord</span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679340507"><span id="local-6989586621679340509"><span id="local-6989586621679340511"><span class="annot"><span class="annottext">Int -&gt; DebuggingMove -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Ord</span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679339633"><span id="local-6989586621679339635"><span id="local-6989586621679339637"><span class="annot"><span class="annottext">Int -&gt; DebuggingMove -&gt; ShowS
 [DebuggingMove] -&gt; ShowS
 DebuggingMove -&gt; String
 (Int -&gt; DebuggingMove -&gt; ShowS)
@@ -203,7 +203,7 @@ $cshowsPrec :: Int -&gt; DebuggingMove -&gt; ShowS
 </span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
 </span><span id="line-19"></span><span>
 </span><span id="line-20"></span><span class="hs-keyword">newtype</span><span> </span><span id="DebuggingQuadruples"><span class="annot"><a href="DebuggingTMTypes.html#DebuggingQuadruples"><span class="hs-identifier hs-var">DebuggingQuadruples</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="DQuadruples"><span class="annot"><a href="DebuggingTMTypes.html#DQuadruples"><span class="hs-identifier hs-var">DQuadruples</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Map</span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="DebuggingTMTypes.html#DebuggingState"><span class="hs-identifier hs-type">DebuggingState</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="DebuggingTMTypes.html#DebuggingSymbol"><span class="hs-identifier hs-type">DebuggingSymbol</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="DebuggingTMTypes.html#DebuggingMove"><span class="hs-identifier hs-type">DebuggingMove</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="DebuggingTMTypes.html#DebuggingState"><span class="hs-identifier hs-type">DebuggingState</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span>
-</span><span id="line-21"></span><span>        </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679340502"><span id="local-6989586621679340504"><span class="annot"><span class="annottext">DebuggingQuadruples -&gt; DebuggingQuadruples -&gt; Bool
+</span><span id="line-21"></span><span>        </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679339628"><span id="local-6989586621679339630"><span class="annot"><span class="annottext">DebuggingQuadruples -&gt; DebuggingQuadruples -&gt; Bool
 (DebuggingQuadruples -&gt; DebuggingQuadruples -&gt; Bool)
 -&gt; (DebuggingQuadruples -&gt; DebuggingQuadruples -&gt; Bool)
 -&gt; Eq DebuggingQuadruples
@@ -212,7 +212,7 @@ forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
 $c/= :: DebuggingQuadruples -&gt; DebuggingQuadruples -&gt; Bool
 == :: DebuggingQuadruples -&gt; DebuggingQuadruples -&gt; Bool
 $c== :: DebuggingQuadruples -&gt; DebuggingQuadruples -&gt; Bool
-</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679340487"><span id="local-6989586621679340489"><span id="local-6989586621679340491"><span id="local-6989586621679340493"><span id="local-6989586621679340495"><span id="local-6989586621679340497"><span id="local-6989586621679340499"><span class="annot"><span class="annottext">Eq DebuggingQuadruples
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679339613"><span id="local-6989586621679339615"><span id="local-6989586621679339617"><span id="local-6989586621679339619"><span id="local-6989586621679339621"><span id="local-6989586621679339623"><span id="local-6989586621679339625"><span class="annot"><span class="annottext">Eq DebuggingQuadruples
 Eq DebuggingQuadruples
 -&gt; (DebuggingQuadruples -&gt; DebuggingQuadruples -&gt; Ordering)
 -&gt; (DebuggingQuadruples -&gt; DebuggingQuadruples -&gt; Bool)
@@ -252,7 +252,7 @@ $c&lt; :: DebuggingQuadruples -&gt; DebuggingQuadruples -&gt; Bool
 compare :: DebuggingQuadruples -&gt; DebuggingQuadruples -&gt; Ordering
 $ccompare :: DebuggingQuadruples -&gt; DebuggingQuadruples -&gt; Ordering
 $cp1Ord :: Eq DebuggingQuadruples
-</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Ord</span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679340481"><span id="local-6989586621679340483"><span id="local-6989586621679340485"><span class="annot"><span class="annottext">Int -&gt; DebuggingQuadruples -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Ord</span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679339607"><span id="local-6989586621679339609"><span id="local-6989586621679339611"><span class="annot"><span class="annottext">Int -&gt; DebuggingQuadruples -&gt; ShowS
 [DebuggingQuadruples] -&gt; ShowS
 DebuggingQuadruples -&gt; String
 (Int -&gt; DebuggingQuadruples -&gt; ShowS)
@@ -270,7 +270,7 @@ $cshowsPrec :: Int -&gt; DebuggingQuadruples -&gt; ShowS
 </span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
 </span><span id="line-22"></span><span>
 </span><span id="line-23"></span><span class="hs-keyword">newtype</span><span> </span><span id="DebuggingTuringMachine"><span class="annot"><a href="DebuggingTMTypes.html#DebuggingTuringMachine"><span class="hs-identifier hs-var">DebuggingTuringMachine</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="DTM"><span class="annot"><a href="DebuggingTMTypes.html#DTM"><span class="hs-identifier hs-var">DTM</span></a></span></span><span> </span><span class="annot"><a href="DebuggingTMTypes.html#DebuggingQuadruples"><span class="hs-identifier hs-type">DebuggingQuadruples</span></a></span><span>
-</span><span id="line-24"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679340474"><span id="local-6989586621679340476"><span id="local-6989586621679340478"><span class="annot"><span class="annottext">Int -&gt; DebuggingTuringMachine -&gt; ShowS
+</span><span id="line-24"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679339600"><span id="local-6989586621679339602"><span id="local-6989586621679339604"><span class="annot"><span class="annottext">Int -&gt; DebuggingTuringMachine -&gt; ShowS
 [DebuggingTuringMachine] -&gt; ShowS
 DebuggingTuringMachine -&gt; String
 (Int -&gt; DebuggingTuringMachine -&gt; ShowS)
@@ -285,7 +285,7 @@ show :: DebuggingTuringMachine -&gt; String
 $cshow :: DebuggingTuringMachine -&gt; String
 showsPrec :: Int -&gt; DebuggingTuringMachine -&gt; ShowS
 $cshowsPrec :: Int -&gt; DebuggingTuringMachine -&gt; ShowS
-</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679340470"><span id="local-6989586621679340472"><span class="annot"><span class="annottext">DebuggingTuringMachine -&gt; DebuggingTuringMachine -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679339596"><span id="local-6989586621679339598"><span class="annot"><span class="annottext">DebuggingTuringMachine -&gt; DebuggingTuringMachine -&gt; Bool
 (DebuggingTuringMachine -&gt; DebuggingTuringMachine -&gt; Bool)
 -&gt; (DebuggingTuringMachine -&gt; DebuggingTuringMachine -&gt; Bool)
 -&gt; Eq DebuggingTuringMachine
@@ -309,7 +309,7 @@ $c== :: DebuggingTuringMachine -&gt; DebuggingTuringMachine -&gt; Bool
 </span><span class="hs-string">&quot;qWriteStartCounter&quot;</span></span><span>
 </span><span id="line-31"></span><span>
 </span><span id="line-32"></span><span class="hs-keyword">newtype</span><span> </span><span id="SymbolsPair"><span class="annot"><a href="DebuggingTMTypes.html#SymbolsPair"><span class="hs-identifier hs-var">SymbolsPair</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="SymbolsPair"><span class="annot"><a href="DebuggingTMTypes.html#SymbolsPair"><span class="hs-identifier hs-var">SymbolsPair</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="GrammarType.html#Nonterminal"><span class="hs-identifier hs-type">Nonterminal</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="GrammarType.html#Symbol"><span class="hs-identifier hs-type">GrammarType.Symbol</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="GrammarType.html#Symbol"><span class="hs-identifier hs-type">GrammarType.Symbol</span></a></span><span class="hs-special">)</span><span>
-</span><span id="line-33"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679340461"><span id="local-6989586621679340463"><span class="annot"><span class="annottext">SymbolsPair -&gt; SymbolsPair -&gt; Bool
+</span><span id="line-33"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679339587"><span id="local-6989586621679339589"><span class="annot"><span class="annottext">SymbolsPair -&gt; SymbolsPair -&gt; Bool
 (SymbolsPair -&gt; SymbolsPair -&gt; Bool)
 -&gt; (SymbolsPair -&gt; SymbolsPair -&gt; Bool) -&gt; Eq SymbolsPair
 forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
@@ -317,7 +317,7 @@ forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
 $c/= :: SymbolsPair -&gt; SymbolsPair -&gt; Bool
 == :: SymbolsPair -&gt; SymbolsPair -&gt; Bool
 $c== :: SymbolsPair -&gt; SymbolsPair -&gt; Bool
-</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679340455"><span id="local-6989586621679340457"><span id="local-6989586621679340459"><span class="annot"><span class="annottext">Int -&gt; SymbolsPair -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679339581"><span id="local-6989586621679339583"><span id="local-6989586621679339585"><span class="annot"><span class="annottext">Int -&gt; SymbolsPair -&gt; ShowS
 [SymbolsPair] -&gt; ShowS
 SymbolsPair -&gt; String
 (Int -&gt; SymbolsPair -&gt; ShowS)
@@ -334,26 +334,26 @@ showsPrec :: Int -&gt; SymbolsPair -&gt; ShowS
 $cshowsPrec :: Int -&gt; SymbolsPair -&gt; ShowS
 </span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
 </span><span id="line-34"></span><span>
-</span><span id="line-35"></span><span id="local-6989586621679340454"><span class="annot"><a href="DebuggingTMTypes.html#convertToTuringMachine"><span class="hs-identifier hs-type">convertToTuringMachine</span></a></span><span> </span><span class="hs-glyph">::</span><span>
-</span><span id="line-36"></span><span>    </span><span class="annot"><span class="hs-identifier hs-type">MonadFail</span></span><span> </span><span class="annot"><a href="#local-6989586621679340454"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span>
+</span><span id="line-35"></span><span id="local-6989586621679339580"><span class="annot"><a href="DebuggingTMTypes.html#convertToTuringMachine"><span class="hs-identifier hs-type">convertToTuringMachine</span></a></span><span> </span><span class="hs-glyph">::</span><span>
+</span><span id="line-36"></span><span>    </span><span class="annot"><span class="hs-identifier hs-type">MonadFail</span></span><span> </span><span class="annot"><a href="#local-6989586621679339580"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span>
 </span><span id="line-37"></span><span>    </span><span class="annot"><a href="DebuggingTMTypes.html#DebuggingTuringMachine"><span class="hs-identifier hs-type">DebuggingTuringMachine</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span>
-</span><span id="line-38"></span><span>    </span><span class="annot"><a href="#local-6989586621679340454"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="annot"><a href="TuringMachine.html#TuringMachine"><span class="hs-identifier hs-type">TuringMachine</span></a></span></span><span>
+</span><span id="line-38"></span><span>    </span><span class="annot"><a href="#local-6989586621679339580"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="annot"><a href="TuringMachine.html#TuringMachine"><span class="hs-identifier hs-type">TuringMachine</span></a></span></span><span>
 </span><span id="line-39"></span><span id="convertToTuringMachine"><span class="annot"><span class="annottext">convertToTuringMachine :: DebuggingTuringMachine -&gt; m TuringMachine
-</span><a href="DebuggingTMTypes.html#convertToTuringMachine"><span class="hs-identifier hs-var hs-var">convertToTuringMachine</span></a></span></span><span> </span><span id="local-6989586621679340452"><span class="annot"><span class="annottext">tm :: DebuggingTuringMachine
-</span><a href="#local-6989586621679340452"><span class="hs-identifier hs-var">tm</span></a></span></span><span class="hs-glyph">@</span><span class="hs-special">(</span><span class="annot"><a href="DebuggingTMTypes.html#DTM"><span class="hs-identifier hs-type">DTM</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="DebuggingTMTypes.html#DQuadruples"><span class="hs-identifier hs-type">DQuadruples</span></a></span><span> </span><span id="local-6989586621679340451"><span class="annot"><span class="annottext">Map
+</span><a href="DebuggingTMTypes.html#convertToTuringMachine"><span class="hs-identifier hs-var hs-var">convertToTuringMachine</span></a></span></span><span> </span><span id="local-6989586621679339578"><span class="annot"><span class="annottext">tm :: DebuggingTuringMachine
+</span><a href="#local-6989586621679339578"><span class="hs-identifier hs-var">tm</span></a></span></span><span class="hs-glyph">@</span><span class="hs-special">(</span><span class="annot"><a href="DebuggingTMTypes.html#DTM"><span class="hs-identifier hs-type">DTM</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="DebuggingTMTypes.html#DQuadruples"><span class="hs-identifier hs-type">DQuadruples</span></a></span><span> </span><span id="local-6989586621679339577"><span class="annot"><span class="annottext">Map
   (DebuggingState, DebuggingSymbol) (DebuggingMove, DebuggingState)
-</span><a href="#local-6989586621679340451"><span class="hs-identifier hs-var">quadruplesMap</span></a></span></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
-</span><span id="line-40"></span><span>    </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679340450"><span class="annot"><span class="annottext">states' :: IsoMap DebuggingState State
-</span><a href="#local-6989586621679340450"><span class="hs-identifier hs-var hs-var">states'</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">DebuggingTuringMachine -&gt; IsoMap DebuggingState State
+</span><a href="#local-6989586621679339577"><span class="hs-identifier hs-var">quadruplesMap</span></a></span></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-40"></span><span>    </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679339576"><span class="annot"><span class="annottext">states' :: IsoMap DebuggingState State
+</span><a href="#local-6989586621679339576"><span class="hs-identifier hs-var hs-var">states'</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">DebuggingTuringMachine -&gt; IsoMap DebuggingState State
 </span><a href="DebuggingTMTypes.html#getStates"><span class="hs-identifier hs-var">getStates</span></a></span><span> </span><span class="annot"><span class="annottext">DebuggingTuringMachine
-</span><a href="#local-6989586621679340452"><span class="hs-identifier hs-var">tm</span></a></span><span>
-</span><span id="line-41"></span><span>        </span><span class="hs-special">(</span><span id="local-6989586621679340448"><span class="annot"><span class="annottext">Alphabet
-</span><a href="#local-6989586621679340448"><span class="hs-identifier hs-var">alphabet'</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679340447"><span class="annot"><span class="annottext">IsoMap DebuggingSymbol Symbol
-</span><a href="#local-6989586621679340447"><span class="hs-identifier hs-var">symbols'</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">DebuggingTuringMachine -&gt; (Alphabet, IsoMap DebuggingSymbol Symbol)
+</span><a href="#local-6989586621679339578"><span class="hs-identifier hs-var">tm</span></a></span><span>
+</span><span id="line-41"></span><span>        </span><span class="hs-special">(</span><span id="local-6989586621679339574"><span class="annot"><span class="annottext">Alphabet
+</span><a href="#local-6989586621679339574"><span class="hs-identifier hs-var">alphabet'</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679339573"><span class="annot"><span class="annottext">IsoMap DebuggingSymbol Symbol
+</span><a href="#local-6989586621679339573"><span class="hs-identifier hs-var">symbols'</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">DebuggingTuringMachine -&gt; (Alphabet, IsoMap DebuggingSymbol Symbol)
 </span><a href="DebuggingTMTypes.html#getSymbols"><span class="hs-identifier hs-var">getSymbols</span></a></span><span> </span><span class="annot"><span class="annottext">DebuggingTuringMachine
-</span><a href="#local-6989586621679340452"><span class="hs-identifier hs-var">tm</span></a></span><span>
-</span><span id="line-42"></span><span>    </span><span id="local-6989586621679340445"><span class="annot"><span class="annottext">[((State, Symbol), (MoveOr Symbol, State))]
-</span><a href="#local-6989586621679340445"><span class="hs-identifier hs-var">quadruplesList</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">[((DebuggingState, DebuggingSymbol),
+</span><a href="#local-6989586621679339578"><span class="hs-identifier hs-var">tm</span></a></span><span>
+</span><span id="line-42"></span><span>    </span><span id="local-6989586621679339571"><span class="annot"><span class="annottext">[((State, Symbol), (MoveOr Symbol, State))]
+</span><a href="#local-6989586621679339571"><span class="hs-identifier hs-var">quadruplesList</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">[((DebuggingState, DebuggingSymbol),
   (DebuggingMove, DebuggingState))]
 -&gt; (((DebuggingState, DebuggingSymbol),
      (DebuggingMove, DebuggingState))
@@ -369,7 +369,7 @@ t a -&gt; (a -&gt; m b) -&gt; m (t b)
 forall c v. Listable c v =&gt; c -&gt; [v]
 </span><a href="Containers.html#toList"><span class="hs-identifier hs-var">toList</span></a></span><span> </span><span class="annot"><span class="annottext">Map
   (DebuggingState, DebuggingSymbol) (DebuggingMove, DebuggingState)
-</span><a href="#local-6989586621679340451"><span class="hs-identifier hs-var">quadruplesMap</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">((((DebuggingState, DebuggingSymbol),
+</span><a href="#local-6989586621679339577"><span class="hs-identifier hs-var">quadruplesMap</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">((((DebuggingState, DebuggingSymbol),
    (DebuggingMove, DebuggingState))
   -&gt; m ((State, Symbol), (MoveOr Symbol, State)))
  -&gt; m [((State, Symbol), (MoveOr Symbol, State))])
@@ -379,30 +379,30 @@ forall c v. Listable c v =&gt; c -&gt; [v]
 -&gt; m [((State, Symbol), (MoveOr Symbol, State))]
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span>
-</span><span id="line-43"></span><span>        </span><span class="hs-glyph">\</span><span class="hs-special">(</span><span class="hs-special">(</span><span id="local-6989586621679340443"><span class="annot"><span class="annottext">DebuggingState
-</span><a href="#local-6989586621679340443"><span class="hs-identifier hs-var">state1</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679340442"><span class="annot"><span class="annottext">DebuggingSymbol
-</span><a href="#local-6989586621679340442"><span class="hs-identifier hs-var">symbol1</span></a></span></span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679340441"><span class="annot"><span class="annottext">DebuggingMove
-</span><a href="#local-6989586621679340441"><span class="hs-identifier hs-var">symbolOrMove</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679340440"><span class="annot"><span class="annottext">DebuggingState
-</span><a href="#local-6989586621679340440"><span class="hs-identifier hs-var">state2</span></a></span></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
-</span><span id="line-44"></span><span>            </span><span id="local-6989586621679340439"><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679340439"><span class="hs-identifier hs-var">qf</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">IsoMap DebuggingState State
-</span><a href="#local-6989586621679340450"><span class="hs-identifier hs-var">states'</span></a></span><span>  </span><span class="annot"><span class="annottext">IsoMap DebuggingState State -&gt; DebuggingState -&gt; m State
+</span><span id="line-43"></span><span>        </span><span class="hs-glyph">\</span><span class="hs-special">(</span><span class="hs-special">(</span><span id="local-6989586621679339569"><span class="annot"><span class="annottext">DebuggingState
+</span><a href="#local-6989586621679339569"><span class="hs-identifier hs-var">state1</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679339568"><span class="annot"><span class="annottext">DebuggingSymbol
+</span><a href="#local-6989586621679339568"><span class="hs-identifier hs-var">symbol1</span></a></span></span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679339567"><span class="annot"><span class="annottext">DebuggingMove
+</span><a href="#local-6989586621679339567"><span class="hs-identifier hs-var">symbolOrMove</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679339566"><span class="annot"><span class="annottext">DebuggingState
+</span><a href="#local-6989586621679339566"><span class="hs-identifier hs-var">state2</span></a></span></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-44"></span><span>            </span><span id="local-6989586621679339565"><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679339565"><span class="hs-identifier hs-var">qf</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">IsoMap DebuggingState State
+</span><a href="#local-6989586621679339576"><span class="hs-identifier hs-var">states'</span></a></span><span>  </span><span class="annot"><span class="annottext">IsoMap DebuggingState State -&gt; DebuggingState -&gt; m State
 forall c k v (m :: * -&gt; *).
 (Indexable c k v, MonadFail m) =&gt;
 c -&gt; k -&gt; m v
 </span><a href="Containers.html#%21%3F"><span class="hs-operator hs-var">!?</span></a></span><span> </span><span class="annot"><span class="annottext">DebuggingState
-</span><a href="#local-6989586621679340443"><span class="hs-identifier hs-var">state1</span></a></span><span>
-</span><span id="line-45"></span><span>            </span><span id="local-6989586621679340437"><span class="annot"><span class="annottext">Symbol
-</span><a href="#local-6989586621679340437"><span class="hs-identifier hs-var">s</span></a></span></span><span>  </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">IsoMap DebuggingSymbol Symbol
-</span><a href="#local-6989586621679340447"><span class="hs-identifier hs-var">symbols'</span></a></span><span> </span><span class="annot"><span class="annottext">IsoMap DebuggingSymbol Symbol -&gt; DebuggingSymbol -&gt; m Symbol
+</span><a href="#local-6989586621679339569"><span class="hs-identifier hs-var">state1</span></a></span><span>
+</span><span id="line-45"></span><span>            </span><span id="local-6989586621679339563"><span class="annot"><span class="annottext">Symbol
+</span><a href="#local-6989586621679339563"><span class="hs-identifier hs-var">s</span></a></span></span><span>  </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">IsoMap DebuggingSymbol Symbol
+</span><a href="#local-6989586621679339573"><span class="hs-identifier hs-var">symbols'</span></a></span><span> </span><span class="annot"><span class="annottext">IsoMap DebuggingSymbol Symbol -&gt; DebuggingSymbol -&gt; m Symbol
 forall c k v (m :: * -&gt; *).
 (Indexable c k v, MonadFail m) =&gt;
 c -&gt; k -&gt; m v
 </span><a href="Containers.html#%21%3F"><span class="hs-operator hs-var">!?</span></a></span><span> </span><span class="annot"><span class="annottext">DebuggingSymbol
-</span><a href="#local-6989586621679340442"><span class="hs-identifier hs-var">symbol1</span></a></span><span>
-</span><span id="line-46"></span><span>            </span><span id="local-6989586621679340436"><span class="annot"><span class="annottext">MoveOr Symbol
-</span><a href="#local-6989586621679340436"><span class="hs-identifier hs-var">sm</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">DebuggingMove
-</span><a href="#local-6989586621679340441"><span class="hs-identifier hs-var">symbolOrMove</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><a href="#local-6989586621679339568"><span class="hs-identifier hs-var">symbol1</span></a></span><span>
+</span><span id="line-46"></span><span>            </span><span id="local-6989586621679339562"><span class="annot"><span class="annottext">MoveOr Symbol
+</span><a href="#local-6989586621679339562"><span class="hs-identifier hs-var">sm</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">DebuggingMove
+</span><a href="#local-6989586621679339567"><span class="hs-identifier hs-var">symbolOrMove</span></a></span><span> </span><span class="hs-keyword">of</span><span>
 </span><span id="line-47"></span><span>                    </span><span class="annot"><span class="annottext">DebuggingMove
 </span><a href="DebuggingTMTypes.html#L"><span class="hs-identifier hs-var">L</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">MoveOr Symbol -&gt; m (MoveOr Symbol)
 forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
@@ -423,34 +423,34 @@ forall a b. (a -&gt; b) -&gt; a -&gt; b
 forall s. Move -&gt; MoveOr s
 </span><a href="TuringMachine.SymbolOrMove.html#M"><span class="hs-identifier hs-var">M</span></a></span><span> </span><span class="annot"><span class="annottext">Move
 </span><a href="TuringMachine.Move.html#toRight"><span class="hs-identifier hs-var">toRight</span></a></span><span>
-</span><span id="line-49"></span><span>                    </span><span class="annot"><a href="DebuggingTMTypes.html#D"><span class="hs-identifier hs-type">D</span></a></span><span> </span><span id="local-6989586621679340432"><span class="annot"><span class="annottext">DebuggingSymbol
-</span><a href="#local-6989586621679340432"><span class="hs-identifier hs-var">symbol2</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Symbol -&gt; MoveOr Symbol
+</span><span id="line-49"></span><span>                    </span><span class="annot"><a href="DebuggingTMTypes.html#D"><span class="hs-identifier hs-type">D</span></a></span><span> </span><span id="local-6989586621679339558"><span class="annot"><span class="annottext">DebuggingSymbol
+</span><a href="#local-6989586621679339558"><span class="hs-identifier hs-var">symbol2</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Symbol -&gt; MoveOr Symbol
 forall s. s -&gt; MoveOr s
 </span><a href="TuringMachine.SymbolOrMove.html#S"><span class="hs-identifier hs-var">S</span></a></span><span> </span><span class="annot"><span class="annottext">(Symbol -&gt; MoveOr Symbol) -&gt; m Symbol -&gt; m (MoveOr Symbol)
 forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
 </span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">IsoMap DebuggingSymbol Symbol
-</span><a href="#local-6989586621679340447"><span class="hs-identifier hs-var">symbols'</span></a></span><span> </span><span class="annot"><span class="annottext">IsoMap DebuggingSymbol Symbol -&gt; DebuggingSymbol -&gt; m Symbol
+</span><a href="#local-6989586621679339573"><span class="hs-identifier hs-var">symbols'</span></a></span><span> </span><span class="annot"><span class="annottext">IsoMap DebuggingSymbol Symbol -&gt; DebuggingSymbol -&gt; m Symbol
 forall c k v (m :: * -&gt; *).
 (Indexable c k v, MonadFail m) =&gt;
 c -&gt; k -&gt; m v
 </span><a href="Containers.html#%21%3F"><span class="hs-operator hs-var">!?</span></a></span><span> </span><span class="annot"><span class="annottext">DebuggingSymbol
-</span><a href="#local-6989586621679340432"><span class="hs-identifier hs-var">symbol2</span></a></span><span>
-</span><span id="line-50"></span><span>            </span><span id="local-6989586621679340429"><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679340429"><span class="hs-identifier hs-var">qt</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">IsoMap DebuggingState State
-</span><a href="#local-6989586621679340450"><span class="hs-identifier hs-var">states'</span></a></span><span>  </span><span class="annot"><span class="annottext">IsoMap DebuggingState State -&gt; DebuggingState -&gt; m State
+</span><a href="#local-6989586621679339558"><span class="hs-identifier hs-var">symbol2</span></a></span><span>
+</span><span id="line-50"></span><span>            </span><span id="local-6989586621679339555"><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679339555"><span class="hs-identifier hs-var">qt</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">IsoMap DebuggingState State
+</span><a href="#local-6989586621679339576"><span class="hs-identifier hs-var">states'</span></a></span><span>  </span><span class="annot"><span class="annottext">IsoMap DebuggingState State -&gt; DebuggingState -&gt; m State
 forall c k v (m :: * -&gt; *).
 (Indexable c k v, MonadFail m) =&gt;
 c -&gt; k -&gt; m v
 </span><a href="Containers.html#%21%3F"><span class="hs-operator hs-var">!?</span></a></span><span> </span><span class="annot"><span class="annottext">DebuggingState
-</span><a href="#local-6989586621679340440"><span class="hs-identifier hs-var">state2</span></a></span><span>
+</span><a href="#local-6989586621679339566"><span class="hs-identifier hs-var">state2</span></a></span><span>
 </span><span id="line-51"></span><span>            </span><span class="annot"><span class="annottext">((State, Symbol), (MoveOr Symbol, State))
 -&gt; m ((State, Symbol), (MoveOr Symbol, State))
 forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
 </span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">(</span><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679340439"><span class="hs-identifier hs-var">qf</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Symbol
-</span><a href="#local-6989586621679340437"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">MoveOr Symbol
-</span><a href="#local-6989586621679340436"><span class="hs-identifier hs-var">sm</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679340429"><span class="hs-identifier hs-var">qt</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><a href="#local-6989586621679339565"><span class="hs-identifier hs-var">qf</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Symbol
+</span><a href="#local-6989586621679339563"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">MoveOr Symbol
+</span><a href="#local-6989586621679339562"><span class="hs-identifier hs-var">sm</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679339555"><span class="hs-identifier hs-var">qt</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span>
 </span><span id="line-52"></span><span>    </span><span class="annot"><span class="annottext">TuringMachine -&gt; m TuringMachine
 forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
 </span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">(TuringMachine -&gt; m TuringMachine)
@@ -464,18 +464,18 @@ forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><a href="TuringMachine.html#turingMachine"><span class="hs-identifier hs-var">turingMachine</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[((State, Symbol), (MoveOr Symbol, State))] -&gt; Quadruples
 forall c v. UnsafeListable c v =&gt; [v] -&gt; c
 </span><a href="Containers.html#fromList"><span class="hs-identifier hs-var">fromList</span></a></span><span> </span><span class="annot"><span class="annottext">[((State, Symbol), (MoveOr Symbol, State))]
-</span><a href="#local-6989586621679340445"><span class="hs-identifier hs-var">quadruplesList</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">LabeledStates
+</span><a href="#local-6989586621679339571"><span class="hs-identifier hs-var">quadruplesList</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">LabeledStates
 forall c. Nullable c =&gt; c
 </span><a href="Containers.html#emptyC"><span class="hs-identifier hs-var">emptyC</span></a></span><span> </span><span class="annot"><span class="annottext">Alphabet
-</span><a href="#local-6989586621679340448"><span class="hs-identifier hs-var">alphabet'</span></a></span><span>
+</span><a href="#local-6989586621679339574"><span class="hs-identifier hs-var">alphabet'</span></a></span><span>
 </span><span id="line-53"></span><span>
 </span><span id="line-54"></span><span class="annot"><a href="DebuggingTMTypes.html#getStates"><span class="hs-identifier hs-type">getStates</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="DebuggingTMTypes.html#DebuggingTuringMachine"><span class="hs-identifier hs-type">DebuggingTuringMachine</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Containers.IsoMap.html#IsoMap"><span class="hs-identifier hs-type">IsoMap</span></a></span><span> </span><span class="annot"><a href="DebuggingTMTypes.html#DebuggingState"><span class="hs-identifier hs-type">DebuggingState</span></a></span><span> </span><span class="annot"><a href="TuringMachine.State.html#State"><span class="hs-identifier hs-type">State</span></a></span><span>
 </span><span id="line-55"></span><span id="getStates"><span class="annot"><span class="annottext">getStates :: DebuggingTuringMachine -&gt; IsoMap DebuggingState State
-</span><a href="DebuggingTMTypes.html#getStates"><span class="hs-identifier hs-var hs-var">getStates</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="DebuggingTMTypes.html#DTM"><span class="hs-identifier hs-type">DTM</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="DebuggingTMTypes.html#DQuadruples"><span class="hs-identifier hs-type">DQuadruples</span></a></span><span> </span><span id="local-6989586621679340423"><span class="annot"><span class="annottext">Map
+</span><a href="DebuggingTMTypes.html#getStates"><span class="hs-identifier hs-var hs-var">getStates</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="DebuggingTMTypes.html#DTM"><span class="hs-identifier hs-type">DTM</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="DebuggingTMTypes.html#DQuadruples"><span class="hs-identifier hs-type">DQuadruples</span></a></span><span> </span><span id="local-6989586621679339549"><span class="annot"><span class="annottext">Map
   (DebuggingState, DebuggingSymbol) (DebuggingMove, DebuggingState)
-</span><a href="#local-6989586621679340423"><span class="hs-identifier hs-var">qdrs</span></a></span></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">let</span><span>
-</span><span id="line-56"></span><span>    </span><span id="local-6989586621679340422"><span class="annot"><span class="annottext">Set DebuggingState
-</span><a href="#local-6989586621679340422"><span class="hs-identifier hs-var">dstates</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Set</span></span><span> </span><span class="annot"><a href="DebuggingTMTypes.html#DebuggingState"><span class="hs-identifier hs-type">DebuggingState</span></a></span><span> </span><span class="hs-glyph">=</span><span>
+</span><a href="#local-6989586621679339549"><span class="hs-identifier hs-var">qdrs</span></a></span></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">let</span><span>
+</span><span id="line-56"></span><span>    </span><span id="local-6989586621679339548"><span class="annot"><span class="annottext">Set DebuggingState
+</span><a href="#local-6989586621679339548"><span class="hs-identifier hs-var">dstates</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Set</span></span><span> </span><span class="annot"><a href="DebuggingTMTypes.html#DebuggingState"><span class="hs-identifier hs-type">DebuggingState</span></a></span><span> </span><span class="hs-glyph">=</span><span>
 </span><span id="line-57"></span><span>        </span><span class="annot"><span class="annottext">[DebuggingState] -&gt; Set DebuggingState
 forall c v. UnsafeListable c v =&gt; [v] -&gt; c
 </span><a href="Containers.html#fromList"><span class="hs-identifier hs-var">fromList</span></a></span><span> </span><span class="annot"><span class="annottext">([DebuggingState] -&gt; Set DebuggingState)
@@ -489,13 +489,13 @@ forall a b. (a -&gt; b) -&gt; a -&gt; b
      (DebuggingMove, DebuggingState))]
 -&gt; [DebuggingState]
 forall (t :: * -&gt; *) a b. Foldable t =&gt; (a -&gt; [b]) -&gt; t a -&gt; [b]
-</span><span class="hs-identifier hs-var">concatMap</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span class="hs-special">(</span><span class="hs-special">(</span><span id="local-6989586621679340420"><span class="annot"><span class="annottext">DebuggingState
-</span><a href="#local-6989586621679340420"><span class="hs-identifier hs-var">s1</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">DebuggingSymbol
+</span><span class="hs-identifier hs-var">concatMap</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span class="hs-special">(</span><span class="hs-special">(</span><span id="local-6989586621679339546"><span class="annot"><span class="annottext">DebuggingState
+</span><a href="#local-6989586621679339546"><span class="hs-identifier hs-var">s1</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">DebuggingSymbol
 </span><span class="hs-identifier">_</span></span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">DebuggingMove
-</span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679340419"><span class="annot"><span class="annottext">DebuggingState
-</span><a href="#local-6989586621679340419"><span class="hs-identifier hs-var">s2</span></a></span></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">DebuggingState
-</span><a href="#local-6989586621679340420"><span class="hs-identifier hs-var">s1</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">DebuggingState
-</span><a href="#local-6989586621679340419"><span class="hs-identifier hs-var">s2</span></a></span><span class="hs-special">]</span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">([((DebuggingState, DebuggingSymbol),
+</span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679339545"><span class="annot"><span class="annottext">DebuggingState
+</span><a href="#local-6989586621679339545"><span class="hs-identifier hs-var">s2</span></a></span></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">DebuggingState
+</span><a href="#local-6989586621679339546"><span class="hs-identifier hs-var">s1</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">DebuggingState
+</span><a href="#local-6989586621679339545"><span class="hs-identifier hs-var">s2</span></a></span><span class="hs-special">]</span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">([((DebuggingState, DebuggingSymbol),
    (DebuggingMove, DebuggingState))]
  -&gt; [DebuggingState])
 -&gt; [((DebuggingState, DebuggingSymbol),
@@ -510,16 +510,16 @@ forall a b. (a -&gt; b) -&gt; a -&gt; b
 forall c v. Listable c v =&gt; c -&gt; [v]
 </span><a href="Containers.html#toList"><span class="hs-identifier hs-var">toList</span></a></span><span> </span><span class="annot"><span class="annottext">Map
   (DebuggingState, DebuggingSymbol) (DebuggingMove, DebuggingState)
-</span><a href="#local-6989586621679340423"><span class="hs-identifier hs-var">qdrs</span></a></span><span>
-</span><span id="line-60"></span><span>    </span><span id="local-6989586621679340418"><span class="annot"><span class="annottext">dstates' :: Set DebuggingState
-</span><a href="#local-6989586621679340418"><span class="hs-identifier hs-var hs-var">dstates'</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">DebuggingState
+</span><a href="#local-6989586621679339549"><span class="hs-identifier hs-var">qdrs</span></a></span><span>
+</span><span id="line-60"></span><span>    </span><span id="local-6989586621679339544"><span class="annot"><span class="annottext">dstates' :: Set DebuggingState
+</span><a href="#local-6989586621679339544"><span class="hs-identifier hs-var hs-var">dstates'</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">DebuggingState
 </span><a href="DebuggingTMTypes.html#finalDState"><span class="hs-identifier hs-var">finalDState</span></a></span><span> </span><span class="annot"><span class="annottext">DebuggingState -&gt; Set DebuggingState -&gt; Set DebuggingState
 forall c v. Deletable c v =&gt; v -&gt; c -&gt; c
 </span><a href="Containers.html#%5C%3E"><span class="hs-operator hs-var">\&gt;</span></a></span><span> </span><span class="annot"><span class="annottext">DebuggingState
 </span><a href="DebuggingTMTypes.html#startDState"><span class="hs-identifier hs-var">startDState</span></a></span><span> </span><span class="annot"><span class="annottext">DebuggingState -&gt; Set DebuggingState -&gt; Set DebuggingState
 forall c v. Deletable c v =&gt; v -&gt; c -&gt; c
 </span><a href="Containers.html#%5C%3E"><span class="hs-operator hs-var">\&gt;</span></a></span><span> </span><span class="annot"><span class="annottext">Set DebuggingState
-</span><a href="#local-6989586621679340422"><span class="hs-identifier hs-var">dstates</span></a></span><span>
+</span><a href="#local-6989586621679339548"><span class="hs-identifier hs-var">dstates</span></a></span><span>
 </span><span id="line-61"></span><span>    </span><span class="hs-keyword">in</span><span> </span><span class="annot"><span class="annottext">[(DebuggingState, State)] -&gt; IsoMap DebuggingState State
 forall c v. UnsafeListable c v =&gt; [v] -&gt; c
 </span><a href="Containers.html#fromList"><span class="hs-identifier hs-var">fromList</span></a></span><span> </span><span class="annot"><span class="annottext">([(DebuggingState, State)] -&gt; IsoMap DebuggingState State)
@@ -536,21 +536,21 @@ forall c v. Insertable c v =&gt; v -&gt; c -&gt; c
 </span><a href="Containers.html#%2B%3E"><span class="hs-operator hs-var">+&gt;</span></a></span><span> </span><span class="annot"><span class="annottext">Set DebuggingState -&gt; [DebuggingState]
 forall c v. Listable c v =&gt; c -&gt; [v]
 </span><a href="Containers.html#toList"><span class="hs-identifier hs-var">toList</span></a></span><span> </span><span class="annot"><span class="annottext">Set DebuggingState
-</span><a href="#local-6989586621679340418"><span class="hs-identifier hs-var">dstates'</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679339544"><span class="hs-identifier hs-var">dstates'</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">State
 forall a. Bounded a =&gt; a
 </span><span class="hs-identifier hs-var">minBound</span></span><span class="hs-glyph">..</span><span class="hs-special">]</span><span>
 </span><span id="line-62"></span><span>
 </span><span id="line-63"></span><span class="annot"><a href="DebuggingTMTypes.html#getSymbols"><span class="hs-identifier hs-type">getSymbols</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="DebuggingTMTypes.html#DebuggingTuringMachine"><span class="hs-identifier hs-type">DebuggingTuringMachine</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="TuringMachine.html#Alphabet"><span class="hs-identifier hs-type">Alphabet</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Containers.IsoMap.html#IsoMap"><span class="hs-identifier hs-type">IsoMap</span></a></span><span> </span><span class="annot"><a href="DebuggingTMTypes.html#DebuggingSymbol"><span class="hs-identifier hs-type">DebuggingSymbol</span></a></span><span> </span><span class="annot"><a href="TuringMachine.Symbol.html#Symbol"><span class="hs-identifier hs-type">TuringMachine.Symbol</span></a></span><span class="hs-special">)</span><span>
 </span><span id="line-64"></span><span id="getSymbols"><span class="annot"><span class="annottext">getSymbols :: DebuggingTuringMachine -&gt; (Alphabet, IsoMap DebuggingSymbol Symbol)
-</span><a href="DebuggingTMTypes.html#getSymbols"><span class="hs-identifier hs-var hs-var">getSymbols</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="DebuggingTMTypes.html#DTM"><span class="hs-identifier hs-type">DTM</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="DebuggingTMTypes.html#DQuadruples"><span class="hs-identifier hs-type">DQuadruples</span></a></span><span> </span><span id="local-6989586621679340414"><span class="annot"><span class="annottext">Map
+</span><a href="DebuggingTMTypes.html#getSymbols"><span class="hs-identifier hs-var hs-var">getSymbols</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="DebuggingTMTypes.html#DTM"><span class="hs-identifier hs-type">DTM</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="DebuggingTMTypes.html#DQuadruples"><span class="hs-identifier hs-type">DQuadruples</span></a></span><span> </span><span id="local-6989586621679339540"><span class="annot"><span class="annottext">Map
   (DebuggingState, DebuggingSymbol) (DebuggingMove, DebuggingState)
-</span><a href="#local-6989586621679340414"><span class="hs-identifier hs-var">qdrs</span></a></span></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">let</span><span>
-</span><span id="line-65"></span><span>    </span><span id="local-6989586621679340413"><span class="annot"><span class="annottext">blank' :: DebuggingSymbol
-</span><a href="#local-6989586621679340413"><span class="hs-identifier hs-var hs-var">blank'</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; DebuggingSymbol
+</span><a href="#local-6989586621679339540"><span class="hs-identifier hs-var">qdrs</span></a></span></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">let</span><span>
+</span><span id="line-65"></span><span>    </span><span id="local-6989586621679339539"><span class="annot"><span class="annottext">blank' :: DebuggingSymbol
+</span><a href="#local-6989586621679339539"><span class="hs-identifier hs-var hs-var">blank'</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; DebuggingSymbol
 </span><a href="DebuggingTMTypes.html#DSymbol"><span class="hs-identifier hs-var">DSymbol</span></a></span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;.&quot;</span></span><span>
-</span><span id="line-66"></span><span>    </span><span id="local-6989586621679340412"><span class="annot"><span class="annottext">Set DebuggingSymbol
-</span><a href="#local-6989586621679340412"><span class="hs-identifier hs-var">dsymbols</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Set</span></span><span> </span><span class="annot"><a href="DebuggingTMTypes.html#DebuggingSymbol"><span class="hs-identifier hs-type">DebuggingSymbol</span></a></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-66"></span><span>    </span><span id="local-6989586621679339538"><span class="annot"><span class="annottext">Set DebuggingSymbol
+</span><a href="#local-6989586621679339538"><span class="hs-identifier hs-var">dsymbols</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Set</span></span><span> </span><span class="annot"><a href="DebuggingTMTypes.html#DebuggingSymbol"><span class="hs-identifier hs-type">DebuggingSymbol</span></a></span><span> </span><span class="hs-glyph">=</span><span>
 </span><span id="line-67"></span><span>        </span><span class="annot"><span class="annottext">[DebuggingSymbol] -&gt; Set DebuggingSymbol
 forall c v. UnsafeListable c v =&gt; [v] -&gt; c
 </span><a href="Containers.html#fromList"><span class="hs-identifier hs-var">fromList</span></a></span><span> </span><span class="annot"><span class="annottext">([DebuggingSymbol] -&gt; Set DebuggingSymbol)
@@ -566,17 +566,17 @@ forall a b. (a -&gt; b) -&gt; a -&gt; b
 forall (t :: * -&gt; *) a b. Foldable t =&gt; (a -&gt; [b]) -&gt; t a -&gt; [b]
 </span><span class="hs-identifier hs-var">concatMap</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span class="hs-glyph">case</span><span>
 </span><span id="line-69"></span><span>                    </span><span class="hs-special">(</span><span class="hs-special">(</span><span class="annot"><span class="annottext">DebuggingState
-</span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679340411"><span class="annot"><span class="annottext">DebuggingSymbol
-</span><a href="#local-6989586621679340411"><span class="hs-identifier hs-var">s</span></a></span></span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="DebuggingTMTypes.html#D"><span class="hs-identifier hs-type">D</span></a></span><span> </span><span id="local-6989586621679340410"><span class="annot"><span class="annottext">DebuggingSymbol
-</span><a href="#local-6989586621679340410"><span class="hs-identifier hs-var">s'</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">DebuggingState
+</span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679339537"><span class="annot"><span class="annottext">DebuggingSymbol
+</span><a href="#local-6989586621679339537"><span class="hs-identifier hs-var">s</span></a></span></span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="DebuggingTMTypes.html#D"><span class="hs-identifier hs-type">D</span></a></span><span> </span><span id="local-6989586621679339536"><span class="annot"><span class="annottext">DebuggingSymbol
+</span><a href="#local-6989586621679339536"><span class="hs-identifier hs-var">s'</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">DebuggingState
 </span><span class="hs-identifier">_</span></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">DebuggingSymbol
-</span><a href="#local-6989586621679340411"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">DebuggingSymbol
-</span><a href="#local-6989586621679340410"><span class="hs-identifier hs-var">s'</span></a></span><span class="hs-special">]</span><span>
+</span><a href="#local-6989586621679339537"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">DebuggingSymbol
+</span><a href="#local-6989586621679339536"><span class="hs-identifier hs-var">s'</span></a></span><span class="hs-special">]</span><span>
 </span><span id="line-70"></span><span>                    </span><span class="hs-special">(</span><span class="hs-special">(</span><span class="annot"><span class="annottext">DebuggingState
-</span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679340409"><span class="annot"><span class="annottext">DebuggingSymbol
-</span><a href="#local-6989586621679340409"><span class="hs-identifier hs-var">s</span></a></span></span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">(DebuggingMove, DebuggingState)
+</span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679339535"><span class="annot"><span class="annottext">DebuggingSymbol
+</span><a href="#local-6989586621679339535"><span class="hs-identifier hs-var">s</span></a></span></span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">(DebuggingMove, DebuggingState)
 </span><span class="hs-identifier">_</span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">DebuggingSymbol
-</span><a href="#local-6989586621679340409"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">]</span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">([((DebuggingState, DebuggingSymbol),
+</span><a href="#local-6989586621679339535"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">]</span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">([((DebuggingState, DebuggingSymbol),
    (DebuggingMove, DebuggingState))]
  -&gt; [DebuggingSymbol])
 -&gt; [((DebuggingState, DebuggingSymbol),
@@ -591,13 +591,13 @@ forall a b. (a -&gt; b) -&gt; a -&gt; b
 forall c v. Listable c v =&gt; c -&gt; [v]
 </span><a href="Containers.html#toList"><span class="hs-identifier hs-var">toList</span></a></span><span> </span><span class="annot"><span class="annottext">Map
   (DebuggingState, DebuggingSymbol) (DebuggingMove, DebuggingState)
-</span><a href="#local-6989586621679340414"><span class="hs-identifier hs-var">qdrs</span></a></span><span>
-</span><span id="line-72"></span><span>    </span><span id="local-6989586621679340408"><span class="annot"><span class="annottext">dsymbols' :: Set DebuggingSymbol
-</span><a href="#local-6989586621679340408"><span class="hs-identifier hs-var hs-var">dsymbols'</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">DebuggingSymbol
-</span><a href="#local-6989586621679340413"><span class="hs-identifier hs-var">blank'</span></a></span><span> </span><span class="annot"><span class="annottext">DebuggingSymbol -&gt; Set DebuggingSymbol -&gt; Set DebuggingSymbol
+</span><a href="#local-6989586621679339540"><span class="hs-identifier hs-var">qdrs</span></a></span><span>
+</span><span id="line-72"></span><span>    </span><span id="local-6989586621679339534"><span class="annot"><span class="annottext">dsymbols' :: Set DebuggingSymbol
+</span><a href="#local-6989586621679339534"><span class="hs-identifier hs-var hs-var">dsymbols'</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">DebuggingSymbol
+</span><a href="#local-6989586621679339539"><span class="hs-identifier hs-var">blank'</span></a></span><span> </span><span class="annot"><span class="annottext">DebuggingSymbol -&gt; Set DebuggingSymbol -&gt; Set DebuggingSymbol
 forall c v. Deletable c v =&gt; v -&gt; c -&gt; c
 </span><a href="Containers.html#%5C%3E"><span class="hs-operator hs-var">\&gt;</span></a></span><span> </span><span class="annot"><span class="annottext">Set DebuggingSymbol
-</span><a href="#local-6989586621679340412"><span class="hs-identifier hs-var">dsymbols</span></a></span><span>
+</span><a href="#local-6989586621679339538"><span class="hs-identifier hs-var">dsymbols</span></a></span><span>
 </span><span id="line-73"></span><span>    </span><span class="hs-keyword">in</span><span> </span><span class="hs-special">(</span><span>
 </span><span id="line-74"></span><span>        </span><span class="annot"><span class="annottext">[(ShowedSymbol, Symbol)] -&gt; Alphabet
 forall c v. UnsafeListable c v =&gt; [v] -&gt; c
@@ -621,7 +621,7 @@ forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
 </span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">Set DebuggingSymbol -&gt; [DebuggingSymbol]
 forall c v. Listable c v =&gt; c -&gt; [v]
 </span><a href="Containers.html#toList"><span class="hs-identifier hs-var">toList</span></a></span><span> </span><span class="annot"><span class="annottext">Set DebuggingSymbol
-</span><a href="#local-6989586621679340408"><span class="hs-identifier hs-var">dsymbols'</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">Symbol
+</span><a href="#local-6989586621679339534"><span class="hs-identifier hs-var">dsymbols'</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">Symbol
 forall a. Bounded a =&gt; a
 </span><span class="hs-identifier hs-var">minBound</span></span><span class="hs-glyph">..</span><span class="hs-special">]</span><span class="hs-special">,</span><span>
 </span><span id="line-75"></span><span>        </span><span class="annot"><span class="annottext">[(DebuggingSymbol, Symbol)] -&gt; IsoMap DebuggingSymbol Symbol
@@ -632,12 +632,12 @@ forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">[DebuggingSymbol] -&gt; [Symbol] -&gt; [(DebuggingSymbol, Symbol)]
 forall a b. [a] -&gt; [b] -&gt; [(a, b)]
 </span><span class="hs-identifier hs-var">zip</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">DebuggingSymbol
-</span><a href="#local-6989586621679340413"><span class="hs-identifier hs-var">blank'</span></a></span><span> </span><span class="annot"><span class="annottext">DebuggingSymbol -&gt; [DebuggingSymbol] -&gt; [DebuggingSymbol]
+</span><a href="#local-6989586621679339539"><span class="hs-identifier hs-var">blank'</span></a></span><span> </span><span class="annot"><span class="annottext">DebuggingSymbol -&gt; [DebuggingSymbol] -&gt; [DebuggingSymbol]
 forall a. a -&gt; [a] -&gt; [a]
 </span><span class="hs-glyph hs-var">:</span></span><span> </span><span class="annot"><span class="annottext">Set DebuggingSymbol -&gt; [DebuggingSymbol]
 forall c v. Listable c v =&gt; c -&gt; [v]
 </span><a href="Containers.html#toList"><span class="hs-identifier hs-var">toList</span></a></span><span> </span><span class="annot"><span class="annottext">Set DebuggingSymbol
-</span><a href="#local-6989586621679340408"><span class="hs-identifier hs-var">dsymbols'</span></a></span><span class="hs-special">)</span><span>   </span><span class="hs-special">[</span><span class="annot"><span class="annottext">Symbol
+</span><a href="#local-6989586621679339534"><span class="hs-identifier hs-var">dsymbols'</span></a></span><span class="hs-special">)</span><span>   </span><span class="hs-special">[</span><span class="annot"><span class="annottext">Symbol
 forall a. Bounded a =&gt; a
 </span><span class="hs-identifier hs-var">minBound</span></span><span class="hs-glyph">..</span><span class="hs-special">]</span><span>
 </span><span id="line-76"></span><span>      </span><span class="hs-special">)</span><span>

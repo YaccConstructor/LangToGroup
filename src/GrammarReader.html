@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span id="%24con2tag_3OlN9HYtOfgFBuPauaDI6a"></span><span class="hs-pragma">{-# LANGUAGE OverloadedStrings #-}</span><span>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span id="%24con2tag_Kkf2zN8wG0Q54YL1gbzBxt"></span><span class="hs-pragma">{-# LANGUAGE OverloadedStrings #-}</span><span>
 </span><span id="line-2"></span><span class="hs-pragma">{-# LANGUAGE LambdaCase #-}</span><span>
 </span><span id="line-3"></span><span>
 </span><span id="line-4"></span><span class="hs-comment">-- |This module represents functionality for reading grammar definitions from given files and determing their type.</span><span>
@@ -23,7 +23,7 @@
 </span><span id="line-23"></span><span>    </span><span class="hs-glyph">|</span><span> </span><span id="Eps%27"><span class="annot"><a href="GrammarReader.html#Eps%27"><span class="hs-identifier hs-var">Eps'</span></a></span></span><span>
 </span><span id="line-24"></span><span>    </span><span class="hs-glyph">|</span><span> </span><span id="Conjunction"><span class="annot"><a href="GrammarReader.html#Conjunction"><span class="hs-identifier hs-var">Conjunction</span></a></span></span><span>
 </span><span id="line-25"></span><span>    </span><span class="hs-glyph">|</span><span> </span><span id="Negation"><span class="annot"><a href="GrammarReader.html#Negation"><span class="hs-identifier hs-var">Negation</span></a></span></span><span>
-</span><span id="line-26"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679331224"><span id="local-6989586621679331226"><span class="annot"><span class="annottext">ParserToken -&gt; ParserToken -&gt; Bool
+</span><span id="line-26"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679330326"><span id="local-6989586621679330328"><span class="annot"><span class="annottext">ParserToken -&gt; ParserToken -&gt; Bool
 (ParserToken -&gt; ParserToken -&gt; Bool)
 -&gt; (ParserToken -&gt; ParserToken -&gt; Bool) -&gt; Eq ParserToken
 forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
@@ -31,7 +31,7 @@ forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
 $c/= :: ParserToken -&gt; ParserToken -&gt; Bool
 == :: ParserToken -&gt; ParserToken -&gt; Bool
 $c== :: ParserToken -&gt; ParserToken -&gt; Bool
-</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679331208"><span id="local-6989586621679331210"><span id="local-6989586621679331212"><span id="local-6989586621679331214"><span id="local-6989586621679331216"><span id="local-6989586621679331218"><span id="local-6989586621679331220"><span class="annot"><span class="annottext">Eq ParserToken
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679330310"><span id="local-6989586621679330312"><span id="local-6989586621679330314"><span id="local-6989586621679330316"><span id="local-6989586621679330318"><span id="local-6989586621679330320"><span id="local-6989586621679330322"><span class="annot"><span class="annottext">Eq ParserToken
 Eq ParserToken
 -&gt; (ParserToken -&gt; ParserToken -&gt; Ordering)
 -&gt; (ParserToken -&gt; ParserToken -&gt; Bool)
@@ -69,7 +69,7 @@ $c&lt; :: ParserToken -&gt; ParserToken -&gt; Bool
 compare :: ParserToken -&gt; ParserToken -&gt; Ordering
 $ccompare :: ParserToken -&gt; ParserToken -&gt; Ordering
 $cp1Ord :: Eq ParserToken
-</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Ord</span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679331201"><span id="local-6989586621679331203"><span id="local-6989586621679331205"><span class="annot"><span class="annottext">Int -&gt; ParserToken -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Ord</span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679330303"><span id="local-6989586621679330305"><span id="local-6989586621679330307"><span class="annot"><span class="annottext">Int -&gt; ParserToken -&gt; ShowS
 [ParserToken] -&gt; ShowS
 ParserToken -&gt; String
 (Int -&gt; ParserToken -&gt; ShowS)
@@ -279,11 +279,11 @@ forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
 </span><span id="line-66"></span><span class="annot"><a href="GrammarReader.html#pRelations"><span class="hs-identifier hs-type">pRelations</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="ParsingHelpers.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Set</span></span><span> </span><span class="annot"><a href="GrammarType.html#Relation"><span class="hs-identifier hs-type">Relation</span></a></span><span class="hs-special">)</span><span>
 </span><span id="line-67"></span><span id="pRelations"><span class="annot"><span class="annottext">pRelations :: Parser (Set Relation)
 </span><a href="GrammarReader.html#pRelations"><span class="hs-identifier hs-var hs-var">pRelations</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
-</span><span id="line-68"></span><span>    </span><span id="local-6989586621679331180"><span class="annot"><span class="annottext">Relation
-</span><a href="#local-6989586621679331180"><span class="hs-identifier hs-var">firstRelation</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser Relation
+</span><span id="line-68"></span><span>    </span><span id="local-6989586621679330282"><span class="annot"><span class="annottext">Relation
+</span><a href="#local-6989586621679330282"><span class="hs-identifier hs-var">firstRelation</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser Relation
 </span><a href="GrammarReader.html#pRelation"><span class="hs-identifier hs-var">pRelation</span></a></span><span>
-</span><span id="line-69"></span><span>    </span><span id="local-6989586621679331178"><span class="annot"><span class="annottext">Set Relation
-</span><a href="#local-6989586621679331178"><span class="hs-identifier hs-var">relations</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">[Relation] -&gt; Set Relation
+</span><span id="line-69"></span><span>    </span><span id="local-6989586621679330280"><span class="annot"><span class="annottext">Set Relation
+</span><a href="#local-6989586621679330280"><span class="hs-identifier hs-var">relations</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">[Relation] -&gt; Set Relation
 forall a. Ord a =&gt; [a] -&gt; Set a
 </span><span class="hs-identifier hs-var">Set.fromList</span></span><span> </span><span class="annot"><span class="annottext">([Relation] -&gt; Set Relation)
 -&gt; ParsecT Void Text Identity [Relation] -&gt; Parser (Set Relation)
@@ -305,8 +305,8 @@ forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Relation -&gt; Set Relation -&gt; Set Relation
 forall a. Ord a =&gt; a -&gt; Set a -&gt; Set a
 </span><span class="hs-identifier hs-var">Set.insert</span></span><span> </span><span class="annot"><span class="annottext">Relation
-</span><a href="#local-6989586621679331180"><span class="hs-identifier hs-var">firstRelation</span></a></span><span> </span><span class="annot"><span class="annottext">Set Relation
-</span><a href="#local-6989586621679331178"><span class="hs-identifier hs-var">relations</span></a></span><span>
+</span><a href="#local-6989586621679330282"><span class="hs-identifier hs-var">firstRelation</span></a></span><span> </span><span class="annot"><span class="annottext">Set Relation
+</span><a href="#local-6989586621679330280"><span class="hs-identifier hs-var">relations</span></a></span><span>
 </span><span id="line-71"></span><span>
 </span><span id="line-72"></span><span class="hs-comment">-- |Parser for one relation. Relation is in such form : Nonterminal -&gt; [Symbol],</span><span>
 </span><span id="line-73"></span><span class="hs-comment">-- 1) in boolean grammar relation has form</span><span>
@@ -318,15 +318,15 @@ forall a. Ord a =&gt; a -&gt; Set a -&gt; Set a
 </span><span id="line-79"></span><span class="annot"><a href="GrammarReader.html#pRelation"><span class="hs-identifier hs-type">pRelation</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="ParsingHelpers.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="annot"><a href="GrammarType.html#Relation"><span class="hs-identifier hs-type">Relation</span></a></span><span>
 </span><span id="line-80"></span><span id="pRelation"><span class="annot"><span class="annottext">pRelation :: Parser Relation
 </span><a href="GrammarReader.html#pRelation"><span class="hs-identifier hs-var hs-var">pRelation</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
-</span><span id="line-81"></span><span>     </span><span id="local-6989586621679331175"><span class="annot"><span class="annottext">Nonterminal
-</span><a href="#local-6989586621679331175"><span class="hs-identifier hs-var">nonterminal</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser Nonterminal
+</span><span id="line-81"></span><span>     </span><span id="local-6989586621679330277"><span class="annot"><span class="annottext">Nonterminal
+</span><a href="#local-6989586621679330277"><span class="hs-identifier hs-var">nonterminal</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser Nonterminal
 </span><a href="GrammarReader.html#pNonterminal"><span class="hs-identifier hs-var">pNonterminal</span></a></span><span>
 </span><span id="line-82"></span><span>     </span><span class="annot"><span class="annottext">ParsecT Void Text Identity Text -&gt; ParsecT Void Text Identity ()
 forall (f :: * -&gt; *) a. Functor f =&gt; f a -&gt; f ()
 </span><span class="hs-identifier hs-var">void</span></span><span> </span><span class="annot"><span class="annottext">ParsecT Void Text Identity Text
 </span><span class="hs-string">&quot;-&gt;&quot;</span></span><span>
-</span><span id="line-83"></span><span>     </span><span id="local-6989586621679331174"><span class="annot"><span class="annottext">[ParserToken]
-</span><a href="#local-6989586621679331174"><span class="hs-identifier hs-var">tokens'</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span>  </span><span class="annot"><span class="annottext">Parser [ParserToken] -&gt; Parser [ParserToken]
+</span><span id="line-83"></span><span>     </span><span id="local-6989586621679330276"><span class="annot"><span class="annottext">[ParserToken]
+</span><a href="#local-6989586621679330276"><span class="hs-identifier hs-var">tokens'</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span>  </span><span class="annot"><span class="annottext">Parser [ParserToken] -&gt; Parser [ParserToken]
 forall e s (m :: * -&gt; *) a. MonadParsec e s m =&gt; m a -&gt; m a
 </span><span class="hs-identifier hs-var">try</span></span><span> </span><span class="annot"><span class="annottext">Parser [ParserToken]
 </span><a href="GrammarReader.html#pVeryLongRule"><span class="hs-identifier hs-var">pVeryLongRule</span></a></span><span> </span><span class="annot"><span class="annottext">Parser [ParserToken]
@@ -344,40 +344,40 @@ forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Nonterminal -&gt; [ParserToken] -&gt; Relation
 </span><a href="GrammarReader.html#tokensToRightPart"><span class="hs-identifier hs-var">tokensToRightPart</span></a></span><span> </span><span class="annot"><span class="annottext">Nonterminal
-</span><a href="#local-6989586621679331175"><span class="hs-identifier hs-var">nonterminal</span></a></span><span> </span><span class="annot"><span class="annottext">[ParserToken]
-</span><a href="#local-6989586621679331174"><span class="hs-identifier hs-var">tokens'</span></a></span><span>
+</span><a href="#local-6989586621679330277"><span class="hs-identifier hs-var">nonterminal</span></a></span><span> </span><span class="annot"><span class="annottext">[ParserToken]
+</span><a href="#local-6989586621679330276"><span class="hs-identifier hs-var">tokens'</span></a></span><span>
 </span><span id="line-85"></span><span>
 </span><span id="line-86"></span><span class="annot"><a href="GrammarReader.html#tokensToRightPart"><span class="hs-identifier hs-type">tokensToRightPart</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="GrammarType.html#Nonterminal"><span class="hs-identifier hs-type">Nonterminal</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="GrammarReader.html#ParserToken"><span class="hs-identifier hs-type">ParserToken</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="GrammarType.html#Relation"><span class="hs-identifier hs-type">Relation</span></a></span><span>
 </span><span id="line-87"></span><span id="tokensToRightPart"><span class="annot"><span class="annottext">tokensToRightPart :: Nonterminal -&gt; [ParserToken] -&gt; Relation
-</span><a href="GrammarReader.html#tokensToRightPart"><span class="hs-identifier hs-var hs-var">tokensToRightPart</span></a></span></span><span> </span><span id="local-6989586621679331168"><span class="annot"><span class="annottext">Nonterminal
-</span><a href="#local-6989586621679331168"><span class="hs-identifier hs-var">nonterminal</span></a></span></span><span> </span><span id="local-6989586621679331167"><span class="annot"><span class="annottext">[ParserToken]
-</span><a href="#local-6989586621679331167"><span class="hs-identifier hs-var">currentTokens</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><a href="GrammarReader.html#tokensToRightPart"><span class="hs-identifier hs-var hs-var">tokensToRightPart</span></a></span></span><span> </span><span id="local-6989586621679330270"><span class="annot"><span class="annottext">Nonterminal
+</span><a href="#local-6989586621679330270"><span class="hs-identifier hs-var">nonterminal</span></a></span></span><span> </span><span id="local-6989586621679330269"><span class="annot"><span class="annottext">[ParserToken]
+</span><a href="#local-6989586621679330269"><span class="hs-identifier hs-var">currentTokens</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
 </span><span id="line-88"></span><span>    </span><span class="hs-keyword">if</span><span> </span><span class="annot"><span class="annottext">ParserToken -&gt; [ParserToken] -&gt; Bool
 forall (t :: * -&gt; *) a. (Foldable t, Eq a) =&gt; a -&gt; t a -&gt; Bool
 </span><span class="hs-identifier hs-var">elem</span></span><span> </span><span class="annot"><span class="annottext">ParserToken
 </span><a href="GrammarReader.html#Conjunction"><span class="hs-identifier hs-var">Conjunction</span></a></span><span> </span><span class="annot"><span class="annottext">[ParserToken]
-</span><a href="#local-6989586621679331167"><span class="hs-identifier hs-var">currentTokens</span></a></span><span> </span><span class="annot"><span class="annottext">Bool -&gt; Bool -&gt; Bool
+</span><a href="#local-6989586621679330269"><span class="hs-identifier hs-var">currentTokens</span></a></span><span> </span><span class="annot"><span class="annottext">Bool -&gt; Bool -&gt; Bool
 </span><span class="hs-operator hs-var">||</span></span><span> </span><span class="annot"><span class="annottext">ParserToken -&gt; [ParserToken] -&gt; Bool
 forall (t :: * -&gt; *) a. (Foldable t, Eq a) =&gt; a -&gt; t a -&gt; Bool
 </span><span class="hs-identifier hs-var">elem</span></span><span> </span><span class="annot"><span class="annottext">ParserToken
 </span><a href="GrammarReader.html#Negation"><span class="hs-identifier hs-var">Negation</span></a></span><span> </span><span class="annot"><span class="annottext">[ParserToken]
-</span><a href="#local-6989586621679331167"><span class="hs-identifier hs-var">currentTokens</span></a></span><span>
+</span><a href="#local-6989586621679330269"><span class="hs-identifier hs-var">currentTokens</span></a></span><span>
 </span><span id="line-89"></span><span>        </span><span class="hs-keyword">then</span><span> </span><span class="hs-keyword">let</span><span>
-</span><span id="line-90"></span><span>            </span><span id="local-6989586621679331164"><span class="annot"><span class="annottext">conjsWithTokens :: [[ParserToken]]
-</span><a href="#local-6989586621679331164"><span class="hs-identifier hs-var hs-var">conjsWithTokens</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[ParserToken] -&gt; [ParserToken] -&gt; [[ParserToken]]
+</span><span id="line-90"></span><span>            </span><span id="local-6989586621679330266"><span class="annot"><span class="annottext">conjsWithTokens :: [[ParserToken]]
+</span><a href="#local-6989586621679330266"><span class="hs-identifier hs-var hs-var">conjsWithTokens</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[ParserToken] -&gt; [ParserToken] -&gt; [[ParserToken]]
 forall a. Eq a =&gt; [a] -&gt; [a] -&gt; [[a]]
 </span><span class="hs-identifier hs-var">splitOn</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">ParserToken
 </span><a href="GrammarReader.html#Conjunction"><span class="hs-identifier hs-var">Conjunction</span></a></span><span class="hs-special">]</span><span> </span><span class="annot"><span class="annottext">[ParserToken]
-</span><a href="#local-6989586621679331167"><span class="hs-identifier hs-var">currentTokens</span></a></span><span>
-</span><span id="line-91"></span><span>            </span><span id="local-6989586621679331162"><span class="annot"><span class="annottext">conjs :: [Conj]
-</span><a href="#local-6989586621679331162"><span class="hs-identifier hs-var hs-var">conjs</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">([ParserToken] -&gt; Conj) -&gt; [[ParserToken]] -&gt; [Conj]
+</span><a href="#local-6989586621679330269"><span class="hs-identifier hs-var">currentTokens</span></a></span><span>
+</span><span id="line-91"></span><span>            </span><span id="local-6989586621679330264"><span class="annot"><span class="annottext">conjs :: [Conj]
+</span><a href="#local-6989586621679330264"><span class="hs-identifier hs-var hs-var">conjs</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">([ParserToken] -&gt; Conj) -&gt; [[ParserToken]] -&gt; [Conj]
 forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
-</span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679331161"><span class="annot"><span class="annottext">[ParserToken]
-</span><a href="#local-6989586621679331161"><span class="hs-identifier hs-var">t</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span>
+</span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679330263"><span class="annot"><span class="annottext">[ParserToken]
+</span><a href="#local-6989586621679330263"><span class="hs-identifier hs-var">t</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span>
 </span><span id="line-92"></span><span>                </span><span class="hs-keyword">if</span><span> </span><span class="annot"><span class="annottext">[ParserToken] -&gt; ParserToken
 forall a. [a] -&gt; a
 </span><span class="hs-identifier hs-var">head</span></span><span> </span><span class="annot"><span class="annottext">[ParserToken]
-</span><a href="#local-6989586621679331161"><span class="hs-identifier hs-var">t</span></a></span><span> </span><span class="annot"><span class="annottext">ParserToken -&gt; ParserToken -&gt; Bool
+</span><a href="#local-6989586621679330263"><span class="hs-identifier hs-var">t</span></a></span><span> </span><span class="annot"><span class="annottext">ParserToken -&gt; ParserToken -&gt; Bool
 forall a. Eq a =&gt; a -&gt; a -&gt; Bool
 </span><span class="hs-operator hs-var">==</span></span><span> </span><span class="annot"><span class="annottext">ParserToken
 </span><a href="GrammarReader.html#Negation"><span class="hs-identifier hs-var">Negation</span></a></span><span>
@@ -390,23 +390,23 @@ forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">[ParserToken] -&gt; [ParserToken]
 forall a. [a] -&gt; [a]
 </span><span class="hs-identifier hs-var">tail</span></span><span> </span><span class="annot"><span class="annottext">[ParserToken]
-</span><a href="#local-6989586621679331161"><span class="hs-identifier hs-var">t</span></a></span><span>
+</span><a href="#local-6989586621679330263"><span class="hs-identifier hs-var">t</span></a></span><span>
 </span><span id="line-94"></span><span>                    </span><span class="hs-keyword">else</span><span> </span><span class="annot"><span class="annottext">[Symbol] -&gt; Conj
 </span><a href="GrammarType.html#PosConj"><span class="hs-identifier hs-var">PosConj</span></a></span><span> </span><span class="annot"><span class="annottext">([Symbol] -&gt; Conj) -&gt; [Symbol] -&gt; Conj
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">[ParserToken] -&gt; [Symbol]
 </span><a href="GrammarReader.html#tokensToSymbols"><span class="hs-identifier hs-var">tokensToSymbols</span></a></span><span> </span><span class="annot"><span class="annottext">[ParserToken]
-</span><a href="#local-6989586621679331161"><span class="hs-identifier hs-var">t</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[[ParserToken]]
-</span><a href="#local-6989586621679331164"><span class="hs-identifier hs-var">conjsWithTokens</span></a></span><span>
+</span><a href="#local-6989586621679330263"><span class="hs-identifier hs-var">t</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[[ParserToken]]
+</span><a href="#local-6989586621679330266"><span class="hs-identifier hs-var">conjsWithTokens</span></a></span><span>
 </span><span id="line-95"></span><span>            </span><span class="hs-keyword">in</span><span> </span><span class="annot"><span class="annottext">(Nonterminal, [Conj]) -&gt; Relation
 </span><a href="GrammarType.html#BooleanRelation"><span class="hs-identifier hs-var">BooleanRelation</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Nonterminal
-</span><a href="#local-6989586621679331168"><span class="hs-identifier hs-var">nonterminal</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">[Conj]
-</span><a href="#local-6989586621679331162"><span class="hs-identifier hs-var">conjs</span></a></span><span class="hs-special">)</span><span>
+</span><a href="#local-6989586621679330270"><span class="hs-identifier hs-var">nonterminal</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">[Conj]
+</span><a href="#local-6989586621679330264"><span class="hs-identifier hs-var">conjs</span></a></span><span class="hs-special">)</span><span>
 </span><span id="line-96"></span><span>        </span><span class="hs-keyword">else</span><span> </span><span class="annot"><span class="annottext">(Nonterminal, [Symbol]) -&gt; Relation
 </span><a href="GrammarType.html#Relation"><span class="hs-identifier hs-var">Relation</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Nonterminal
-</span><a href="#local-6989586621679331168"><span class="hs-identifier hs-var">nonterminal</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">[ParserToken] -&gt; [Symbol]
+</span><a href="#local-6989586621679330270"><span class="hs-identifier hs-var">nonterminal</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">[ParserToken] -&gt; [Symbol]
 </span><a href="GrammarReader.html#tokensToSymbols"><span class="hs-identifier hs-var">tokensToSymbols</span></a></span><span> </span><span class="annot"><span class="annottext">[ParserToken]
-</span><a href="#local-6989586621679331167"><span class="hs-identifier hs-var">currentTokens</span></a></span><span class="hs-special">)</span><span>
+</span><a href="#local-6989586621679330269"><span class="hs-identifier hs-var">currentTokens</span></a></span><span class="hs-special">)</span><span>
 </span><span id="line-97"></span><span>
 </span><span id="line-98"></span><span class="annot"><a href="GrammarReader.html#tokensToSymbols"><span class="hs-identifier hs-type">tokensToSymbols</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="GrammarReader.html#ParserToken"><span class="hs-identifier hs-type">ParserToken</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="GrammarType.html#Symbol"><span class="hs-identifier hs-type">Symbol</span></a></span><span class="hs-special">]</span><span>
 </span><span id="line-99"></span><span id="tokensToSymbols"><span class="annot"><span class="annottext">tokensToSymbols :: [ParserToken] -&gt; [Symbol]
@@ -415,14 +415,14 @@ forall a b. (a -&gt; b) -&gt; a -&gt; b
 forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
 </span><span class="hs-identifier hs-var">map</span></span><span>
 </span><span id="line-101"></span><span>      </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span class="hs-glyph">case</span><span>
-</span><span id="line-102"></span><span>         </span><span class="hs-special">(</span><span class="annot"><a href="GrammarReader.html#T%27"><span class="hs-identifier hs-type">T'</span></a></span><span> </span><span id="local-6989586621679331153"><span class="annot"><span class="annottext">Terminal
-</span><a href="#local-6989586621679331153"><span class="hs-identifier hs-var">terminal</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Terminal -&gt; Symbol
+</span><span id="line-102"></span><span>         </span><span class="hs-special">(</span><span class="annot"><a href="GrammarReader.html#T%27"><span class="hs-identifier hs-type">T'</span></a></span><span> </span><span id="local-6989586621679330255"><span class="annot"><span class="annottext">Terminal
+</span><a href="#local-6989586621679330255"><span class="hs-identifier hs-var">terminal</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Terminal -&gt; Symbol
 </span><a href="GrammarType.html#T"><span class="hs-identifier hs-var">T</span></a></span><span> </span><span class="annot"><span class="annottext">Terminal
-</span><a href="#local-6989586621679331153"><span class="hs-identifier hs-var">terminal</span></a></span><span>
-</span><span id="line-103"></span><span>         </span><span class="hs-special">(</span><span class="annot"><a href="GrammarReader.html#N%27"><span class="hs-identifier hs-type">N'</span></a></span><span> </span><span id="local-6989586621679331151"><span class="annot"><span class="annottext">Nonterminal
-</span><a href="#local-6989586621679331151"><span class="hs-identifier hs-var">nonterminal</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Nonterminal -&gt; Symbol
+</span><a href="#local-6989586621679330255"><span class="hs-identifier hs-var">terminal</span></a></span><span>
+</span><span id="line-103"></span><span>         </span><span class="hs-special">(</span><span class="annot"><a href="GrammarReader.html#N%27"><span class="hs-identifier hs-type">N'</span></a></span><span> </span><span id="local-6989586621679330253"><span class="annot"><span class="annottext">Nonterminal
+</span><a href="#local-6989586621679330253"><span class="hs-identifier hs-var">nonterminal</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Nonterminal -&gt; Symbol
 </span><a href="GrammarType.html#N"><span class="hs-identifier hs-var">N</span></a></span><span> </span><span class="annot"><span class="annottext">Nonterminal
-</span><a href="#local-6989586621679331151"><span class="hs-identifier hs-var">nonterminal</span></a></span><span>
+</span><a href="#local-6989586621679330253"><span class="hs-identifier hs-var">nonterminal</span></a></span><span>
 </span><span id="line-104"></span><span>         </span><span class="annot"><span class="annottext">ParserToken
 </span><a href="GrammarReader.html#Negation"><span class="hs-identifier hs-var">Negation</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">String -&gt; Symbol
 forall a. HasCallStack =&gt; String -&gt; a
@@ -448,14 +448,14 @@ forall a. HasCallStack =&gt; String -&gt; a
 </span><span id="line-116"></span><span class="annot"><a href="GrammarReader.html#pVeryLongRule"><span class="hs-identifier hs-type">pVeryLongRule</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="ParsingHelpers.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><a href="GrammarReader.html#ParserToken"><span class="hs-identifier hs-type">ParserToken</span></a></span><span class="hs-special">]</span><span>
 </span><span id="line-117"></span><span id="pVeryLongRule"><span class="annot"><span class="annottext">pVeryLongRule :: Parser [ParserToken]
 </span><a href="GrammarReader.html#pVeryLongRule"><span class="hs-identifier hs-var hs-var">pVeryLongRule</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
-</span><span id="line-118"></span><span>    </span><span id="local-6989586621679331147"><span class="annot"><span class="annottext">[ParserToken]
-</span><a href="#local-6989586621679331147"><span class="hs-identifier hs-var">word</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser [ParserToken]
+</span><span id="line-118"></span><span>    </span><span id="local-6989586621679330249"><span class="annot"><span class="annottext">[ParserToken]
+</span><a href="#local-6989586621679330249"><span class="hs-identifier hs-var">word</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser [ParserToken]
 </span><a href="GrammarReader.html#pWord"><span class="hs-identifier hs-var">pWord</span></a></span><span>
-</span><span id="line-119"></span><span>    </span><span id="local-6989586621679331146"><span class="annot"><span class="annottext">[ParserToken]
-</span><a href="#local-6989586621679331146"><span class="hs-identifier hs-var">positiveConj</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">[ParserToken] -&gt; [ParserToken] -&gt; [ParserToken]
+</span><span id="line-119"></span><span>    </span><span id="local-6989586621679330248"><span class="annot"><span class="annottext">[ParserToken]
+</span><a href="#local-6989586621679330248"><span class="hs-identifier hs-var">positiveConj</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">[ParserToken] -&gt; [ParserToken] -&gt; [ParserToken]
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">(++)</span></span><span> </span><span class="annot"><span class="annottext">[ParserToken]
-</span><a href="#local-6989586621679331147"><span class="hs-identifier hs-var">word</span></a></span><span> </span><span class="annot"><span class="annottext">([ParserToken] -&gt; [ParserToken])
+</span><a href="#local-6989586621679330249"><span class="hs-identifier hs-var">word</span></a></span><span> </span><span class="annot"><span class="annottext">([ParserToken] -&gt; [ParserToken])
 -&gt; ([[ParserToken]] -&gt; [ParserToken])
 -&gt; [[ParserToken]]
 -&gt; [ParserToken]
@@ -473,7 +473,7 @@ forall e s (m :: * -&gt; *) a. MonadParsec e s m =&gt; m a -&gt; m a
 </span><span class="hs-identifier hs-var">try</span></span><span> </span><span class="annot"><span class="annottext">Parser [ParserToken]
 </span><a href="GrammarReader.html#pPositiveConjunction"><span class="hs-identifier hs-var">pPositiveConjunction</span></a></span><span class="hs-special">)</span><span>
 </span><span id="line-120"></span><span>    </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[ParserToken]
-</span><a href="#local-6989586621679331146"><span class="hs-identifier hs-var">positiveConj</span></a></span><span> </span><span class="annot"><span class="annottext">[ParserToken] -&gt; [ParserToken] -&gt; [ParserToken]
+</span><a href="#local-6989586621679330248"><span class="hs-identifier hs-var">positiveConj</span></a></span><span> </span><span class="annot"><span class="annottext">[ParserToken] -&gt; [ParserToken] -&gt; [ParserToken]
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">([ParserToken] -&gt; [ParserToken])
 -&gt; ([[ParserToken]] -&gt; [ParserToken])
@@ -494,17 +494,17 @@ forall (m :: * -&gt; *) a. MonadPlus m =&gt; m a -&gt; m [a]
 </span><span id="line-122"></span><span class="annot"><a href="GrammarReader.html#pNegativeConjunction"><span class="hs-identifier hs-type">pNegativeConjunction</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="ParsingHelpers.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><a href="GrammarReader.html#ParserToken"><span class="hs-identifier hs-type">ParserToken</span></a></span><span class="hs-special">]</span><span>
 </span><span id="line-123"></span><span id="pNegativeConjunction"><span class="annot"><span class="annottext">pNegativeConjunction :: Parser [ParserToken]
 </span><a href="GrammarReader.html#pNegativeConjunction"><span class="hs-identifier hs-var hs-var">pNegativeConjunction</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
-</span><span id="line-124"></span><span>    </span><span id="local-6989586621679331141"><span class="annot"><span class="annottext">ParserToken
-</span><a href="#local-6989586621679331141"><span class="hs-identifier hs-var">conj</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser ParserToken
+</span><span id="line-124"></span><span>    </span><span id="local-6989586621679330243"><span class="annot"><span class="annottext">ParserToken
+</span><a href="#local-6989586621679330243"><span class="hs-identifier hs-var">conj</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser ParserToken
 </span><a href="GrammarReader.html#pConjunction"><span class="hs-identifier hs-var">pConjunction</span></a></span><span>
-</span><span id="line-125"></span><span>    </span><span id="local-6989586621679331140"><span class="annot"><span class="annottext">ParserToken
-</span><a href="#local-6989586621679331140"><span class="hs-identifier hs-var">negation</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser ParserToken
+</span><span id="line-125"></span><span>    </span><span id="local-6989586621679330242"><span class="annot"><span class="annottext">ParserToken
+</span><a href="#local-6989586621679330242"><span class="hs-identifier hs-var">negation</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser ParserToken
 </span><a href="GrammarReader.html#pNegation"><span class="hs-identifier hs-var">pNegation</span></a></span><span>
 </span><span id="line-126"></span><span>    </span><span class="annot"><span class="annottext">[ParserToken] -&gt; [ParserToken] -&gt; [ParserToken]
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">(++)</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">ParserToken
-</span><a href="#local-6989586621679331141"><span class="hs-identifier hs-var">conj</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">ParserToken
-</span><a href="#local-6989586621679331140"><span class="hs-identifier hs-var">negation</span></a></span><span class="hs-special">]</span><span> </span><span class="annot"><span class="annottext">([ParserToken] -&gt; [ParserToken])
+</span><a href="#local-6989586621679330243"><span class="hs-identifier hs-var">conj</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">ParserToken
+</span><a href="#local-6989586621679330242"><span class="hs-identifier hs-var">negation</span></a></span><span class="hs-special">]</span><span> </span><span class="annot"><span class="annottext">([ParserToken] -&gt; [ParserToken])
 -&gt; Parser [ParserToken] -&gt; Parser [ParserToken]
 forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
 </span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">Parser [ParserToken]
@@ -513,15 +513,15 @@ forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
 </span><span id="line-128"></span><span class="annot"><a href="GrammarReader.html#pPositiveConjunction"><span class="hs-identifier hs-type">pPositiveConjunction</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="ParsingHelpers.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><a href="GrammarReader.html#ParserToken"><span class="hs-identifier hs-type">ParserToken</span></a></span><span class="hs-special">]</span><span>
 </span><span id="line-129"></span><span id="pPositiveConjunction"><span class="annot"><span class="annottext">pPositiveConjunction :: Parser [ParserToken]
 </span><a href="GrammarReader.html#pPositiveConjunction"><span class="hs-identifier hs-var hs-var">pPositiveConjunction</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
-</span><span id="line-130"></span><span>    </span><span id="local-6989586621679331139"><span class="annot"><span class="annottext">ParserToken
-</span><a href="#local-6989586621679331139"><span class="hs-identifier hs-var">conjunction</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser ParserToken -&gt; Parser ParserToken
+</span><span id="line-130"></span><span>    </span><span id="local-6989586621679330241"><span class="annot"><span class="annottext">ParserToken
+</span><a href="#local-6989586621679330241"><span class="hs-identifier hs-var">conjunction</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser ParserToken -&gt; Parser ParserToken
 forall e s (m :: * -&gt; *) a. MonadParsec e s m =&gt; m a -&gt; m a
 </span><span class="hs-identifier hs-var">try</span></span><span> </span><span class="annot"><span class="annottext">Parser ParserToken
 </span><a href="GrammarReader.html#pConjunction"><span class="hs-identifier hs-var">pConjunction</span></a></span><span>
 </span><span id="line-131"></span><span>    </span><span class="annot"><span class="annottext">[ParserToken] -&gt; [ParserToken] -&gt; [ParserToken]
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">(++)</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">ParserToken
-</span><a href="#local-6989586621679331139"><span class="hs-identifier hs-var">conjunction</span></a></span><span class="hs-special">]</span><span> </span><span class="annot"><span class="annottext">([ParserToken] -&gt; [ParserToken])
+</span><a href="#local-6989586621679330241"><span class="hs-identifier hs-var">conjunction</span></a></span><span class="hs-special">]</span><span> </span><span class="annot"><span class="annottext">([ParserToken] -&gt; [ParserToken])
 -&gt; Parser [ParserToken] -&gt; Parser [ParserToken]
 forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
 </span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">Parser [ParserToken]
@@ -530,13 +530,13 @@ forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
 </span><span id="line-133"></span><span class="annot"><a href="GrammarReader.html#pPositiveFormula"><span class="hs-identifier hs-type">pPositiveFormula</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="ParsingHelpers.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><a href="GrammarReader.html#ParserToken"><span class="hs-identifier hs-type">ParserToken</span></a></span><span class="hs-special">]</span><span>
 </span><span id="line-134"></span><span id="pPositiveFormula"><span class="annot"><span class="annottext">pPositiveFormula :: Parser [ParserToken]
 </span><a href="GrammarReader.html#pPositiveFormula"><span class="hs-identifier hs-var hs-var">pPositiveFormula</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
-</span><span id="line-135"></span><span>    </span><span id="local-6989586621679331138"><span class="annot"><span class="annottext">[ParserToken]
-</span><a href="#local-6989586621679331138"><span class="hs-identifier hs-var">word</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser [ParserToken]
+</span><span id="line-135"></span><span>    </span><span id="local-6989586621679330240"><span class="annot"><span class="annottext">[ParserToken]
+</span><a href="#local-6989586621679330240"><span class="hs-identifier hs-var">word</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser [ParserToken]
 </span><a href="GrammarReader.html#pWord"><span class="hs-identifier hs-var">pWord</span></a></span><span>
 </span><span id="line-136"></span><span>    </span><span class="annot"><span class="annottext">[ParserToken] -&gt; [ParserToken] -&gt; [ParserToken]
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">(++)</span></span><span> </span><span class="annot"><span class="annottext">[ParserToken]
-</span><a href="#local-6989586621679331138"><span class="hs-identifier hs-var">word</span></a></span><span> </span><span class="annot"><span class="annottext">([ParserToken] -&gt; [ParserToken])
+</span><a href="#local-6989586621679330240"><span class="hs-identifier hs-var">word</span></a></span><span> </span><span class="annot"><span class="annottext">([ParserToken] -&gt; [ParserToken])
 -&gt; ([[ParserToken]] -&gt; [ParserToken])
 -&gt; [[ParserToken]]
 -&gt; [ParserToken]
@@ -555,14 +555,14 @@ forall (m :: * -&gt; *) a. MonadPlus m =&gt; m a -&gt; m [a]
 </span><span id="line-138"></span><span class="annot"><a href="GrammarReader.html#pNegativeFormula"><span class="hs-identifier hs-type">pNegativeFormula</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="ParsingHelpers.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><a href="GrammarReader.html#ParserToken"><span class="hs-identifier hs-type">ParserToken</span></a></span><span class="hs-special">]</span><span>
 </span><span id="line-139"></span><span id="pNegativeFormula"><span class="annot"><span class="annottext">pNegativeFormula :: Parser [ParserToken]
 </span><a href="GrammarReader.html#pNegativeFormula"><span class="hs-identifier hs-var hs-var">pNegativeFormula</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
-</span><span id="line-140"></span><span>    </span><span id="local-6989586621679331137"><span class="annot"><span class="annottext">ParserToken
-</span><a href="#local-6989586621679331137"><span class="hs-identifier hs-var">negation</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser ParserToken
+</span><span id="line-140"></span><span>    </span><span id="local-6989586621679330239"><span class="annot"><span class="annottext">ParserToken
+</span><a href="#local-6989586621679330239"><span class="hs-identifier hs-var">negation</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser ParserToken
 </span><a href="GrammarReader.html#pNegation"><span class="hs-identifier hs-var">pNegation</span></a></span><span>
-</span><span id="line-141"></span><span>    </span><span id="local-6989586621679331136"><span class="annot"><span class="annottext">[ParserToken]
-</span><a href="#local-6989586621679331136"><span class="hs-identifier hs-var">negationWords</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">[ParserToken] -&gt; [ParserToken] -&gt; [ParserToken]
+</span><span id="line-141"></span><span>    </span><span id="local-6989586621679330238"><span class="annot"><span class="annottext">[ParserToken]
+</span><a href="#local-6989586621679330238"><span class="hs-identifier hs-var">negationWords</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">[ParserToken] -&gt; [ParserToken] -&gt; [ParserToken]
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">(++)</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">ParserToken
-</span><a href="#local-6989586621679331137"><span class="hs-identifier hs-var">negation</span></a></span><span class="hs-special">]</span><span> </span><span class="annot"><span class="annottext">([ParserToken] -&gt; [ParserToken])
+</span><a href="#local-6989586621679330239"><span class="hs-identifier hs-var">negation</span></a></span><span class="hs-special">]</span><span> </span><span class="annot"><span class="annottext">([ParserToken] -&gt; [ParserToken])
 -&gt; Parser [ParserToken] -&gt; Parser [ParserToken]
 forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
 </span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">Parser [ParserToken]
@@ -570,7 +570,7 @@ forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
 </span><span id="line-142"></span><span>    </span><span class="annot"><span class="annottext">[ParserToken] -&gt; [ParserToken] -&gt; [ParserToken]
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">(++)</span></span><span> </span><span class="annot"><span class="annottext">[ParserToken]
-</span><a href="#local-6989586621679331136"><span class="hs-identifier hs-var">negationWords</span></a></span><span> </span><span class="annot"><span class="annottext">([ParserToken] -&gt; [ParserToken])
+</span><a href="#local-6989586621679330238"><span class="hs-identifier hs-var">negationWords</span></a></span><span> </span><span class="annot"><span class="annottext">([ParserToken] -&gt; [ParserToken])
 -&gt; ([[ParserToken]] -&gt; [ParserToken])
 -&gt; [[ParserToken]]
 -&gt; [ParserToken]
@@ -653,39 +653,39 @@ forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
 </span><span id="line-154"></span><span class="annot"><a href="GrammarReader.html#pGrammar"><span class="hs-identifier hs-type">pGrammar</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="ParsingHelpers.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="annot"><a href="GrammarType.html#Grammar"><span class="hs-identifier hs-type">Grammar</span></a></span><span>
 </span><span id="line-155"></span><span id="pGrammar"><span class="annot"><span class="annottext">pGrammar :: Parser Grammar
 </span><a href="GrammarReader.html#pGrammar"><span class="hs-identifier hs-var hs-var">pGrammar</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
-</span><span id="line-156"></span><span>    </span><span id="local-6989586621679331132"><span class="annot"><span class="annottext">Nonterminal
-</span><a href="#local-6989586621679331132"><span class="hs-identifier hs-var">startSymbol</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser Nonterminal
+</span><span id="line-156"></span><span>    </span><span id="local-6989586621679330234"><span class="annot"><span class="annottext">Nonterminal
+</span><a href="#local-6989586621679330234"><span class="hs-identifier hs-var">startSymbol</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser Nonterminal
 </span><a href="GrammarReader.html#pNonterminal"><span class="hs-identifier hs-var">pNonterminal</span></a></span><span>
 </span><span id="line-157"></span><span>    </span><span class="annot"><span class="annottext">ParsecT Void Text Identity Text -&gt; ParsecT Void Text Identity ()
 forall (f :: * -&gt; *) a. Functor f =&gt; f a -&gt; f ()
 </span><span class="hs-identifier hs-var">void</span></span><span> </span><span class="annot"><span class="annottext">ParsecT Void Text Identity Text
 </span><span class="hs-string">&quot;;&quot;</span></span><span>
-</span><span id="line-158"></span><span>    </span><span id="local-6989586621679331131"><span class="annot"><span class="annottext">Set Nonterminal
-</span><a href="#local-6989586621679331131"><span class="hs-identifier hs-var">nonterminals</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser (Set Nonterminal)
+</span><span id="line-158"></span><span>    </span><span id="local-6989586621679330233"><span class="annot"><span class="annottext">Set Nonterminal
+</span><a href="#local-6989586621679330233"><span class="hs-identifier hs-var">nonterminals</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser (Set Nonterminal)
 </span><a href="GrammarReader.html#pNonterminals"><span class="hs-identifier hs-var">pNonterminals</span></a></span><span>
 </span><span id="line-159"></span><span>    </span><span class="annot"><span class="annottext">ParsecT Void Text Identity Text -&gt; ParsecT Void Text Identity ()
 forall (f :: * -&gt; *) a. Functor f =&gt; f a -&gt; f ()
 </span><span class="hs-identifier hs-var">void</span></span><span> </span><span class="annot"><span class="annottext">ParsecT Void Text Identity Text
 </span><span class="hs-string">&quot;;&quot;</span></span><span>
-</span><span id="line-160"></span><span>    </span><span id="local-6989586621679331130"><span class="annot"><span class="annottext">Set Terminal
-</span><a href="#local-6989586621679331130"><span class="hs-identifier hs-var">terminals</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser (Set Terminal)
+</span><span id="line-160"></span><span>    </span><span id="local-6989586621679330232"><span class="annot"><span class="annottext">Set Terminal
+</span><a href="#local-6989586621679330232"><span class="hs-identifier hs-var">terminals</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser (Set Terminal)
 </span><a href="GrammarReader.html#pTerminals"><span class="hs-identifier hs-var">pTerminals</span></a></span><span>
 </span><span id="line-161"></span><span>    </span><span class="annot"><span class="annottext">ParsecT Void Text Identity Text -&gt; ParsecT Void Text Identity ()
 forall (f :: * -&gt; *) a. Functor f =&gt; f a -&gt; f ()
 </span><span class="hs-identifier hs-var">void</span></span><span> </span><span class="annot"><span class="annottext">ParsecT Void Text Identity Text
 </span><span class="hs-string">&quot;\n&quot;</span></span><span>
-</span><span id="line-162"></span><span>    </span><span id="local-6989586621679331129"><span class="annot"><span class="annottext">Set Relation
-</span><a href="#local-6989586621679331129"><span class="hs-identifier hs-var">relations</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser (Set Relation)
+</span><span id="line-162"></span><span>    </span><span id="local-6989586621679330231"><span class="annot"><span class="annottext">Set Relation
+</span><a href="#local-6989586621679330231"><span class="hs-identifier hs-var">relations</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser (Set Relation)
 </span><a href="GrammarReader.html#pRelations"><span class="hs-identifier hs-var">pRelations</span></a></span><span>
 </span><span id="line-163"></span><span>    </span><span class="annot"><span class="annottext">Grammar -&gt; Parser Grammar
 forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
 </span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">(Set Nonterminal, Set Terminal, Set Relation, Nonterminal)
 -&gt; Grammar
 </span><a href="GrammarType.html#Grammar"><span class="hs-identifier hs-var">Grammar</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Set Nonterminal
-</span><a href="#local-6989586621679331131"><span class="hs-identifier hs-var">nonterminals</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Set Terminal
-</span><a href="#local-6989586621679331130"><span class="hs-identifier hs-var">terminals</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Set Relation
-</span><a href="#local-6989586621679331129"><span class="hs-identifier hs-var">relations</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Nonterminal
-</span><a href="#local-6989586621679331132"><span class="hs-identifier hs-var">startSymbol</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><a href="#local-6989586621679330233"><span class="hs-identifier hs-var">nonterminals</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Set Terminal
+</span><a href="#local-6989586621679330232"><span class="hs-identifier hs-var">terminals</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Set Relation
+</span><a href="#local-6989586621679330231"><span class="hs-identifier hs-var">relations</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Nonterminal
+</span><a href="#local-6989586621679330234"><span class="hs-identifier hs-var">startSymbol</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span>
 </span><span id="line-164"></span><span>
 </span><span id="line-165"></span><span class="annot"><a href="GrammarReader.html#parser"><span class="hs-identifier hs-type">parser</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="ParsingHelpers.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="annot"><a href="GrammarType.html#Grammar"><span class="hs-identifier hs-type">Grammar</span></a></span><span>
 </span><span id="line-166"></span><span id="parser"><span class="annot"><span class="annottext">parser :: Parser Grammar
@@ -699,15 +699,15 @@ forall a. Parser a -&gt; Parser a
 </span><span id="line-170"></span><span id="checkGrammarType"><span class="annot"><span class="annottext">checkGrammarType :: Grammar -&gt; GrammarType
 </span><a href="GrammarReader.html#checkGrammarType"><span class="hs-identifier hs-var hs-var">checkGrammarType</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="GrammarType.html#Grammar"><span class="hs-identifier hs-type">Grammar</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Set Nonterminal
 </span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Set Terminal
-</span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679331126"><span class="annot"><span class="annottext">Set Relation
-</span><a href="#local-6989586621679331126"><span class="hs-identifier hs-var">setOfRelations</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Nonterminal
+</span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679330228"><span class="annot"><span class="annottext">Set Relation
+</span><a href="#local-6989586621679330228"><span class="hs-identifier hs-var">setOfRelations</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Nonterminal
 </span><span class="hs-identifier">_</span></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Relation] -&gt; GrammarType
 </span><a href="GrammarReader.html#checkGrammarType%27"><span class="hs-identifier hs-var">checkGrammarType'</span></a></span><span> </span><span class="annot"><span class="annottext">([Relation] -&gt; GrammarType) -&gt; [Relation] -&gt; GrammarType
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Set Relation -&gt; [Relation]
 forall a. Set a -&gt; [a]
 </span><span class="hs-identifier hs-var">Set.toList</span></span><span> </span><span class="annot"><span class="annottext">Set Relation
-</span><a href="#local-6989586621679331126"><span class="hs-identifier hs-var">setOfRelations</span></a></span><span>
+</span><a href="#local-6989586621679330228"><span class="hs-identifier hs-var">setOfRelations</span></a></span><span>
 </span><span id="line-171"></span><span>
 </span><span id="line-172"></span><span class="hs-comment">-- |Method returns true if relation is boolean</span><span>
 </span><span id="line-173"></span><span class="hs-comment">-- (has negation and conjunction operands),</span><span>
@@ -715,10 +715,10 @@ forall a. Set a -&gt; [a]
 </span><span id="line-175"></span><span class="annot"><a href="GrammarReader.html#relationIsBoolean"><span class="hs-identifier hs-type">relationIsBoolean</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="GrammarType.html#Relation"><span class="hs-identifier hs-type">Relation</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span>
 </span><span id="line-176"></span><span id="relationIsBoolean"><span class="annot"><span class="annottext">relationIsBoolean :: Relation -&gt; Bool
 </span><a href="GrammarReader.html#relationIsBoolean"><span class="hs-identifier hs-var hs-var">relationIsBoolean</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="GrammarType.html#BooleanRelation"><span class="hs-identifier hs-type">BooleanRelation</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Nonterminal
-</span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679331122"><span class="annot"><span class="annottext">[Conj]
-</span><a href="#local-6989586621679331122"><span class="hs-identifier hs-var">conjs</span></a></span></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">let</span><span>
-</span><span id="line-177"></span><span>    </span><span id="local-6989586621679331121"><span class="annot"><span class="annottext">negConjs :: [Conj]
-</span><a href="#local-6989586621679331121"><span class="hs-identifier hs-var hs-var">negConjs</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(Conj -&gt; Bool) -&gt; [Conj] -&gt; [Conj]
+</span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679330224"><span class="annot"><span class="annottext">[Conj]
+</span><a href="#local-6989586621679330224"><span class="hs-identifier hs-var">conjs</span></a></span></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">let</span><span>
+</span><span id="line-177"></span><span>    </span><span id="local-6989586621679330223"><span class="annot"><span class="annottext">negConjs :: [Conj]
+</span><a href="#local-6989586621679330223"><span class="hs-identifier hs-var hs-var">negConjs</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(Conj -&gt; Bool) -&gt; [Conj] -&gt; [Conj]
 forall a. (a -&gt; Bool) -&gt; [a] -&gt; [a]
 </span><span class="hs-identifier hs-var">filter</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span class="hs-glyph">case</span><span>
 </span><span id="line-178"></span><span>        </span><span class="hs-special">(</span><span class="annot"><a href="GrammarType.html#NegConj"><span class="hs-identifier hs-type">NegConj</span></a></span><span> </span><span class="annot"><span class="annottext">[Symbol]
@@ -727,14 +727,14 @@ forall a. (a -&gt; Bool) -&gt; [a] -&gt; [a]
 </span><span id="line-179"></span><span>        </span><span class="hs-special">(</span><span class="annot"><a href="GrammarType.html#PosConj"><span class="hs-identifier hs-type">PosConj</span></a></span><span> </span><span class="annot"><span class="annottext">[Symbol]
 </span><span class="hs-identifier">_</span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Bool
 </span><span class="hs-identifier hs-var">False</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[Conj]
-</span><a href="#local-6989586621679331122"><span class="hs-identifier hs-var">conjs</span></a></span><span>
+</span><a href="#local-6989586621679330224"><span class="hs-identifier hs-var">conjs</span></a></span><span>
 </span><span id="line-180"></span><span>    </span><span class="hs-keyword">in</span><span> </span><span class="annot"><span class="annottext">Bool -&gt; Bool
 </span><span class="hs-identifier hs-var">not</span></span><span> </span><span class="annot"><span class="annottext">(Bool -&gt; Bool) -&gt; Bool -&gt; Bool
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">[Conj] -&gt; Bool
 forall (t :: * -&gt; *) a. Foldable t =&gt; t a -&gt; Bool
 </span><span class="hs-identifier hs-var">null</span></span><span> </span><span class="annot"><span class="annottext">[Conj]
-</span><a href="#local-6989586621679331121"><span class="hs-identifier hs-var">negConjs</span></a></span><span>
+</span><a href="#local-6989586621679330223"><span class="hs-identifier hs-var">negConjs</span></a></span><span>
 </span><span id="line-181"></span><span class="annot"><a href="GrammarReader.html#relationIsBoolean"><span class="hs-identifier hs-var">relationIsBoolean</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="GrammarType.html#Relation"><span class="hs-identifier hs-type">Relation</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Nonterminal
 </span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span class="annot"><span class="annottext">[Symbol]
 </span><span class="hs-identifier">_</span></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Bool
@@ -752,19 +752,19 @@ forall (t :: * -&gt; *) a. Foldable t =&gt; t a -&gt; Bool
 </span><span id="line-186"></span><span>
 </span><span id="line-187"></span><span class="annot"><a href="GrammarReader.html#checkGrammarType%27"><span class="hs-identifier hs-type">checkGrammarType'</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="GrammarType.html#Relation"><span class="hs-identifier hs-type">Relation</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="GrammarType.html#GrammarType"><span class="hs-identifier hs-type">GrammarType</span></a></span><span>
 </span><span id="line-188"></span><span id="checkGrammarType%27"><span class="annot"><span class="annottext">checkGrammarType' :: [Relation] -&gt; GrammarType
-</span><a href="GrammarReader.html#checkGrammarType%27"><span class="hs-identifier hs-var hs-var">checkGrammarType'</span></a></span></span><span> </span><span id="local-6989586621679331117"><span class="annot"><span class="annottext">[Relation]
-</span><a href="#local-6989586621679331117"><span class="hs-identifier hs-var">relations</span></a></span></span><span>
+</span><a href="GrammarReader.html#checkGrammarType%27"><span class="hs-identifier hs-var hs-var">checkGrammarType'</span></a></span></span><span> </span><span id="local-6989586621679330219"><span class="annot"><span class="annottext">[Relation]
+</span><a href="#local-6989586621679330219"><span class="hs-identifier hs-var">relations</span></a></span></span><span>
 </span><span id="line-189"></span><span>  </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">(Relation -&gt; Bool) -&gt; [Relation] -&gt; Bool
 forall (t :: * -&gt; *) a. Foldable t =&gt; (a -&gt; Bool) -&gt; t a -&gt; Bool
 </span><span class="hs-identifier hs-var">all</span></span><span> </span><span class="annot"><span class="annottext">Relation -&gt; Bool
 </span><a href="GrammarReader.html#relationIsCFG"><span class="hs-identifier hs-var">relationIsCFG</span></a></span><span> </span><span class="annot"><span class="annottext">[Relation]
-</span><a href="#local-6989586621679331117"><span class="hs-identifier hs-var">relations</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">GrammarType
+</span><a href="#local-6989586621679330219"><span class="hs-identifier hs-var">relations</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">GrammarType
 </span><a href="GrammarType.html#CFG"><span class="hs-identifier hs-var">CFG</span></a></span><span>
 </span><span id="line-190"></span><span>  </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">(Relation -&gt; Bool) -&gt; [Relation] -&gt; Bool
 forall (t :: * -&gt; *) a. Foldable t =&gt; (a -&gt; Bool) -&gt; t a -&gt; Bool
 </span><span class="hs-identifier hs-var">any</span></span><span> </span><span class="annot"><span class="annottext">Relation -&gt; Bool
 </span><a href="GrammarReader.html#relationIsBoolean"><span class="hs-identifier hs-var">relationIsBoolean</span></a></span><span> </span><span class="annot"><span class="annottext">[Relation]
-</span><a href="#local-6989586621679331117"><span class="hs-identifier hs-var">relations</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">GrammarType
+</span><a href="#local-6989586621679330219"><span class="hs-identifier hs-var">relations</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">GrammarType
 </span><a href="GrammarType.html#Boolean"><span class="hs-identifier hs-var">Boolean</span></a></span><span>
 </span><span id="line-191"></span><span>  </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Bool
 </span><span class="hs-identifier hs-var">otherwise</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">GrammarType

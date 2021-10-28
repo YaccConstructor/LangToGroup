@@ -8,21 +8,27 @@
 </span><span id="line-8"></span><span>
 </span><span id="line-9"></span><span class="hs-keyword">type</span><span> </span><span id="GAPformat"><span class="annot"><a href="GP2GAP.html#GAPformat"><span class="hs-identifier hs-var">GAPformat</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
 </span><span id="line-10"></span><span>
-</span><span id="line-11"></span><span class="annot"><a href="GP2GAP.html#gapFormat"><span class="hs-identifier hs-type">gapFormat</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="GroupPresentation.html#GroupPresentation"><span class="hs-identifier hs-type">GroupPresentation</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="GP2GAP.html#GAPformat"><span class="hs-identifier hs-type">GAPformat</span></a></span><span>
-</span><span id="line-12"></span><span id="gapFormat"><span class="annot"><span class="annottext">gapFormat :: GroupPresentation -&gt; Maybe GAPformat
-</span><a href="GP2GAP.html#gapFormat"><span class="hs-identifier hs-var hs-var">gapFormat</span></a></span></span><span> </span><span id="local-6989586621679331033"><span class="annot"><span class="annottext">GroupPresentation
-</span><a href="#local-6989586621679331033"><span class="hs-identifier hs-var">gp</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
-</span><span id="line-13"></span><span>    </span><span id="local-6989586621679331032"><span class="annot"><span class="annottext">GAPformat
-</span><a href="#local-6989586621679331032"><span class="hs-identifier hs-var">gens</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">GroupPresentation -&gt; Maybe GAPformat
+</span><span id="line-11"></span><span id="local-6989586621679330113"><span class="annot"><a href="GP2GAP.html#gapFormat"><span class="hs-identifier hs-type">gapFormat</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">MonadFail</span></span><span> </span><span class="annot"><a href="#local-6989586621679330113"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><a href="GroupPresentation.html#GroupPresentation"><span class="hs-identifier hs-type">GroupPresentation</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679330113"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="annot"><a href="GP2GAP.html#GAPformat"><span class="hs-identifier hs-type">GAPformat</span></a></span></span><span>
+</span><span id="line-12"></span><span id="gapFormat"><span class="annot"><span class="annottext">gapFormat :: GroupPresentation -&gt; m GAPformat
+</span><a href="GP2GAP.html#gapFormat"><span class="hs-identifier hs-var hs-var">gapFormat</span></a></span></span><span> </span><span id="local-6989586621679330112"><span class="annot"><span class="annottext">GroupPresentation
+</span><a href="#local-6989586621679330112"><span class="hs-identifier hs-var">gp</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-13"></span><span>    </span><span id="local-6989586621679330111"><span class="annot"><span class="annottext">GAPformat
+</span><a href="#local-6989586621679330111"><span class="hs-identifier hs-var">gens</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">GroupPresentation -&gt; m GAPformat
+forall (m :: * -&gt; *).
+MonadFail m =&gt;
+GroupPresentation -&gt; m GAPformat
 </span><a href="GP2GAP.html#gens2str"><span class="hs-identifier hs-var">gens2str</span></a></span><span> </span><span class="annot"><span class="annottext">GroupPresentation
-</span><a href="#local-6989586621679331033"><span class="hs-identifier hs-var">gp</span></a></span><span>
-</span><span id="line-14"></span><span>    </span><span id="local-6989586621679331030"><span class="annot"><span class="annottext">GAPformat
-</span><a href="#local-6989586621679331030"><span class="hs-identifier hs-var">rels</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">GroupPresentation -&gt; Maybe GAPformat
+</span><a href="#local-6989586621679330112"><span class="hs-identifier hs-var">gp</span></a></span><span>
+</span><span id="line-14"></span><span>    </span><span id="local-6989586621679330109"><span class="annot"><span class="annottext">GAPformat
+</span><a href="#local-6989586621679330109"><span class="hs-identifier hs-var">rels</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">GroupPresentation -&gt; m GAPformat
+forall (m :: * -&gt; *).
+MonadFail m =&gt;
+GroupPresentation -&gt; m GAPformat
 </span><a href="GP2GAP.html#rels2str"><span class="hs-identifier hs-var">rels2str</span></a></span><span> </span><span class="annot"><span class="annottext">GroupPresentation
-</span><a href="#local-6989586621679331033"><span class="hs-identifier hs-var">gp</span></a></span><span>
-</span><span id="line-15"></span><span>    </span><span class="annot"><span class="annottext">GAPformat -&gt; Maybe GAPformat
+</span><a href="#local-6989586621679330112"><span class="hs-identifier hs-var">gp</span></a></span><span>
+</span><span id="line-15"></span><span>    </span><span class="annot"><span class="annottext">GAPformat -&gt; m GAPformat
 forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
-</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">(GAPformat -&gt; Maybe GAPformat) -&gt; GAPformat -&gt; Maybe GAPformat
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">(GAPformat -&gt; m GAPformat) -&gt; GAPformat -&gt; m GAPformat
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span>
 </span><span id="line-16"></span><span>        </span><span class="annot"><span class="annottext">GAPformat
@@ -30,25 +36,25 @@ forall a b. (a -&gt; b) -&gt; a -&gt; b
         \f := FreeGroup( &quot;</span></span><span> </span><span class="annot"><span class="annottext">GAPformat -&gt; GAPformat -&gt; GAPformat
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">GAPformat
-</span><a href="#local-6989586621679331032"><span class="hs-identifier hs-var">gens</span></a></span><span> </span><span class="annot"><span class="annottext">GAPformat -&gt; GAPformat -&gt; GAPformat
+</span><a href="#local-6989586621679330111"><span class="hs-identifier hs-var">gens</span></a></span><span> </span><span class="annot"><span class="annottext">GAPformat -&gt; GAPformat -&gt; GAPformat
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">GAPformat
 </span><span class="hs-string">&quot; );\n\
         \g := f / [ &quot;</span></span><span> </span><span class="annot"><span class="annottext">GAPformat -&gt; GAPformat -&gt; GAPformat
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">GAPformat
-</span><a href="#local-6989586621679331030"><span class="hs-identifier hs-var">rels</span></a></span><span> </span><span class="annot"><span class="annottext">GAPformat -&gt; GAPformat -&gt; GAPformat
+</span><a href="#local-6989586621679330109"><span class="hs-identifier hs-var">rels</span></a></span><span> </span><span class="annot"><span class="annottext">GAPformat -&gt; GAPformat -&gt; GAPformat
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">GAPformat
 </span><span class="hs-string">&quot; ];\n\
         \return g;\n&quot;</span></span><span>
 </span><span id="line-20"></span><span>
-</span><span id="line-21"></span><span class="annot"><a href="GP2GAP.html#gens2str"><span class="hs-identifier hs-type">gens2str</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="GroupPresentation.html#GroupPresentation"><span class="hs-identifier hs-type">GroupPresentation</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
-</span><span id="line-22"></span><span id="gens2str"><span class="annot"><span class="annottext">gens2str :: GroupPresentation -&gt; Maybe GAPformat
-</span><a href="GP2GAP.html#gens2str"><span class="hs-identifier hs-var hs-var">gens2str</span></a></span></span><span> </span><span id="local-6989586621679331028"><span class="annot"><span class="annottext">GroupPresentation
-</span><a href="#local-6989586621679331028"><span class="hs-identifier hs-var">gp</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">GAPformat -&gt; Maybe GAPformat
+</span><span id="line-21"></span><span id="local-6989586621679330159"><span class="annot"><a href="GP2GAP.html#gens2str"><span class="hs-identifier hs-type">gens2str</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">MonadFail</span></span><span> </span><span class="annot"><a href="#local-6989586621679330159"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><a href="GroupPresentation.html#GroupPresentation"><span class="hs-identifier hs-type">GroupPresentation</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679330159"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span></span><span>
+</span><span id="line-22"></span><span id="gens2str"><span class="annot"><span class="annottext">gens2str :: GroupPresentation -&gt; m GAPformat
+</span><a href="GP2GAP.html#gens2str"><span class="hs-identifier hs-var hs-var">gens2str</span></a></span></span><span> </span><span id="local-6989586621679330107"><span class="annot"><span class="annottext">GroupPresentation
+</span><a href="#local-6989586621679330107"><span class="hs-identifier hs-var">gp</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">GAPformat -&gt; m GAPformat
 forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
-</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">(GAPformat -&gt; Maybe GAPformat) -&gt; GAPformat -&gt; Maybe GAPformat
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">(GAPformat -&gt; m GAPformat) -&gt; GAPformat -&gt; m GAPformat
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">GAPformat -&gt; [GAPformat] -&gt; GAPformat
 forall a. [a] -&gt; [[a]] -&gt; [a]
@@ -60,7 +66,7 @@ forall c v. Listable c v =&gt; c -&gt; [v]
 </span><a href="Containers.html#toList"><span class="hs-identifier hs-var">toList</span></a></span><span> </span><span class="annot"><span class="annottext">(Set GAPformat -&gt; [GAPformat]) -&gt; Set GAPformat -&gt; [GAPformat]
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">GroupPresentation
-</span><a href="#local-6989586621679331028"><span class="hs-identifier hs-var">gp</span></a></span><span class="annot"><span class="annottext">GroupPresentation
+</span><a href="#local-6989586621679330107"><span class="hs-identifier hs-var">gp</span></a></span><span class="annot"><span class="annottext">GroupPresentation
 -&gt; Getting (Set GAPformat) GroupPresentation (Set GAPformat)
 -&gt; Set GAPformat
 forall s a. s -&gt; Getting a s a -&gt; a
@@ -68,56 +74,59 @@ forall s a. s -&gt; Getting a s a -&gt; a
 GPGetter (Set GAPformat)
 </span><a href="GroupPresentation.html#strGenerators"><span class="hs-identifier hs-var">strGenerators</span></a></span><span>
 </span><span id="line-23"></span><span>
-</span><span id="line-24"></span><span class="annot"><a href="GP2GAP.html#rels2str"><span class="hs-identifier hs-type">rels2str</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="GroupPresentation.html#GroupPresentation"><span class="hs-identifier hs-type">GroupPresentation</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
-</span><span id="line-25"></span><span id="rels2str"><span class="annot"><span class="annottext">rels2str :: GroupPresentation -&gt; Maybe GAPformat
-</span><a href="GP2GAP.html#rels2str"><span class="hs-identifier hs-var hs-var">rels2str</span></a></span></span><span> </span><span id="local-6989586621679331024"><span class="annot"><span class="annottext">GroupPresentation
-</span><a href="#local-6989586621679331024"><span class="hs-identifier hs-var">gp</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
-</span><span id="line-26"></span><span>    </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679331023"><span class="annot"><span class="annottext">gd :: GeneratorsDescr
-</span><a href="#local-6989586621679331023"><span class="hs-identifier hs-var hs-var">gd</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">GroupPresentation
-</span><a href="#local-6989586621679331024"><span class="hs-identifier hs-var">gp</span></a></span><span class="annot"><span class="annottext">GroupPresentation
+</span><span id="line-24"></span><span id="local-6989586621679330103"><span class="annot"><a href="GP2GAP.html#rels2str"><span class="hs-identifier hs-type">rels2str</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">MonadFail</span></span><span> </span><span class="annot"><a href="#local-6989586621679330103"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><a href="GroupPresentation.html#GroupPresentation"><span class="hs-identifier hs-type">GroupPresentation</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679330103"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span></span><span>
+</span><span id="line-25"></span><span id="rels2str"><span class="annot"><span class="annottext">rels2str :: GroupPresentation -&gt; m GAPformat
+</span><a href="GP2GAP.html#rels2str"><span class="hs-identifier hs-var hs-var">rels2str</span></a></span></span><span> </span><span id="local-6989586621679330102"><span class="annot"><span class="annottext">GroupPresentation
+</span><a href="#local-6989586621679330102"><span class="hs-identifier hs-var">gp</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-26"></span><span>    </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679330101"><span class="annot"><span class="annottext">gd :: GeneratorsDescr
+</span><a href="#local-6989586621679330101"><span class="hs-identifier hs-var hs-var">gd</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">GroupPresentation
+</span><a href="#local-6989586621679330102"><span class="hs-identifier hs-var">gp</span></a></span><span class="annot"><span class="annottext">GroupPresentation
 -&gt; Getting GeneratorsDescr GroupPresentation GeneratorsDescr
 -&gt; GeneratorsDescr
 forall s a. s -&gt; Getting a s a -&gt; a
 </span><span class="hs-operator hs-var">^.</span></span><span class="annot"><span class="annottext">Getting GeneratorsDescr GroupPresentation GeneratorsDescr
 Lens' GroupPresentation GeneratorsDescr
 </span><a href="GroupPresentation.html#generatorsDescr"><span class="hs-identifier hs-var">generatorsDescr</span></a></span><span>
-</span><span id="line-27"></span><span>    </span><span id="local-6989586621679331021"><span class="annot"><span class="annottext">[GAPformat]
-</span><a href="#local-6989586621679331021"><span class="hs-identifier hs-var">rels</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">(Relation -&gt; Maybe GAPformat) -&gt; [Relation] -&gt; Maybe [GAPformat]
+</span><span id="line-27"></span><span>    </span><span id="local-6989586621679330099"><span class="annot"><span class="annottext">[GAPformat]
+</span><a href="#local-6989586621679330099"><span class="hs-identifier hs-var">rels</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">(Relation -&gt; m GAPformat) -&gt; [Relation] -&gt; m [GAPformat]
 forall (t :: * -&gt; *) (f :: * -&gt; *) a b.
 (Traversable t, Applicative f) =&gt;
 (a -&gt; f b) -&gt; t a -&gt; f (t b)
-</span><span class="hs-identifier hs-var">traverse</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">GeneratorsDescr -&gt; Relation -&gt; Maybe GAPformat
+</span><span class="hs-identifier hs-var">traverse</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">GeneratorsDescr -&gt; Relation -&gt; m GAPformat
+forall (m :: * -&gt; *).
+MonadFail m =&gt;
+GeneratorsDescr -&gt; Relation -&gt; m GAPformat
 </span><a href="GP2GAP.html#rel2str"><span class="hs-identifier hs-var">rel2str</span></a></span><span> </span><span class="annot"><span class="annottext">GeneratorsDescr
-</span><a href="#local-6989586621679331023"><span class="hs-identifier hs-var">gd</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Relations -&gt; [Relation]
+</span><a href="#local-6989586621679330101"><span class="hs-identifier hs-var">gd</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Relations -&gt; [Relation]
 forall c v. Listable c v =&gt; c -&gt; [v]
 </span><a href="Containers.html#toList"><span class="hs-identifier hs-var">toList</span></a></span><span> </span><span class="annot"><span class="annottext">(Relations -&gt; [Relation]) -&gt; Relations -&gt; [Relation]
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">GroupPresentation
-</span><a href="#local-6989586621679331024"><span class="hs-identifier hs-var">gp</span></a></span><span class="annot"><span class="annottext">GroupPresentation
+</span><a href="#local-6989586621679330102"><span class="hs-identifier hs-var">gp</span></a></span><span class="annot"><span class="annottext">GroupPresentation
 -&gt; Getting Relations GroupPresentation Relations -&gt; Relations
 forall s a. s -&gt; Getting a s a -&gt; a
 </span><span class="hs-operator hs-var">^.</span></span><span class="annot"><span class="annottext">Getting Relations GroupPresentation Relations
 Lens' GroupPresentation Relations
 </span><a href="GroupPresentation.html#relations"><span class="hs-identifier hs-var">relations</span></a></span><span class="hs-special">)</span><span>
-</span><span id="line-28"></span><span>    </span><span class="annot"><span class="annottext">GAPformat -&gt; Maybe GAPformat
+</span><span id="line-28"></span><span>    </span><span class="annot"><span class="annottext">GAPformat -&gt; m GAPformat
 forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
-</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">(GAPformat -&gt; Maybe GAPformat) -&gt; GAPformat -&gt; Maybe GAPformat
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">(GAPformat -&gt; m GAPformat) -&gt; GAPformat -&gt; m GAPformat
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">GAPformat -&gt; [GAPformat] -&gt; GAPformat
 forall a. [a] -&gt; [[a]] -&gt; [a]
 </span><span class="hs-identifier hs-var">intercalate</span></span><span> </span><span class="annot"><span class="annottext">GAPformat
 </span><span class="hs-string">&quot;, &quot;</span></span><span> </span><span class="annot"><span class="annottext">[GAPformat]
-</span><a href="#local-6989586621679331021"><span class="hs-identifier hs-var">rels</span></a></span><span>
+</span><a href="#local-6989586621679330099"><span class="hs-identifier hs-var">rels</span></a></span><span>
 </span><span id="line-29"></span><span>
-</span><span id="line-30"></span><span class="annot"><a href="GP2GAP.html#rel2str"><span class="hs-identifier hs-type">rel2str</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="GroupPresentation.html#GeneratorsDescr"><span class="hs-identifier hs-type">GeneratorsDescr</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="GroupPresentation.Relation.html#Relation"><span class="hs-identifier hs-type">Relation</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
-</span><span id="line-31"></span><span id="rel2str"><span class="annot"><span class="annottext">rel2str :: GeneratorsDescr -&gt; Relation -&gt; Maybe GAPformat
-</span><a href="GP2GAP.html#rel2str"><span class="hs-identifier hs-var hs-var">rel2str</span></a></span></span><span> </span><span id="local-6989586621679331017"><span class="annot"><span class="annottext">GeneratorsDescr
-</span><a href="#local-6989586621679331017"><span class="hs-identifier hs-var">gd</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Containers.Pair.html#Pair"><span class="hs-identifier hs-type">Pair</span></a></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679331015"><span class="annot"><span class="annottext">EWord
-</span><a href="#local-6989586621679331015"><span class="hs-identifier hs-var">ew1</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679331014"><span class="annot"><span class="annottext">EWord
-</span><a href="#local-6989586621679331014"><span class="hs-identifier hs-var">ew2</span></a></span></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
-</span><span id="line-32"></span><span>    </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679331013"><span class="annot"><span class="annottext">ew :: EWord
-</span><a href="#local-6989586621679331013"><span class="hs-identifier hs-var hs-var">ew</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">EWord
-</span><a href="#local-6989586621679331015"><span class="hs-identifier hs-var">ew1</span></a></span><span> </span><span class="annot"><span class="annottext">EWord -&gt; EWord -&gt; EWord
+</span><span id="line-30"></span><span id="local-6989586621679330134"><span class="annot"><a href="GP2GAP.html#rel2str"><span class="hs-identifier hs-type">rel2str</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">MonadFail</span></span><span> </span><span class="annot"><a href="#local-6989586621679330134"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><a href="GroupPresentation.html#GeneratorsDescr"><span class="hs-identifier hs-type">GeneratorsDescr</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="GroupPresentation.Relation.html#Relation"><span class="hs-identifier hs-type">Relation</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679330134"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span></span><span>
+</span><span id="line-31"></span><span id="rel2str"><span class="annot"><span class="annottext">rel2str :: GeneratorsDescr -&gt; Relation -&gt; m GAPformat
+</span><a href="GP2GAP.html#rel2str"><span class="hs-identifier hs-var hs-var">rel2str</span></a></span></span><span> </span><span id="local-6989586621679330095"><span class="annot"><span class="annottext">GeneratorsDescr
+</span><a href="#local-6989586621679330095"><span class="hs-identifier hs-var">gd</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Containers.Pair.html#Pair"><span class="hs-identifier hs-type">Pair</span></a></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679330093"><span class="annot"><span class="annottext">EWord
+</span><a href="#local-6989586621679330093"><span class="hs-identifier hs-var">ew1</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679330092"><span class="annot"><span class="annottext">EWord
+</span><a href="#local-6989586621679330092"><span class="hs-identifier hs-var">ew2</span></a></span></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-32"></span><span>    </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679330091"><span class="annot"><span class="annottext">ew :: EWord
+</span><a href="#local-6989586621679330091"><span class="hs-identifier hs-var hs-var">ew</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">EWord
+</span><a href="#local-6989586621679330093"><span class="hs-identifier hs-var">ew1</span></a></span><span> </span><span class="annot"><span class="annottext">EWord -&gt; EWord -&gt; EWord
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">EWord -&gt; EWord
 forall a. [a] -&gt; [a]
@@ -126,49 +135,52 @@ forall a. Signed a -&gt; Signed a
 </span><a href="GroupPresentation.Element.html#%5E~"><span class="hs-operator hs-var">(^~)</span></a></span><span> </span><span class="annot"><span class="annottext">(Signed Generator -&gt; Signed Generator) -&gt; EWord -&gt; EWord
 forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
 </span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">EWord
-</span><a href="#local-6989586621679331014"><span class="hs-identifier hs-var">ew2</span></a></span><span class="hs-special">)</span><span>
-</span><span id="line-33"></span><span>    </span><span id="local-6989586621679331009"><span class="annot"><span class="annottext">[GAPformat]
-</span><a href="#local-6989586621679331009"><span class="hs-identifier hs-var">es</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">(Signed Generator -&gt; Maybe GAPformat) -&gt; EWord -&gt; Maybe [GAPformat]
+</span><a href="#local-6989586621679330092"><span class="hs-identifier hs-var">ew2</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-33"></span><span>    </span><span id="local-6989586621679330087"><span class="annot"><span class="annottext">[GAPformat]
+</span><a href="#local-6989586621679330087"><span class="hs-identifier hs-var">es</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">(Signed Generator -&gt; m GAPformat) -&gt; EWord -&gt; m [GAPformat]
 forall (t :: * -&gt; *) (f :: * -&gt; *) a b.
 (Traversable t, Applicative f) =&gt;
 (a -&gt; f b) -&gt; t a -&gt; f (t b)
-</span><span class="hs-identifier hs-var">traverse</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">GeneratorsDescr -&gt; Signed Generator -&gt; Maybe GAPformat
+</span><span class="hs-identifier hs-var">traverse</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">GeneratorsDescr -&gt; Signed Generator -&gt; m GAPformat
+forall (m :: * -&gt; *).
+MonadFail m =&gt;
+GeneratorsDescr -&gt; Signed Generator -&gt; m GAPformat
 </span><a href="GP2GAP.html#elem2str"><span class="hs-identifier hs-var">elem2str</span></a></span><span> </span><span class="annot"><span class="annottext">GeneratorsDescr
-</span><a href="#local-6989586621679331017"><span class="hs-identifier hs-var">gd</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">EWord
-</span><a href="#local-6989586621679331013"><span class="hs-identifier hs-var">ew</span></a></span><span>
-</span><span id="line-34"></span><span>    </span><span class="annot"><span class="annottext">GAPformat -&gt; Maybe GAPformat
+</span><a href="#local-6989586621679330095"><span class="hs-identifier hs-var">gd</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">EWord
+</span><a href="#local-6989586621679330091"><span class="hs-identifier hs-var">ew</span></a></span><span>
+</span><span id="line-34"></span><span>    </span><span class="annot"><span class="annottext">GAPformat -&gt; m GAPformat
 forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
-</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">(GAPformat -&gt; Maybe GAPformat) -&gt; GAPformat -&gt; Maybe GAPformat
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">(GAPformat -&gt; m GAPformat) -&gt; GAPformat -&gt; m GAPformat
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">GAPformat -&gt; [GAPformat] -&gt; GAPformat
 forall a. [a] -&gt; [[a]] -&gt; [a]
 </span><span class="hs-identifier hs-var">intercalate</span></span><span> </span><span class="annot"><span class="annottext">GAPformat
 </span><span class="hs-string">&quot; * &quot;</span></span><span> </span><span class="annot"><span class="annottext">[GAPformat]
-</span><a href="#local-6989586621679331009"><span class="hs-identifier hs-var">es</span></a></span><span>
+</span><a href="#local-6989586621679330087"><span class="hs-identifier hs-var">es</span></a></span><span>
 </span><span id="line-35"></span><span>
-</span><span id="line-36"></span><span class="annot"><a href="GP2GAP.html#elem2str"><span class="hs-identifier hs-type">elem2str</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="GroupPresentation.html#GeneratorsDescr"><span class="hs-identifier hs-type">GeneratorsDescr</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="GroupPresentation.Element.html#Element"><span class="hs-identifier hs-type">Element</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
-</span><span id="line-37"></span><span id="elem2str"><span class="annot"><span class="annottext">elem2str :: GeneratorsDescr -&gt; Signed Generator -&gt; Maybe GAPformat
-</span><a href="GP2GAP.html#elem2str"><span class="hs-identifier hs-var hs-var">elem2str</span></a></span></span><span> </span><span id="local-6989586621679331006"><span class="annot"><span class="annottext">GeneratorsDescr
-</span><a href="#local-6989586621679331006"><span class="hs-identifier hs-var">gd</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="GroupPresentation.Element.html#Positive"><span class="hs-identifier hs-type">Positive</span></a></span><span> </span><span id="local-6989586621679331004"><span class="annot"><span class="annottext">Generator
-</span><a href="#local-6989586621679331004"><span class="hs-identifier hs-var">g</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">GeneratorsDescr
-</span><a href="#local-6989586621679331006"><span class="hs-identifier hs-var">gd</span></a></span><span> </span><span class="annot"><span class="annottext">GeneratorsDescr -&gt; Generator -&gt; Maybe GAPformat
+</span><span id="line-36"></span><span id="local-6989586621679330123"><span class="annot"><a href="GP2GAP.html#elem2str"><span class="hs-identifier hs-type">elem2str</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">MonadFail</span></span><span> </span><span class="annot"><a href="#local-6989586621679330123"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><a href="GroupPresentation.html#GeneratorsDescr"><span class="hs-identifier hs-type">GeneratorsDescr</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="GroupPresentation.Element.html#Element"><span class="hs-identifier hs-type">Element</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679330123"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span></span><span>
+</span><span id="line-37"></span><span id="elem2str"><span class="annot"><span class="annottext">elem2str :: GeneratorsDescr -&gt; Signed Generator -&gt; m GAPformat
+</span><a href="GP2GAP.html#elem2str"><span class="hs-identifier hs-var hs-var">elem2str</span></a></span></span><span> </span><span id="local-6989586621679330084"><span class="annot"><span class="annottext">GeneratorsDescr
+</span><a href="#local-6989586621679330084"><span class="hs-identifier hs-var">gd</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="GroupPresentation.Element.html#Positive"><span class="hs-identifier hs-type">Positive</span></a></span><span> </span><span id="local-6989586621679330082"><span class="annot"><span class="annottext">Generator
+</span><a href="#local-6989586621679330082"><span class="hs-identifier hs-var">g</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">GeneratorsDescr
+</span><a href="#local-6989586621679330084"><span class="hs-identifier hs-var">gd</span></a></span><span> </span><span class="annot"><span class="annottext">GeneratorsDescr -&gt; Generator -&gt; m GAPformat
 forall c k v (m :: * -&gt; *).
 (Indexable c k v, MonadFail m) =&gt;
 c -&gt; k -&gt; m v
 </span><a href="Containers.html#%21%3F"><span class="hs-operator hs-var">!?</span></a></span><span> </span><span class="annot"><span class="annottext">Generator
-</span><a href="#local-6989586621679331004"><span class="hs-identifier hs-var">g</span></a></span><span>
-</span><span id="line-38"></span><span class="annot"><a href="GP2GAP.html#elem2str"><span class="hs-identifier hs-var">elem2str</span></a></span><span> </span><span id="local-6989586621679331002"><span class="annot"><span class="annottext">GeneratorsDescr
-</span><a href="#local-6989586621679331002"><span class="hs-identifier hs-var">gd</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="GroupPresentation.Element.html#Negative"><span class="hs-identifier hs-type">Negative</span></a></span><span> </span><span id="local-6989586621679331000"><span class="annot"><span class="annottext">Generator
-</span><a href="#local-6989586621679331000"><span class="hs-identifier hs-var">g</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">GAPformat -&gt; GAPformat -&gt; GAPformat
+</span><a href="#local-6989586621679330082"><span class="hs-identifier hs-var">g</span></a></span><span>
+</span><span id="line-38"></span><span class="annot"><a href="GP2GAP.html#elem2str"><span class="hs-identifier hs-var">elem2str</span></a></span><span> </span><span id="local-6989586621679330080"><span class="annot"><span class="annottext">GeneratorsDescr
+</span><a href="#local-6989586621679330080"><span class="hs-identifier hs-var">gd</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="GroupPresentation.Element.html#Negative"><span class="hs-identifier hs-type">Negative</span></a></span><span> </span><span id="local-6989586621679330078"><span class="annot"><span class="annottext">Generator
+</span><a href="#local-6989586621679330078"><span class="hs-identifier hs-var">g</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">GAPformat -&gt; GAPformat -&gt; GAPformat
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">GAPformat
-</span><span class="hs-string">&quot;^(-1)&quot;</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">(GAPformat -&gt; GAPformat) -&gt; Maybe GAPformat -&gt; Maybe GAPformat
+</span><span class="hs-string">&quot;^(-1)&quot;</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">(GAPformat -&gt; GAPformat) -&gt; m GAPformat -&gt; m GAPformat
 forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
 </span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">GeneratorsDescr
-</span><a href="#local-6989586621679331002"><span class="hs-identifier hs-var">gd</span></a></span><span> </span><span class="annot"><span class="annottext">GeneratorsDescr -&gt; Generator -&gt; Maybe GAPformat
+</span><a href="#local-6989586621679330080"><span class="hs-identifier hs-var">gd</span></a></span><span> </span><span class="annot"><span class="annottext">GeneratorsDescr -&gt; Generator -&gt; m GAPformat
 forall c k v (m :: * -&gt; *).
 (Indexable c k v, MonadFail m) =&gt;
 c -&gt; k -&gt; m v
 </span><a href="Containers.html#%21%3F"><span class="hs-operator hs-var">!?</span></a></span><span> </span><span class="annot"><span class="annottext">Generator
-</span><a href="#local-6989586621679331000"><span class="hs-identifier hs-var">g</span></a></span><span class="hs-special">)</span><span>
+</span><a href="#local-6989586621679330078"><span class="hs-identifier hs-var">g</span></a></span><span class="hs-special">)</span><span>
 </span><span id="line-39"></span></pre></body></html>

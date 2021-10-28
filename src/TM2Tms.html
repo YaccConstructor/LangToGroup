@@ -16,19 +16,19 @@
 </span><span id="line-15"></span><span>    </span><span class="hs-special">(</span><span class="annot"><a href="TMType.html#TM"><span class="hs-identifier hs-type">TM</span></a></span><span>
 </span><span id="line-16"></span><span>        </span><span class="hs-special">(</span><span class="annot"><span class="annottext">InputAlphabet
 </span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span> </span><span class="hs-comment">-- Input Alphabet</span><span>
-</span><span id="line-17"></span><span>        </span><span id="local-6989586621679337193"><span class="annot"><span class="annottext">[TapeAlphabet]
-</span><a href="#local-6989586621679337193"><span class="hs-identifier hs-var">tapeAlphabets</span></a></span></span><span class="hs-special">,</span><span>
+</span><span id="line-17"></span><span>        </span><span id="local-6989586621679336350"><span class="annot"><span class="annottext">[TapeAlphabet]
+</span><a href="#local-6989586621679336350"><span class="hs-identifier hs-var">tapeAlphabets</span></a></span></span><span class="hs-special">,</span><span>
 </span><span id="line-18"></span><span>        </span><span class="annot"><span class="annottext">MultiTapeStates
 </span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span> </span><span class="hs-comment">-- Tape States</span><span>
-</span><span id="line-19"></span><span>        </span><span class="annot"><a href="TMType.html#Commands"><span class="hs-identifier hs-type">Commands</span></a></span><span> </span><span id="local-6989586621679337191"><span class="annot"><span class="annottext">Set [TapeCommand]
-</span><a href="#local-6989586621679337191"><span class="hs-identifier hs-var">commands</span></a></span></span><span class="hs-special">,</span><span>
-</span><span id="line-20"></span><span>        </span><span class="annot"><a href="TMType.html#StartStates"><span class="hs-identifier hs-type">StartStates</span></a></span><span> </span><span id="local-6989586621679337189"><span class="annot"><span class="annottext">[State]
-</span><a href="#local-6989586621679337189"><span class="hs-identifier hs-var">startStates</span></a></span></span><span class="hs-special">,</span><span>
-</span><span id="line-21"></span><span>        </span><span class="annot"><a href="TMType.html#AccessStates"><span class="hs-identifier hs-type">AccessStates</span></a></span><span> </span><span id="local-6989586621679337187"><span class="annot"><span class="annottext">[State]
-</span><a href="#local-6989586621679337187"><span class="hs-identifier hs-var">accessStates</span></a></span></span><span class="hs-special">)</span><span>
+</span><span id="line-19"></span><span>        </span><span class="annot"><a href="TMType.html#Commands"><span class="hs-identifier hs-type">Commands</span></a></span><span> </span><span id="local-6989586621679336348"><span class="annot"><span class="annottext">Set [TapeCommand]
+</span><a href="#local-6989586621679336348"><span class="hs-identifier hs-var">commands</span></a></span></span><span class="hs-special">,</span><span>
+</span><span id="line-20"></span><span>        </span><span class="annot"><a href="TMType.html#StartStates"><span class="hs-identifier hs-type">StartStates</span></a></span><span> </span><span id="local-6989586621679336346"><span class="annot"><span class="annottext">[State]
+</span><a href="#local-6989586621679336346"><span class="hs-identifier hs-var">startStates</span></a></span></span><span class="hs-special">,</span><span>
+</span><span id="line-21"></span><span>        </span><span class="annot"><a href="TMType.html#AccessStates"><span class="hs-identifier hs-type">AccessStates</span></a></span><span> </span><span id="local-6989586621679336344"><span class="annot"><span class="annottext">[State]
+</span><a href="#local-6989586621679336344"><span class="hs-identifier hs-var">accessStates</span></a></span></span><span class="hs-special">)</span><span>
 </span><span id="line-22"></span><span>    </span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
-</span><span id="line-23"></span><span>        </span><span id="local-6989586621679337186"><span class="annot"><span class="annottext">[[TmsCommand]]
-</span><a href="#local-6989586621679337186"><span class="hs-identifier hs-var">tmsCmdsBlocks</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">([TapeCommand] -&gt; Either String [TmsCommand])
+</span><span id="line-23"></span><span>        </span><span id="local-6989586621679336343"><span class="annot"><span class="annottext">[[TmsCommand]]
+</span><a href="#local-6989586621679336343"><span class="hs-identifier hs-var">tmsCmdsBlocks</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">([TapeCommand] -&gt; Either String [TmsCommand])
 -&gt; [[TapeCommand]] -&gt; Either String [[TmsCommand]]
 forall (t :: * -&gt; *) (f :: * -&gt; *) a b.
 (Traversable t, Applicative f) =&gt;
@@ -37,21 +37,21 @@ forall (t :: * -&gt; *) (f :: * -&gt; *) a b.
 </span><a href="TM2Tms.html#cmd2tmsTapeCmds"><span class="hs-identifier hs-var">cmd2tmsTapeCmds</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Set [TapeCommand] -&gt; [[TapeCommand]]
 forall a. Set a -&gt; [a]
 </span><span class="hs-identifier hs-var">toList</span></span><span> </span><span class="annot"><span class="annottext">Set [TapeCommand]
-</span><a href="#local-6989586621679337191"><span class="hs-identifier hs-var">commands</span></a></span><span class="hs-special">)</span><span>
-</span><span id="line-24"></span><span>        </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679337183"><span class="annot"><span class="annottext">tmsCmds :: [TmsCommand]
-</span><a href="#local-6989586621679337183"><span class="hs-identifier hs-var hs-var">tmsCmds</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[[TmsCommand]] -&gt; [TmsCommand]
+</span><a href="#local-6989586621679336348"><span class="hs-identifier hs-var">commands</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-24"></span><span>        </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679336340"><span class="annot"><span class="annottext">tmsCmds :: [TmsCommand]
+</span><a href="#local-6989586621679336340"><span class="hs-identifier hs-var hs-var">tmsCmds</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[[TmsCommand]] -&gt; [TmsCommand]
 forall (t :: * -&gt; *) a. Foldable t =&gt; t [a] -&gt; [a]
 </span><span class="hs-identifier hs-var">concat</span></span><span> </span><span class="annot"><span class="annottext">[[TmsCommand]]
-</span><a href="#local-6989586621679337186"><span class="hs-identifier hs-var">tmsCmdsBlocks</span></a></span><span>
-</span><span id="line-25"></span><span>        </span><span id="local-6989586621679337181"><span class="annot"><span class="annottext">[String]
-</span><a href="#local-6989586621679337181"><span class="hs-identifier hs-var">tmsAlph</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">(TapeAlphabet -&gt; Either String String)
+</span><a href="#local-6989586621679336343"><span class="hs-identifier hs-var">tmsCmdsBlocks</span></a></span><span>
+</span><span id="line-25"></span><span>        </span><span id="local-6989586621679336338"><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679336338"><span class="hs-identifier hs-var">tmsAlph</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">(TapeAlphabet -&gt; Either String String)
 -&gt; [TapeAlphabet] -&gt; Either String [String]
 forall (t :: * -&gt; *) (f :: * -&gt; *) a b.
 (Traversable t, Applicative f) =&gt;
 (a -&gt; f b) -&gt; t a -&gt; f (t b)
 </span><span class="hs-identifier hs-var">traverse</span></span><span> </span><span class="annot"><span class="annottext">TapeAlphabet -&gt; Either String String
-</span><a href="#local-6989586621679337180"><span class="hs-identifier hs-var">alph2tmsAlph</span></a></span><span> </span><span class="annot"><span class="annottext">[TapeAlphabet]
-</span><a href="#local-6989586621679337193"><span class="hs-identifier hs-var">tapeAlphabets</span></a></span><span>
+</span><a href="#local-6989586621679336337"><span class="hs-identifier hs-var">alph2tmsAlph</span></a></span><span> </span><span class="annot"><span class="annottext">[TapeAlphabet]
+</span><a href="#local-6989586621679336350"><span class="hs-identifier hs-var">tapeAlphabets</span></a></span><span>
 </span><span id="line-26"></span><span>        </span><span class="annot"><span class="annottext">Tms -&gt; Either String Tms
 forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
 </span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">(Tms -&gt; Either String Tms) -&gt; Tms -&gt; Either String Tms
@@ -63,12 +63,12 @@ forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span id="line-28"></span><span>            </span><span class="annot"><span class="annottext">[String] -&gt; TmsState
 </span><a href="TM2Tms.html#mergeMultipleNames"><span class="hs-identifier hs-var">mergeMultipleNames</span></a></span><span> </span><span class="annot"><span class="annottext">([String] -&gt; TmsState) -&gt; [String] -&gt; TmsState
 forall a b. (a -&gt; b) -&gt; a -&gt; b
-</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span class="hs-special">(</span><span class="annot"><a href="TMType.html#State"><span class="hs-identifier hs-type">State</span></a></span><span> </span><span id="local-6989586621679337176"><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679337176"><span class="hs-identifier hs-var">s</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679337176"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">(State -&gt; String) -&gt; [State] -&gt; [String]
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span class="hs-special">(</span><span class="annot"><a href="TMType.html#State"><span class="hs-identifier hs-type">State</span></a></span><span> </span><span id="local-6989586621679336333"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679336333"><span class="hs-identifier hs-var">s</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679336333"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">(State -&gt; String) -&gt; [State] -&gt; [String]
 forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
 </span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">[State]
-</span><a href="#local-6989586621679337189"><span class="hs-identifier hs-var">startStates</span></a></span><span class="hs-special">,</span><span>
+</span><a href="#local-6989586621679336346"><span class="hs-identifier hs-var">startStates</span></a></span><span class="hs-special">,</span><span>
 </span><span id="line-29"></span><span>            </span><span class="annot"><span class="annottext">TmsState -&gt; [TmsState]
 forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
 </span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">(TmsState -&gt; [TmsState]) -&gt; TmsState -&gt; [TmsState]
@@ -76,21 +76,21 @@ forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; TmsState
 </span><a href="TM2Tms.html#mergeMultipleNames"><span class="hs-identifier hs-var">mergeMultipleNames</span></a></span><span> </span><span class="annot"><span class="annottext">([String] -&gt; TmsState) -&gt; [String] -&gt; TmsState
 forall a b. (a -&gt; b) -&gt; a -&gt; b
-</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span class="hs-special">(</span><span class="annot"><a href="TMType.html#State"><span class="hs-identifier hs-type">State</span></a></span><span> </span><span id="local-6989586621679337174"><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679337174"><span class="hs-identifier hs-var">s</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679337174"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">(State -&gt; String) -&gt; [State] -&gt; [String]
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span class="hs-special">(</span><span class="annot"><a href="TMType.html#State"><span class="hs-identifier hs-type">State</span></a></span><span> </span><span id="local-6989586621679336331"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679336331"><span class="hs-identifier hs-var">s</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679336331"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">(State -&gt; String) -&gt; [State] -&gt; [String]
 forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
 </span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">[State]
-</span><a href="#local-6989586621679337187"><span class="hs-identifier hs-var">accessStates</span></a></span><span class="hs-special">,</span><span>
+</span><a href="#local-6989586621679336344"><span class="hs-identifier hs-var">accessStates</span></a></span><span class="hs-special">,</span><span>
 </span><span id="line-30"></span><span>            </span><span class="annot"><span class="annottext">[TmsCommand]
-</span><a href="#local-6989586621679337183"><span class="hs-identifier hs-var">tmsCmds</span></a></span><span class="hs-special">,</span><span>
+</span><a href="#local-6989586621679336340"><span class="hs-identifier hs-var">tmsCmds</span></a></span><span class="hs-special">,</span><span>
 </span><span id="line-31"></span><span>            </span><span class="annot"><span class="annottext">[String]
-</span><a href="#local-6989586621679337181"><span class="hs-identifier hs-var">tmsAlph</span></a></span><span class="hs-special">)</span><span>
+</span><a href="#local-6989586621679336338"><span class="hs-identifier hs-var">tmsAlph</span></a></span><span class="hs-special">)</span><span>
 </span><span id="line-32"></span><span>    </span><span class="hs-keyword">where</span><span>
-</span><span id="line-33"></span><span>        </span><span class="annot"><a href="#local-6989586621679337180"><span class="hs-identifier hs-type">alph2tmsAlph</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TMType.html#TapeAlphabet"><span class="hs-identifier hs-type">TapeAlphabet</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Either</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
-</span><span id="line-34"></span><span>        </span><span id="local-6989586621679337180"><span class="annot"><span class="annottext">alph2tmsAlph :: TapeAlphabet -&gt; Either String String
-</span><a href="#local-6989586621679337180"><span class="hs-identifier hs-var hs-var">alph2tmsAlph</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="TMType.html#TapeAlphabet"><span class="hs-identifier hs-type">TapeAlphabet</span></a></span><span> </span><span id="local-6989586621679337172"><span class="annot"><span class="annottext">Set Square
-</span><a href="#local-6989586621679337172"><span class="hs-identifier hs-var">squares</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(Square -&gt; Either String Char) -&gt; [Square] -&gt; Either String String
+</span><span id="line-33"></span><span>        </span><span class="annot"><a href="#local-6989586621679336337"><span class="hs-identifier hs-type">alph2tmsAlph</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TMType.html#TapeAlphabet"><span class="hs-identifier hs-type">TapeAlphabet</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Either</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-34"></span><span>        </span><span id="local-6989586621679336337"><span class="annot"><span class="annottext">alph2tmsAlph :: TapeAlphabet -&gt; Either String String
+</span><a href="#local-6989586621679336337"><span class="hs-identifier hs-var hs-var">alph2tmsAlph</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="TMType.html#TapeAlphabet"><span class="hs-identifier hs-type">TapeAlphabet</span></a></span><span> </span><span id="local-6989586621679336329"><span class="annot"><span class="annottext">Set Square
+</span><a href="#local-6989586621679336329"><span class="hs-identifier hs-var">squares</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(Square -&gt; Either String Char) -&gt; [Square] -&gt; Either String String
 forall (t :: * -&gt; *) (f :: * -&gt; *) a b.
 (Traversable t, Applicative f) =&gt;
 (a -&gt; f b) -&gt; t a -&gt; f (t b)
@@ -98,14 +98,14 @@ forall (t :: * -&gt; *) (f :: * -&gt; *) a b.
 </span><a href="TM2Tms.html#toValue"><span class="hs-identifier hs-var">toValue</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Set Square -&gt; [Square]
 forall a. Set a -&gt; [a]
 </span><span class="hs-identifier hs-var">toList</span></span><span> </span><span class="annot"><span class="annottext">Set Square
-</span><a href="#local-6989586621679337172"><span class="hs-identifier hs-var">squares</span></a></span><span class="hs-special">)</span><span>
+</span><a href="#local-6989586621679336329"><span class="hs-identifier hs-var">squares</span></a></span><span class="hs-special">)</span><span>
 </span><span id="line-35"></span><span>
 </span><span id="line-36"></span><span class="annot"><a href="TM2Tms.html#tmState2tmsState"><span class="hs-identifier hs-type">tmState2tmsState</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TMType.html#State"><span class="hs-identifier hs-type">State</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TmsType.html#TmsState"><span class="hs-identifier hs-type">TmsState</span></a></span><span>
 </span><span id="line-37"></span><span id="tmState2tmsState"><span class="annot"><span class="annottext">tmState2tmsState :: State -&gt; TmsState
-</span><a href="TM2Tms.html#tmState2tmsState"><span class="hs-identifier hs-var hs-var">tmState2tmsState</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="TMType.html#State"><span class="hs-identifier hs-type">State</span></a></span><span> </span><span id="local-6989586621679337169"><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679337169"><span class="hs-identifier hs-var">s</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; TmsState
+</span><a href="TM2Tms.html#tmState2tmsState"><span class="hs-identifier hs-var hs-var">tmState2tmsState</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="TMType.html#State"><span class="hs-identifier hs-type">State</span></a></span><span> </span><span id="local-6989586621679336326"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679336326"><span class="hs-identifier hs-var">s</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; TmsState
 </span><a href="TmsType.html#TmsState"><span class="hs-identifier hs-var">TmsState</span></a></span><span> </span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679337169"><span class="hs-identifier hs-var">s</span></a></span><span>
+</span><a href="#local-6989586621679336326"><span class="hs-identifier hs-var">s</span></a></span><span>
 </span><span id="line-38"></span><span>
 </span><span id="line-39"></span><span class="hs-comment">-- Section of helper functions.</span><span>
 </span><span id="line-40"></span><span>
@@ -113,22 +113,22 @@ forall a. Set a -&gt; [a]
 </span><span id="line-42"></span><span class="hs-comment">-- Being used in 'cmd2tmsTapeCmd' if more than one command is created.</span><span>
 </span><span id="line-43"></span><span class="annot"><a href="TM2Tms.html#makeTransSt"><span class="hs-identifier hs-type">makeTransSt</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TMType.html#State"><span class="hs-identifier hs-type">State</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TMType.html#State"><span class="hs-identifier hs-type">State</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TMType.html#State"><span class="hs-identifier hs-type">State</span></a></span><span>
 </span><span id="line-44"></span><span id="makeTransSt"><span class="annot"><span class="annottext">makeTransSt :: State -&gt; State -&gt; State
-</span><a href="TM2Tms.html#makeTransSt"><span class="hs-identifier hs-var hs-var">makeTransSt</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="TMType.html#State"><span class="hs-identifier hs-type">State</span></a></span><span> </span><span id="local-6989586621679337166"><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679337166"><span class="hs-identifier hs-var">from</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="TMType.html#State"><span class="hs-identifier hs-type">State</span></a></span><span> </span><span id="local-6989586621679337165"><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679337165"><span class="hs-identifier hs-var">to</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; State
+</span><a href="TM2Tms.html#makeTransSt"><span class="hs-identifier hs-var hs-var">makeTransSt</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="TMType.html#State"><span class="hs-identifier hs-type">State</span></a></span><span> </span><span id="local-6989586621679336323"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679336323"><span class="hs-identifier hs-var">from</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="TMType.html#State"><span class="hs-identifier hs-type">State</span></a></span><span> </span><span id="local-6989586621679336322"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679336322"><span class="hs-identifier hs-var">to</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; State
 </span><a href="TMType.html#State"><span class="hs-identifier hs-var">State</span></a></span><span> </span><span class="annot"><span class="annottext">(String -&gt; State) -&gt; String -&gt; State
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;FROM_&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679337166"><span class="hs-identifier hs-var">from</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+</span><a href="#local-6989586621679336323"><span class="hs-identifier hs-var">from</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;_TO_&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679337165"><span class="hs-identifier hs-var">to</span></a></span><span>
+</span><a href="#local-6989586621679336322"><span class="hs-identifier hs-var">to</span></a></span><span>
 </span><span id="line-45"></span><span>
 </span><span id="line-46"></span><span class="hs-comment">-- |Convert 'TapeCommand' to non empty list of 'TmsSingleTapeCommand'.</span><span>
 </span><span id="line-47"></span><span class="annot"><a href="TM2Tms.html#cmd2tmsTapeCmd"><span class="hs-identifier hs-type">cmd2tmsTapeCmd</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TMType.html#TapeCommand"><span class="hs-identifier hs-type">TapeCommand</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Either</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">NonEmpty</span></span><span> </span><span class="annot"><a href="TmsType.html#OneTapeTMCommand"><span class="hs-identifier hs-type">OneTapeTMCommand</span></a></span><span class="hs-special">)</span><span>
@@ -141,12 +141,12 @@ forall a. [a] -&gt; [a] -&gt; [a]
 </span><a href="TM2Tms.html#cmd2tmsTapeCmd"><span class="hs-identifier hs-var hs-var">cmd2tmsTapeCmd</span></a></span></span><span> </span><span class="hs-special">(</span><span>
 </span><span id="line-54"></span><span>    </span><span class="annot"><a href="TMType.html#SingleTapeCommand"><span class="hs-identifier hs-type">SingleTapeCommand</span></a></span><span> </span><span class="hs-special">(</span><span>
 </span><span id="line-55"></span><span>        </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Square
-</span><a href="TMType.html#ES"><span class="hs-identifier hs-var">ES</span></a></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679337161"><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679337161"><span class="hs-identifier hs-var">iniSt</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Square
+</span><a href="TMType.html#ES"><span class="hs-identifier hs-var">ES</span></a></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679336318"><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679336318"><span class="hs-identifier hs-var">iniSt</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Square
 </span><a href="TMType.html#RBS"><span class="hs-identifier hs-var">RBS</span></a></span><span class="hs-special">)</span><span class="hs-special">,</span><span>
 </span><span id="line-56"></span><span>        </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Square
-</span><a href="TMType.html#ES"><span class="hs-identifier hs-var">ES</span></a></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679337159"><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679337159"><span class="hs-identifier hs-var">folSt</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Square
+</span><a href="TMType.html#ES"><span class="hs-identifier hs-var">ES</span></a></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679336316"><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679336316"><span class="hs-identifier hs-var">folSt</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Square
 </span><a href="TMType.html#RBS"><span class="hs-identifier hs-var">RBS</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span>
 </span><span id="line-57"></span><span>    </span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">NonEmpty OneTapeTMCommand
 -&gt; Either String (NonEmpty OneTapeTMCommand)
@@ -159,12 +159,12 @@ forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span>
 </span><span id="line-58"></span><span>    </span><span class="hs-special">(</span><span class="annot"><span class="annottext">State -&gt; TmsState
 </span><a href="TM2Tms.html#tmState2tmsState"><span class="hs-identifier hs-var">tmState2tmsState</span></a></span><span> </span><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679337161"><span class="hs-identifier hs-var">iniSt</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">(TmsTapeSquare, TmsTapeHeadMovement) -&gt; TmsSingleTapeCommand
+</span><a href="#local-6989586621679336318"><span class="hs-identifier hs-var">iniSt</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">(TmsTapeSquare, TmsTapeHeadMovement) -&gt; TmsSingleTapeCommand
 </span><a href="TmsType.html#TmsSingleTapeCommand"><span class="hs-identifier hs-var">TmsSingleTapeCommand</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">TmsTapeSquare
 </span><a href="TmsType.html#Leave"><span class="hs-identifier hs-var">Leave</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">TmsTapeHeadMovement
 </span><a href="TmsType.html#Stay"><span class="hs-identifier hs-var">Stay</span></a></span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">State -&gt; TmsState
 </span><a href="TM2Tms.html#tmState2tmsState"><span class="hs-identifier hs-var">tmState2tmsState</span></a></span><span> </span><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679337159"><span class="hs-identifier hs-var">folSt</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">OneTapeTMCommand -&gt; [OneTapeTMCommand] -&gt; NonEmpty OneTapeTMCommand
+</span><a href="#local-6989586621679336316"><span class="hs-identifier hs-var">folSt</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">OneTapeTMCommand -&gt; [OneTapeTMCommand] -&gt; NonEmpty OneTapeTMCommand
 forall a. a -&gt; [a] -&gt; NonEmpty a
 </span><span class="hs-operator hs-var">:|</span></span><span>
 </span><span id="line-59"></span><span>    </span><span class="hs-special">[</span><span class="hs-special">]</span><span>
@@ -174,28 +174,28 @@ forall a. a -&gt; [a] -&gt; NonEmpty a
 </span><span id="line-63"></span><span class="annot"><a href="TM2Tms.html#cmd2tmsTapeCmd"><span class="hs-identifier hs-var">cmd2tmsTapeCmd</span></a></span><span> </span><span class="hs-special">(</span><span>
 </span><span id="line-64"></span><span>    </span><span class="annot"><a href="TMType.html#SingleTapeCommand"><span class="hs-identifier hs-type">SingleTapeCommand</span></a></span><span> </span><span class="hs-special">(</span><span>
 </span><span id="line-65"></span><span>        </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Square
-</span><a href="TMType.html#ES"><span class="hs-identifier hs-var">ES</span></a></span><span class="hs-special">,</span><span>                 </span><span id="local-6989586621679337154"><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679337154"><span class="hs-identifier hs-var">iniSt</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Square
+</span><a href="TMType.html#ES"><span class="hs-identifier hs-var">ES</span></a></span><span class="hs-special">,</span><span>                 </span><span id="local-6989586621679336311"><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679336311"><span class="hs-identifier hs-var">iniSt</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Square
 </span><a href="TMType.html#RBS"><span class="hs-identifier hs-var">RBS</span></a></span><span class="hs-special">)</span><span class="hs-special">,</span><span>
-</span><span id="line-66"></span><span>        </span><span class="hs-special">(</span><span class="annot"><a href="TMType.html#Value"><span class="hs-identifier hs-type">Value</span></a></span><span> </span><span id="local-6989586621679337152"><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679337152"><span class="hs-identifier hs-var">name</span></a></span></span><span> </span><span id="local-6989586621679337151"><span class="annot"><span class="annottext">Int
-</span><a href="#local-6989586621679337151"><span class="hs-identifier hs-var">nquts</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679337150"><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679337150"><span class="hs-identifier hs-var">folSt</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Square
+</span><span id="line-66"></span><span>        </span><span class="hs-special">(</span><span class="annot"><a href="TMType.html#Value"><span class="hs-identifier hs-type">Value</span></a></span><span> </span><span id="local-6989586621679336309"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679336309"><span class="hs-identifier hs-var">name</span></a></span></span><span> </span><span id="local-6989586621679336308"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679336308"><span class="hs-identifier hs-var">nquts</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679336307"><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679336307"><span class="hs-identifier hs-var">folSt</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Square
 </span><a href="TMType.html#RBS"><span class="hs-identifier hs-var">RBS</span></a></span><span class="hs-special">)</span><span>
 </span><span id="line-67"></span><span>    </span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
-</span><span id="line-68"></span><span>    </span><span id="local-6989586621679337149"><span class="annot"><span class="annottext">Char
-</span><a href="#local-6989586621679337149"><span class="hs-identifier hs-var">ch</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">String -&gt; Int -&gt; Either String Char
+</span><span id="line-68"></span><span>    </span><span id="local-6989586621679336306"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679336306"><span class="hs-identifier hs-var">ch</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">String -&gt; Int -&gt; Either String Char
 </span><a href="TM2Tms.html#quotName2Char"><span class="hs-identifier hs-var">quotName2Char</span></a></span><span> </span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679337152"><span class="hs-identifier hs-var">name</span></a></span><span> </span><span class="annot"><span class="annottext">Int
-</span><a href="#local-6989586621679337151"><span class="hs-identifier hs-var">nquts</span></a></span><span>
-</span><span id="line-69"></span><span>    </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679337147"><span class="annot"><span class="annottext">transit :: TmsState
-</span><a href="#local-6989586621679337147"><span class="hs-identifier hs-var hs-var">transit</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">State -&gt; TmsState
+</span><a href="#local-6989586621679336309"><span class="hs-identifier hs-var">name</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679336308"><span class="hs-identifier hs-var">nquts</span></a></span><span>
+</span><span id="line-69"></span><span>    </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679336304"><span class="annot"><span class="annottext">transit :: TmsState
+</span><a href="#local-6989586621679336304"><span class="hs-identifier hs-var hs-var">transit</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">State -&gt; TmsState
 </span><a href="TM2Tms.html#tmState2tmsState"><span class="hs-identifier hs-var">tmState2tmsState</span></a></span><span> </span><span class="annot"><span class="annottext">(State -&gt; TmsState) -&gt; State -&gt; TmsState
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">State -&gt; State -&gt; State
 </span><a href="TM2Tms.html#makeTransSt"><span class="hs-identifier hs-var">makeTransSt</span></a></span><span> </span><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679337154"><span class="hs-identifier hs-var">iniSt</span></a></span><span> </span><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679337150"><span class="hs-identifier hs-var">folSt</span></a></span><span>
+</span><a href="#local-6989586621679336311"><span class="hs-identifier hs-var">iniSt</span></a></span><span> </span><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679336307"><span class="hs-identifier hs-var">folSt</span></a></span><span>
 </span><span id="line-70"></span><span>    </span><span class="annot"><span class="annottext">NonEmpty OneTapeTMCommand
 -&gt; Either String (NonEmpty OneTapeTMCommand)
 forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
@@ -207,42 +207,42 @@ forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span>
 </span><span id="line-71"></span><span>        </span><span class="hs-special">(</span><span class="annot"><span class="annottext">State -&gt; TmsState
 </span><a href="TM2Tms.html#tmState2tmsState"><span class="hs-identifier hs-var">tmState2tmsState</span></a></span><span> </span><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679337154"><span class="hs-identifier hs-var">iniSt</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">(TmsTapeSquare, TmsTapeHeadMovement) -&gt; TmsSingleTapeCommand
+</span><a href="#local-6989586621679336311"><span class="hs-identifier hs-var">iniSt</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">(TmsTapeSquare, TmsTapeHeadMovement) -&gt; TmsSingleTapeCommand
 </span><a href="TmsType.html#TmsSingleTapeCommand"><span class="hs-identifier hs-var">TmsSingleTapeCommand</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">TmsTapeSquare
 </span><a href="TmsType.html#Leave"><span class="hs-identifier hs-var">Leave</span></a></span><span class="hs-special">,</span><span>                   </span><span class="annot"><span class="annottext">TmsTapeHeadMovement
 </span><a href="TmsType.html#MoveLeft"><span class="hs-identifier hs-var">MoveLeft</span></a></span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">TmsState
-</span><a href="#local-6989586621679337147"><span class="hs-identifier hs-var">transit</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">OneTapeTMCommand -&gt; [OneTapeTMCommand] -&gt; NonEmpty OneTapeTMCommand
+</span><a href="#local-6989586621679336304"><span class="hs-identifier hs-var">transit</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">OneTapeTMCommand -&gt; [OneTapeTMCommand] -&gt; NonEmpty OneTapeTMCommand
 forall a. a -&gt; [a] -&gt; NonEmpty a
 </span><span class="hs-operator hs-var">:|</span></span><span>
 </span><span id="line-72"></span><span>        </span><span class="hs-special">[</span><span class="hs-special">(</span><span class="annot"><span class="annottext">TmsState
-</span><a href="#local-6989586621679337147"><span class="hs-identifier hs-var">transit</span></a></span><span class="hs-special">,</span><span>               </span><span class="annot"><span class="annottext">(TmsTapeSquare, TmsTapeHeadMovement) -&gt; TmsSingleTapeCommand
+</span><a href="#local-6989586621679336304"><span class="hs-identifier hs-var">transit</span></a></span><span class="hs-special">,</span><span>               </span><span class="annot"><span class="annottext">(TmsTapeSquare, TmsTapeHeadMovement) -&gt; TmsSingleTapeCommand
 </span><a href="TmsType.html#TmsSingleTapeCommand"><span class="hs-identifier hs-var">TmsSingleTapeCommand</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Char -&gt; Char -&gt; TmsTapeSquare
 </span><a href="TmsType.html#ChangeFromTo"><span class="hs-identifier hs-var">ChangeFromTo</span></a></span><span> </span><span class="annot"><span class="annottext">Char
 </span><span class="hs-char">'_'</span></span><span> </span><span class="annot"><span class="annottext">Char
-</span><a href="#local-6989586621679337149"><span class="hs-identifier hs-var">ch</span></a></span><span class="hs-special">,</span><span>   </span><span class="annot"><span class="annottext">TmsTapeHeadMovement
+</span><a href="#local-6989586621679336306"><span class="hs-identifier hs-var">ch</span></a></span><span class="hs-special">,</span><span>   </span><span class="annot"><span class="annottext">TmsTapeHeadMovement
 </span><a href="TmsType.html#Stay"><span class="hs-identifier hs-var">Stay</span></a></span><span class="hs-special">)</span><span class="hs-special">,</span><span>     </span><span class="annot"><span class="annottext">State -&gt; TmsState
 </span><a href="TM2Tms.html#tmState2tmsState"><span class="hs-identifier hs-var">tmState2tmsState</span></a></span><span> </span><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679337150"><span class="hs-identifier hs-var">folSt</span></a></span><span class="hs-special">)</span><span class="hs-special">]</span><span>
+</span><a href="#local-6989586621679336307"><span class="hs-identifier hs-var">folSt</span></a></span><span class="hs-special">)</span><span class="hs-special">]</span><span>
 </span><span id="line-73"></span><span>
 </span><span id="line-74"></span><span class="hs-comment">-- 'TM' : Erase symbol to the left from the head.</span><span>
 </span><span id="line-75"></span><span class="hs-comment">-- 'Tms': Erase (put empty symbol) value in head position and move head to right.</span><span>
 </span><span id="line-76"></span><span class="annot"><a href="TM2Tms.html#cmd2tmsTapeCmd"><span class="hs-identifier hs-var">cmd2tmsTapeCmd</span></a></span><span> </span><span class="hs-special">(</span><span>
 </span><span id="line-77"></span><span>    </span><span class="annot"><a href="TMType.html#SingleTapeCommand"><span class="hs-identifier hs-type">SingleTapeCommand</span></a></span><span> </span><span class="hs-special">(</span><span>
-</span><span id="line-78"></span><span>        </span><span class="hs-special">(</span><span class="annot"><a href="TMType.html#Value"><span class="hs-identifier hs-type">Value</span></a></span><span> </span><span id="local-6989586621679337144"><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679337144"><span class="hs-identifier hs-var">name</span></a></span></span><span> </span><span id="local-6989586621679337143"><span class="annot"><span class="annottext">Int
-</span><a href="#local-6989586621679337143"><span class="hs-identifier hs-var">nquts</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679337142"><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679337142"><span class="hs-identifier hs-var">iniSt</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Square
+</span><span id="line-78"></span><span>        </span><span class="hs-special">(</span><span class="annot"><a href="TMType.html#Value"><span class="hs-identifier hs-type">Value</span></a></span><span> </span><span id="local-6989586621679336301"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679336301"><span class="hs-identifier hs-var">name</span></a></span></span><span> </span><span id="local-6989586621679336300"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679336300"><span class="hs-identifier hs-var">nquts</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679336299"><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679336299"><span class="hs-identifier hs-var">iniSt</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Square
 </span><a href="TMType.html#RBS"><span class="hs-identifier hs-var">RBS</span></a></span><span class="hs-special">)</span><span class="hs-special">,</span><span>
 </span><span id="line-79"></span><span>        </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Square
-</span><a href="TMType.html#ES"><span class="hs-identifier hs-var">ES</span></a></span><span class="hs-special">,</span><span>                 </span><span id="local-6989586621679337141"><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679337141"><span class="hs-identifier hs-var">folSt</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Square
+</span><a href="TMType.html#ES"><span class="hs-identifier hs-var">ES</span></a></span><span class="hs-special">,</span><span>                 </span><span id="local-6989586621679336298"><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679336298"><span class="hs-identifier hs-var">folSt</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Square
 </span><a href="TMType.html#RBS"><span class="hs-identifier hs-var">RBS</span></a></span><span class="hs-special">)</span><span>
 </span><span id="line-80"></span><span>    </span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
-</span><span id="line-81"></span><span>    </span><span id="local-6989586621679337140"><span class="annot"><span class="annottext">Char
-</span><a href="#local-6989586621679337140"><span class="hs-identifier hs-var">ch</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">String -&gt; Int -&gt; Either String Char
+</span><span id="line-81"></span><span>    </span><span id="local-6989586621679336297"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679336297"><span class="hs-identifier hs-var">ch</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">String -&gt; Int -&gt; Either String Char
 </span><a href="TM2Tms.html#quotName2Char"><span class="hs-identifier hs-var">quotName2Char</span></a></span><span> </span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679337144"><span class="hs-identifier hs-var">name</span></a></span><span> </span><span class="annot"><span class="annottext">Int
-</span><a href="#local-6989586621679337143"><span class="hs-identifier hs-var">nquts</span></a></span><span>
+</span><a href="#local-6989586621679336301"><span class="hs-identifier hs-var">name</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679336300"><span class="hs-identifier hs-var">nquts</span></a></span><span>
 </span><span id="line-82"></span><span>    </span><span class="annot"><span class="annottext">NonEmpty OneTapeTMCommand
 -&gt; Either String (NonEmpty OneTapeTMCommand)
 forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
@@ -254,14 +254,14 @@ forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span>
 </span><span id="line-83"></span><span>        </span><span class="hs-special">(</span><span class="annot"><span class="annottext">State -&gt; TmsState
 </span><a href="TM2Tms.html#tmState2tmsState"><span class="hs-identifier hs-var">tmState2tmsState</span></a></span><span> </span><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679337142"><span class="hs-identifier hs-var">iniSt</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">(TmsTapeSquare, TmsTapeHeadMovement) -&gt; TmsSingleTapeCommand
+</span><a href="#local-6989586621679336299"><span class="hs-identifier hs-var">iniSt</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">(TmsTapeSquare, TmsTapeHeadMovement) -&gt; TmsSingleTapeCommand
 </span><a href="TmsType.html#TmsSingleTapeCommand"><span class="hs-identifier hs-var">TmsSingleTapeCommand</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Char -&gt; Char -&gt; TmsTapeSquare
 </span><a href="TmsType.html#ChangeFromTo"><span class="hs-identifier hs-var">ChangeFromTo</span></a></span><span> </span><span class="annot"><span class="annottext">Char
-</span><a href="#local-6989586621679337140"><span class="hs-identifier hs-var">ch</span></a></span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679336297"><span class="hs-identifier hs-var">ch</span></a></span><span> </span><span class="annot"><span class="annottext">Char
 </span><span class="hs-char">'_'</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">TmsTapeHeadMovement
 </span><a href="TmsType.html#MoveRight"><span class="hs-identifier hs-var">MoveRight</span></a></span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">State -&gt; TmsState
 </span><a href="TM2Tms.html#tmState2tmsState"><span class="hs-identifier hs-var">tmState2tmsState</span></a></span><span> </span><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679337141"><span class="hs-identifier hs-var">folSt</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">OneTapeTMCommand -&gt; [OneTapeTMCommand] -&gt; NonEmpty OneTapeTMCommand
+</span><a href="#local-6989586621679336298"><span class="hs-identifier hs-var">folSt</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">OneTapeTMCommand -&gt; [OneTapeTMCommand] -&gt; NonEmpty OneTapeTMCommand
 forall a. a -&gt; [a] -&gt; NonEmpty a
 </span><span class="hs-operator hs-var">:|</span></span><span>
 </span><span id="line-84"></span><span>        </span><span class="hs-special">[</span><span class="hs-special">]</span><span>
@@ -270,27 +270,27 @@ forall a. a -&gt; [a] -&gt; NonEmpty a
 </span><span id="line-87"></span><span class="hs-comment">-- 'Tms': Change value in head position.</span><span>
 </span><span id="line-88"></span><span class="annot"><a href="TM2Tms.html#cmd2tmsTapeCmd"><span class="hs-identifier hs-var">cmd2tmsTapeCmd</span></a></span><span> </span><span class="hs-special">(</span><span>
 </span><span id="line-89"></span><span>    </span><span class="annot"><a href="TMType.html#SingleTapeCommand"><span class="hs-identifier hs-type">SingleTapeCommand</span></a></span><span> </span><span class="hs-special">(</span><span>
-</span><span id="line-90"></span><span>        </span><span class="hs-special">(</span><span class="annot"><a href="TMType.html#Value"><span class="hs-identifier hs-type">Value</span></a></span><span> </span><span id="local-6989586621679337138"><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679337138"><span class="hs-identifier hs-var">iniName</span></a></span></span><span> </span><span id="local-6989586621679337137"><span class="annot"><span class="annottext">Int
-</span><a href="#local-6989586621679337137"><span class="hs-identifier hs-var">iniNquts</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679337136"><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679337136"><span class="hs-identifier hs-var">iniSt</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Square
+</span><span id="line-90"></span><span>        </span><span class="hs-special">(</span><span class="annot"><a href="TMType.html#Value"><span class="hs-identifier hs-type">Value</span></a></span><span> </span><span id="local-6989586621679336295"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679336295"><span class="hs-identifier hs-var">iniName</span></a></span></span><span> </span><span id="local-6989586621679336294"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679336294"><span class="hs-identifier hs-var">iniNquts</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679336293"><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679336293"><span class="hs-identifier hs-var">iniSt</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Square
 </span><a href="TMType.html#RBS"><span class="hs-identifier hs-var">RBS</span></a></span><span class="hs-special">)</span><span class="hs-special">,</span><span>
-</span><span id="line-91"></span><span>        </span><span class="hs-special">(</span><span class="annot"><a href="TMType.html#Value"><span class="hs-identifier hs-type">Value</span></a></span><span> </span><span id="local-6989586621679337135"><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679337135"><span class="hs-identifier hs-var">folName</span></a></span></span><span> </span><span id="local-6989586621679337134"><span class="annot"><span class="annottext">Int
-</span><a href="#local-6989586621679337134"><span class="hs-identifier hs-var">folNquts</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679337133"><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679337133"><span class="hs-identifier hs-var">folSt</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Square
+</span><span id="line-91"></span><span>        </span><span class="hs-special">(</span><span class="annot"><a href="TMType.html#Value"><span class="hs-identifier hs-type">Value</span></a></span><span> </span><span id="local-6989586621679336292"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679336292"><span class="hs-identifier hs-var">folName</span></a></span></span><span> </span><span id="local-6989586621679336291"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679336291"><span class="hs-identifier hs-var">folNquts</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679336290"><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679336290"><span class="hs-identifier hs-var">folSt</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Square
 </span><a href="TMType.html#RBS"><span class="hs-identifier hs-var">RBS</span></a></span><span class="hs-special">)</span><span>
 </span><span id="line-92"></span><span>    </span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
-</span><span id="line-93"></span><span>    </span><span id="local-6989586621679337132"><span class="annot"><span class="annottext">Char
-</span><a href="#local-6989586621679337132"><span class="hs-identifier hs-var">iniCh</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">String -&gt; Int -&gt; Either String Char
+</span><span id="line-93"></span><span>    </span><span id="local-6989586621679336289"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679336289"><span class="hs-identifier hs-var">iniCh</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">String -&gt; Int -&gt; Either String Char
 </span><a href="TM2Tms.html#quotName2Char"><span class="hs-identifier hs-var">quotName2Char</span></a></span><span> </span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679337138"><span class="hs-identifier hs-var">iniName</span></a></span><span> </span><span class="annot"><span class="annottext">Int
-</span><a href="#local-6989586621679337137"><span class="hs-identifier hs-var">iniNquts</span></a></span><span>
-</span><span id="line-94"></span><span>    </span><span id="local-6989586621679337131"><span class="annot"><span class="annottext">Char
-</span><a href="#local-6989586621679337131"><span class="hs-identifier hs-var">folCh</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">String -&gt; Int -&gt; Either String Char
+</span><a href="#local-6989586621679336295"><span class="hs-identifier hs-var">iniName</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679336294"><span class="hs-identifier hs-var">iniNquts</span></a></span><span>
+</span><span id="line-94"></span><span>    </span><span id="local-6989586621679336288"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679336288"><span class="hs-identifier hs-var">folCh</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">String -&gt; Int -&gt; Either String Char
 </span><a href="TM2Tms.html#quotName2Char"><span class="hs-identifier hs-var">quotName2Char</span></a></span><span> </span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679337135"><span class="hs-identifier hs-var">folName</span></a></span><span> </span><span class="annot"><span class="annottext">Int
-</span><a href="#local-6989586621679337134"><span class="hs-identifier hs-var">folNquts</span></a></span><span>
+</span><a href="#local-6989586621679336292"><span class="hs-identifier hs-var">folName</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679336291"><span class="hs-identifier hs-var">folNquts</span></a></span><span>
 </span><span id="line-95"></span><span>    </span><span class="annot"><span class="annottext">NonEmpty OneTapeTMCommand
 -&gt; Either String (NonEmpty OneTapeTMCommand)
 forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
@@ -302,14 +302,14 @@ forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span>
 </span><span id="line-96"></span><span>        </span><span class="hs-special">(</span><span class="annot"><span class="annottext">State -&gt; TmsState
 </span><a href="TM2Tms.html#tmState2tmsState"><span class="hs-identifier hs-var">tmState2tmsState</span></a></span><span> </span><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679337136"><span class="hs-identifier hs-var">iniSt</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">(TmsTapeSquare, TmsTapeHeadMovement) -&gt; TmsSingleTapeCommand
+</span><a href="#local-6989586621679336293"><span class="hs-identifier hs-var">iniSt</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">(TmsTapeSquare, TmsTapeHeadMovement) -&gt; TmsSingleTapeCommand
 </span><a href="TmsType.html#TmsSingleTapeCommand"><span class="hs-identifier hs-var">TmsSingleTapeCommand</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Char -&gt; Char -&gt; TmsTapeSquare
 </span><a href="TmsType.html#ChangeFromTo"><span class="hs-identifier hs-var">ChangeFromTo</span></a></span><span> </span><span class="annot"><span class="annottext">Char
-</span><a href="#local-6989586621679337132"><span class="hs-identifier hs-var">iniCh</span></a></span><span> </span><span class="annot"><span class="annottext">Char
-</span><a href="#local-6989586621679337131"><span class="hs-identifier hs-var">folCh</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">TmsTapeHeadMovement
+</span><a href="#local-6989586621679336289"><span class="hs-identifier hs-var">iniCh</span></a></span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679336288"><span class="hs-identifier hs-var">folCh</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">TmsTapeHeadMovement
 </span><a href="TmsType.html#Stay"><span class="hs-identifier hs-var">Stay</span></a></span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">State -&gt; TmsState
 </span><a href="TM2Tms.html#tmState2tmsState"><span class="hs-identifier hs-var">tmState2tmsState</span></a></span><span> </span><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679337133"><span class="hs-identifier hs-var">folSt</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">OneTapeTMCommand -&gt; [OneTapeTMCommand] -&gt; NonEmpty OneTapeTMCommand
+</span><a href="#local-6989586621679336290"><span class="hs-identifier hs-var">folSt</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">OneTapeTMCommand -&gt; [OneTapeTMCommand] -&gt; NonEmpty OneTapeTMCommand
 forall a. a -&gt; [a] -&gt; NonEmpty a
 </span><span class="hs-operator hs-var">:|</span></span><span>
 </span><span id="line-97"></span><span>        </span><span class="hs-special">[</span><span class="hs-special">]</span><span>
@@ -319,12 +319,12 @@ forall a. a -&gt; [a] -&gt; NonEmpty a
 </span><span id="line-101"></span><span class="annot"><a href="TM2Tms.html#cmd2tmsTapeCmd"><span class="hs-identifier hs-var">cmd2tmsTapeCmd</span></a></span><span> </span><span class="hs-special">(</span><span>
 </span><span id="line-102"></span><span>    </span><span class="annot"><a href="TMType.html#SingleTapeCommand"><span class="hs-identifier hs-type">SingleTapeCommand</span></a></span><span> </span><span class="hs-special">(</span><span>
 </span><span id="line-103"></span><span>        </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Square
-</span><a href="TMType.html#LBS"><span class="hs-identifier hs-var">LBS</span></a></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679337129"><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679337129"><span class="hs-identifier hs-var">iniSt</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Square
+</span><a href="TMType.html#LBS"><span class="hs-identifier hs-var">LBS</span></a></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679336286"><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679336286"><span class="hs-identifier hs-var">iniSt</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Square
 </span><a href="TMType.html#RBS"><span class="hs-identifier hs-var">RBS</span></a></span><span class="hs-special">)</span><span class="hs-special">,</span><span>
 </span><span id="line-104"></span><span>        </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Square
-</span><a href="TMType.html#LBS"><span class="hs-identifier hs-var">LBS</span></a></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679337128"><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679337128"><span class="hs-identifier hs-var">folSt</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Square
+</span><a href="TMType.html#LBS"><span class="hs-identifier hs-var">LBS</span></a></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679336285"><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679336285"><span class="hs-identifier hs-var">folSt</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Square
 </span><a href="TMType.html#RBS"><span class="hs-identifier hs-var">RBS</span></a></span><span class="hs-special">)</span><span>
 </span><span id="line-105"></span><span>    </span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">NonEmpty OneTapeTMCommand
 -&gt; Either String (NonEmpty OneTapeTMCommand)
@@ -337,21 +337,21 @@ forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span>
 </span><span id="line-106"></span><span>        </span><span class="hs-special">(</span><span class="annot"><span class="annottext">State -&gt; TmsState
 </span><a href="TM2Tms.html#tmState2tmsState"><span class="hs-identifier hs-var">tmState2tmsState</span></a></span><span> </span><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679337129"><span class="hs-identifier hs-var">iniSt</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">(TmsTapeSquare, TmsTapeHeadMovement) -&gt; TmsSingleTapeCommand
+</span><a href="#local-6989586621679336286"><span class="hs-identifier hs-var">iniSt</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">(TmsTapeSquare, TmsTapeHeadMovement) -&gt; TmsSingleTapeCommand
 </span><a href="TmsType.html#TmsSingleTapeCommand"><span class="hs-identifier hs-var">TmsSingleTapeCommand</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Char -&gt; Char -&gt; TmsTapeSquare
 </span><a href="TmsType.html#ChangeFromTo"><span class="hs-identifier hs-var">ChangeFromTo</span></a></span><span> </span><span class="annot"><span class="annottext">Char
 </span><span class="hs-char">'_'</span></span><span> </span><span class="annot"><span class="annottext">Char
 </span><span class="hs-char">'_'</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">TmsTapeHeadMovement
 </span><a href="TmsType.html#Stay"><span class="hs-identifier hs-var">Stay</span></a></span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">State -&gt; TmsState
 </span><a href="TM2Tms.html#tmState2tmsState"><span class="hs-identifier hs-var">tmState2tmsState</span></a></span><span> </span><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679337128"><span class="hs-identifier hs-var">folSt</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">OneTapeTMCommand -&gt; [OneTapeTMCommand] -&gt; NonEmpty OneTapeTMCommand
+</span><a href="#local-6989586621679336285"><span class="hs-identifier hs-var">folSt</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">OneTapeTMCommand -&gt; [OneTapeTMCommand] -&gt; NonEmpty OneTapeTMCommand
 forall a. a -&gt; [a] -&gt; NonEmpty a
 </span><span class="hs-operator hs-var">:|</span></span><span>
 </span><span id="line-107"></span><span>        </span><span class="hs-special">[</span><span class="hs-special">]</span><span>
 </span><span id="line-108"></span><span>
 </span><span id="line-109"></span><span class="hs-comment">-- Command can not be translated to Tms format.</span><span>
-</span><span id="line-110"></span><span class="annot"><a href="TM2Tms.html#cmd2tmsTapeCmd"><span class="hs-identifier hs-var">cmd2tmsTapeCmd</span></a></span><span> </span><span id="local-6989586621679337127"><span class="annot"><span class="annottext">TapeCommand
-</span><a href="#local-6989586621679337127"><span class="hs-identifier hs-var">cmd</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; Either String (NonEmpty OneTapeTMCommand)
+</span><span id="line-110"></span><span class="annot"><a href="TM2Tms.html#cmd2tmsTapeCmd"><span class="hs-identifier hs-var">cmd2tmsTapeCmd</span></a></span><span> </span><span id="local-6989586621679336284"><span class="annot"><span class="annottext">TapeCommand
+</span><a href="#local-6989586621679336284"><span class="hs-identifier hs-var">cmd</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; Either String (NonEmpty OneTapeTMCommand)
 forall a b. a -&gt; Either a b
 </span><span class="hs-identifier hs-var">Left</span></span><span> </span><span class="annot"><span class="annottext">(String -&gt; Either String (NonEmpty OneTapeTMCommand))
 -&gt; String -&gt; Either String (NonEmpty OneTapeTMCommand)
@@ -362,59 +362,59 @@ forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">TapeCommand -&gt; String
 forall a. Show a =&gt; a -&gt; String
 </span><span class="hs-identifier hs-var">show</span></span><span> </span><span class="annot"><span class="annottext">TapeCommand
-</span><a href="#local-6989586621679337127"><span class="hs-identifier hs-var">cmd</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+</span><a href="#local-6989586621679336284"><span class="hs-identifier hs-var">cmd</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;' can not be converted to '[TmsSingleTapeCommand]'&quot;</span></span><span>
 </span><span id="line-111"></span><span>
 </span><span id="line-112"></span><span class="annot"><a href="TM2Tms.html#cmd2tmsTapeCmds"><span class="hs-identifier hs-type">cmd2tmsTapeCmds</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="TMType.html#TapeCommand"><span class="hs-identifier hs-type">TapeCommand</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Either</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-special">[</span><span class="annot"><a href="TmsType.html#TmsCommand"><span class="hs-identifier hs-type">TmsCommand</span></a></span><span class="hs-special">]</span><span>
 </span><span id="line-113"></span><span id="cmd2tmsTapeCmds"><span class="annot"><span class="annottext">cmd2tmsTapeCmds :: [TapeCommand] -&gt; Either String [TmsCommand]
-</span><a href="TM2Tms.html#cmd2tmsTapeCmds"><span class="hs-identifier hs-var hs-var">cmd2tmsTapeCmds</span></a></span></span><span> </span><span id="local-6989586621679337125"><span class="annot"><span class="annottext">[TapeCommand]
-</span><a href="#local-6989586621679337125"><span class="hs-identifier hs-var">tapeCmds</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
-</span><span id="line-114"></span><span>    </span><span id="local-6989586621679337124"><span class="annot"><span class="annottext">[NonEmpty OneTapeTMCommand]
-</span><a href="#local-6989586621679337124"><span class="hs-identifier hs-var">tapeCmdSeqs</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">(TapeCommand -&gt; Either String (NonEmpty OneTapeTMCommand))
+</span><a href="TM2Tms.html#cmd2tmsTapeCmds"><span class="hs-identifier hs-var hs-var">cmd2tmsTapeCmds</span></a></span></span><span> </span><span id="local-6989586621679336282"><span class="annot"><span class="annottext">[TapeCommand]
+</span><a href="#local-6989586621679336282"><span class="hs-identifier hs-var">tapeCmds</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-114"></span><span>    </span><span id="local-6989586621679336281"><span class="annot"><span class="annottext">[NonEmpty OneTapeTMCommand]
+</span><a href="#local-6989586621679336281"><span class="hs-identifier hs-var">tapeCmdSeqs</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">(TapeCommand -&gt; Either String (NonEmpty OneTapeTMCommand))
 -&gt; [TapeCommand] -&gt; Either String [NonEmpty OneTapeTMCommand]
 forall (t :: * -&gt; *) (f :: * -&gt; *) a b.
 (Traversable t, Applicative f) =&gt;
 (a -&gt; f b) -&gt; t a -&gt; f (t b)
 </span><span class="hs-identifier hs-var">traverse</span></span><span> </span><span class="annot"><span class="annottext">TapeCommand -&gt; Either String (NonEmpty OneTapeTMCommand)
 </span><a href="TM2Tms.html#cmd2tmsTapeCmd"><span class="hs-identifier hs-var">cmd2tmsTapeCmd</span></a></span><span> </span><span class="annot"><span class="annottext">[TapeCommand]
-</span><a href="#local-6989586621679337125"><span class="hs-identifier hs-var">tapeCmds</span></a></span><span>
-</span><span id="line-115"></span><span>    </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679337123"><span class="annot"><span class="annottext">tapeCmdSeqsRev :: [NonEmpty OneTapeTMCommand]
-</span><a href="#local-6989586621679337123"><span class="hs-identifier hs-var hs-var">tapeCmdSeqsRev</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(NonEmpty OneTapeTMCommand -&gt; NonEmpty OneTapeTMCommand)
+</span><a href="#local-6989586621679336282"><span class="hs-identifier hs-var">tapeCmds</span></a></span><span>
+</span><span id="line-115"></span><span>    </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679336280"><span class="annot"><span class="annottext">tapeCmdSeqsRev :: [NonEmpty OneTapeTMCommand]
+</span><a href="#local-6989586621679336280"><span class="hs-identifier hs-var hs-var">tapeCmdSeqsRev</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(NonEmpty OneTapeTMCommand -&gt; NonEmpty OneTapeTMCommand)
 -&gt; [NonEmpty OneTapeTMCommand] -&gt; [NonEmpty OneTapeTMCommand]
 forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
 </span><span class="hs-identifier hs-var">Prelude.map</span></span><span> </span><span class="annot"><span class="annottext">NonEmpty OneTapeTMCommand -&gt; NonEmpty OneTapeTMCommand
 forall a. NonEmpty a -&gt; NonEmpty a
 </span><span class="hs-identifier hs-var">Data.List.NonEmpty.reverse</span></span><span> </span><span class="annot"><span class="annottext">[NonEmpty OneTapeTMCommand]
-</span><a href="#local-6989586621679337124"><span class="hs-identifier hs-var">tapeCmdSeqs</span></a></span><span>
-</span><span id="line-116"></span><span>    </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679337122"><span class="annot"><span class="annottext">mxLen :: Int
-</span><a href="#local-6989586621679337122"><span class="hs-identifier hs-var hs-var">mxLen</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(Int -&gt; NonEmpty OneTapeTMCommand -&gt; Int)
+</span><a href="#local-6989586621679336281"><span class="hs-identifier hs-var">tapeCmdSeqs</span></a></span><span>
+</span><span id="line-116"></span><span>    </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679336279"><span class="annot"><span class="annottext">mxLen :: Int
+</span><a href="#local-6989586621679336279"><span class="hs-identifier hs-var hs-var">mxLen</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(Int -&gt; NonEmpty OneTapeTMCommand -&gt; Int)
 -&gt; Int -&gt; [NonEmpty OneTapeTMCommand] -&gt; Int
 forall (t :: * -&gt; *) b a.
 Foldable t =&gt;
 (b -&gt; a -&gt; b) -&gt; b -&gt; t a -&gt; b
-</span><span class="hs-identifier hs-var">foldl</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679337120"><span class="annot"><span class="annottext">Int
-</span><a href="#local-6989586621679337120"><span class="hs-identifier hs-var">mx</span></a></span></span><span> </span><span id="local-6989586621679337119"><span class="annot"><span class="annottext">NonEmpty OneTapeTMCommand
-</span><a href="#local-6989586621679337119"><span class="hs-identifier hs-var">sq</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
+</span><span class="hs-identifier hs-var">foldl</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679336277"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679336277"><span class="hs-identifier hs-var">mx</span></a></span></span><span> </span><span id="local-6989586621679336276"><span class="annot"><span class="annottext">NonEmpty OneTapeTMCommand
+</span><a href="#local-6989586621679336276"><span class="hs-identifier hs-var">sq</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
 forall a. Ord a =&gt; a -&gt; a -&gt; a
 </span><span class="hs-identifier hs-var">max</span></span><span> </span><span class="annot"><span class="annottext">Int
-</span><a href="#local-6989586621679337120"><span class="hs-identifier hs-var">mx</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">NonEmpty OneTapeTMCommand -&gt; Int
+</span><a href="#local-6989586621679336277"><span class="hs-identifier hs-var">mx</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">NonEmpty OneTapeTMCommand -&gt; Int
 forall a. NonEmpty a -&gt; Int
 </span><span class="hs-identifier hs-var">Data.List.NonEmpty.length</span></span><span> </span><span class="annot"><span class="annottext">NonEmpty OneTapeTMCommand
-</span><a href="#local-6989586621679337119"><span class="hs-identifier hs-var">sq</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679336276"><span class="hs-identifier hs-var">sq</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Int
 </span><span class="hs-number">0</span></span><span> </span><span class="annot"><span class="annottext">[NonEmpty OneTapeTMCommand]
-</span><a href="#local-6989586621679337124"><span class="hs-identifier hs-var">tapeCmdSeqs</span></a></span><span>
-</span><span id="line-117"></span><span>    </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679337117"><span class="annot"><span class="annottext">sameLenCmds :: [[OneTapeTMCommand]]
-</span><a href="#local-6989586621679337117"><span class="hs-identifier hs-var hs-var">sameLenCmds</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(NonEmpty OneTapeTMCommand -&gt; [OneTapeTMCommand])
+</span><a href="#local-6989586621679336281"><span class="hs-identifier hs-var">tapeCmdSeqs</span></a></span><span>
+</span><span id="line-117"></span><span>    </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679336274"><span class="annot"><span class="annottext">sameLenCmds :: [[OneTapeTMCommand]]
+</span><a href="#local-6989586621679336274"><span class="hs-identifier hs-var hs-var">sameLenCmds</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(NonEmpty OneTapeTMCommand -&gt; [OneTapeTMCommand])
 -&gt; [NonEmpty OneTapeTMCommand] -&gt; [[OneTapeTMCommand]]
 forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
 </span><span class="hs-identifier hs-var">fmap</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Int -&gt; NonEmpty OneTapeTMCommand -&gt; [OneTapeTMCommand]
-</span><a href="#local-6989586621679337116"><span class="hs-identifier hs-var">fillSeqWithIdCmds</span></a></span><span> </span><span class="annot"><span class="annottext">Int
-</span><a href="#local-6989586621679337122"><span class="hs-identifier hs-var">mxLen</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[NonEmpty OneTapeTMCommand]
-</span><a href="#local-6989586621679337123"><span class="hs-identifier hs-var">tapeCmdSeqsRev</span></a></span><span>
-</span><span id="line-118"></span><span>    </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679337115"><span class="annot"><span class="annottext">sameLenCmdsRev :: [[OneTapeTMCommand]]
-</span><a href="#local-6989586621679337115"><span class="hs-identifier hs-var hs-var">sameLenCmdsRev</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[[OneTapeTMCommand]] -&gt; [[OneTapeTMCommand]]
+</span><a href="#local-6989586621679336273"><span class="hs-identifier hs-var">fillSeqWithIdCmds</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679336279"><span class="hs-identifier hs-var">mxLen</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[NonEmpty OneTapeTMCommand]
+</span><a href="#local-6989586621679336280"><span class="hs-identifier hs-var">tapeCmdSeqsRev</span></a></span><span>
+</span><span id="line-118"></span><span>    </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679336272"><span class="annot"><span class="annottext">sameLenCmdsRev :: [[OneTapeTMCommand]]
+</span><a href="#local-6989586621679336272"><span class="hs-identifier hs-var hs-var">sameLenCmdsRev</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[[OneTapeTMCommand]] -&gt; [[OneTapeTMCommand]]
 forall a. [[a]] -&gt; [[a]]
 </span><span class="hs-identifier hs-var">transpose</span></span><span> </span><span class="annot"><span class="annottext">([[OneTapeTMCommand]] -&gt; [[OneTapeTMCommand]])
 -&gt; [[OneTapeTMCommand]] -&gt; [[OneTapeTMCommand]]
@@ -425,69 +425,69 @@ forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
 </span><span class="hs-identifier hs-var">fmap</span></span><span> </span><span class="annot"><span class="annottext">[OneTapeTMCommand] -&gt; [OneTapeTMCommand]
 forall a. [a] -&gt; [a]
 </span><span class="hs-identifier hs-var">Prelude.reverse</span></span><span> </span><span class="annot"><span class="annottext">[[OneTapeTMCommand]]
-</span><a href="#local-6989586621679337117"><span class="hs-identifier hs-var">sameLenCmds</span></a></span><span>
+</span><a href="#local-6989586621679336274"><span class="hs-identifier hs-var">sameLenCmds</span></a></span><span>
 </span><span id="line-119"></span><span>    </span><span class="annot"><span class="annottext">[TmsCommand] -&gt; Either String [TmsCommand]
 forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
 </span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">([TmsCommand] -&gt; Either String [TmsCommand])
 -&gt; [TmsCommand] -&gt; Either String [TmsCommand]
 forall a b. (a -&gt; b) -&gt; a -&gt; b
-</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679337113"><span class="annot"><span class="annottext">[OneTapeTMCommand]
-</span><a href="#local-6989586621679337113"><span class="hs-identifier hs-var">cmds</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">(TmsState, [TmsSingleTapeCommand], TmsState) -&gt; TmsCommand
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679336270"><span class="annot"><span class="annottext">[OneTapeTMCommand]
+</span><a href="#local-6989586621679336270"><span class="hs-identifier hs-var">cmds</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">(TmsState, [TmsSingleTapeCommand], TmsState) -&gt; TmsCommand
 </span><a href="TmsType.html#TmsCommand"><span class="hs-identifier hs-var">TmsCommand</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[OneTapeTMCommand] -&gt; TmsState
 forall b c. [(TmsState, b, c)] -&gt; TmsState
-</span><a href="#local-6989586621679337111"><span class="hs-identifier hs-var">startState</span></a></span><span> </span><span class="annot"><span class="annottext">[OneTapeTMCommand]
-</span><a href="#local-6989586621679337113"><span class="hs-identifier hs-var">cmds</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">[OneTapeTMCommand] -&gt; [TmsSingleTapeCommand]
+</span><a href="#local-6989586621679336268"><span class="hs-identifier hs-var">startState</span></a></span><span> </span><span class="annot"><span class="annottext">[OneTapeTMCommand]
+</span><a href="#local-6989586621679336270"><span class="hs-identifier hs-var">cmds</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">[OneTapeTMCommand] -&gt; [TmsSingleTapeCommand]
 forall a b c. [(a, b, c)] -&gt; [b]
-</span><a href="#local-6989586621679337110"><span class="hs-identifier hs-var">commands</span></a></span><span> </span><span class="annot"><span class="annottext">[OneTapeTMCommand]
-</span><a href="#local-6989586621679337113"><span class="hs-identifier hs-var">cmds</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">[OneTapeTMCommand] -&gt; TmsState
+</span><a href="#local-6989586621679336267"><span class="hs-identifier hs-var">commands</span></a></span><span> </span><span class="annot"><span class="annottext">[OneTapeTMCommand]
+</span><a href="#local-6989586621679336270"><span class="hs-identifier hs-var">cmds</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">[OneTapeTMCommand] -&gt; TmsState
 forall a b. [(a, b, TmsState)] -&gt; TmsState
-</span><a href="#local-6989586621679337109"><span class="hs-identifier hs-var">finalState</span></a></span><span> </span><span class="annot"><span class="annottext">[OneTapeTMCommand]
-</span><a href="#local-6989586621679337113"><span class="hs-identifier hs-var">cmds</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">([OneTapeTMCommand] -&gt; TmsCommand)
+</span><a href="#local-6989586621679336266"><span class="hs-identifier hs-var">finalState</span></a></span><span> </span><span class="annot"><span class="annottext">[OneTapeTMCommand]
+</span><a href="#local-6989586621679336270"><span class="hs-identifier hs-var">cmds</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">([OneTapeTMCommand] -&gt; TmsCommand)
 -&gt; [[OneTapeTMCommand]] -&gt; [TmsCommand]
 forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
 </span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">[[OneTapeTMCommand]]
-</span><a href="#local-6989586621679337115"><span class="hs-identifier hs-var">sameLenCmdsRev</span></a></span><span>
+</span><a href="#local-6989586621679336272"><span class="hs-identifier hs-var">sameLenCmdsRev</span></a></span><span>
 </span><span id="line-120"></span><span>    </span><span class="hs-keyword">where</span><span>
-</span><span id="line-121"></span><span>        </span><span class="annot"><a href="#local-6989586621679337116"><span class="hs-identifier hs-type">fillSeqWithIdCmds</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">NonEmpty</span></span><span> </span><span class="annot"><a href="TmsType.html#OneTapeTMCommand"><span class="hs-identifier hs-type">OneTapeTMCommand</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="TmsType.html#OneTapeTMCommand"><span class="hs-identifier hs-type">OneTapeTMCommand</span></a></span><span class="hs-special">]</span><span>
-</span><span id="line-122"></span><span>        </span><span id="local-6989586621679337116"><span class="annot"><span class="annottext">fillSeqWithIdCmds :: Int -&gt; NonEmpty OneTapeTMCommand -&gt; [OneTapeTMCommand]
-</span><a href="#local-6989586621679337116"><span class="hs-identifier hs-var hs-var">fillSeqWithIdCmds</span></a></span></span><span> </span><span id="local-6989586621679337108"><span class="annot"><span class="annottext">Int
-</span><a href="#local-6989586621679337108"><span class="hs-identifier hs-var">len</span></a></span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679337107"><span class="annot"><span class="annottext">OneTapeTMCommand
-</span><a href="#local-6989586621679337107"><span class="hs-identifier hs-var">x</span></a></span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:|</span></span><span> </span><span id="local-6989586621679337106"><span class="annot"><span class="annottext">[OneTapeTMCommand]
-</span><a href="#local-6989586621679337106"><span class="hs-identifier hs-var">xs</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Int -&gt; OneTapeTMCommand -&gt; [OneTapeTMCommand]
+</span><span id="line-121"></span><span>        </span><span class="annot"><a href="#local-6989586621679336273"><span class="hs-identifier hs-type">fillSeqWithIdCmds</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">NonEmpty</span></span><span> </span><span class="annot"><a href="TmsType.html#OneTapeTMCommand"><span class="hs-identifier hs-type">OneTapeTMCommand</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="TmsType.html#OneTapeTMCommand"><span class="hs-identifier hs-type">OneTapeTMCommand</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-122"></span><span>        </span><span id="local-6989586621679336273"><span class="annot"><span class="annottext">fillSeqWithIdCmds :: Int -&gt; NonEmpty OneTapeTMCommand -&gt; [OneTapeTMCommand]
+</span><a href="#local-6989586621679336273"><span class="hs-identifier hs-var hs-var">fillSeqWithIdCmds</span></a></span></span><span> </span><span id="local-6989586621679336265"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679336265"><span class="hs-identifier hs-var">len</span></a></span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679336264"><span class="annot"><span class="annottext">OneTapeTMCommand
+</span><a href="#local-6989586621679336264"><span class="hs-identifier hs-var">x</span></a></span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:|</span></span><span> </span><span id="local-6989586621679336263"><span class="annot"><span class="annottext">[OneTapeTMCommand]
+</span><a href="#local-6989586621679336263"><span class="hs-identifier hs-var">xs</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Int -&gt; OneTapeTMCommand -&gt; [OneTapeTMCommand]
 forall a. Int -&gt; a -&gt; [a]
 </span><span class="hs-identifier hs-var">replicate</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Int
-</span><a href="#local-6989586621679337108"><span class="hs-identifier hs-var">len</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
+</span><a href="#local-6989586621679336265"><span class="hs-identifier hs-var">len</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
 forall a. Num a =&gt; a -&gt; a -&gt; a
 </span><span class="hs-glyph hs-var">-</span></span><span> </span><span class="annot"><span class="annottext">[OneTapeTMCommand] -&gt; Int
 forall (t :: * -&gt; *) a. Foldable t =&gt; t a -&gt; Int
 </span><span class="hs-identifier hs-var">Prelude.length</span></span><span> </span><span class="annot"><span class="annottext">[OneTapeTMCommand]
-</span><a href="#local-6989586621679337106"><span class="hs-identifier hs-var">xs</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
+</span><a href="#local-6989586621679336263"><span class="hs-identifier hs-var">xs</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
 forall a. Num a =&gt; a -&gt; a -&gt; a
 </span><span class="hs-glyph hs-var">-</span></span><span> </span><span class="annot"><span class="annottext">Int
 </span><span class="hs-number">1</span></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">OneTapeTMCommand -&gt; OneTapeTMCommand
-</span><a href="#local-6989586621679337103"><span class="hs-identifier hs-var">makeIdTapeCommand</span></a></span><span> </span><span class="annot"><span class="annottext">OneTapeTMCommand
-</span><a href="#local-6989586621679337107"><span class="hs-identifier hs-var">x</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[OneTapeTMCommand] -&gt; [OneTapeTMCommand] -&gt; [OneTapeTMCommand]
+</span><a href="#local-6989586621679336260"><span class="hs-identifier hs-var">makeIdTapeCommand</span></a></span><span> </span><span class="annot"><span class="annottext">OneTapeTMCommand
+</span><a href="#local-6989586621679336264"><span class="hs-identifier hs-var">x</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[OneTapeTMCommand] -&gt; [OneTapeTMCommand] -&gt; [OneTapeTMCommand]
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">OneTapeTMCommand -&gt; [OneTapeTMCommand]
 forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
 </span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">OneTapeTMCommand
-</span><a href="#local-6989586621679337107"><span class="hs-identifier hs-var">x</span></a></span><span> </span><span class="annot"><span class="annottext">[OneTapeTMCommand] -&gt; [OneTapeTMCommand] -&gt; [OneTapeTMCommand]
+</span><a href="#local-6989586621679336264"><span class="hs-identifier hs-var">x</span></a></span><span> </span><span class="annot"><span class="annottext">[OneTapeTMCommand] -&gt; [OneTapeTMCommand] -&gt; [OneTapeTMCommand]
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[OneTapeTMCommand]
-</span><a href="#local-6989586621679337106"><span class="hs-identifier hs-var">xs</span></a></span><span>
-</span><span id="line-123"></span><span>        </span><span class="annot"><a href="#local-6989586621679337103"><span class="hs-identifier hs-type">makeIdTapeCommand</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TmsType.html#OneTapeTMCommand"><span class="hs-identifier hs-type">OneTapeTMCommand</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TmsType.html#OneTapeTMCommand"><span class="hs-identifier hs-type">OneTapeTMCommand</span></a></span><span>
-</span><span id="line-124"></span><span>        </span><span id="local-6989586621679337103"><span class="annot"><span class="annottext">makeIdTapeCommand :: OneTapeTMCommand -&gt; OneTapeTMCommand
-</span><a href="#local-6989586621679337103"><span class="hs-identifier hs-var hs-var">makeIdTapeCommand</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">TmsState
+</span><a href="#local-6989586621679336263"><span class="hs-identifier hs-var">xs</span></a></span><span>
+</span><span id="line-123"></span><span>        </span><span class="annot"><a href="#local-6989586621679336260"><span class="hs-identifier hs-type">makeIdTapeCommand</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TmsType.html#OneTapeTMCommand"><span class="hs-identifier hs-type">OneTapeTMCommand</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TmsType.html#OneTapeTMCommand"><span class="hs-identifier hs-type">OneTapeTMCommand</span></a></span><span>
+</span><span id="line-124"></span><span>        </span><span id="local-6989586621679336260"><span class="annot"><span class="annottext">makeIdTapeCommand :: OneTapeTMCommand -&gt; OneTapeTMCommand
+</span><a href="#local-6989586621679336260"><span class="hs-identifier hs-var hs-var">makeIdTapeCommand</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">TmsState
 </span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">TmsSingleTapeCommand
-</span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679337102"><span class="annot"><span class="annottext">TmsState
-</span><a href="#local-6989586621679337102"><span class="hs-identifier hs-var">st</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">TmsState
-</span><a href="#local-6989586621679337102"><span class="hs-identifier hs-var">st</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">(TmsTapeSquare, TmsTapeHeadMovement) -&gt; TmsSingleTapeCommand
+</span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679336259"><span class="annot"><span class="annottext">TmsState
+</span><a href="#local-6989586621679336259"><span class="hs-identifier hs-var">st</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">TmsState
+</span><a href="#local-6989586621679336259"><span class="hs-identifier hs-var">st</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">(TmsTapeSquare, TmsTapeHeadMovement) -&gt; TmsSingleTapeCommand
 </span><a href="TmsType.html#TmsSingleTapeCommand"><span class="hs-identifier hs-var">TmsSingleTapeCommand</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">TmsTapeSquare
 </span><a href="TmsType.html#Leave"><span class="hs-identifier hs-var">Leave</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">TmsTapeHeadMovement
 </span><a href="TmsType.html#Stay"><span class="hs-identifier hs-var">Stay</span></a></span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">TmsState
-</span><a href="#local-6989586621679337102"><span class="hs-identifier hs-var">st</span></a></span><span class="hs-special">)</span><span>
-</span><span id="line-125"></span><span>        </span><span id="local-6989586621679337111"><span class="annot"><span class="annottext">startState :: [(TmsState, b, c)] -&gt; TmsState
-</span><a href="#local-6989586621679337111"><span class="hs-identifier hs-var hs-var">startState</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[String] -&gt; TmsState
+</span><a href="#local-6989586621679336259"><span class="hs-identifier hs-var">st</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-125"></span><span>        </span><span id="local-6989586621679336268"><span class="annot"><span class="annottext">startState :: [(TmsState, b, c)] -&gt; TmsState
+</span><a href="#local-6989586621679336268"><span class="hs-identifier hs-var hs-var">startState</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[String] -&gt; TmsState
 </span><a href="TM2Tms.html#mergeMultipleNames"><span class="hs-identifier hs-var">mergeMultipleNames</span></a></span><span> </span><span class="annot"><span class="annottext">([String] -&gt; TmsState)
 -&gt; ([(TmsState, b, c)] -&gt; [String])
 -&gt; [(TmsState, b, c)]
@@ -495,13 +495,13 @@ forall a. [a] -&gt; [a] -&gt; [a]
 forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
 </span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">((TmsState, b, c) -&gt; String) -&gt; [(TmsState, b, c)] -&gt; [String]
 forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
-</span><span class="hs-identifier hs-var">fmap</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span class="hs-special">(</span><span class="annot"><a href="TmsType.html#TmsState"><span class="hs-identifier hs-type">TmsState</span></a></span><span> </span><span id="local-6989586621679337100"><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679337100"><span class="hs-identifier hs-var">s</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">b
+</span><span class="hs-identifier hs-var">fmap</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span class="hs-special">(</span><span class="annot"><a href="TmsType.html#TmsState"><span class="hs-identifier hs-type">TmsState</span></a></span><span> </span><span id="local-6989586621679336257"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679336257"><span class="hs-identifier hs-var">s</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">b
 </span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">c
 </span><span class="hs-identifier">_</span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679337100"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">)</span><span>
-</span><span id="line-126"></span><span>        </span><span id="local-6989586621679337109"><span class="annot"><span class="annottext">finalState :: [(a, b, TmsState)] -&gt; TmsState
-</span><a href="#local-6989586621679337109"><span class="hs-identifier hs-var hs-var">finalState</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[String] -&gt; TmsState
+</span><a href="#local-6989586621679336257"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-126"></span><span>        </span><span id="local-6989586621679336266"><span class="annot"><span class="annottext">finalState :: [(a, b, TmsState)] -&gt; TmsState
+</span><a href="#local-6989586621679336266"><span class="hs-identifier hs-var hs-var">finalState</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[String] -&gt; TmsState
 </span><a href="TM2Tms.html#mergeMultipleNames"><span class="hs-identifier hs-var">mergeMultipleNames</span></a></span><span> </span><span class="annot"><span class="annottext">([String] -&gt; TmsState)
 -&gt; ([(a, b, TmsState)] -&gt; [String])
 -&gt; [(a, b, TmsState)]
@@ -511,31 +511,31 @@ forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
 forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
 </span><span class="hs-identifier hs-var">fmap</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span class="hs-special">(</span><span class="annot"><span class="annottext">a
 </span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">b
-</span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="TmsType.html#TmsState"><span class="hs-identifier hs-type">TmsState</span></a></span><span> </span><span id="local-6989586621679337099"><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679337099"><span class="hs-identifier hs-var">f</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679337099"><span class="hs-identifier hs-var">f</span></a></span><span class="hs-special">)</span><span>
-</span><span id="line-127"></span><span>        </span><span id="local-6989586621679337110"><span class="annot"><span class="annottext">commands :: [(a, b, c)] -&gt; [b]
-</span><a href="#local-6989586621679337110"><span class="hs-identifier hs-var hs-var">commands</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">((a, b, c) -&gt; b) -&gt; [(a, b, c)] -&gt; [b]
+</span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="TmsType.html#TmsState"><span class="hs-identifier hs-type">TmsState</span></a></span><span> </span><span id="local-6989586621679336256"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679336256"><span class="hs-identifier hs-var">f</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679336256"><span class="hs-identifier hs-var">f</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-127"></span><span>        </span><span id="local-6989586621679336267"><span class="annot"><span class="annottext">commands :: [(a, b, c)] -&gt; [b]
+</span><a href="#local-6989586621679336267"><span class="hs-identifier hs-var hs-var">commands</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">((a, b, c) -&gt; b) -&gt; [(a, b, c)] -&gt; [b]
 forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
 </span><span class="hs-identifier hs-var">fmap</span></span><span> </span><span class="annot"><span class="annottext">(((a, b, c) -&gt; b) -&gt; [(a, b, c)] -&gt; [b])
 -&gt; ((a, b, c) -&gt; b) -&gt; [(a, b, c)] -&gt; [b]
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span class="hs-special">(</span><span class="annot"><span class="annottext">a
-</span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679337098"><span class="annot"><span class="annottext">b
-</span><a href="#local-6989586621679337098"><span class="hs-identifier hs-var">x</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">c
+</span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679336255"><span class="annot"><span class="annottext">b
+</span><a href="#local-6989586621679336255"><span class="hs-identifier hs-var">x</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">c
 </span><span class="hs-identifier">_</span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">b
-</span><a href="#local-6989586621679337098"><span class="hs-identifier hs-var">x</span></a></span><span>
+</span><a href="#local-6989586621679336255"><span class="hs-identifier hs-var">x</span></a></span><span>
 </span><span id="line-128"></span><span>
 </span><span id="line-129"></span><span class="hs-comment">-- |Convert 'Square' to 'Char'.</span><span>
 </span><span id="line-130"></span><span class="annot"><a href="TM2Tms.html#toValue"><span class="hs-identifier hs-type">toValue</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TMType.html#Square"><span class="hs-identifier hs-type">Square</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Either</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Char</span></span><span>
 </span><span id="line-131"></span><span id="toValue"><span class="annot"><span class="annottext">toValue :: Square -&gt; Either String Char
-</span><a href="TM2Tms.html#toValue"><span class="hs-identifier hs-var hs-var">toValue</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="TMType.html#Value"><span class="hs-identifier hs-type">Value</span></a></span><span> </span><span id="local-6989586621679337097"><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679337097"><span class="hs-identifier hs-var">name</span></a></span></span><span> </span><span id="local-6989586621679337096"><span class="annot"><span class="annottext">Int
-</span><a href="#local-6989586621679337096"><span class="hs-identifier hs-var">n</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span>
+</span><a href="TM2Tms.html#toValue"><span class="hs-identifier hs-var hs-var">toValue</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="TMType.html#Value"><span class="hs-identifier hs-type">Value</span></a></span><span> </span><span id="local-6989586621679336254"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679336254"><span class="hs-identifier hs-var">name</span></a></span></span><span> </span><span id="local-6989586621679336253"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679336253"><span class="hs-identifier hs-var">n</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span>
 </span><span id="line-132"></span><span>    </span><span class="annot"><span class="annottext">String -&gt; Int -&gt; Either String Char
 </span><a href="TM2Tms.html#quotName2Char"><span class="hs-identifier hs-var">quotName2Char</span></a></span><span> </span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679337097"><span class="hs-identifier hs-var">name</span></a></span><span> </span><span class="annot"><span class="annottext">Int
-</span><a href="#local-6989586621679337096"><span class="hs-identifier hs-var">n</span></a></span><span>
+</span><a href="#local-6989586621679336254"><span class="hs-identifier hs-var">name</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679336253"><span class="hs-identifier hs-var">n</span></a></span><span>
 </span><span id="line-133"></span><span class="annot"><a href="TM2Tms.html#toValue"><span class="hs-identifier hs-var">toValue</span></a></span><span> </span><span class="annot"><span class="annottext">Square
 </span><span class="hs-identifier">_</span></span><span>              </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; Either String Char
 forall a b. a -&gt; Either a b
@@ -546,15 +546,15 @@ forall a b. a -&gt; Either a b
 </span><span id="line-136"></span><span class="hs-comment">-- Character length is exactly 1, so longer strings can not be supported, so as many quotes.</span><span>
 </span><span id="line-137"></span><span class="annot"><a href="TM2Tms.html#quotName2Char"><span class="hs-identifier hs-type">quotName2Char</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Either</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Char</span></span><span>
 </span><span id="line-138"></span><span id="quotName2Char"><span class="annot"><span class="annottext">quotName2Char :: String -&gt; Int -&gt; Either String Char
-</span><a href="TM2Tms.html#quotName2Char"><span class="hs-identifier hs-var hs-var">quotName2Char</span></a></span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679337095"><span class="annot"><span class="annottext">Char
-</span><a href="#local-6989586621679337095"><span class="hs-identifier hs-var">c</span></a></span></span><span> </span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="TM2Tms.html#quotName2Char"><span class="hs-identifier hs-var hs-var">quotName2Char</span></a></span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679336252"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679336252"><span class="hs-identifier hs-var">c</span></a></span></span><span> </span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;&quot;</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Int
 </span><span class="hs-number">0</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Char -&gt; Either String Char
 forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
 </span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">Char
-</span><a href="#local-6989586621679337095"><span class="hs-identifier hs-var">c</span></a></span><span>
-</span><span id="line-139"></span><span class="annot"><a href="TM2Tms.html#quotName2Char"><span class="hs-identifier hs-var">quotName2Char</span></a></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679337094"><span class="annot"><span class="annottext">Char
-</span><a href="#local-6989586621679337094"><span class="hs-identifier hs-var">c</span></a></span></span><span> </span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679336252"><span class="hs-identifier hs-var">c</span></a></span><span>
+</span><span id="line-139"></span><span class="annot"><a href="TM2Tms.html#quotName2Char"><span class="hs-identifier hs-var">quotName2Char</span></a></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679336251"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679336251"><span class="hs-identifier hs-var">c</span></a></span></span><span> </span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;&quot;</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Int
 </span><span class="hs-number">1</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Char -&gt; Either String Char
 forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
@@ -562,10 +562,10 @@ forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Char -&gt; Char
 </span><a href="TM2Tms.html#toQuot"><span class="hs-identifier hs-var">toQuot</span></a></span><span> </span><span class="annot"><span class="annottext">Char
-</span><a href="#local-6989586621679337094"><span class="hs-identifier hs-var">c</span></a></span><span>
-</span><span id="line-140"></span><span class="annot"><a href="TM2Tms.html#quotName2Char"><span class="hs-identifier hs-var">quotName2Char</span></a></span><span> </span><span id="local-6989586621679337092"><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679337092"><span class="hs-identifier hs-var">name</span></a></span></span><span> </span><span id="local-6989586621679337091"><span class="annot"><span class="annottext">Int
-</span><a href="#local-6989586621679337091"><span class="hs-identifier hs-var">nQuot</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; Either String Char
+</span><a href="#local-6989586621679336251"><span class="hs-identifier hs-var">c</span></a></span><span>
+</span><span id="line-140"></span><span class="annot"><a href="TM2Tms.html#quotName2Char"><span class="hs-identifier hs-var">quotName2Char</span></a></span><span> </span><span id="local-6989586621679336249"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679336249"><span class="hs-identifier hs-var">name</span></a></span></span><span> </span><span id="local-6989586621679336248"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679336248"><span class="hs-identifier hs-var">nQuot</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; Either String Char
 forall a b. a -&gt; Either a b
 </span><span class="hs-identifier hs-var">Left</span></span><span> </span><span class="annot"><span class="annottext">(String -&gt; Either String Char) -&gt; String -&gt; Either String Char
 forall a b. (a -&gt; b) -&gt; a -&gt; b
@@ -573,7 +573,7 @@ forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-string">&quot;Can not convert string '&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679337092"><span class="hs-identifier hs-var">name</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+</span><a href="#local-6989586621679336249"><span class="hs-identifier hs-var">name</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;' with &quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
@@ -581,7 +581,7 @@ forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">Int -&gt; String
 forall a. Show a =&gt; a -&gt; String
 </span><span class="hs-identifier hs-var">show</span></span><span> </span><span class="annot"><span class="annottext">Int
-</span><a href="#local-6989586621679337091"><span class="hs-identifier hs-var">nQuot</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+</span><a href="#local-6989586621679336248"><span class="hs-identifier hs-var">nQuot</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot; quotes into 'Char'.&quot;</span></span><span>
@@ -699,8 +699,8 @@ forall k a. Ord k =&gt; [(k, a)] -&gt; Map k a
 </span><span id="line-145"></span><span>
 </span><span id="line-146"></span><span class="annot"><a href="TM2Tms.html#toQuot"><span class="hs-identifier hs-type">toQuot</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Char</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Char</span></span><span>
 </span><span id="line-147"></span><span id="toQuot"><span class="annot"><span class="annottext">toQuot :: Char -&gt; Char
-</span><a href="TM2Tms.html#toQuot"><span class="hs-identifier hs-var hs-var">toQuot</span></a></span></span><span> </span><span id="local-6989586621679337089"><span class="annot"><span class="annottext">Char
-</span><a href="#local-6989586621679337089"><span class="hs-identifier hs-var">c</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Char -&gt; Maybe Char -&gt; Char
+</span><a href="TM2Tms.html#toQuot"><span class="hs-identifier hs-var hs-var">toQuot</span></a></span></span><span> </span><span id="local-6989586621679336246"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679336246"><span class="hs-identifier hs-var">c</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Char -&gt; Maybe Char -&gt; Char
 forall a. a -&gt; Maybe a -&gt; a
 </span><span class="hs-identifier hs-var">fromMaybe</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String -&gt; Char
 forall a. HasCallStack =&gt; String -&gt; a
@@ -712,13 +712,13 @@ forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">Char -&gt; String
 forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
 </span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">Char
-</span><a href="#local-6989586621679337089"><span class="hs-identifier hs-var">c</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+</span><a href="#local-6989586621679336246"><span class="hs-identifier hs-var">c</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;'&quot;</span></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Char -&gt; Map Char Char -&gt; Maybe Char
 forall k a. Ord k =&gt; k -&gt; Map k a -&gt; Maybe a
 </span><span class="hs-identifier hs-var">Data.Map.lookup</span></span><span> </span><span class="annot"><span class="annottext">Char
-</span><a href="#local-6989586621679337089"><span class="hs-identifier hs-var">c</span></a></span><span> </span><span class="annot"><span class="annottext">Map Char Char
+</span><a href="#local-6989586621679336246"><span class="hs-identifier hs-var">c</span></a></span><span> </span><span class="annot"><span class="annottext">Map Char Char
 </span><a href="TM2Tms.html#quoted"><span class="hs-identifier hs-var">quoted</span></a></span><span class="hs-special">)</span><span>
 </span><span id="line-148"></span><span>
 </span><span id="line-149"></span><span class="hs-comment">-- |Concat and filter list of states.</span><span>
@@ -746,26 +746,26 @@ forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
 -&gt; ([String] -&gt; [String]) -&gt; [String] -&gt; [String]
 forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
 </span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; [String]
-</span><a href="#local-6989586621679337086"><span class="hs-identifier hs-var">enum</span></a></span><span>
+</span><a href="#local-6989586621679336243"><span class="hs-identifier hs-var">enum</span></a></span><span>
 </span><span id="line-152"></span><span>    </span><span class="hs-keyword">where</span><span>
-</span><span id="line-153"></span><span>        </span><span id="local-6989586621679337086"><span class="annot"><span class="annottext">enum :: [String] -&gt; [String]
-</span><a href="#local-6989586621679337086"><span class="hs-identifier hs-var hs-var">enum</span></a></span></span><span> </span><span id="local-6989586621679337085"><span class="annot"><span class="annottext">[String]
-</span><a href="#local-6989586621679337085"><span class="hs-identifier hs-var">ss</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">((Integer, String) -&gt; String) -&gt; [(Integer, String)] -&gt; [String]
+</span><span id="line-153"></span><span>        </span><span id="local-6989586621679336243"><span class="annot"><span class="annottext">enum :: [String] -&gt; [String]
+</span><a href="#local-6989586621679336243"><span class="hs-identifier hs-var hs-var">enum</span></a></span></span><span> </span><span id="local-6989586621679336242"><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679336242"><span class="hs-identifier hs-var">ss</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">((Integer, String) -&gt; String) -&gt; [(Integer, String)] -&gt; [String]
 forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
-</span><span class="hs-identifier hs-var">fmap</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span class="hs-special">(</span><span id="local-6989586621679337084"><span class="annot"><span class="annottext">Integer
-</span><a href="#local-6989586621679337084"><span class="hs-identifier hs-var">num</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679337083"><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679337083"><span class="hs-identifier hs-var">s</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Integer -&gt; String
+</span><span class="hs-identifier hs-var">fmap</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span class="hs-special">(</span><span id="local-6989586621679336241"><span class="annot"><span class="annottext">Integer
+</span><a href="#local-6989586621679336241"><span class="hs-identifier hs-var">num</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679336240"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679336240"><span class="hs-identifier hs-var">s</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Integer -&gt; String
 forall a. Show a =&gt; a -&gt; String
 </span><span class="hs-identifier hs-var">show</span></span><span> </span><span class="annot"><span class="annottext">Integer
-</span><a href="#local-6989586621679337084"><span class="hs-identifier hs-var">num</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+</span><a href="#local-6989586621679336241"><span class="hs-identifier hs-var">num</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;__&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679337083"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[Integer] -&gt; [String] -&gt; [(Integer, String)]
+</span><a href="#local-6989586621679336240"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[Integer] -&gt; [String] -&gt; [(Integer, String)]
 forall a b. [a] -&gt; [b] -&gt; [(a, b)]
 </span><span class="hs-identifier hs-var">zip</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">Integer
 </span><span class="hs-number">0</span></span><span> </span><span class="hs-glyph">..</span><span class="hs-special">]</span><span> </span><span class="annot"><span class="annottext">[String]
-</span><a href="#local-6989586621679337085"><span class="hs-identifier hs-var">ss</span></a></span><span class="hs-special">)</span><span>
+</span><a href="#local-6989586621679336242"><span class="hs-identifier hs-var">ss</span></a></span><span class="hs-special">)</span><span>
 </span><span id="line-154"></span></pre></body></html>

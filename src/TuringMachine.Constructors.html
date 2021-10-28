@@ -42,26 +42,26 @@
 </span><span id="line-42"></span><span>
 </span><span id="line-43"></span><span class="annot"><a href="TuringMachine.Constructors.html#makeStandartTM"><span class="hs-identifier hs-type">makeStandartTM</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="TuringMachine.Constructors.html#LocalQuadruple"><span class="hs-identifier hs-type">LocalQuadruple</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TuringMachine.html#TuringMachine"><span class="hs-identifier hs-type">TuringMachine</span></a></span><span>
 </span><span id="line-44"></span><span id="makeStandartTM"><span class="annot"><span class="annottext">makeStandartTM :: [LocalQuadruple] -&gt; TuringMachine
-</span><a href="TuringMachine.Constructors.html#makeStandartTM"><span class="hs-identifier hs-var hs-var">makeStandartTM</span></a></span></span><span> </span><span id="local-6989586621679338583"><span class="annot"><span class="annottext">[LocalQuadruple]
-</span><a href="#local-6989586621679338583"><span class="hs-identifier hs-var">lqs</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
-</span><span id="line-45"></span><span>    </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679338582"><span class="annot"><span class="annottext">cs :: Set ShowedSymbol
-</span><a href="#local-6989586621679338582"><span class="hs-identifier hs-var hs-var">cs</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[ShowedSymbol] -&gt; Set ShowedSymbol
+</span><a href="TuringMachine.Constructors.html#makeStandartTM"><span class="hs-identifier hs-var hs-var">makeStandartTM</span></a></span></span><span> </span><span id="local-6989586621679337740"><span class="annot"><span class="annottext">[LocalQuadruple]
+</span><a href="#local-6989586621679337740"><span class="hs-identifier hs-var">lqs</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-45"></span><span>    </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679337739"><span class="annot"><span class="annottext">cs :: Set ShowedSymbol
+</span><a href="#local-6989586621679337739"><span class="hs-identifier hs-var hs-var">cs</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[ShowedSymbol] -&gt; Set ShowedSymbol
 forall c v. UnsafeListable c v =&gt; [v] -&gt; c
 </span><a href="Containers.html#fromList"><span class="hs-identifier hs-var">fromList</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">(LocalQuadruple -&gt; [ShowedSymbol])
 -&gt; [LocalQuadruple] -&gt; [ShowedSymbol]
 forall (t :: * -&gt; *) a b. Foldable t =&gt; (a -&gt; [b]) -&gt; t a -&gt; [b]
 </span><span class="hs-identifier hs-var">concatMap</span></span><span> </span><span class="annot"><span class="annottext">LocalQuadruple -&gt; [ShowedSymbol]
-</span><a href="#local-6989586621679338579"><span class="hs-identifier hs-var">getSs</span></a></span><span> </span><span class="annot"><span class="annottext">[LocalQuadruple]
-</span><a href="#local-6989586621679338583"><span class="hs-identifier hs-var">lqs</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Set ShowedSymbol -&gt; ShowedSymbol -&gt; Set ShowedSymbol
+</span><a href="#local-6989586621679337736"><span class="hs-identifier hs-var">getSs</span></a></span><span> </span><span class="annot"><span class="annottext">[LocalQuadruple]
+</span><a href="#local-6989586621679337740"><span class="hs-identifier hs-var">lqs</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Set ShowedSymbol -&gt; ShowedSymbol -&gt; Set ShowedSymbol
 forall c v. Deletable c v =&gt; c -&gt; v -&gt; c
 </span><a href="Containers.html#%3C%5C"><span class="hs-operator hs-var">&lt;\</span></a></span><span> </span><span class="annot"><span class="annottext">ShowedSymbol
 </span><a href="TuringMachine.ShowedSymbol.html#blank"><span class="hs-identifier hs-var">blank</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Set</span></span><span> </span><span class="annot"><a href="TuringMachine.ShowedSymbol.html#ShowedSymbol"><span class="hs-identifier hs-type">ShowedSymbol</span></a></span><span>
-</span><span id="line-46"></span><span>        </span><span id="local-6989586621679338576"><span class="annot"><span class="annottext">ls :: PrismMap String State
-</span><a href="#local-6989586621679338576"><span class="hs-identifier hs-var hs-var">ls</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[(String, State)] -&gt; PrismMap String State
+</span><span id="line-46"></span><span>        </span><span id="local-6989586621679337733"><span class="annot"><span class="annottext">ls :: PrismMap String State
+</span><a href="#local-6989586621679337733"><span class="hs-identifier hs-var hs-var">ls</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[(String, State)] -&gt; PrismMap String State
 forall c v. UnsafeListable c v =&gt; [v] -&gt; c
 </span><a href="Containers.html#fromList"><span class="hs-identifier hs-var">fromList</span></a></span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Containers.PrismMap.html#PrismMap"><span class="hs-identifier hs-type">PrismMap</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="annot"><a href="TuringMachine.State.html#State"><span class="hs-identifier hs-type">State</span></a></span><span>
-</span><span id="line-47"></span><span>        </span><span id="local-6989586621679338575"><span class="annot"><span class="annottext">a :: Alphabet
-</span><a href="#local-6989586621679338575"><span class="hs-identifier hs-var hs-var">a</span></a></span></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[(ShowedSymbol, Symbol)] -&gt; Alphabet
+</span><span id="line-47"></span><span>        </span><span id="local-6989586621679337732"><span class="annot"><span class="annottext">a :: Alphabet
+</span><a href="#local-6989586621679337732"><span class="hs-identifier hs-var hs-var">a</span></a></span></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[(ShowedSymbol, Symbol)] -&gt; Alphabet
 forall c v. UnsafeListable c v =&gt; [v] -&gt; c
 </span><a href="Containers.html#fromList"><span class="hs-identifier hs-var">fromList</span></a></span><span> </span><span class="annot"><span class="annottext">([(ShowedSymbol, Symbol)] -&gt; Alphabet)
 -&gt; [(ShowedSymbol, Symbol)] -&gt; Alphabet
@@ -74,7 +74,7 @@ forall a. a -&gt; [a] -&gt; [a]
 </span><span class="hs-glyph hs-var">:</span></span><span> </span><span class="annot"><span class="annottext">Set ShowedSymbol -&gt; [ShowedSymbol]
 forall c v. Listable c v =&gt; c -&gt; [v]
 </span><a href="Containers.html#toList"><span class="hs-identifier hs-var">toList</span></a></span><span> </span><span class="annot"><span class="annottext">Set ShowedSymbol
-</span><a href="#local-6989586621679338582"><span class="hs-identifier hs-var">cs</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">Symbol
+</span><a href="#local-6989586621679337739"><span class="hs-identifier hs-var">cs</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">Symbol
 forall a. Bounded a =&gt; a
 </span><span class="hs-identifier hs-var">minBound</span></span><span class="hs-glyph">..</span><span class="hs-special">]</span><span>
 </span><span id="line-48"></span><span>    </span><span class="hs-keyword">in</span><span>  </span><span class="annot"><span class="annottext">Quadruples -&gt; PrismMap String State -&gt; Alphabet -&gt; TuringMachine
@@ -86,92 +86,92 @@ forall a b. (a -&gt; b) -&gt; a -&gt; b
 -&gt; [LocalQuadruple] -&gt; [Quadruple]
 forall a b. (a -&gt; Maybe b) -&gt; [a] -&gt; [b]
 </span><span class="hs-identifier hs-var">mapMaybe</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Alphabet -&gt; LocalQuadruple -&gt; Maybe Quadruple
-</span><a href="#local-6989586621679338571"><span class="hs-identifier hs-var">toQ</span></a></span><span> </span><span class="annot"><span class="annottext">Alphabet
-</span><a href="#local-6989586621679338575"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[LocalQuadruple]
-</span><a href="#local-6989586621679338583"><span class="hs-identifier hs-var">lqs</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">PrismMap String State
-</span><a href="#local-6989586621679338576"><span class="hs-identifier hs-var">ls</span></a></span><span> </span><span class="annot"><span class="annottext">Alphabet
-</span><a href="#local-6989586621679338575"><span class="hs-identifier hs-var">a</span></a></span><span>
+</span><a href="#local-6989586621679337728"><span class="hs-identifier hs-var">toQ</span></a></span><span> </span><span class="annot"><span class="annottext">Alphabet
+</span><a href="#local-6989586621679337732"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[LocalQuadruple]
+</span><a href="#local-6989586621679337740"><span class="hs-identifier hs-var">lqs</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">PrismMap String State
+</span><a href="#local-6989586621679337733"><span class="hs-identifier hs-var">ls</span></a></span><span> </span><span class="annot"><span class="annottext">Alphabet
+</span><a href="#local-6989586621679337732"><span class="hs-identifier hs-var">a</span></a></span><span>
 </span><span id="line-49"></span><span>      </span><span class="hs-keyword">where</span><span>
-</span><span id="line-50"></span><span>        </span><span class="annot"><a href="#local-6989586621679338579"><span class="hs-identifier hs-type">getSs</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TuringMachine.Constructors.html#LocalQuadruple"><span class="hs-identifier hs-type">LocalQuadruple</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="TuringMachine.ShowedSymbol.html#ShowedSymbol"><span class="hs-identifier hs-type">ShowedSymbol</span></a></span><span class="hs-special">]</span><span>
-</span><span id="line-51"></span><span>        </span><span id="local-6989586621679338579"><span class="annot"><span class="annottext">getSs :: LocalQuadruple -&gt; [ShowedSymbol]
-</span><a href="#local-6989586621679338579"><span class="hs-identifier hs-var hs-var">getSs</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">State
-</span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679338570"><span class="annot"><span class="annottext">ShowedSymbol
-</span><a href="#local-6989586621679338570"><span class="hs-identifier hs-var">s</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="TuringMachine.SymbolOrMove.html#M"><span class="hs-identifier hs-type">M</span></a></span><span> </span><span class="annot"><span class="annottext">Move
+</span><span id="line-50"></span><span>        </span><span class="annot"><a href="#local-6989586621679337736"><span class="hs-identifier hs-type">getSs</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TuringMachine.Constructors.html#LocalQuadruple"><span class="hs-identifier hs-type">LocalQuadruple</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="TuringMachine.ShowedSymbol.html#ShowedSymbol"><span class="hs-identifier hs-type">ShowedSymbol</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-51"></span><span>        </span><span id="local-6989586621679337736"><span class="annot"><span class="annottext">getSs :: LocalQuadruple -&gt; [ShowedSymbol]
+</span><a href="#local-6989586621679337736"><span class="hs-identifier hs-var hs-var">getSs</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">State
+</span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679337727"><span class="annot"><span class="annottext">ShowedSymbol
+</span><a href="#local-6989586621679337727"><span class="hs-identifier hs-var">s</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="TuringMachine.SymbolOrMove.html#M"><span class="hs-identifier hs-type">M</span></a></span><span> </span><span class="annot"><span class="annottext">Move
 </span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">State
 </span><span class="hs-identifier">_</span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">ShowedSymbol
-</span><a href="#local-6989586621679338570"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">]</span><span>
-</span><span id="line-52"></span><span>        </span><span class="annot"><a href="#local-6989586621679338579"><span class="hs-identifier hs-var">getSs</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">State
-</span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679338568"><span class="annot"><span class="annottext">ShowedSymbol
-</span><a href="#local-6989586621679338568"><span class="hs-identifier hs-var">s</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="TuringMachine.SymbolOrMove.html#S"><span class="hs-identifier hs-type">S</span></a></span><span> </span><span id="local-6989586621679338566"><span class="annot"><span class="annottext">ShowedSymbol
-</span><a href="#local-6989586621679338566"><span class="hs-identifier hs-var">s'</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679337727"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-52"></span><span>        </span><span class="annot"><a href="#local-6989586621679337736"><span class="hs-identifier hs-var">getSs</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">State
+</span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679337725"><span class="annot"><span class="annottext">ShowedSymbol
+</span><a href="#local-6989586621679337725"><span class="hs-identifier hs-var">s</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="TuringMachine.SymbolOrMove.html#S"><span class="hs-identifier hs-type">S</span></a></span><span> </span><span id="local-6989586621679337723"><span class="annot"><span class="annottext">ShowedSymbol
+</span><a href="#local-6989586621679337723"><span class="hs-identifier hs-var">s'</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">State
 </span><span class="hs-identifier">_</span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">ShowedSymbol
-</span><a href="#local-6989586621679338568"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">ShowedSymbol
-</span><a href="#local-6989586621679338566"><span class="hs-identifier hs-var">s'</span></a></span><span class="hs-special">]</span><span>
-</span><span id="line-53"></span><span>        </span><span class="annot"><a href="#local-6989586621679338571"><span class="hs-identifier hs-type">toQ</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TuringMachine.html#Alphabet"><span class="hs-identifier hs-type">Alphabet</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TuringMachine.Constructors.html#LocalQuadruple"><span class="hs-identifier hs-type">LocalQuadruple</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TuringMachine.Quadruple.html#Quadruple"><span class="hs-identifier hs-type">TuringMachine.Quadruple</span></a></span><span>
-</span><span id="line-54"></span><span>        </span><span id="local-6989586621679338571"><span class="annot"><span class="annottext">toQ :: Alphabet -&gt; LocalQuadruple -&gt; Maybe Quadruple
-</span><a href="#local-6989586621679338571"><span class="hs-identifier hs-var hs-var">toQ</span></a></span></span><span> </span><span id="local-6989586621679338565"><span class="annot"><span class="annottext">Alphabet
-</span><a href="#local-6989586621679338565"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679338564"><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679338564"><span class="hs-identifier hs-var">q1</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679338563"><span class="annot"><span class="annottext">ShowedSymbol
-</span><a href="#local-6989586621679338563"><span class="hs-identifier hs-var">s</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="TuringMachine.SymbolOrMove.html#M"><span class="hs-identifier hs-type">M</span></a></span><span> </span><span id="local-6989586621679338562"><span class="annot"><span class="annottext">Move
-</span><a href="#local-6989586621679338562"><span class="hs-identifier hs-var">m</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679338561"><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679338561"><span class="hs-identifier hs-var">q2</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
-</span><span id="line-55"></span><span>            </span><span id="local-6989586621679338560"><span class="annot"><span class="annottext">Symbol
-</span><a href="#local-6989586621679338560"><span class="hs-identifier hs-var">s_</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Alphabet
-</span><a href="#local-6989586621679338565"><span class="hs-identifier hs-var">a</span></a></span><span> </span><span class="annot"><span class="annottext">Alphabet -&gt; ShowedSymbol -&gt; Maybe Symbol
+</span><a href="#local-6989586621679337725"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">ShowedSymbol
+</span><a href="#local-6989586621679337723"><span class="hs-identifier hs-var">s'</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-53"></span><span>        </span><span class="annot"><a href="#local-6989586621679337728"><span class="hs-identifier hs-type">toQ</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TuringMachine.html#Alphabet"><span class="hs-identifier hs-type">Alphabet</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TuringMachine.Constructors.html#LocalQuadruple"><span class="hs-identifier hs-type">LocalQuadruple</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TuringMachine.Quadruple.html#Quadruple"><span class="hs-identifier hs-type">TuringMachine.Quadruple</span></a></span><span>
+</span><span id="line-54"></span><span>        </span><span id="local-6989586621679337728"><span class="annot"><span class="annottext">toQ :: Alphabet -&gt; LocalQuadruple -&gt; Maybe Quadruple
+</span><a href="#local-6989586621679337728"><span class="hs-identifier hs-var hs-var">toQ</span></a></span></span><span> </span><span id="local-6989586621679337722"><span class="annot"><span class="annottext">Alphabet
+</span><a href="#local-6989586621679337722"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679337721"><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679337721"><span class="hs-identifier hs-var">q1</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679337720"><span class="annot"><span class="annottext">ShowedSymbol
+</span><a href="#local-6989586621679337720"><span class="hs-identifier hs-var">s</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="TuringMachine.SymbolOrMove.html#M"><span class="hs-identifier hs-type">M</span></a></span><span> </span><span id="local-6989586621679337719"><span class="annot"><span class="annottext">Move
+</span><a href="#local-6989586621679337719"><span class="hs-identifier hs-var">m</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679337718"><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679337718"><span class="hs-identifier hs-var">q2</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-55"></span><span>            </span><span id="local-6989586621679337717"><span class="annot"><span class="annottext">Symbol
+</span><a href="#local-6989586621679337717"><span class="hs-identifier hs-var">s_</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Alphabet
+</span><a href="#local-6989586621679337722"><span class="hs-identifier hs-var">a</span></a></span><span> </span><span class="annot"><span class="annottext">Alphabet -&gt; ShowedSymbol -&gt; Maybe Symbol
 forall c k v (m :: * -&gt; *).
 (Indexable c k v, MonadFail m) =&gt;
 c -&gt; k -&gt; m v
 </span><a href="Containers.html#%21%3F"><span class="hs-operator hs-var">!?</span></a></span><span> </span><span class="annot"><span class="annottext">ShowedSymbol
-</span><a href="#local-6989586621679338563"><span class="hs-identifier hs-var">s</span></a></span><span>
+</span><a href="#local-6989586621679337720"><span class="hs-identifier hs-var">s</span></a></span><span>
 </span><span id="line-56"></span><span>            </span><span class="annot"><span class="annottext">Quadruple -&gt; Maybe Quadruple
 forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
 </span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">(</span><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679338564"><span class="hs-identifier hs-var">q1</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Symbol
-</span><a href="#local-6989586621679338560"><span class="hs-identifier hs-var">s_</span></a></span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Move -&gt; MoveOr Symbol
+</span><a href="#local-6989586621679337721"><span class="hs-identifier hs-var">q1</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Symbol
+</span><a href="#local-6989586621679337717"><span class="hs-identifier hs-var">s_</span></a></span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Move -&gt; MoveOr Symbol
 forall s. Move -&gt; MoveOr s
 </span><a href="TuringMachine.SymbolOrMove.html#M"><span class="hs-identifier hs-var">M</span></a></span><span> </span><span class="annot"><span class="annottext">Move
-</span><a href="#local-6989586621679338562"><span class="hs-identifier hs-var">m</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679338561"><span class="hs-identifier hs-var">q2</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span>
-</span><span id="line-57"></span><span>        </span><span class="annot"><a href="#local-6989586621679338571"><span class="hs-identifier hs-var">toQ</span></a></span><span> </span><span id="local-6989586621679338558"><span class="annot"><span class="annottext">Alphabet
-</span><a href="#local-6989586621679338558"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679338557"><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679338557"><span class="hs-identifier hs-var">q1</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679338556"><span class="annot"><span class="annottext">ShowedSymbol
-</span><a href="#local-6989586621679338556"><span class="hs-identifier hs-var">s</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="TuringMachine.SymbolOrMove.html#S"><span class="hs-identifier hs-type">S</span></a></span><span> </span><span id="local-6989586621679338555"><span class="annot"><span class="annottext">ShowedSymbol
-</span><a href="#local-6989586621679338555"><span class="hs-identifier hs-var">s'</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679338554"><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679338554"><span class="hs-identifier hs-var">q2</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
-</span><span id="line-58"></span><span>            </span><span id="local-6989586621679338553"><span class="annot"><span class="annottext">Symbol
-</span><a href="#local-6989586621679338553"><span class="hs-identifier hs-var">s_</span></a></span></span><span>  </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Alphabet
-</span><a href="#local-6989586621679338558"><span class="hs-identifier hs-var">a</span></a></span><span> </span><span class="annot"><span class="annottext">Alphabet -&gt; ShowedSymbol -&gt; Maybe Symbol
+</span><a href="#local-6989586621679337719"><span class="hs-identifier hs-var">m</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679337718"><span class="hs-identifier hs-var">q2</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><span id="line-57"></span><span>        </span><span class="annot"><a href="#local-6989586621679337728"><span class="hs-identifier hs-var">toQ</span></a></span><span> </span><span id="local-6989586621679337715"><span class="annot"><span class="annottext">Alphabet
+</span><a href="#local-6989586621679337715"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679337714"><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679337714"><span class="hs-identifier hs-var">q1</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679337713"><span class="annot"><span class="annottext">ShowedSymbol
+</span><a href="#local-6989586621679337713"><span class="hs-identifier hs-var">s</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="TuringMachine.SymbolOrMove.html#S"><span class="hs-identifier hs-type">S</span></a></span><span> </span><span id="local-6989586621679337712"><span class="annot"><span class="annottext">ShowedSymbol
+</span><a href="#local-6989586621679337712"><span class="hs-identifier hs-var">s'</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679337711"><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679337711"><span class="hs-identifier hs-var">q2</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-58"></span><span>            </span><span id="local-6989586621679337710"><span class="annot"><span class="annottext">Symbol
+</span><a href="#local-6989586621679337710"><span class="hs-identifier hs-var">s_</span></a></span></span><span>  </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Alphabet
+</span><a href="#local-6989586621679337715"><span class="hs-identifier hs-var">a</span></a></span><span> </span><span class="annot"><span class="annottext">Alphabet -&gt; ShowedSymbol -&gt; Maybe Symbol
 forall c k v (m :: * -&gt; *).
 (Indexable c k v, MonadFail m) =&gt;
 c -&gt; k -&gt; m v
 </span><a href="Containers.html#%21%3F"><span class="hs-operator hs-var">!?</span></a></span><span> </span><span class="annot"><span class="annottext">ShowedSymbol
-</span><a href="#local-6989586621679338556"><span class="hs-identifier hs-var">s</span></a></span><span>
-</span><span id="line-59"></span><span>            </span><span id="local-6989586621679338552"><span class="annot"><span class="annottext">Symbol
-</span><a href="#local-6989586621679338552"><span class="hs-identifier hs-var">s'_</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Alphabet
-</span><a href="#local-6989586621679338558"><span class="hs-identifier hs-var">a</span></a></span><span> </span><span class="annot"><span class="annottext">Alphabet -&gt; ShowedSymbol -&gt; Maybe Symbol
+</span><a href="#local-6989586621679337713"><span class="hs-identifier hs-var">s</span></a></span><span>
+</span><span id="line-59"></span><span>            </span><span id="local-6989586621679337709"><span class="annot"><span class="annottext">Symbol
+</span><a href="#local-6989586621679337709"><span class="hs-identifier hs-var">s'_</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Alphabet
+</span><a href="#local-6989586621679337715"><span class="hs-identifier hs-var">a</span></a></span><span> </span><span class="annot"><span class="annottext">Alphabet -&gt; ShowedSymbol -&gt; Maybe Symbol
 forall c k v (m :: * -&gt; *).
 (Indexable c k v, MonadFail m) =&gt;
 c -&gt; k -&gt; m v
 </span><a href="Containers.html#%21%3F"><span class="hs-operator hs-var">!?</span></a></span><span> </span><span class="annot"><span class="annottext">ShowedSymbol
-</span><a href="#local-6989586621679338555"><span class="hs-identifier hs-var">s'</span></a></span><span>
+</span><a href="#local-6989586621679337712"><span class="hs-identifier hs-var">s'</span></a></span><span>
 </span><span id="line-60"></span><span>            </span><span class="annot"><span class="annottext">Quadruple -&gt; Maybe Quadruple
 forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
 </span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">(</span><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679338557"><span class="hs-identifier hs-var">q1</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Symbol
-</span><a href="#local-6989586621679338553"><span class="hs-identifier hs-var">s_</span></a></span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Symbol -&gt; MoveOr Symbol
+</span><a href="#local-6989586621679337714"><span class="hs-identifier hs-var">q1</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Symbol
+</span><a href="#local-6989586621679337710"><span class="hs-identifier hs-var">s_</span></a></span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Symbol -&gt; MoveOr Symbol
 forall s. s -&gt; MoveOr s
 </span><a href="TuringMachine.SymbolOrMove.html#S"><span class="hs-identifier hs-var">S</span></a></span><span> </span><span class="annot"><span class="annottext">Symbol
-</span><a href="#local-6989586621679338552"><span class="hs-identifier hs-var">s'_</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679338554"><span class="hs-identifier hs-var">q2</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><a href="#local-6989586621679337709"><span class="hs-identifier hs-var">s'_</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679337711"><span class="hs-identifier hs-var">q2</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span>
 </span><span id="line-61"></span><span>
-</span><span id="line-62"></span><span id="local-6989586621679338699"><span class="annot"><a href="TuringMachine.Constructors.html#forSs"><span class="hs-identifier hs-type">forSs</span></a></span><span> </span><span class="hs-glyph">::</span><span>
-</span><span id="line-63"></span><span>    </span><span class="annot"><a href="TuringMachine.ShowedSymbol.html#ShowedSymbolClass"><span class="hs-identifier hs-type">ShowedSymbolClass</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679338699"><span class="hs-identifier hs-type">s</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span>
+</span><span id="line-62"></span><span id="local-6989586621679337856"><span class="annot"><a href="TuringMachine.Constructors.html#forSs"><span class="hs-identifier hs-type">forSs</span></a></span><span> </span><span class="hs-glyph">::</span><span>
+</span><span id="line-63"></span><span>    </span><span class="annot"><a href="TuringMachine.ShowedSymbol.html#ShowedSymbolClass"><span class="hs-identifier hs-type">ShowedSymbolClass</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679337856"><span class="hs-identifier hs-type">s</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span>
 </span><span id="line-64"></span><span>    </span><span class="hs-special">(</span><span class="annot"><a href="TuringMachine.ShowedSymbol.html#ShowedSymbol"><span class="hs-identifier hs-type">ShowedSymbol</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TuringMachine.html#TuringMachine"><span class="hs-identifier hs-type">TuringMachine</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span>
-</span><span id="line-65"></span><span>    </span><span class="hs-special">[</span><span class="annot"><a href="#local-6989586621679338699"><span class="hs-identifier hs-type">s</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span>
+</span><span id="line-65"></span><span>    </span><span class="hs-special">[</span><span class="annot"><a href="#local-6989586621679337856"><span class="hs-identifier hs-type">s</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span>
 </span><span id="line-66"></span><span>    </span><span class="annot"><a href="TuringMachine.html#TuringMachine"><span class="hs-identifier hs-type">TuringMachine</span></a></span></span><span>
 </span><span id="line-67"></span><span id="forSs"><span class="annot"><span class="annottext">forSs :: (ShowedSymbol -&gt; TuringMachine) -&gt; [s] -&gt; TuringMachine
-</span><a href="TuringMachine.Constructors.html#forSs"><span class="hs-identifier hs-var hs-var">forSs</span></a></span></span><span> </span><span id="local-6989586621679338551"><span class="annot"><span class="annottext">ShowedSymbol -&gt; TuringMachine
-</span><a href="#local-6989586621679338551"><span class="hs-identifier hs-var">sstm</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(TuringMachine -&gt; TuringMachine -&gt; TuringMachine)
+</span><a href="TuringMachine.Constructors.html#forSs"><span class="hs-identifier hs-var hs-var">forSs</span></a></span></span><span> </span><span id="local-6989586621679337708"><span class="annot"><span class="annottext">ShowedSymbol -&gt; TuringMachine
+</span><a href="#local-6989586621679337708"><span class="hs-identifier hs-var">sstm</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(TuringMachine -&gt; TuringMachine -&gt; TuringMachine)
 -&gt; TuringMachine -&gt; [TuringMachine] -&gt; TuringMachine
 forall (t :: * -&gt; *) a b.
 Foldable t =&gt;
@@ -185,7 +185,7 @@ forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
 -&gt; [ShowedSymbol] -&gt; [TuringMachine]
 forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
 </span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="annot"><span class="annottext">ShowedSymbol -&gt; TuringMachine
-</span><a href="#local-6989586621679338551"><span class="hs-identifier hs-var">sstm</span></a></span><span> </span><span class="annot"><span class="annottext">([ShowedSymbol] -&gt; [TuringMachine])
+</span><a href="#local-6989586621679337708"><span class="hs-identifier hs-var">sstm</span></a></span><span> </span><span class="annot"><span class="annottext">([ShowedSymbol] -&gt; [TuringMachine])
 -&gt; ([s] -&gt; [ShowedSymbol]) -&gt; [s] -&gt; [TuringMachine]
 forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
 </span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">[s] -&gt; [ShowedSymbol]
@@ -197,7 +197,7 @@ forall s. ShowedSymbolClass s =&gt; [s] -&gt; [ShowedSymbol]
 </span><a href="TuringMachine.Constructors.html#crash"><span class="hs-identifier hs-var hs-var">crash</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[LocalQuadruple] -&gt; TuringMachine
 </span><a href="TuringMachine.Constructors.html#makeStandartTM"><span class="hs-identifier hs-var">makeStandartTM</span></a></span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span>
 </span><span id="line-71"></span><span>
-</span><span id="line-72"></span><span id="local-6989586621679338547"><span class="annot"><a href="TuringMachine.Constructors.html#check"><span class="hs-identifier hs-type">check</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TuringMachine.ShowedSymbol.html#ShowedSymbolClass"><span class="hs-identifier hs-type">ShowedSymbolClass</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679338547"><span class="hs-identifier hs-type">s</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="#local-6989586621679338547"><span class="hs-identifier hs-type">s</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TuringMachine.html#TuringMachine"><span class="hs-identifier hs-type">TuringMachine</span></a></span></span><span>
+</span><span id="line-72"></span><span id="local-6989586621679337704"><span class="annot"><a href="TuringMachine.Constructors.html#check"><span class="hs-identifier hs-type">check</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TuringMachine.ShowedSymbol.html#ShowedSymbolClass"><span class="hs-identifier hs-type">ShowedSymbolClass</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679337704"><span class="hs-identifier hs-type">s</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="#local-6989586621679337704"><span class="hs-identifier hs-type">s</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TuringMachine.html#TuringMachine"><span class="hs-identifier hs-type">TuringMachine</span></a></span></span><span>
 </span><span id="line-73"></span><span id="check"><span class="annot"><span class="annottext">check :: [s] -&gt; TuringMachine
 </span><a href="TuringMachine.Constructors.html#check"><span class="hs-identifier hs-var hs-var">check</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(ShowedSymbol -&gt; TuringMachine) -&gt; [s] -&gt; TuringMachine
 forall s.
@@ -206,17 +206,17 @@ ShowedSymbolClass s =&gt;
 </span><a href="TuringMachine.Constructors.html#forSs"><span class="hs-identifier hs-var">forSs</span></a></span><span> </span><span class="annot"><span class="annottext">((ShowedSymbol -&gt; TuringMachine) -&gt; [s] -&gt; TuringMachine)
 -&gt; (ShowedSymbol -&gt; TuringMachine) -&gt; [s] -&gt; TuringMachine
 forall a b. (a -&gt; b) -&gt; a -&gt; b
-</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679338546"><span class="annot"><span class="annottext">ShowedSymbol
-</span><a href="#local-6989586621679338546"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">[LocalQuadruple] -&gt; TuringMachine
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679337703"><span class="annot"><span class="annottext">ShowedSymbol
+</span><a href="#local-6989586621679337703"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">[LocalQuadruple] -&gt; TuringMachine
 </span><a href="TuringMachine.Constructors.html#makeStandartTM"><span class="hs-identifier hs-var">makeStandartTM</span></a></span><span> </span><span class="hs-special">[</span><span class="hs-special">(</span><span class="annot"><span class="annottext">State
 </span><a href="TuringMachine.State.html#startState"><span class="hs-identifier hs-var">startState</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">ShowedSymbol
-</span><a href="#local-6989586621679338546"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">ShowedSymbol -&gt; MoveOr ShowedSymbol
+</span><a href="#local-6989586621679337703"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">ShowedSymbol -&gt; MoveOr ShowedSymbol
 forall s. s -&gt; MoveOr s
 </span><a href="TuringMachine.SymbolOrMove.html#S"><span class="hs-identifier hs-var">S</span></a></span><span> </span><span class="annot"><span class="annottext">ShowedSymbol
-</span><a href="#local-6989586621679338546"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679337703"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">State
 </span><a href="TuringMachine.State.html#finalState"><span class="hs-identifier hs-var">finalState</span></a></span><span class="hs-special">)</span><span class="hs-special">]</span><span>
 </span><span id="line-74"></span><span>
-</span><span id="line-75"></span><span id="local-6989586621679338543"><span class="annot"><a href="TuringMachine.Constructors.html#die"><span class="hs-identifier hs-type">die</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TuringMachine.ShowedSymbol.html#ShowedSymbolClass"><span class="hs-identifier hs-type">ShowedSymbolClass</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679338543"><span class="hs-identifier hs-type">s</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="#local-6989586621679338543"><span class="hs-identifier hs-type">s</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TuringMachine.html#TuringMachine"><span class="hs-identifier hs-type">TuringMachine</span></a></span></span><span>
+</span><span id="line-75"></span><span id="local-6989586621679337700"><span class="annot"><a href="TuringMachine.Constructors.html#die"><span class="hs-identifier hs-type">die</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TuringMachine.ShowedSymbol.html#ShowedSymbolClass"><span class="hs-identifier hs-type">ShowedSymbolClass</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679337700"><span class="hs-identifier hs-type">s</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="#local-6989586621679337700"><span class="hs-identifier hs-type">s</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TuringMachine.html#TuringMachine"><span class="hs-identifier hs-type">TuringMachine</span></a></span></span><span>
 </span><span id="line-76"></span><span id="die"><span class="annot"><span class="annottext">die :: [s] -&gt; TuringMachine
 </span><a href="TuringMachine.Constructors.html#die"><span class="hs-identifier hs-var hs-var">die</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(ShowedSymbol -&gt; TuringMachine) -&gt; [s] -&gt; TuringMachine
 forall s.
@@ -225,82 +225,82 @@ ShowedSymbolClass s =&gt;
 </span><a href="TuringMachine.Constructors.html#forSs"><span class="hs-identifier hs-var">forSs</span></a></span><span> </span><span class="annot"><span class="annottext">((ShowedSymbol -&gt; TuringMachine) -&gt; [s] -&gt; TuringMachine)
 -&gt; (ShowedSymbol -&gt; TuringMachine) -&gt; [s] -&gt; TuringMachine
 forall a b. (a -&gt; b) -&gt; a -&gt; b
-</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679338542"><span class="annot"><span class="annottext">ShowedSymbol
-</span><a href="#local-6989586621679338542"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">[LocalQuadruple] -&gt; TuringMachine
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679337699"><span class="annot"><span class="annottext">ShowedSymbol
+</span><a href="#local-6989586621679337699"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">[LocalQuadruple] -&gt; TuringMachine
 </span><a href="TuringMachine.Constructors.html#makeStandartTM"><span class="hs-identifier hs-var">makeStandartTM</span></a></span><span> </span><span class="hs-special">[</span><span class="hs-special">(</span><span class="annot"><span class="annottext">State
 </span><a href="TuringMachine.State.html#startState"><span class="hs-identifier hs-var">startState</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">ShowedSymbol
-</span><a href="#local-6989586621679338542"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">ShowedSymbol -&gt; MoveOr ShowedSymbol
+</span><a href="#local-6989586621679337699"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">ShowedSymbol -&gt; MoveOr ShowedSymbol
 forall s. s -&gt; MoveOr s
 </span><a href="TuringMachine.SymbolOrMove.html#S"><span class="hs-identifier hs-var">S</span></a></span><span> </span><span class="annot"><span class="annottext">ShowedSymbol
-</span><a href="#local-6989586621679338542"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679337699"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">State
 </span><a href="TuringMachine.State.html#startState"><span class="hs-identifier hs-var">startState</span></a></span><span class="hs-special">)</span><span class="hs-special">]</span><span>
 </span><span id="line-77"></span><span>
-</span><span id="line-78"></span><span id="local-6989586621679338606"><span class="annot"><a href="TuringMachine.Constructors.html#move"><span class="hs-identifier hs-type">move</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TuringMachine.ShowedSymbol.html#ShowedSymbolClass"><span class="hs-identifier hs-type">ShowedSymbolClass</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679338606"><span class="hs-identifier hs-type">s</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><a href="TuringMachine.Move.html#Move"><span class="hs-identifier hs-type">Move</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="#local-6989586621679338606"><span class="hs-identifier hs-type">s</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TuringMachine.html#TuringMachine"><span class="hs-identifier hs-type">TuringMachine</span></a></span></span><span>
+</span><span id="line-78"></span><span id="local-6989586621679337763"><span class="annot"><a href="TuringMachine.Constructors.html#move"><span class="hs-identifier hs-type">move</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TuringMachine.ShowedSymbol.html#ShowedSymbolClass"><span class="hs-identifier hs-type">ShowedSymbolClass</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679337763"><span class="hs-identifier hs-type">s</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><a href="TuringMachine.Move.html#Move"><span class="hs-identifier hs-type">Move</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="#local-6989586621679337763"><span class="hs-identifier hs-type">s</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TuringMachine.html#TuringMachine"><span class="hs-identifier hs-type">TuringMachine</span></a></span></span><span>
 </span><span id="line-79"></span><span id="move"><span class="annot"><span class="annottext">move :: Move -&gt; [s] -&gt; TuringMachine
-</span><a href="TuringMachine.Constructors.html#move"><span class="hs-identifier hs-var hs-var">move</span></a></span></span><span> </span><span id="local-6989586621679338541"><span class="annot"><span class="annottext">Move
-</span><a href="#local-6989586621679338541"><span class="hs-identifier hs-var">m</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(ShowedSymbol -&gt; TuringMachine) -&gt; [s] -&gt; TuringMachine
+</span><a href="TuringMachine.Constructors.html#move"><span class="hs-identifier hs-var hs-var">move</span></a></span></span><span> </span><span id="local-6989586621679337698"><span class="annot"><span class="annottext">Move
+</span><a href="#local-6989586621679337698"><span class="hs-identifier hs-var">m</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(ShowedSymbol -&gt; TuringMachine) -&gt; [s] -&gt; TuringMachine
 forall s.
 ShowedSymbolClass s =&gt;
 (ShowedSymbol -&gt; TuringMachine) -&gt; [s] -&gt; TuringMachine
 </span><a href="TuringMachine.Constructors.html#forSs"><span class="hs-identifier hs-var">forSs</span></a></span><span> </span><span class="annot"><span class="annottext">((ShowedSymbol -&gt; TuringMachine) -&gt; [s] -&gt; TuringMachine)
 -&gt; (ShowedSymbol -&gt; TuringMachine) -&gt; [s] -&gt; TuringMachine
 forall a b. (a -&gt; b) -&gt; a -&gt; b
-</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679338540"><span class="annot"><span class="annottext">ShowedSymbol
-</span><a href="#local-6989586621679338540"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">[LocalQuadruple] -&gt; TuringMachine
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679337697"><span class="annot"><span class="annottext">ShowedSymbol
+</span><a href="#local-6989586621679337697"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">[LocalQuadruple] -&gt; TuringMachine
 </span><a href="TuringMachine.Constructors.html#makeStandartTM"><span class="hs-identifier hs-var">makeStandartTM</span></a></span><span> </span><span class="hs-special">[</span><span class="hs-special">(</span><span class="annot"><span class="annottext">State
 </span><a href="TuringMachine.State.html#startState"><span class="hs-identifier hs-var">startState</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">ShowedSymbol
-</span><a href="#local-6989586621679338540"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Move -&gt; MoveOr ShowedSymbol
+</span><a href="#local-6989586621679337697"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Move -&gt; MoveOr ShowedSymbol
 forall s. Move -&gt; MoveOr s
 </span><a href="TuringMachine.SymbolOrMove.html#M"><span class="hs-identifier hs-var">M</span></a></span><span> </span><span class="annot"><span class="annottext">Move
-</span><a href="#local-6989586621679338541"><span class="hs-identifier hs-var">m</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679337698"><span class="hs-identifier hs-var">m</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">State
 </span><a href="TuringMachine.State.html#finalState"><span class="hs-identifier hs-var">finalState</span></a></span><span class="hs-special">)</span><span class="hs-special">]</span><span>
 </span><span id="line-80"></span><span>
-</span><span id="line-81"></span><span id="local-6989586621679338539"><span class="annot"><a href="TuringMachine.Constructors.html#moveInf"><span class="hs-identifier hs-type">moveInf</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TuringMachine.ShowedSymbol.html#ShowedSymbolClass"><span class="hs-identifier hs-type">ShowedSymbolClass</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679338539"><span class="hs-identifier hs-type">s</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><a href="TuringMachine.Move.html#Move"><span class="hs-identifier hs-type">Move</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="#local-6989586621679338539"><span class="hs-identifier hs-type">s</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TuringMachine.html#TuringMachine"><span class="hs-identifier hs-type">TuringMachine</span></a></span></span><span>
+</span><span id="line-81"></span><span id="local-6989586621679337696"><span class="annot"><a href="TuringMachine.Constructors.html#moveInf"><span class="hs-identifier hs-type">moveInf</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TuringMachine.ShowedSymbol.html#ShowedSymbolClass"><span class="hs-identifier hs-type">ShowedSymbolClass</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679337696"><span class="hs-identifier hs-type">s</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><a href="TuringMachine.Move.html#Move"><span class="hs-identifier hs-type">Move</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="#local-6989586621679337696"><span class="hs-identifier hs-type">s</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TuringMachine.html#TuringMachine"><span class="hs-identifier hs-type">TuringMachine</span></a></span></span><span>
 </span><span id="line-82"></span><span id="moveInf"><span class="annot"><span class="annottext">moveInf :: Move -&gt; [s] -&gt; TuringMachine
-</span><a href="TuringMachine.Constructors.html#moveInf"><span class="hs-identifier hs-var hs-var">moveInf</span></a></span></span><span> </span><span id="local-6989586621679338538"><span class="annot"><span class="annottext">Move
-</span><a href="#local-6989586621679338538"><span class="hs-identifier hs-var">m</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(ShowedSymbol -&gt; TuringMachine) -&gt; [s] -&gt; TuringMachine
+</span><a href="TuringMachine.Constructors.html#moveInf"><span class="hs-identifier hs-var hs-var">moveInf</span></a></span></span><span> </span><span id="local-6989586621679337695"><span class="annot"><span class="annottext">Move
+</span><a href="#local-6989586621679337695"><span class="hs-identifier hs-var">m</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(ShowedSymbol -&gt; TuringMachine) -&gt; [s] -&gt; TuringMachine
 forall s.
 ShowedSymbolClass s =&gt;
 (ShowedSymbol -&gt; TuringMachine) -&gt; [s] -&gt; TuringMachine
 </span><a href="TuringMachine.Constructors.html#forSs"><span class="hs-identifier hs-var">forSs</span></a></span><span> </span><span class="annot"><span class="annottext">((ShowedSymbol -&gt; TuringMachine) -&gt; [s] -&gt; TuringMachine)
 -&gt; (ShowedSymbol -&gt; TuringMachine) -&gt; [s] -&gt; TuringMachine
 forall a b. (a -&gt; b) -&gt; a -&gt; b
-</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679338537"><span class="annot"><span class="annottext">ShowedSymbol
-</span><a href="#local-6989586621679338537"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">[LocalQuadruple] -&gt; TuringMachine
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679337694"><span class="annot"><span class="annottext">ShowedSymbol
+</span><a href="#local-6989586621679337694"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">[LocalQuadruple] -&gt; TuringMachine
 </span><a href="TuringMachine.Constructors.html#makeStandartTM"><span class="hs-identifier hs-var">makeStandartTM</span></a></span><span> </span><span class="hs-special">[</span><span class="hs-special">(</span><span class="annot"><span class="annottext">State
 </span><a href="TuringMachine.State.html#startState"><span class="hs-identifier hs-var">startState</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">ShowedSymbol
-</span><a href="#local-6989586621679338537"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Move -&gt; MoveOr ShowedSymbol
+</span><a href="#local-6989586621679337694"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Move -&gt; MoveOr ShowedSymbol
 forall s. Move -&gt; MoveOr s
 </span><a href="TuringMachine.SymbolOrMove.html#M"><span class="hs-identifier hs-var">M</span></a></span><span> </span><span class="annot"><span class="annottext">Move
-</span><a href="#local-6989586621679338538"><span class="hs-identifier hs-var">m</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679337695"><span class="hs-identifier hs-var">m</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">State
 </span><a href="TuringMachine.State.html#startState"><span class="hs-identifier hs-var">startState</span></a></span><span class="hs-special">)</span><span class="hs-special">]</span><span>
 </span><span id="line-83"></span><span>
-</span><span id="line-84"></span><span id="local-6989586621679338607"><span class="annot"><a href="TuringMachine.Constructors.html#rewrite"><span class="hs-identifier hs-type">rewrite</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TuringMachine.ShowedSymbol.html#ShowedSymbolClass"><span class="hs-identifier hs-type">ShowedSymbolClass</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679338607"><span class="hs-identifier hs-type">s</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="#local-6989586621679338607"><span class="hs-identifier hs-type">s</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TuringMachine.ShowedSymbol.html#ShowedSymbol"><span class="hs-identifier hs-type">ShowedSymbol</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TuringMachine.html#TuringMachine"><span class="hs-identifier hs-type">TuringMachine</span></a></span></span><span>
+</span><span id="line-84"></span><span id="local-6989586621679337764"><span class="annot"><a href="TuringMachine.Constructors.html#rewrite"><span class="hs-identifier hs-type">rewrite</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TuringMachine.ShowedSymbol.html#ShowedSymbolClass"><span class="hs-identifier hs-type">ShowedSymbolClass</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679337764"><span class="hs-identifier hs-type">s</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="#local-6989586621679337764"><span class="hs-identifier hs-type">s</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TuringMachine.ShowedSymbol.html#ShowedSymbol"><span class="hs-identifier hs-type">ShowedSymbol</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TuringMachine.html#TuringMachine"><span class="hs-identifier hs-type">TuringMachine</span></a></span></span><span>
 </span><span id="line-85"></span><span id="rewrite"><span class="annot"><span class="annottext">rewrite :: [s] -&gt; ShowedSymbol -&gt; TuringMachine
-</span><a href="TuringMachine.Constructors.html#rewrite"><span class="hs-identifier hs-var hs-var">rewrite</span></a></span></span><span> </span><span id="local-6989586621679338536"><span class="annot"><span class="annottext">[s]
-</span><a href="#local-6989586621679338536"><span class="hs-identifier hs-var">ss</span></a></span></span><span> </span><span id="local-6989586621679338535"><span class="annot"><span class="annottext">ShowedSymbol
-</span><a href="#local-6989586621679338535"><span class="hs-identifier hs-var">s'</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><a href="TuringMachine.Constructors.html#rewrite"><span class="hs-identifier hs-var hs-var">rewrite</span></a></span></span><span> </span><span id="local-6989586621679337693"><span class="annot"><span class="annottext">[s]
+</span><a href="#local-6989586621679337693"><span class="hs-identifier hs-var">ss</span></a></span></span><span> </span><span id="local-6989586621679337692"><span class="annot"><span class="annottext">ShowedSymbol
+</span><a href="#local-6989586621679337692"><span class="hs-identifier hs-var">s'</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
 </span><span id="line-86"></span><span>    </span><span class="annot"><span class="annottext">(ShowedSymbol -&gt; TuringMachine) -&gt; [s] -&gt; TuringMachine
 forall s.
 ShowedSymbolClass s =&gt;
 (ShowedSymbol -&gt; TuringMachine) -&gt; [s] -&gt; TuringMachine
-</span><a href="TuringMachine.Constructors.html#forSs"><span class="hs-identifier hs-var">forSs</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679338534"><span class="annot"><span class="annottext">ShowedSymbol
-</span><a href="#local-6989586621679338534"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">[LocalQuadruple] -&gt; TuringMachine
+</span><a href="TuringMachine.Constructors.html#forSs"><span class="hs-identifier hs-var">forSs</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679337691"><span class="annot"><span class="annottext">ShowedSymbol
+</span><a href="#local-6989586621679337691"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">[LocalQuadruple] -&gt; TuringMachine
 </span><a href="TuringMachine.Constructors.html#makeStandartTM"><span class="hs-identifier hs-var">makeStandartTM</span></a></span><span> </span><span class="hs-special">[</span><span class="hs-special">(</span><span class="annot"><span class="annottext">State
 </span><a href="TuringMachine.State.html#startState"><span class="hs-identifier hs-var">startState</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">ShowedSymbol
-</span><a href="#local-6989586621679338534"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">ShowedSymbol -&gt; MoveOr ShowedSymbol
+</span><a href="#local-6989586621679337691"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">ShowedSymbol -&gt; MoveOr ShowedSymbol
 forall s. s -&gt; MoveOr s
 </span><a href="TuringMachine.SymbolOrMove.html#S"><span class="hs-identifier hs-var">S</span></a></span><span> </span><span class="annot"><span class="annottext">ShowedSymbol
-</span><a href="#local-6989586621679338535"><span class="hs-identifier hs-var">s'</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679337692"><span class="hs-identifier hs-var">s'</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">State
 </span><a href="TuringMachine.State.html#finalState"><span class="hs-identifier hs-var">finalState</span></a></span><span class="hs-special">)</span><span class="hs-special">]</span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[s]
-</span><a href="#local-6989586621679338536"><span class="hs-identifier hs-var">ss</span></a></span><span>
+</span><a href="#local-6989586621679337693"><span class="hs-identifier hs-var">ss</span></a></span><span>
 </span><span id="line-87"></span><span>
 </span><span id="line-88"></span><span class="annot"><a href="TuringMachine.Constructors.html#%2B%5E%3E"><span class="hs-operator hs-type">(+^&gt;)</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TuringMachine.html#TuringMachine"><span class="hs-identifier hs-type">TuringMachine</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TuringMachine.html#TuringMachine"><span class="hs-identifier hs-type">TuringMachine</span></a></span><span>
-</span><span id="line-89"></span><span id="local-6989586621679338533"><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679338533"><span class="hs-identifier hs-var">lbl</span></a></span></span><span> </span><span id="%2B%5E%3E"><span class="annot"><span class="annottext">+^&gt; :: String -&gt; TuringMachine -&gt; TuringMachine
-</span><a href="TuringMachine.Constructors.html#%2B%5E%3E"><span class="hs-operator hs-var hs-var">+^&gt;</span></a></span></span><span> </span><span id="local-6989586621679338532"><span class="annot"><span class="annottext">TuringMachine
-</span><a href="#local-6989586621679338532"><span class="hs-identifier hs-var">tm</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">TuringMachine
-</span><a href="#local-6989586621679338532"><span class="hs-identifier hs-var">tm</span></a></span><span> </span><span class="annot"><span class="annottext">TuringMachine -&gt; (TuringMachine -&gt; TuringMachine) -&gt; TuringMachine
+</span><span id="line-89"></span><span id="local-6989586621679337690"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679337690"><span class="hs-identifier hs-var">lbl</span></a></span></span><span> </span><span id="%2B%5E%3E"><span class="annot"><span class="annottext">+^&gt; :: String -&gt; TuringMachine -&gt; TuringMachine
+</span><a href="TuringMachine.Constructors.html#%2B%5E%3E"><span class="hs-operator hs-var hs-var">+^&gt;</span></a></span></span><span> </span><span id="local-6989586621679337689"><span class="annot"><span class="annottext">TuringMachine
+</span><a href="#local-6989586621679337689"><span class="hs-identifier hs-var">tm</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">TuringMachine
+</span><a href="#local-6989586621679337689"><span class="hs-identifier hs-var">tm</span></a></span><span> </span><span class="annot"><span class="annottext">TuringMachine -&gt; (TuringMachine -&gt; TuringMachine) -&gt; TuringMachine
 forall a b. a -&gt; (a -&gt; b) -&gt; b
 </span><span class="hs-operator hs-var">&amp;</span></span><span> </span><span class="annot"><span class="annottext">(PrismMap String State -&gt; Identity (PrismMap String State))
 -&gt; TuringMachine -&gt; Identity TuringMachine
@@ -310,15 +310,15 @@ Lens' TuringMachine (PrismMap String State)
 -&gt; (String, State) -&gt; TuringMachine -&gt; TuringMachine
 forall c v s t. Insertable c v =&gt; ASetter s t c c -&gt; v -&gt; s -&gt; t
 </span><a href="Containers.html#%3C%2B~"><span class="hs-operator hs-var">&lt;+~</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679338533"><span class="hs-identifier hs-var">lbl</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679337690"><span class="hs-identifier hs-var">lbl</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">State
 </span><a href="TuringMachine.State.html#startState"><span class="hs-identifier hs-var">startState</span></a></span><span class="hs-special">)</span><span>
 </span><span id="line-90"></span><span>
 </span><span id="line-91"></span><span class="annot"><a href="TuringMachine.Constructors.html#%3E%2B%5E"><span class="hs-operator hs-type">(&gt;+^)</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TuringMachine.html#TuringMachine"><span class="hs-identifier hs-type">TuringMachine</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TuringMachine.html#TuringMachine"><span class="hs-identifier hs-type">TuringMachine</span></a></span><span>
-</span><span id="line-92"></span><span id="local-6989586621679338528"><span class="annot"><span class="annottext">TuringMachine
-</span><a href="#local-6989586621679338528"><span class="hs-identifier hs-var">tm</span></a></span></span><span> </span><span id="%3E%2B%5E"><span class="annot"><span class="annottext">&gt;+^ :: TuringMachine -&gt; String -&gt; TuringMachine
-</span><a href="TuringMachine.Constructors.html#%3E%2B%5E"><span class="hs-operator hs-var hs-var">&gt;+^</span></a></span></span><span> </span><span id="local-6989586621679338527"><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679338527"><span class="hs-identifier hs-var">lbl</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">TuringMachine
-</span><a href="#local-6989586621679338528"><span class="hs-identifier hs-var">tm</span></a></span><span> </span><span class="annot"><span class="annottext">TuringMachine -&gt; (TuringMachine -&gt; TuringMachine) -&gt; TuringMachine
+</span><span id="line-92"></span><span id="local-6989586621679337685"><span class="annot"><span class="annottext">TuringMachine
+</span><a href="#local-6989586621679337685"><span class="hs-identifier hs-var">tm</span></a></span></span><span> </span><span id="%3E%2B%5E"><span class="annot"><span class="annottext">&gt;+^ :: TuringMachine -&gt; String -&gt; TuringMachine
+</span><a href="TuringMachine.Constructors.html#%3E%2B%5E"><span class="hs-operator hs-var hs-var">&gt;+^</span></a></span></span><span> </span><span id="local-6989586621679337684"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679337684"><span class="hs-identifier hs-var">lbl</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">TuringMachine
+</span><a href="#local-6989586621679337685"><span class="hs-identifier hs-var">tm</span></a></span><span> </span><span class="annot"><span class="annottext">TuringMachine -&gt; (TuringMachine -&gt; TuringMachine) -&gt; TuringMachine
 forall a b. a -&gt; (a -&gt; b) -&gt; b
 </span><span class="hs-operator hs-var">&amp;</span></span><span> </span><span class="annot"><span class="annottext">(PrismMap String State -&gt; Identity (PrismMap String State))
 -&gt; TuringMachine -&gt; Identity TuringMachine
@@ -328,15 +328,15 @@ Lens' TuringMachine (PrismMap String State)
 -&gt; (String, State) -&gt; TuringMachine -&gt; TuringMachine
 forall c v s t. Insertable c v =&gt; ASetter s t c c -&gt; v -&gt; s -&gt; t
 </span><a href="Containers.html#%3C%2B~"><span class="hs-operator hs-var">&lt;+~</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679338527"><span class="hs-identifier hs-var">lbl</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679337684"><span class="hs-identifier hs-var">lbl</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">State
 </span><a href="TuringMachine.State.html#finalState"><span class="hs-identifier hs-var">finalState</span></a></span><span class="hs-special">)</span><span>
 </span><span id="line-93"></span><span>
 </span><span id="line-94"></span><span class="annot"><a href="TuringMachine.Constructors.html#-%5E"><span class="hs-operator hs-type">(-^)</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TuringMachine.html#TuringMachine"><span class="hs-identifier hs-type">TuringMachine</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TuringMachine.html#TuringMachine"><span class="hs-identifier hs-type">TuringMachine</span></a></span><span>
-</span><span id="line-95"></span><span id="local-6989586621679338526"><span class="annot"><span class="annottext">TuringMachine
-</span><a href="#local-6989586621679338526"><span class="hs-identifier hs-var">tm</span></a></span></span><span> </span><span id="-%5E"><span class="annot"><span class="annottext">-^ :: TuringMachine -&gt; String -&gt; TuringMachine
-</span><a href="TuringMachine.Constructors.html#-%5E"><span class="hs-operator hs-var hs-var">-^</span></a></span></span><span> </span><span id="local-6989586621679338525"><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679338525"><span class="hs-identifier hs-var">lbl</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">TuringMachine
-</span><a href="#local-6989586621679338526"><span class="hs-identifier hs-var">tm</span></a></span><span> </span><span class="annot"><span class="annottext">TuringMachine -&gt; (TuringMachine -&gt; TuringMachine) -&gt; TuringMachine
+</span><span id="line-95"></span><span id="local-6989586621679337683"><span class="annot"><span class="annottext">TuringMachine
+</span><a href="#local-6989586621679337683"><span class="hs-identifier hs-var">tm</span></a></span></span><span> </span><span id="-%5E"><span class="annot"><span class="annottext">-^ :: TuringMachine -&gt; String -&gt; TuringMachine
+</span><a href="TuringMachine.Constructors.html#-%5E"><span class="hs-operator hs-var hs-var">-^</span></a></span></span><span> </span><span id="local-6989586621679337682"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679337682"><span class="hs-identifier hs-var">lbl</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">TuringMachine
+</span><a href="#local-6989586621679337683"><span class="hs-identifier hs-var">tm</span></a></span><span> </span><span class="annot"><span class="annottext">TuringMachine -&gt; (TuringMachine -&gt; TuringMachine) -&gt; TuringMachine
 forall a b. a -&gt; (a -&gt; b) -&gt; b
 </span><span class="hs-operator hs-var">&amp;</span></span><span> </span><span class="annot"><span class="annottext">(PrismMap String State -&gt; Identity (PrismMap String State))
 -&gt; TuringMachine -&gt; Identity TuringMachine
@@ -350,7 +350,7 @@ forall s t a b. ASetter s t a b -&gt; (a -&gt; b) -&gt; s -&gt; t
 </span><span class="hs-operator hs-var">%~</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">PrismMap String State -&gt; String -&gt; PrismMap String State
 forall c v. Deletable c v =&gt; c -&gt; v -&gt; c
 </span><a href="Containers.html#%3C%5C"><span class="hs-operator hs-var">&lt;\</span></a></span><span> </span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679338525"><span class="hs-identifier hs-var">lbl</span></a></span><span class="hs-special">)</span><span>
+</span><a href="#local-6989586621679337682"><span class="hs-identifier hs-var">lbl</span></a></span><span class="hs-special">)</span><span>
 </span><span id="line-96"></span><span>
 </span><span id="line-97"></span><span class="annot"><a href="TuringMachine.Constructors.html#makeTMop"><span class="hs-identifier hs-type">makeTMop</span></a></span><span> </span><span class="hs-glyph">::</span><span>
 </span><span id="line-98"></span><span>    </span><span class="annot"><a href="TuringMachine.Constructors.html#LocalState"><span class="hs-identifier hs-type">LocalState</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span>
@@ -358,8 +358,8 @@ forall c v. Deletable c v =&gt; c -&gt; v -&gt; c
 </span><span id="line-100"></span><span>    </span><span class="annot"><a href="TuringMachine.html#TuringMachine"><span class="hs-identifier hs-type">TuringMachine</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span>
 </span><span id="line-101"></span><span>    </span><span class="annot"><a href="TuringMachine.html#TuringMachine"><span class="hs-identifier hs-type">TuringMachine</span></a></span><span>
 </span><span id="line-102"></span><span id="makeTMop"><span class="annot"><span class="annottext">makeTMop :: LocalState () -&gt; TuringMachine -&gt; TuringMachine -&gt; TuringMachine
-</span><a href="TuringMachine.Constructors.html#makeTMop"><span class="hs-identifier hs-var hs-var">makeTMop</span></a></span></span><span> </span><span id="local-6989586621679338522"><span class="annot"><span class="annottext">LocalState ()
-</span><a href="#local-6989586621679338522"><span class="hs-identifier hs-var">mainAction</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">((TuringMachine, TuringMachine) -&gt; TuringMachine)
+</span><a href="TuringMachine.Constructors.html#makeTMop"><span class="hs-identifier hs-var hs-var">makeTMop</span></a></span></span><span> </span><span id="local-6989586621679337679"><span class="annot"><span class="annottext">LocalState ()
+</span><a href="#local-6989586621679337679"><span class="hs-identifier hs-var">mainAction</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">((TuringMachine, TuringMachine) -&gt; TuringMachine)
 -&gt; TuringMachine -&gt; TuringMachine -&gt; TuringMachine
 forall a b c. ((a, b) -&gt; c) -&gt; a -&gt; b -&gt; c
 </span><span class="hs-identifier hs-var">curry</span></span><span> </span><span class="annot"><span class="annottext">(((TuringMachine, TuringMachine) -&gt; TuringMachine)
@@ -380,26 +380,26 @@ forall s a. State s a -&gt; s -&gt; a
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-keyword">do</span><span>
 </span><span id="line-103"></span><span>    </span><span class="annot"><span class="annottext">LocalState ()
-</span><a href="#local-6989586621679338522"><span class="hs-identifier hs-var">mainAction</span></a></span><span>
-</span><span id="line-104"></span><span>    </span><span id="local-6989586621679338519"><span class="annot"><span class="annottext">PrismMap String State
-</span><a href="#local-6989586621679338519"><span class="hs-identifier hs-var">newLS</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">StateT
+</span><a href="#local-6989586621679337679"><span class="hs-identifier hs-var">mainAction</span></a></span><span>
+</span><span id="line-104"></span><span>    </span><span id="local-6989586621679337676"><span class="annot"><span class="annottext">PrismMap String State
+</span><a href="#local-6989586621679337676"><span class="hs-identifier hs-var">newLS</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">StateT
   (TuringMachine, TuringMachine) Identity (PrismMap String State)
-</span><a href="#local-6989586621679338518"><span class="hs-identifier hs-var">updateLabeledStates</span></a></span><span>
-</span><span id="line-105"></span><span>    </span><span id="local-6989586621679338517"><span class="annot"><span class="annottext">Alphabet
-</span><a href="#local-6989586621679338517"><span class="hs-identifier hs-var">newA</span></a></span></span><span>  </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">StateT (TuringMachine, TuringMachine) Identity Alphabet
-</span><a href="#local-6989586621679338516"><span class="hs-identifier hs-var">updateAlphabet</span></a></span><span>
+</span><a href="#local-6989586621679337675"><span class="hs-identifier hs-var">updateLabeledStates</span></a></span><span>
+</span><span id="line-105"></span><span>    </span><span id="local-6989586621679337674"><span class="annot"><span class="annottext">Alphabet
+</span><a href="#local-6989586621679337674"><span class="hs-identifier hs-var">newA</span></a></span></span><span>  </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">StateT (TuringMachine, TuringMachine) Identity Alphabet
+</span><a href="#local-6989586621679337673"><span class="hs-identifier hs-var">updateAlphabet</span></a></span><span>
 </span><span id="line-106"></span><span>    </span><span class="annot"><span class="annottext">PrismMap String State
 -&gt; Alphabet -&gt; State (TuringMachine, TuringMachine) TuringMachine
-</span><a href="#local-6989586621679338515"><span class="hs-identifier hs-var">unionTMs</span></a></span><span> </span><span class="annot"><span class="annottext">PrismMap String State
-</span><a href="#local-6989586621679338519"><span class="hs-identifier hs-var">newLS</span></a></span><span> </span><span class="annot"><span class="annottext">Alphabet
-</span><a href="#local-6989586621679338517"><span class="hs-identifier hs-var">newA</span></a></span><span>
+</span><a href="#local-6989586621679337672"><span class="hs-identifier hs-var">unionTMs</span></a></span><span> </span><span class="annot"><span class="annottext">PrismMap String State
+</span><a href="#local-6989586621679337676"><span class="hs-identifier hs-var">newLS</span></a></span><span> </span><span class="annot"><span class="annottext">Alphabet
+</span><a href="#local-6989586621679337674"><span class="hs-identifier hs-var">newA</span></a></span><span>
 </span><span id="line-107"></span><span>      </span><span class="hs-keyword">where</span><span>
-</span><span id="line-108"></span><span>        </span><span id="local-6989586621679338518"><span class="annot"><span class="annottext">updateLabeledStates :: StateT
+</span><span id="line-108"></span><span>        </span><span id="local-6989586621679337675"><span class="annot"><span class="annottext">updateLabeledStates :: StateT
   (TuringMachine, TuringMachine) Identity (PrismMap String State)
-</span><a href="#local-6989586621679338518"><span class="hs-identifier hs-var hs-var">updateLabeledStates</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
-</span><span id="line-109"></span><span>            </span><span class="hs-special">(</span><span id="local-6989586621679338514"><span class="annot"><span class="annottext">PrismMap String State
-</span><a href="#local-6989586621679338514"><span class="hs-identifier hs-var">ls1</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679338513"><span class="annot"><span class="annottext">PrismMap String State
-</span><a href="#local-6989586621679338513"><span class="hs-identifier hs-var">ls2</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">((TuringMachine, TuringMachine)
+</span><a href="#local-6989586621679337675"><span class="hs-identifier hs-var hs-var">updateLabeledStates</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-109"></span><span>            </span><span class="hs-special">(</span><span id="local-6989586621679337671"><span class="annot"><span class="annottext">PrismMap String State
+</span><a href="#local-6989586621679337671"><span class="hs-identifier hs-var">ls1</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679337670"><span class="annot"><span class="annottext">PrismMap String State
+</span><a href="#local-6989586621679337670"><span class="hs-identifier hs-var">ls2</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">((TuringMachine, TuringMachine)
  -&gt; (PrismMap String State, PrismMap String State))
 -&gt; StateT
      (TuringMachine, TuringMachine)
@@ -440,8 +440,8 @@ forall s (m :: * -&gt; *) a. MonadReader s m =&gt; Getting a s a -&gt; m a
   (PrismMap String State) TuringMachine (PrismMap String State)
 Lens' TuringMachine (PrismMap String State)
 </span><a href="TuringMachine.html#labeledStates"><span class="hs-identifier hs-var">labeledStates</span></a></span><span>
-</span><span id="line-110"></span><span>            </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679338509"><span class="annot"><span class="annottext">sharedLabels :: [(String, (State, State))]
-</span><a href="#local-6989586621679338509"><span class="hs-identifier hs-var hs-var">sharedLabels</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Map String (State, State) -&gt; [(String, (State, State))]
+</span><span id="line-110"></span><span>            </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679337666"><span class="annot"><span class="annottext">sharedLabels :: [(String, (State, State))]
+</span><a href="#local-6989586621679337666"><span class="hs-identifier hs-var hs-var">sharedLabels</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Map String (State, State) -&gt; [(String, (State, State))]
 forall c v. Listable c v =&gt; c -&gt; [v]
 </span><a href="Containers.html#toList"><span class="hs-identifier hs-var">toList</span></a></span><span> </span><span class="annot"><span class="annottext">(Map String (State, State) -&gt; [(String, (State, State))])
 -&gt; Map String (State, State) -&gt; [(String, (State, State))]
@@ -457,23 +457,23 @@ Ord k =&gt;
 </span><span class="hs-identifier hs-var">intersectionWith</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">,</span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">PrismMap String State -&gt; Map String State
 forall k a. PrismMap k a -&gt; Map k a
 </span><a href="Containers.PrismMap.html#toMap"><span class="hs-identifier hs-var">toMap</span></a></span><span> </span><span class="annot"><span class="annottext">PrismMap String State
-</span><a href="#local-6989586621679338514"><span class="hs-identifier hs-var">ls1</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">PrismMap String State -&gt; Map String State
+</span><a href="#local-6989586621679337671"><span class="hs-identifier hs-var">ls1</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">PrismMap String State -&gt; Map String State
 forall k a. PrismMap k a -&gt; Map k a
 </span><a href="Containers.PrismMap.html#toMap"><span class="hs-identifier hs-var">toMap</span></a></span><span> </span><span class="annot"><span class="annottext">PrismMap String State
-</span><a href="#local-6989586621679338513"><span class="hs-identifier hs-var">ls2</span></a></span><span class="hs-special">)</span><span>
+</span><a href="#local-6989586621679337670"><span class="hs-identifier hs-var">ls2</span></a></span><span class="hs-special">)</span><span>
 </span><span id="line-112"></span><span>            </span><span class="annot"><span class="annottext">[(String, (State, State))]
 -&gt; ((String, (State, State)) -&gt; LocalState ()) -&gt; LocalState ()
 forall (t :: * -&gt; *) (m :: * -&gt; *) a b.
 (Foldable t, Monad m) =&gt;
 t a -&gt; (a -&gt; m b) -&gt; m ()
 </span><span class="hs-identifier hs-var">forM_</span></span><span> </span><span class="annot"><span class="annottext">[(String, (State, State))]
-</span><a href="#local-6989586621679338509"><span class="hs-identifier hs-var">sharedLabels</span></a></span><span> </span><span class="annot"><span class="annottext">(((String, (State, State)) -&gt; LocalState ()) -&gt; LocalState ())
+</span><a href="#local-6989586621679337666"><span class="hs-identifier hs-var">sharedLabels</span></a></span><span> </span><span class="annot"><span class="annottext">(((String, (State, State)) -&gt; LocalState ()) -&gt; LocalState ())
 -&gt; ((String, (State, State)) -&gt; LocalState ()) -&gt; LocalState ()
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
-</span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679338508"><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679338508"><span class="hs-identifier hs-var">s1</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679338507"><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679338507"><span class="hs-identifier hs-var">s2</span></a></span></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span>
+</span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679337665"><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679337665"><span class="hs-identifier hs-var">s1</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679337664"><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679337664"><span class="hs-identifier hs-var">s2</span></a></span></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span>
 </span><span id="line-113"></span><span>                </span><span class="annot"><span class="annottext">(TuringMachine -&gt; Identity TuringMachine)
 -&gt; (TuringMachine, TuringMachine)
 -&gt; Identity (TuringMachine, TuringMachine)
@@ -497,43 +497,43 @@ TMSetter State (Maybe State)
 forall s (m :: * -&gt; *) a b.
 MonadState s m =&gt;
 ASetter s s a b -&gt; (a -&gt; b) -&gt; m ()
-</span><span class="hs-operator hs-var">%=</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679338503"><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679338503"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">State -&gt; Maybe State
+</span><span class="hs-operator hs-var">%=</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679337660"><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679337660"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">State -&gt; Maybe State
 forall a. a -&gt; Maybe a
 </span><span class="hs-identifier hs-var">Just</span></span><span> </span><span class="annot"><span class="annottext">(State -&gt; Maybe State) -&gt; State -&gt; Maybe State
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span>
 </span><span id="line-114"></span><span>                    </span><span class="hs-keyword">if</span><span> </span><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679338503"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">State -&gt; State -&gt; Bool
+</span><a href="#local-6989586621679337660"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">State -&gt; State -&gt; Bool
 forall a. Eq a =&gt; a -&gt; a -&gt; Bool
 </span><span class="hs-operator hs-var">==</span></span><span> </span><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679338507"><span class="hs-identifier hs-var">s2</span></a></span><span>
+</span><a href="#local-6989586621679337664"><span class="hs-identifier hs-var">s2</span></a></span><span>
 </span><span id="line-115"></span><span>                    </span><span class="hs-keyword">then</span><span> </span><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679338508"><span class="hs-identifier hs-var">s1</span></a></span><span>
+</span><a href="#local-6989586621679337665"><span class="hs-identifier hs-var">s1</span></a></span><span>
 </span><span id="line-116"></span><span>                    </span><span class="hs-keyword">else</span><span> </span><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679338503"><span class="hs-identifier hs-var">s</span></a></span><span>
-</span><span id="line-117"></span><span>            </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679338502"><span class="annot"><span class="annottext">ls1' :: [(String, State)]
-</span><a href="#local-6989586621679338502"><span class="hs-identifier hs-var hs-var">ls1'</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">PrismMap String State -&gt; [(String, State)]
+</span><a href="#local-6989586621679337660"><span class="hs-identifier hs-var">s</span></a></span><span>
+</span><span id="line-117"></span><span>            </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679337659"><span class="annot"><span class="annottext">ls1' :: [(String, State)]
+</span><a href="#local-6989586621679337659"><span class="hs-identifier hs-var hs-var">ls1'</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">PrismMap String State -&gt; [(String, State)]
 forall c v. Listable c v =&gt; c -&gt; [v]
 </span><a href="Containers.html#toList"><span class="hs-identifier hs-var">toList</span></a></span><span> </span><span class="annot"><span class="annottext">PrismMap String State
-</span><a href="#local-6989586621679338514"><span class="hs-identifier hs-var">ls1</span></a></span><span>
-</span><span id="line-118"></span><span>                </span><span id="local-6989586621679338501"><span class="annot"><span class="annottext">ls2' :: [(String, State)]
-</span><a href="#local-6989586621679338501"><span class="hs-identifier hs-var hs-var">ls2'</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span>
+</span><a href="#local-6989586621679337671"><span class="hs-identifier hs-var">ls1</span></a></span><span>
+</span><span id="line-118"></span><span>                </span><span id="local-6989586621679337658"><span class="annot"><span class="annottext">ls2' :: [(String, State)]
+</span><a href="#local-6989586621679337658"><span class="hs-identifier hs-var hs-var">ls2'</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span>
 </span><span id="line-119"></span><span>                    </span><span class="annot"><span class="annottext">(State -&gt; Maybe (String, State)) -&gt; [State] -&gt; [(String, State)]
 forall a b. (a -&gt; Maybe b) -&gt; [a] -&gt; [b]
 </span><span class="hs-identifier hs-var">mapMaybe</span></span><span>
-</span><span id="line-120"></span><span>                        </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679338500"><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679338500"><span class="hs-identifier hs-var">lbl</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-special">,</span></span><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679338500"><span class="hs-identifier hs-var">lbl</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">(String -&gt; (String, State))
+</span><span id="line-120"></span><span>                        </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679337657"><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679337657"><span class="hs-identifier hs-var">lbl</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-special">,</span></span><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679337657"><span class="hs-identifier hs-var">lbl</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">(String -&gt; (String, State))
 -&gt; Maybe String -&gt; Maybe (String, State)
 forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
 </span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">PrismMap String State
-</span><a href="#local-6989586621679338513"><span class="hs-identifier hs-var">ls2</span></a></span><span> </span><span class="annot"><span class="annottext">PrismMap String State -&gt; State -&gt; Maybe String
+</span><a href="#local-6989586621679337670"><span class="hs-identifier hs-var">ls2</span></a></span><span> </span><span class="annot"><span class="annottext">PrismMap String State -&gt; State -&gt; Maybe String
 forall c k v (m :: * -&gt; *).
 (Indexable c k v, MonadFail m) =&gt;
 c -&gt; k -&gt; m v
 </span><a href="Containers.html#%21%3F"><span class="hs-operator hs-var">!?</span></a></span><span> </span><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679338500"><span class="hs-identifier hs-var">lbl</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><a href="#local-6989586621679337657"><span class="hs-identifier hs-var">lbl</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span>
 </span><span id="line-121"></span><span>                        </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Set State -&gt; [State]
 forall c v. Listable c v =&gt; c -&gt; [v]
 </span><a href="Containers.html#toList"><span class="hs-identifier hs-var">toList</span></a></span><span> </span><span class="annot"><span class="annottext">(Set State -&gt; [State]) -&gt; Set State -&gt; [State]
@@ -541,12 +541,12 @@ forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">PrismMap String State -&gt; Set State
 forall c v. (Valuable c v, Ord v) =&gt; c -&gt; Set v
 </span><a href="Containers.html#valuesSet"><span class="hs-identifier hs-var">valuesSet</span></a></span><span> </span><span class="annot"><span class="annottext">PrismMap String State
-</span><a href="#local-6989586621679338513"><span class="hs-identifier hs-var">ls2</span></a></span><span> </span><span class="annot"><span class="annottext">Set State -&gt; Set State -&gt; Set State
+</span><a href="#local-6989586621679337670"><span class="hs-identifier hs-var">ls2</span></a></span><span> </span><span class="annot"><span class="annottext">Set State -&gt; Set State -&gt; Set State
 forall c. Operable c =&gt; c -&gt; c -&gt; c
 </span><a href="Containers.html#%5C%5C"><span class="hs-operator hs-var">\\</span></a></span><span> </span><span class="annot"><span class="annottext">PrismMap String State -&gt; Set State
 forall c v. (Valuable c v, Ord v) =&gt; c -&gt; Set v
 </span><a href="Containers.html#valuesSet"><span class="hs-identifier hs-var">valuesSet</span></a></span><span> </span><span class="annot"><span class="annottext">PrismMap String State
-</span><a href="#local-6989586621679338514"><span class="hs-identifier hs-var">ls1</span></a></span><span class="hs-special">)</span><span>
+</span><a href="#local-6989586621679337671"><span class="hs-identifier hs-var">ls1</span></a></span><span class="hs-special">)</span><span>
 </span><span id="line-122"></span><span>            </span><span class="annot"><span class="annottext">PrismMap String State
 -&gt; StateT
      (TuringMachine, TuringMachine) Identity (PrismMap String State)
@@ -564,15 +564,15 @@ forall c v. UnsafeListable c v =&gt; [v] -&gt; c
 -&gt; [(String, State)] -&gt; PrismMap String State
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">[(String, State)]
-</span><a href="#local-6989586621679338502"><span class="hs-identifier hs-var">ls1'</span></a></span><span> </span><span class="annot"><span class="annottext">[(String, State)] -&gt; [(String, State)] -&gt; [(String, State)]
+</span><a href="#local-6989586621679337659"><span class="hs-identifier hs-var">ls1'</span></a></span><span> </span><span class="annot"><span class="annottext">[(String, State)] -&gt; [(String, State)] -&gt; [(String, State)]
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[(String, State)]
-</span><a href="#local-6989586621679338501"><span class="hs-identifier hs-var">ls2'</span></a></span><span>
-</span><span id="line-123"></span><span>        </span><span id="local-6989586621679338516"><span class="annot"><span class="annottext">updateAlphabet :: StateT (TuringMachine, TuringMachine) Identity Alphabet
-</span><a href="#local-6989586621679338516"><span class="hs-identifier hs-var hs-var">updateAlphabet</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
-</span><span id="line-124"></span><span>            </span><span class="hs-special">(</span><span id="local-6989586621679338496"><span class="annot"><span class="annottext">Alphabet
-</span><a href="#local-6989586621679338496"><span class="hs-identifier hs-var">a1</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679338495"><span class="annot"><span class="annottext">Alphabet
-</span><a href="#local-6989586621679338495"><span class="hs-identifier hs-var">a2</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">((TuringMachine, TuringMachine) -&gt; (Alphabet, Alphabet))
+</span><a href="#local-6989586621679337658"><span class="hs-identifier hs-var">ls2'</span></a></span><span>
+</span><span id="line-123"></span><span>        </span><span id="local-6989586621679337673"><span class="annot"><span class="annottext">updateAlphabet :: StateT (TuringMachine, TuringMachine) Identity Alphabet
+</span><a href="#local-6989586621679337673"><span class="hs-identifier hs-var hs-var">updateAlphabet</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-124"></span><span>            </span><span class="hs-special">(</span><span id="local-6989586621679337653"><span class="annot"><span class="annottext">Alphabet
+</span><a href="#local-6989586621679337653"><span class="hs-identifier hs-var">a1</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679337652"><span class="annot"><span class="annottext">Alphabet
+</span><a href="#local-6989586621679337652"><span class="hs-identifier hs-var">a2</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">((TuringMachine, TuringMachine) -&gt; (Alphabet, Alphabet))
 -&gt; StateT
      (TuringMachine, TuringMachine) Identity (Alphabet, Alphabet)
 forall s (m :: * -&gt; *) a. MonadState s m =&gt; (s -&gt; a) -&gt; m a
@@ -600,8 +600,8 @@ forall s (m :: * -&gt; *) a. MonadReader s m =&gt; Getting a s a -&gt; m a
 </span><span class="hs-identifier hs-var">view</span></span><span> </span><span class="annot"><span class="annottext">Getting Alphabet TuringMachine Alphabet
 Lens' TuringMachine Alphabet
 </span><a href="TuringMachine.html#alphabet"><span class="hs-identifier hs-var">alphabet</span></a></span><span>
-</span><span id="line-125"></span><span>            </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679338493"><span class="annot"><span class="annottext">[ShowedSymbol]
-</span><a href="#local-6989586621679338493"><span class="hs-identifier hs-var">allChars</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="TuringMachine.ShowedSymbol.html#ShowedSymbol"><span class="hs-identifier hs-type">ShowedSymbol</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Set ShowedSymbol -&gt; [ShowedSymbol]
+</span><span id="line-125"></span><span>            </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679337650"><span class="annot"><span class="annottext">[ShowedSymbol]
+</span><a href="#local-6989586621679337650"><span class="hs-identifier hs-var">allChars</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="TuringMachine.ShowedSymbol.html#ShowedSymbol"><span class="hs-identifier hs-type">ShowedSymbol</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Set ShowedSymbol -&gt; [ShowedSymbol]
 forall c v. Listable c v =&gt; c -&gt; [v]
 </span><a href="Containers.html#toList"><span class="hs-identifier hs-var">toList</span></a></span><span> </span><span class="annot"><span class="annottext">(Set ShowedSymbol -&gt; [ShowedSymbol])
 -&gt; Set ShowedSymbol -&gt; [ShowedSymbol]
@@ -609,14 +609,14 @@ forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Alphabet -&gt; Set ShowedSymbol
 forall c v. (Valuable c v, Ord v) =&gt; c -&gt; Set v
 </span><a href="Containers.html#valuesSet"><span class="hs-identifier hs-var">valuesSet</span></a></span><span> </span><span class="annot"><span class="annottext">Alphabet
-</span><a href="#local-6989586621679338496"><span class="hs-identifier hs-var">a1</span></a></span><span> </span><span class="annot"><span class="annottext">Set ShowedSymbol -&gt; Set ShowedSymbol -&gt; Set ShowedSymbol
+</span><a href="#local-6989586621679337653"><span class="hs-identifier hs-var">a1</span></a></span><span> </span><span class="annot"><span class="annottext">Set ShowedSymbol -&gt; Set ShowedSymbol -&gt; Set ShowedSymbol
 forall c. Operable c =&gt; c -&gt; c -&gt; c
 </span><a href="Containers.html#%5C%2F"><span class="hs-operator hs-var">\/</span></a></span><span> </span><span class="annot"><span class="annottext">Alphabet -&gt; Set ShowedSymbol
 forall c v. (Valuable c v, Ord v) =&gt; c -&gt; Set v
 </span><a href="Containers.html#valuesSet"><span class="hs-identifier hs-var">valuesSet</span></a></span><span> </span><span class="annot"><span class="annottext">Alphabet
-</span><a href="#local-6989586621679338495"><span class="hs-identifier hs-var">a2</span></a></span><span>
-</span><span id="line-126"></span><span>                </span><span id="local-6989586621679338491"><span class="annot"><span class="annottext">newA :: Alphabet
-</span><a href="#local-6989586621679338491"><span class="hs-identifier hs-var hs-var">newA</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[(ShowedSymbol, Symbol)] -&gt; Alphabet
+</span><a href="#local-6989586621679337652"><span class="hs-identifier hs-var">a2</span></a></span><span>
+</span><span id="line-126"></span><span>                </span><span id="local-6989586621679337648"><span class="annot"><span class="annottext">newA :: Alphabet
+</span><a href="#local-6989586621679337648"><span class="hs-identifier hs-var hs-var">newA</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[(ShowedSymbol, Symbol)] -&gt; Alphabet
 forall c v. UnsafeListable c v =&gt; [v] -&gt; c
 </span><a href="Containers.html#fromList"><span class="hs-identifier hs-var">fromList</span></a></span><span> </span><span class="annot"><span class="annottext">([(ShowedSymbol, Symbol)] -&gt; Alphabet)
 -&gt; [(ShowedSymbol, Symbol)] -&gt; Alphabet
@@ -624,7 +624,7 @@ forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">[ShowedSymbol] -&gt; [Symbol] -&gt; [(ShowedSymbol, Symbol)]
 forall a b. [a] -&gt; [b] -&gt; [(a, b)]
 </span><span class="hs-identifier hs-var">zip</span></span><span> </span><span class="annot"><span class="annottext">[ShowedSymbol]
-</span><a href="#local-6989586621679338493"><span class="hs-identifier hs-var">allChars</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">Symbol
+</span><a href="#local-6989586621679337650"><span class="hs-identifier hs-var">allChars</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">Symbol
 forall a. Bounded a =&gt; a
 </span><span class="hs-identifier hs-var">minBound</span></span><span class="hs-glyph">..</span><span class="hs-special">]</span><span>
 </span><span id="line-127"></span><span>            </span><span class="annot"><span class="annottext">[((TuringMachine -&gt; Identity TuringMachine)
@@ -645,12 +645,12 @@ t a -&gt; (a -&gt; m b) -&gt; m ()
 -&gt; Identity (TuringMachine, TuringMachine)
 forall s t a b. Field1 s t a b =&gt; Lens s t a b
 </span><span class="hs-identifier hs-var">_1</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Alphabet
-</span><a href="#local-6989586621679338496"><span class="hs-identifier hs-var">a1</span></a></span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">(TuringMachine -&gt; Identity TuringMachine)
+</span><a href="#local-6989586621679337653"><span class="hs-identifier hs-var">a1</span></a></span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">(TuringMachine -&gt; Identity TuringMachine)
 -&gt; (TuringMachine, TuringMachine)
 -&gt; Identity (TuringMachine, TuringMachine)
 forall s t a b. Field2 s t a b =&gt; Lens s t a b
 </span><span class="hs-identifier hs-var">_2</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Alphabet
-</span><a href="#local-6989586621679338495"><span class="hs-identifier hs-var">a2</span></a></span><span class="hs-special">)</span><span class="hs-special">]</span><span> </span><span class="annot"><span class="annottext">((((TuringMachine -&gt; Identity TuringMachine)
+</span><a href="#local-6989586621679337652"><span class="hs-identifier hs-var">a2</span></a></span><span class="hs-special">)</span><span class="hs-special">]</span><span> </span><span class="annot"><span class="annottext">((((TuringMachine -&gt; Identity TuringMachine)
    -&gt; (TuringMachine, TuringMachine)
    -&gt; Identity (TuringMachine, TuringMachine),
    Alphabet)
@@ -663,15 +663,15 @@ forall s t a b. Field2 s t a b =&gt; Lens s t a b
     -&gt; LocalState ())
 -&gt; LocalState ()
 forall a b. (a -&gt; b) -&gt; a -&gt; b
-</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span class="hs-special">(</span><span id="local-6989586621679338489"><span class="annot"><span class="annottext">(TuringMachine -&gt; Identity TuringMachine)
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span class="hs-special">(</span><span id="local-6989586621679337646"><span class="annot"><span class="annottext">(TuringMachine -&gt; Identity TuringMachine)
 -&gt; (TuringMachine, TuringMachine)
 -&gt; Identity (TuringMachine, TuringMachine)
-</span><a href="#local-6989586621679338489"><span class="hs-identifier hs-var">tm</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679338488"><span class="annot"><span class="annottext">Alphabet
-</span><a href="#local-6989586621679338488"><span class="hs-identifier hs-var">a</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span>
+</span><a href="#local-6989586621679337646"><span class="hs-identifier hs-var">tm</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679337645"><span class="annot"><span class="annottext">Alphabet
+</span><a href="#local-6989586621679337645"><span class="hs-identifier hs-var">a</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span>
 </span><span id="line-128"></span><span>                </span><span class="annot"><span class="annottext">(TuringMachine -&gt; Identity TuringMachine)
 -&gt; (TuringMachine, TuringMachine)
 -&gt; Identity (TuringMachine, TuringMachine)
-</span><a href="#local-6989586621679338489"><span class="hs-identifier hs-var">tm</span></a></span><span class="annot"><span class="annottext">((TuringMachine -&gt; Identity TuringMachine)
+</span><a href="#local-6989586621679337646"><span class="hs-identifier hs-var">tm</span></a></span><span class="annot"><span class="annottext">((TuringMachine -&gt; Identity TuringMachine)
  -&gt; (TuringMachine, TuringMachine)
  -&gt; Identity (TuringMachine, TuringMachine))
 -&gt; ((Symbol -&gt; Identity (Maybe Symbol))
@@ -691,7 +691,7 @@ forall s (m :: * -&gt; *) a b.
 MonadState s m =&gt;
 ASetter s s a b -&gt; (a -&gt; b) -&gt; m ()
 </span><span class="hs-operator hs-var">%=</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">(</span><span class="annot"><span class="annottext">Alphabet
-</span><a href="#local-6989586621679338488"><span class="hs-identifier hs-var">a</span></a></span><span> </span><span class="annot"><span class="annottext">Alphabet -&gt; Symbol -&gt; Maybe ShowedSymbol
+</span><a href="#local-6989586621679337645"><span class="hs-identifier hs-var">a</span></a></span><span> </span><span class="annot"><span class="annottext">Alphabet -&gt; Symbol -&gt; Maybe ShowedSymbol
 forall c k v (m :: * -&gt; *).
 (Indexable c k v, MonadFail m) =&gt;
 c -&gt; k -&gt; m v
@@ -701,7 +701,7 @@ forall (m :: * -&gt; *) a b c.
 Monad m =&gt;
 (a -&gt; m b) -&gt; (b -&gt; m c) -&gt; a -&gt; m c
 </span><span class="hs-operator hs-var">&gt;=&gt;</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Alphabet
-</span><a href="#local-6989586621679338491"><span class="hs-identifier hs-var">newA</span></a></span><span> </span><span class="annot"><span class="annottext">Alphabet -&gt; ShowedSymbol -&gt; Maybe Symbol
+</span><a href="#local-6989586621679337648"><span class="hs-identifier hs-var">newA</span></a></span><span> </span><span class="annot"><span class="annottext">Alphabet -&gt; ShowedSymbol -&gt; Maybe Symbol
 forall c k v (m :: * -&gt; *).
 (Indexable c k v, MonadFail m) =&gt;
 c -&gt; k -&gt; m v
@@ -709,17 +709,17 @@ c -&gt; k -&gt; m v
 </span><span id="line-129"></span><span>            </span><span class="annot"><span class="annottext">Alphabet -&gt; StateT (TuringMachine, TuringMachine) Identity Alphabet
 forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
 </span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">Alphabet
-</span><a href="#local-6989586621679338491"><span class="hs-identifier hs-var">newA</span></a></span><span>
+</span><a href="#local-6989586621679337648"><span class="hs-identifier hs-var">newA</span></a></span><span>
 </span><span id="line-130"></span><span>        </span><span class="hs-comment">--here you must use either FlexibleContexts extension or type definition</span><span>
-</span><span id="line-131"></span><span>        </span><span class="annot"><a href="#local-6989586621679338515"><span class="hs-identifier hs-type">unionTMs</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TuringMachine.html#LabeledStates"><span class="hs-identifier hs-type">LabeledStates</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TuringMachine.html#Alphabet"><span class="hs-identifier hs-type">Alphabet</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TuringMachine.Constructors.html#LocalState"><span class="hs-identifier hs-type">LocalState</span></a></span><span> </span><span class="annot"><a href="TuringMachine.html#TuringMachine"><span class="hs-identifier hs-type">TuringMachine</span></a></span><span>
-</span><span id="line-132"></span><span>        </span><span id="local-6989586621679338515"><span class="annot"><span class="annottext">unionTMs :: PrismMap String State
+</span><span id="line-131"></span><span>        </span><span class="annot"><a href="#local-6989586621679337672"><span class="hs-identifier hs-type">unionTMs</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TuringMachine.html#LabeledStates"><span class="hs-identifier hs-type">LabeledStates</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TuringMachine.html#Alphabet"><span class="hs-identifier hs-type">Alphabet</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TuringMachine.Constructors.html#LocalState"><span class="hs-identifier hs-type">LocalState</span></a></span><span> </span><span class="annot"><a href="TuringMachine.html#TuringMachine"><span class="hs-identifier hs-type">TuringMachine</span></a></span><span>
+</span><span id="line-132"></span><span>        </span><span id="local-6989586621679337672"><span class="annot"><span class="annottext">unionTMs :: PrismMap String State
 -&gt; Alphabet -&gt; State (TuringMachine, TuringMachine) TuringMachine
-</span><a href="#local-6989586621679338515"><span class="hs-identifier hs-var hs-var">unionTMs</span></a></span></span><span> </span><span id="local-6989586621679338485"><span class="annot"><span class="annottext">PrismMap String State
-</span><a href="#local-6989586621679338485"><span class="hs-identifier hs-var">newLS</span></a></span></span><span> </span><span id="local-6989586621679338484"><span class="annot"><span class="annottext">Alphabet
-</span><a href="#local-6989586621679338484"><span class="hs-identifier hs-var">newA</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
-</span><span id="line-133"></span><span>            </span><span class="hs-special">(</span><span id="local-6989586621679338483"><span class="annot"><span class="annottext">Quadruples
-</span><a href="#local-6989586621679338483"><span class="hs-identifier hs-var">qs1</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679338482"><span class="annot"><span class="annottext">Quadruples
-</span><a href="#local-6989586621679338482"><span class="hs-identifier hs-var">qs2</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">((TuringMachine, TuringMachine) -&gt; (Quadruples, Quadruples))
+</span><a href="#local-6989586621679337672"><span class="hs-identifier hs-var hs-var">unionTMs</span></a></span></span><span> </span><span id="local-6989586621679337642"><span class="annot"><span class="annottext">PrismMap String State
+</span><a href="#local-6989586621679337642"><span class="hs-identifier hs-var">newLS</span></a></span></span><span> </span><span id="local-6989586621679337641"><span class="annot"><span class="annottext">Alphabet
+</span><a href="#local-6989586621679337641"><span class="hs-identifier hs-var">newA</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-133"></span><span>            </span><span class="hs-special">(</span><span id="local-6989586621679337640"><span class="annot"><span class="annottext">Quadruples
+</span><a href="#local-6989586621679337640"><span class="hs-identifier hs-var">qs1</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679337639"><span class="annot"><span class="annottext">Quadruples
+</span><a href="#local-6989586621679337639"><span class="hs-identifier hs-var">qs2</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">((TuringMachine, TuringMachine) -&gt; (Quadruples, Quadruples))
 -&gt; StateT
      (TuringMachine, TuringMachine) Identity (Quadruples, Quadruples)
 forall s (m :: * -&gt; *) a. MonadState s m =&gt; (s -&gt; a) -&gt; m a
@@ -749,12 +749,12 @@ forall s (m :: * -&gt; *) a. MonadReader s m =&gt; Getting a s a -&gt; m a
 </span><span class="hs-identifier hs-var">view</span></span><span> </span><span class="annot"><span class="annottext">Getting Quadruples TuringMachine Quadruples
 Lens' TuringMachine Quadruples
 </span><a href="TuringMachine.html#quadruples"><span class="hs-identifier hs-var">quadruples</span></a></span><span>
-</span><span id="line-134"></span><span>            </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679338480"><span class="annot"><span class="annottext">newQs :: Quadruples
-</span><a href="#local-6989586621679338480"><span class="hs-identifier hs-var hs-var">newQs</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Quadruples
-</span><a href="#local-6989586621679338483"><span class="hs-identifier hs-var">qs1</span></a></span><span> </span><span class="annot"><span class="annottext">Quadruples -&gt; Quadruples -&gt; Quadruples
+</span><span id="line-134"></span><span>            </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679337637"><span class="annot"><span class="annottext">newQs :: Quadruples
+</span><a href="#local-6989586621679337637"><span class="hs-identifier hs-var hs-var">newQs</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Quadruples
+</span><a href="#local-6989586621679337640"><span class="hs-identifier hs-var">qs1</span></a></span><span> </span><span class="annot"><span class="annottext">Quadruples -&gt; Quadruples -&gt; Quadruples
 forall c. Operable c =&gt; c -&gt; c -&gt; c
 </span><a href="Containers.html#%5C%2F"><span class="hs-operator hs-var">\/</span></a></span><span> </span><span class="annot"><span class="annottext">Quadruples
-</span><a href="#local-6989586621679338482"><span class="hs-identifier hs-var">qs2</span></a></span><span>
+</span><a href="#local-6989586621679337639"><span class="hs-identifier hs-var">qs2</span></a></span><span>
 </span><span id="line-135"></span><span>            </span><span class="annot"><span class="annottext">TuringMachine -&gt; State (TuringMachine, TuringMachine) TuringMachine
 forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
 </span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">(TuringMachine
@@ -764,9 +764,9 @@ forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Quadruples -&gt; PrismMap String State -&gt; Alphabet -&gt; TuringMachine
 </span><a href="TuringMachine.html#turingMachine"><span class="hs-identifier hs-var">turingMachine</span></a></span><span> </span><span class="annot"><span class="annottext">Quadruples
-</span><a href="#local-6989586621679338480"><span class="hs-identifier hs-var">newQs</span></a></span><span> </span><span class="annot"><span class="annottext">PrismMap String State
-</span><a href="#local-6989586621679338485"><span class="hs-identifier hs-var">newLS</span></a></span><span> </span><span class="annot"><span class="annottext">Alphabet
-</span><a href="#local-6989586621679338484"><span class="hs-identifier hs-var">newA</span></a></span><span>
+</span><a href="#local-6989586621679337637"><span class="hs-identifier hs-var">newQs</span></a></span><span> </span><span class="annot"><span class="annottext">PrismMap String State
+</span><a href="#local-6989586621679337642"><span class="hs-identifier hs-var">newLS</span></a></span><span> </span><span class="annot"><span class="annottext">Alphabet
+</span><a href="#local-6989586621679337641"><span class="hs-identifier hs-var">newA</span></a></span><span>
 </span><span id="line-136"></span><span>
 </span><span id="line-137"></span><span class="annot"><a href="TuringMachine.Constructors.html#%2B%2B%3E"><span class="hs-operator hs-type">(++&gt;)</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TuringMachine.html#TuringMachine"><span class="hs-identifier hs-type">TuringMachine</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TuringMachine.html#TuringMachine"><span class="hs-identifier hs-type">TuringMachine</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TuringMachine.html#TuringMachine"><span class="hs-identifier hs-type">TuringMachine</span></a></span><span>
 </span><span id="line-138"></span><span id="%2B%2B%3E"><span class="annot"><span class="annottext">++&gt; :: TuringMachine -&gt; TuringMachine -&gt; TuringMachine
@@ -775,8 +775,8 @@ forall a b. (a -&gt; b) -&gt; a -&gt; b
 -&gt; LocalState () -&gt; TuringMachine -&gt; TuringMachine -&gt; TuringMachine
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-keyword">do</span><span>
-</span><span id="line-139"></span><span>    </span><span id="local-6989586621679338479"><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679338479"><span class="hs-identifier hs-var">newStartState2</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">LensLike' (Const State) (TuringMachine, TuringMachine) Int
+</span><span id="line-139"></span><span>    </span><span id="local-6989586621679337636"><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679337636"><span class="hs-identifier hs-var">newStartState2</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">LensLike' (Const State) (TuringMachine, TuringMachine) Int
 -&gt; (Int -&gt; State)
 -&gt; StateT (TuringMachine, TuringMachine) Identity State
 forall s (m :: * -&gt; *) r a.
@@ -826,21 +826,21 @@ TMSetter State (Maybe State)
 forall s (m :: * -&gt; *) a b.
 MonadState s m =&gt;
 ASetter s s a b -&gt; (a -&gt; b) -&gt; m ()
-</span><span class="hs-operator hs-var">%=</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679338474"><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679338474"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">State -&gt; Maybe State
+</span><span class="hs-operator hs-var">%=</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679337631"><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679337631"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">State -&gt; Maybe State
 forall a. a -&gt; Maybe a
 </span><span class="hs-identifier hs-var">Just</span></span><span> </span><span class="annot"><span class="annottext">(State -&gt; Maybe State) -&gt; State -&gt; Maybe State
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span>
 </span><span id="line-141"></span><span>        </span><span class="hs-keyword">if</span><span> </span><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679338474"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">State -&gt; State -&gt; Bool
+</span><a href="#local-6989586621679337631"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">State -&gt; State -&gt; Bool
 forall a. Eq a =&gt; a -&gt; a -&gt; Bool
 </span><span class="hs-operator hs-var">==</span></span><span> </span><span class="annot"><span class="annottext">State
 </span><a href="TuringMachine.State.html#finalState"><span class="hs-identifier hs-var">finalState</span></a></span><span>
 </span><span id="line-142"></span><span>        </span><span class="hs-keyword">then</span><span> </span><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679338479"><span class="hs-identifier hs-var">newStartState2</span></a></span><span>
+</span><a href="#local-6989586621679337636"><span class="hs-identifier hs-var">newStartState2</span></a></span><span>
 </span><span id="line-143"></span><span>        </span><span class="hs-keyword">else</span><span> </span><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679338474"><span class="hs-identifier hs-var">s</span></a></span><span>
+</span><a href="#local-6989586621679337631"><span class="hs-identifier hs-var">s</span></a></span><span>
 </span><span id="line-144"></span><span>    </span><span class="annot"><span class="annottext">(TuringMachine -&gt; Identity TuringMachine)
 -&gt; (TuringMachine, TuringMachine)
 -&gt; Identity (TuringMachine, TuringMachine)
@@ -864,24 +864,24 @@ TMSetter State (Maybe State)
 forall s (m :: * -&gt; *) a b.
 MonadState s m =&gt;
 ASetter s s a b -&gt; (a -&gt; b) -&gt; m ()
-</span><span class="hs-operator hs-var">%=</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679338473"><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679338473"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">State -&gt; Maybe State
+</span><span class="hs-operator hs-var">%=</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679337630"><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679337630"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">State -&gt; Maybe State
 forall a. a -&gt; Maybe a
 </span><span class="hs-identifier hs-var">Just</span></span><span> </span><span class="annot"><span class="annottext">(State -&gt; Maybe State) -&gt; State -&gt; Maybe State
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span>
 </span><span id="line-145"></span><span>        </span><span class="hs-keyword">if</span><span> </span><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679338473"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">State -&gt; State -&gt; Bool
+</span><a href="#local-6989586621679337630"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">State -&gt; State -&gt; Bool
 forall a. Eq a =&gt; a -&gt; a -&gt; Bool
 </span><span class="hs-operator hs-var">==</span></span><span> </span><span class="annot"><span class="annottext">State
 </span><a href="TuringMachine.State.html#finalState"><span class="hs-identifier hs-var">finalState</span></a></span><span>
 </span><span id="line-146"></span><span>        </span><span class="hs-keyword">then</span><span> </span><span class="annot"><span class="annottext">State
 </span><a href="TuringMachine.State.html#finalState"><span class="hs-identifier hs-var">finalState</span></a></span><span>
 </span><span id="line-147"></span><span>        </span><span class="hs-keyword">else</span><span> </span><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679338473"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">State -&gt; State -&gt; State
+</span><a href="#local-6989586621679337630"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">State -&gt; State -&gt; State
 forall a. Num a =&gt; a -&gt; a -&gt; a
 </span><span class="hs-operator hs-var">+</span></span><span> </span><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679338479"><span class="hs-identifier hs-var">newStartState2</span></a></span><span> </span><span class="annot"><span class="annottext">State -&gt; State -&gt; State
+</span><a href="#local-6989586621679337636"><span class="hs-identifier hs-var">newStartState2</span></a></span><span> </span><span class="annot"><span class="annottext">State -&gt; State -&gt; State
 forall a. Num a =&gt; a -&gt; a -&gt; a
 </span><span class="hs-glyph hs-var">-</span></span><span> </span><span class="annot"><span class="annottext">State
 </span><a href="TuringMachine.State.html#startState"><span class="hs-identifier hs-var">startState</span></a></span><span>
@@ -893,8 +893,8 @@ forall a. Num a =&gt; a -&gt; a -&gt; a
 -&gt; LocalState () -&gt; TuringMachine -&gt; TuringMachine -&gt; TuringMachine
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-keyword">do</span><span>
-</span><span id="line-151"></span><span>    </span><span id="local-6989586621679338472"><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679338472"><span class="hs-identifier hs-var">maxState1</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">LensLike' (Const State) (TuringMachine, TuringMachine) Int
+</span><span id="line-151"></span><span>    </span><span id="local-6989586621679337629"><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679337629"><span class="hs-identifier hs-var">maxState1</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">LensLike' (Const State) (TuringMachine, TuringMachine) Int
 -&gt; (Int -&gt; State)
 -&gt; StateT (TuringMachine, TuringMachine) Identity State
 forall s (m :: * -&gt; *) r a.
@@ -939,33 +939,33 @@ TMSetter State (Maybe State)
 forall s (m :: * -&gt; *) a b.
 MonadState s m =&gt;
 ASetter s s a b -&gt; (a -&gt; b) -&gt; m ()
-</span><span class="hs-operator hs-var">%=</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679338471"><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679338471"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">State -&gt; Maybe State
+</span><span class="hs-operator hs-var">%=</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679337628"><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679337628"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">State -&gt; Maybe State
 forall a. a -&gt; Maybe a
 </span><span class="hs-identifier hs-var">Just</span></span><span> </span><span class="annot"><span class="annottext">(State -&gt; Maybe State) -&gt; State -&gt; Maybe State
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span>
 </span><span id="line-153"></span><span>        </span><span class="hs-keyword">if</span><span>  </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679338471"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">State -&gt; State -&gt; Bool
+</span><a href="#local-6989586621679337628"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">State -&gt; State -&gt; Bool
 forall a. Eq a =&gt; a -&gt; a -&gt; Bool
 </span><span class="hs-operator hs-var">==</span></span><span> </span><span class="annot"><span class="annottext">State
 </span><a href="TuringMachine.State.html#startState"><span class="hs-identifier hs-var">startState</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">State
 </span><a href="TuringMachine.State.html#startState"><span class="hs-identifier hs-var">startState</span></a></span><span>
 </span><span id="line-154"></span><span>            </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679338471"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">State -&gt; State -&gt; Bool
+</span><a href="#local-6989586621679337628"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">State -&gt; State -&gt; Bool
 forall a. Eq a =&gt; a -&gt; a -&gt; Bool
 </span><span class="hs-operator hs-var">==</span></span><span> </span><span class="annot"><span class="annottext">State
 </span><a href="TuringMachine.State.html#finalState"><span class="hs-identifier hs-var">finalState</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">State
 </span><a href="TuringMachine.State.html#finalState"><span class="hs-identifier hs-var">finalState</span></a></span><span>
 </span><span id="line-155"></span><span>            </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Bool
 </span><span class="hs-identifier hs-var">otherwise</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679338471"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">State -&gt; State -&gt; State
+</span><a href="#local-6989586621679337628"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">State -&gt; State -&gt; State
 forall a. Num a =&gt; a -&gt; a -&gt; a
 </span><span class="hs-glyph hs-var">-</span></span><span> </span><span class="annot"><span class="annottext">State
 </span><a href="TuringMachine.State.html#startState"><span class="hs-identifier hs-var">startState</span></a></span><span> </span><span class="annot"><span class="annottext">State -&gt; State -&gt; State
 forall a. Num a =&gt; a -&gt; a -&gt; a
 </span><span class="hs-operator hs-var">+</span></span><span> </span><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679338472"><span class="hs-identifier hs-var">maxState1</span></a></span><span>
+</span><a href="#local-6989586621679337629"><span class="hs-identifier hs-var">maxState1</span></a></span><span>
 </span><span id="line-156"></span><span>
 </span><span id="line-157"></span><span class="annot"><a href="TuringMachine.Constructors.html#%40%40%3E"><span class="hs-operator hs-type">(@@&gt;)</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TuringMachine.html#TuringMachine"><span class="hs-identifier hs-type">TuringMachine</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TuringMachine.html#TuringMachine"><span class="hs-identifier hs-type">TuringMachine</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TuringMachine.html#TuringMachine"><span class="hs-identifier hs-type">TuringMachine</span></a></span><span>
 </span><span id="line-158"></span><span id="%40%40%3E"><span class="annot"><span class="annottext">@@&gt; :: TuringMachine -&gt; TuringMachine -&gt; TuringMachine
@@ -974,8 +974,8 @@ forall a. Num a =&gt; a -&gt; a -&gt; a
 -&gt; LocalState () -&gt; TuringMachine -&gt; TuringMachine -&gt; TuringMachine
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-keyword">do</span><span>
-</span><span id="line-159"></span><span>    </span><span id="local-6989586621679338470"><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679338470"><span class="hs-identifier hs-var">maxState1</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">LensLike' (Const State) (TuringMachine, TuringMachine) Int
+</span><span id="line-159"></span><span>    </span><span id="local-6989586621679337627"><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679337627"><span class="hs-identifier hs-var">maxState1</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">LensLike' (Const State) (TuringMachine, TuringMachine) Int
 -&gt; (Int -&gt; State)
 -&gt; StateT (TuringMachine, TuringMachine) Identity State
 forall s (m :: * -&gt; *) r a.
@@ -1020,33 +1020,33 @@ TMSetter State (Maybe State)
 forall s (m :: * -&gt; *) a b.
 MonadState s m =&gt;
 ASetter s s a b -&gt; (a -&gt; b) -&gt; m ()
-</span><span class="hs-operator hs-var">%=</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679338469"><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679338469"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">State -&gt; Maybe State
+</span><span class="hs-operator hs-var">%=</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679337626"><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679337626"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">State -&gt; Maybe State
 forall a. a -&gt; Maybe a
 </span><span class="hs-identifier hs-var">Just</span></span><span> </span><span class="annot"><span class="annottext">(State -&gt; Maybe State) -&gt; State -&gt; Maybe State
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span>
 </span><span id="line-161"></span><span>        </span><span class="hs-keyword">if</span><span>  </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679338469"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">State -&gt; State -&gt; Bool
+</span><a href="#local-6989586621679337626"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">State -&gt; State -&gt; Bool
 forall a. Eq a =&gt; a -&gt; a -&gt; Bool
 </span><span class="hs-operator hs-var">==</span></span><span> </span><span class="annot"><span class="annottext">State
 </span><a href="TuringMachine.State.html#startState"><span class="hs-identifier hs-var">startState</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">State
 </span><a href="TuringMachine.State.html#finalState"><span class="hs-identifier hs-var">finalState</span></a></span><span>
 </span><span id="line-162"></span><span>            </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679338469"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">State -&gt; State -&gt; Bool
+</span><a href="#local-6989586621679337626"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">State -&gt; State -&gt; Bool
 forall a. Eq a =&gt; a -&gt; a -&gt; Bool
 </span><span class="hs-operator hs-var">==</span></span><span> </span><span class="annot"><span class="annottext">State
 </span><a href="TuringMachine.State.html#finalState"><span class="hs-identifier hs-var">finalState</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">State
 </span><a href="TuringMachine.State.html#startState"><span class="hs-identifier hs-var">startState</span></a></span><span>
 </span><span id="line-163"></span><span>            </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Bool
 </span><span class="hs-identifier hs-var">otherwise</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679338469"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">State -&gt; State -&gt; State
+</span><a href="#local-6989586621679337626"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">State -&gt; State -&gt; State
 forall a. Num a =&gt; a -&gt; a -&gt; a
 </span><span class="hs-glyph hs-var">-</span></span><span> </span><span class="annot"><span class="annottext">State
 </span><a href="TuringMachine.State.html#startState"><span class="hs-identifier hs-var">startState</span></a></span><span> </span><span class="annot"><span class="annottext">State -&gt; State -&gt; State
 forall a. Num a =&gt; a -&gt; a -&gt; a
 </span><span class="hs-operator hs-var">+</span></span><span> </span><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679338470"><span class="hs-identifier hs-var">maxState1</span></a></span><span>
+</span><a href="#local-6989586621679337627"><span class="hs-identifier hs-var">maxState1</span></a></span><span>
 </span><span id="line-164"></span><span>
 </span><span id="line-165"></span><span class="annot"><a href="TuringMachine.Constructors.html#loop"><span class="hs-identifier hs-type">loop</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TuringMachine.html#TuringMachine"><span class="hs-identifier hs-type">TuringMachine</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TuringMachine.html#TuringMachine"><span class="hs-identifier hs-type">TuringMachine</span></a></span><span>
 </span><span id="line-166"></span><span id="loop"><span class="annot"><span class="annottext">loop :: TuringMachine -&gt; TuringMachine
@@ -1058,37 +1058,37 @@ TMSetter State (Maybe State)
  -&gt; TuringMachine -&gt; Identity TuringMachine)
 -&gt; (State -&gt; Maybe State) -&gt; TuringMachine -&gt; TuringMachine
 forall s t a b. ASetter s t a b -&gt; (a -&gt; b) -&gt; s -&gt; t
-</span><span class="hs-operator hs-var">%~</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679338468"><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679338468"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">State -&gt; Maybe State
+</span><span class="hs-operator hs-var">%~</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679337625"><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679337625"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">State -&gt; Maybe State
 forall a. a -&gt; Maybe a
 </span><span class="hs-identifier hs-var">Just</span></span><span> </span><span class="annot"><span class="annottext">(State -&gt; Maybe State) -&gt; State -&gt; Maybe State
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span>
 </span><span id="line-168"></span><span>        </span><span class="hs-keyword">if</span><span> </span><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679338468"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">State -&gt; State -&gt; Bool
+</span><a href="#local-6989586621679337625"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">State -&gt; State -&gt; Bool
 forall a. Eq a =&gt; a -&gt; a -&gt; Bool
 </span><span class="hs-operator hs-var">==</span></span><span> </span><span class="annot"><span class="annottext">State
 </span><a href="TuringMachine.State.html#finalState"><span class="hs-identifier hs-var">finalState</span></a></span><span>
 </span><span id="line-169"></span><span>        </span><span class="hs-keyword">then</span><span> </span><span class="annot"><span class="annottext">State
 </span><a href="TuringMachine.State.html#startState"><span class="hs-identifier hs-var">startState</span></a></span><span>
 </span><span id="line-170"></span><span>        </span><span class="hs-keyword">else</span><span> </span><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679338468"><span class="hs-identifier hs-var">s</span></a></span><span>
+</span><a href="#local-6989586621679337625"><span class="hs-identifier hs-var">s</span></a></span><span>
 </span><span id="line-171"></span><span>
-</span><span id="line-172"></span><span id="local-6989586621679338467"><span class="annot"><a href="TuringMachine.Constructors.html#rewriteAndMove"><span class="hs-identifier hs-type">rewriteAndMove</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TuringMachine.ShowedSymbol.html#ShowedSymbolClass"><span class="hs-identifier hs-type">ShowedSymbolClass</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679338467"><span class="hs-identifier hs-type">s</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="#local-6989586621679338467"><span class="hs-identifier hs-type">s</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TuringMachine.ShowedSymbol.html#ShowedSymbol"><span class="hs-identifier hs-type">ShowedSymbol</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TuringMachine.Move.html#Move"><span class="hs-identifier hs-type">Move</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TuringMachine.html#TuringMachine"><span class="hs-identifier hs-type">TuringMachine</span></a></span></span><span>
+</span><span id="line-172"></span><span id="local-6989586621679337624"><span class="annot"><a href="TuringMachine.Constructors.html#rewriteAndMove"><span class="hs-identifier hs-type">rewriteAndMove</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TuringMachine.ShowedSymbol.html#ShowedSymbolClass"><span class="hs-identifier hs-type">ShowedSymbolClass</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679337624"><span class="hs-identifier hs-type">s</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="#local-6989586621679337624"><span class="hs-identifier hs-type">s</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TuringMachine.ShowedSymbol.html#ShowedSymbol"><span class="hs-identifier hs-type">ShowedSymbol</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TuringMachine.Move.html#Move"><span class="hs-identifier hs-type">Move</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TuringMachine.html#TuringMachine"><span class="hs-identifier hs-type">TuringMachine</span></a></span></span><span>
 </span><span id="line-173"></span><span id="rewriteAndMove"><span class="annot"><span class="annottext">rewriteAndMove :: [s] -&gt; ShowedSymbol -&gt; Move -&gt; TuringMachine
-</span><a href="TuringMachine.Constructors.html#rewriteAndMove"><span class="hs-identifier hs-var hs-var">rewriteAndMove</span></a></span></span><span> </span><span id="local-6989586621679338466"><span class="annot"><span class="annottext">[s]
-</span><a href="#local-6989586621679338466"><span class="hs-identifier hs-var">ss</span></a></span></span><span> </span><span id="local-6989586621679338465"><span class="annot"><span class="annottext">ShowedSymbol
-</span><a href="#local-6989586621679338465"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679338464"><span class="annot"><span class="annottext">Move
-</span><a href="#local-6989586621679338464"><span class="hs-identifier hs-var">m</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[s] -&gt; ShowedSymbol -&gt; TuringMachine
+</span><a href="TuringMachine.Constructors.html#rewriteAndMove"><span class="hs-identifier hs-var hs-var">rewriteAndMove</span></a></span></span><span> </span><span id="local-6989586621679337623"><span class="annot"><span class="annottext">[s]
+</span><a href="#local-6989586621679337623"><span class="hs-identifier hs-var">ss</span></a></span></span><span> </span><span id="local-6989586621679337622"><span class="annot"><span class="annottext">ShowedSymbol
+</span><a href="#local-6989586621679337622"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679337621"><span class="annot"><span class="annottext">Move
+</span><a href="#local-6989586621679337621"><span class="hs-identifier hs-var">m</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[s] -&gt; ShowedSymbol -&gt; TuringMachine
 forall s.
 ShowedSymbolClass s =&gt;
 [s] -&gt; ShowedSymbol -&gt; TuringMachine
 </span><a href="TuringMachine.Constructors.html#rewrite"><span class="hs-identifier hs-var">rewrite</span></a></span><span> </span><span class="annot"><span class="annottext">[s]
-</span><a href="#local-6989586621679338466"><span class="hs-identifier hs-var">ss</span></a></span><span> </span><span class="annot"><span class="annottext">ShowedSymbol
-</span><a href="#local-6989586621679338465"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">TuringMachine -&gt; TuringMachine -&gt; TuringMachine
+</span><a href="#local-6989586621679337623"><span class="hs-identifier hs-var">ss</span></a></span><span> </span><span class="annot"><span class="annottext">ShowedSymbol
+</span><a href="#local-6989586621679337622"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">TuringMachine -&gt; TuringMachine -&gt; TuringMachine
 </span><a href="TuringMachine.Constructors.html#%2B%2B%3E"><span class="hs-operator hs-var">++&gt;</span></a></span><span> </span><span class="annot"><span class="annottext">Move -&gt; [ShowedSymbol] -&gt; TuringMachine
 forall s. ShowedSymbolClass s =&gt; Move -&gt; [s] -&gt; TuringMachine
 </span><a href="TuringMachine.Constructors.html#move"><span class="hs-identifier hs-var">move</span></a></span><span> </span><span class="annot"><span class="annottext">Move
-</span><a href="#local-6989586621679338464"><span class="hs-identifier hs-var">m</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">ShowedSymbol
-</span><a href="#local-6989586621679338465"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">]</span><span>
+</span><a href="#local-6989586621679337621"><span class="hs-identifier hs-var">m</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">ShowedSymbol
+</span><a href="#local-6989586621679337622"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">]</span><span>
 </span><span id="line-174"></span></pre></body></html>

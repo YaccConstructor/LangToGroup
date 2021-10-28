@@ -6,7 +6,7 @@
 </span><span id="line-6"></span><span>
 </span><span id="line-7"></span><span class="hs-comment">-- |This is type of configurations of the Turing machine.</span><span>
 </span><span id="line-8"></span><span class="hs-keyword">newtype</span><span> </span><span id="Configs"><span class="annot"><a href="ConfigType.html#Configs"><span class="hs-identifier hs-var">Configs</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="Configs"><span class="annot"><a href="ConfigType.html#Configs"><span class="hs-identifier hs-var">Configs</span></a></span></span><span> </span><span class="hs-special">[</span><span class="hs-special">[</span><span class="hs-special">(</span><span class="hs-special">[</span><span class="annot"><a href="TMType.html#Square"><span class="hs-identifier hs-type">Square</span></a></span><span class="hs-special">]</span><span class="hs-special">,</span><span> </span><span class="annot"><a href="TMType.html#State"><span class="hs-identifier hs-type">State</span></a></span><span class="hs-special">,</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="TMType.html#Square"><span class="hs-identifier hs-type">Square</span></a></span><span class="hs-special">]</span><span class="hs-special">)</span><span class="hs-special">]</span><span class="hs-special">]</span><span>
-</span><span id="line-9"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679336119"><span id="local-6989586621679336121"><span class="annot"><span class="annottext">Configs -&gt; Configs -&gt; Bool
+</span><span id="line-9"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679335285"><span id="local-6989586621679335287"><span class="annot"><span class="annottext">Configs -&gt; Configs -&gt; Bool
 (Configs -&gt; Configs -&gt; Bool)
 -&gt; (Configs -&gt; Configs -&gt; Bool) -&gt; Eq Configs
 forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
@@ -14,7 +14,7 @@ forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
 $c/= :: Configs -&gt; Configs -&gt; Bool
 == :: Configs -&gt; Configs -&gt; Bool
 $c== :: Configs -&gt; Configs -&gt; Bool
-</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679336103"><span id="local-6989586621679336105"><span id="local-6989586621679336107"><span id="local-6989586621679336109"><span id="local-6989586621679336111"><span id="local-6989586621679336113"><span id="local-6989586621679336115"><span class="annot"><span class="annottext">Eq Configs
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679335269"><span id="local-6989586621679335271"><span id="local-6989586621679335273"><span id="local-6989586621679335275"><span id="local-6989586621679335277"><span id="local-6989586621679335279"><span id="local-6989586621679335281"><span class="annot"><span class="annottext">Eq Configs
 Eq Configs
 -&gt; (Configs -&gt; Configs -&gt; Ordering)
 -&gt; (Configs -&gt; Configs -&gt; Bool)
@@ -52,7 +52,7 @@ $c&lt; :: Configs -&gt; Configs -&gt; Bool
 compare :: Configs -&gt; Configs -&gt; Ordering
 $ccompare :: Configs -&gt; Configs -&gt; Ordering
 $cp1Ord :: Eq Configs
-</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Ord</span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679336096"><span id="local-6989586621679336098"><span id="local-6989586621679336100"><span class="annot"><span class="annottext">Int -&gt; Configs -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Ord</span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679335262"><span id="local-6989586621679335264"><span id="local-6989586621679335266"><span class="annot"><span class="annottext">Int -&gt; Configs -&gt; ShowS
 [Configs] -&gt; ShowS
 Configs -&gt; String
 (Int -&gt; Configs -&gt; ShowS)

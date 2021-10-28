@@ -38,24 +38,24 @@ forall s (m :: * -&gt; *) a. MonadReader s m =&gt; Getting a s a -&gt; m a
 Lens' StringRewriting Rules
 </span><a href="StringRewriting.html#rules"><span class="hs-identifier hs-var">rules</span></a></span><span>
 </span><span id="line-14"></span><span>
-</span><span id="line-15"></span><span id="local-6989586621679332920"><span class="annot"><a href="StringRewriting.Rewrite.html#rewrite"><span class="hs-identifier hs-type">rewrite</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">MonadFail</span></span><span> </span><span class="annot"><a href="#local-6989586621679332920"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><a href="StringRewriting.html#StringRewriting"><span class="hs-identifier hs-type">StringRewriting</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679332920"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span></span><span>
+</span><span id="line-15"></span><span id="local-6989586621679332086"><span class="annot"><a href="StringRewriting.Rewrite.html#rewrite"><span class="hs-identifier hs-type">rewrite</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">MonadFail</span></span><span> </span><span class="annot"><a href="#local-6989586621679332086"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><a href="StringRewriting.html#StringRewriting"><span class="hs-identifier hs-type">StringRewriting</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679332086"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span></span><span>
 </span><span id="line-16"></span><span id="rewrite"><span class="annot"><span class="annottext">rewrite :: StringRewriting -&gt; String -&gt; m String
-</span><a href="StringRewriting.Rewrite.html#rewrite"><span class="hs-identifier hs-var hs-var">rewrite</span></a></span></span><span> </span><span id="local-6989586621679332919"><span class="annot"><span class="annottext">StringRewriting
-</span><a href="#local-6989586621679332919"><span class="hs-identifier hs-var">sr</span></a></span></span><span> </span><span id="local-6989586621679332918"><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679332918"><span class="hs-identifier hs-var">strIni</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
-</span><span id="line-17"></span><span>    </span><span id="local-6989586621679332917"><span class="annot"><span class="annottext">GWord
-</span><a href="#local-6989586621679332917"><span class="hs-identifier hs-var">gwIni</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">[String] -&gt; (String -&gt; m Generator) -&gt; m GWord
+</span><a href="StringRewriting.Rewrite.html#rewrite"><span class="hs-identifier hs-var hs-var">rewrite</span></a></span></span><span> </span><span id="local-6989586621679332085"><span class="annot"><span class="annottext">StringRewriting
+</span><a href="#local-6989586621679332085"><span class="hs-identifier hs-var">sr</span></a></span></span><span> </span><span id="local-6989586621679332084"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679332084"><span class="hs-identifier hs-var">strIni</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-17"></span><span>    </span><span id="local-6989586621679332083"><span class="annot"><span class="annottext">GWord
+</span><a href="#local-6989586621679332083"><span class="hs-identifier hs-var">gwIni</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">[String] -&gt; (String -&gt; m Generator) -&gt; m GWord
 forall (t :: * -&gt; *) (m :: * -&gt; *) a b.
 (Traversable t, Monad m) =&gt;
 t a -&gt; (a -&gt; m b) -&gt; m (t b)
 </span><span class="hs-identifier hs-var">forM</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String -&gt; [String]
 </span><span class="hs-identifier hs-var">words</span></span><span> </span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679332918"><span class="hs-identifier hs-var">strIni</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">((String -&gt; m Generator) -&gt; m GWord)
+</span><a href="#local-6989586621679332084"><span class="hs-identifier hs-var">strIni</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">((String -&gt; m Generator) -&gt; m GWord)
 -&gt; (String -&gt; m Generator) -&gt; m GWord
 forall a b. (a -&gt; b) -&gt; a -&gt; b
-</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679332915"><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679332915"><span class="hs-identifier hs-var">strGen</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">StringRewriting
-</span><a href="#local-6989586621679332919"><span class="hs-identifier hs-var">sr</span></a></span><span class="annot"><span class="annottext">StringRewriting
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679332081"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679332081"><span class="hs-identifier hs-var">strGen</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">StringRewriting
+</span><a href="#local-6989586621679332085"><span class="hs-identifier hs-var">sr</span></a></span><span class="annot"><span class="annottext">StringRewriting
 -&gt; Getting (m Generator) StringRewriting (m Generator)
 -&gt; m Generator
 forall s a. s -&gt; Getting a s a -&gt; a
@@ -69,24 +69,24 @@ forall c k v (m :: * -&gt; *) x y.
 (Indexable c k v, MonadFail m) =&gt;
 Getting x y c -&gt; k -&gt; Getting x y (m v)
 </span><a href="Containers.html#.%40"><span class="hs-operator hs-var">.@</span></a></span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679332915"><span class="hs-identifier hs-var">strGen</span></a></span><span>
-</span><span id="line-18"></span><span>    </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679332911"><span class="annot"><span class="annottext">gwRes :: GWord
-</span><a href="#local-6989586621679332911"><span class="hs-identifier hs-var hs-var">gwRes</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">StringRewriting -&gt; GWord -&gt; GWord
+</span><a href="#local-6989586621679332081"><span class="hs-identifier hs-var">strGen</span></a></span><span>
+</span><span id="line-18"></span><span>    </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679332077"><span class="annot"><span class="annottext">gwRes :: GWord
+</span><a href="#local-6989586621679332077"><span class="hs-identifier hs-var hs-var">gwRes</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">StringRewriting -&gt; GWord -&gt; GWord
 </span><a href="StringRewriting.Rewrite.html#rewrite%27"><span class="hs-identifier hs-var">rewrite'</span></a></span><span> </span><span class="annot"><span class="annottext">StringRewriting
-</span><a href="#local-6989586621679332919"><span class="hs-identifier hs-var">sr</span></a></span><span> </span><span class="annot"><span class="annottext">GWord
-</span><a href="#local-6989586621679332917"><span class="hs-identifier hs-var">gwIni</span></a></span><span>
-</span><span id="line-19"></span><span>    </span><span id="local-6989586621679332910"><span class="annot"><span class="annottext">[String]
-</span><a href="#local-6989586621679332910"><span class="hs-identifier hs-var">strGens</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">GWord -&gt; (Generator -&gt; m String) -&gt; m [String]
+</span><a href="#local-6989586621679332085"><span class="hs-identifier hs-var">sr</span></a></span><span> </span><span class="annot"><span class="annottext">GWord
+</span><a href="#local-6989586621679332083"><span class="hs-identifier hs-var">gwIni</span></a></span><span>
+</span><span id="line-19"></span><span>    </span><span id="local-6989586621679332076"><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679332076"><span class="hs-identifier hs-var">strGens</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">GWord -&gt; (Generator -&gt; m String) -&gt; m [String]
 forall (t :: * -&gt; *) (m :: * -&gt; *) a b.
 (Traversable t, Monad m) =&gt;
 t a -&gt; (a -&gt; m b) -&gt; m (t b)
 </span><span class="hs-identifier hs-var">forM</span></span><span> </span><span class="annot"><span class="annottext">GWord
-</span><a href="#local-6989586621679332911"><span class="hs-identifier hs-var">gwRes</span></a></span><span> </span><span class="annot"><span class="annottext">((Generator -&gt; m String) -&gt; m [String])
+</span><a href="#local-6989586621679332077"><span class="hs-identifier hs-var">gwRes</span></a></span><span> </span><span class="annot"><span class="annottext">((Generator -&gt; m String) -&gt; m [String])
 -&gt; (Generator -&gt; m String) -&gt; m [String]
 forall a b. (a -&gt; b) -&gt; a -&gt; b
-</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679332909"><span class="annot"><span class="annottext">Generator
-</span><a href="#local-6989586621679332909"><span class="hs-identifier hs-var">gen</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">StringRewriting
-</span><a href="#local-6989586621679332919"><span class="hs-identifier hs-var">sr</span></a></span><span class="annot"><span class="annottext">StringRewriting
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679332075"><span class="annot"><span class="annottext">Generator
+</span><a href="#local-6989586621679332075"><span class="hs-identifier hs-var">gen</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">StringRewriting
+</span><a href="#local-6989586621679332085"><span class="hs-identifier hs-var">sr</span></a></span><span class="annot"><span class="annottext">StringRewriting
 -&gt; Getting (m String) StringRewriting (m String) -&gt; m String
 forall s a. s -&gt; Getting a s a -&gt; a
 </span><span class="hs-operator hs-var">^.</span></span><span class="annot"><span class="annottext">(GeneratorsDescr -&gt; Const (m String) GeneratorsDescr)
@@ -99,12 +99,12 @@ forall c k v (m :: * -&gt; *) x y.
 (Indexable c k v, MonadFail m) =&gt;
 Getting x y c -&gt; k -&gt; Getting x y (m v)
 </span><a href="Containers.html#.%40"><span class="hs-operator hs-var">.@</span></a></span><span class="annot"><span class="annottext">Generator
-</span><a href="#local-6989586621679332909"><span class="hs-identifier hs-var">gen</span></a></span><span>
+</span><a href="#local-6989586621679332075"><span class="hs-identifier hs-var">gen</span></a></span><span>
 </span><span id="line-20"></span><span>    </span><span class="annot"><span class="annottext">String -&gt; m String
 forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
 </span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">(String -&gt; m String) -&gt; String -&gt; m String
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
 </span><span class="hs-identifier hs-var">unwords</span></span><span> </span><span class="annot"><span class="annottext">[String]
-</span><a href="#local-6989586621679332910"><span class="hs-identifier hs-var">strGens</span></a></span><span>
+</span><a href="#local-6989586621679332076"><span class="hs-identifier hs-var">strGens</span></a></span><span>
 </span><span id="line-21"></span></pre></body></html>

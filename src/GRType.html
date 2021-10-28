@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span id="%24con2tag_4l2VcPAlMfWAFep4kXnERu"><span id="%24con2tag_4wjA51NIngp0OqWWHli0Z3"><span id="%24con2tag_H1Uoi58zVbb9LjID1gw5VU"></span></span></span><span class="hs-comment">-- | This module represents group presentation and its sub-types.</span><span>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span id="%24con2tag_4aAlVxNRHpd5eXdr4rWfvv"><span id="%24con2tag_HrhOhhGFjcxCbVXhLfCSca"><span id="%24con2tag_8VPad5ioA6M7iU9xmdyWTh"></span></span></span><span class="hs-comment">-- | This module represents group presentation and its sub-types.</span><span>
 </span><span id="line-2"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">GRType</span><span> </span><span class="hs-keyword">where</span><span>
 </span><span id="line-3"></span><span>
 </span><span id="line-4"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Set</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">Set</span></span><span class="hs-special">)</span><span>
@@ -14,7 +14,7 @@
 </span><span id="line-14"></span><span class="hs-comment">--</span><span>
 </span><span id="line-15"></span><span class="hs-comment">-- 'A_Q' is a generators witch obtain from states 'SMType.State' of S-machine.</span><span>
 </span><span id="line-16"></span><span class="hs-keyword">data</span><span> </span><span id="A"><span class="annot"><a href="GRType.html#A"><span class="hs-identifier hs-var">A</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="A_Y"><span class="annot"><a href="GRType.html#A_Y"><span class="hs-identifier hs-var">A_Y</span></a></span></span><span> </span><span class="annot"><a href="SMType.html#Y"><span class="hs-identifier hs-type">Y</span></a></span><span class="hs-glyph">|</span><span> </span><span id="A_K"><span class="annot"><a href="GRType.html#A_K"><span class="hs-identifier hs-var">A_K</span></a></span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">|</span><span> </span><span id="A_R"><span class="annot"><a href="GRType.html#A_R"><span class="hs-identifier hs-var">A_R</span></a></span></span><span> </span><span class="annot"><a href="SMType.html#SRule"><span class="hs-identifier hs-type">SRule</span></a></span><span> </span><span class="hs-glyph">|</span><span> </span><span id="A_Q"><span class="annot"><a href="GRType.html#A_Q"><span class="hs-identifier hs-var">A_Q</span></a></span></span><span> </span><span class="annot"><a href="SMType.html#State"><span class="hs-identifier hs-type">State</span></a></span><span>
-</span><span id="line-17"></span><span>   </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679334273"><span id="local-6989586621679334275"><span id="local-6989586621679334277"><span class="annot"><span class="annottext">Int -&gt; A -&gt; ShowS
+</span><span id="line-17"></span><span>   </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679333439"><span id="local-6989586621679333441"><span id="local-6989586621679333443"><span class="annot"><span class="annottext">Int -&gt; A -&gt; ShowS
 [A] -&gt; ShowS
 A -&gt; String
 (Int -&gt; A -&gt; ShowS) -&gt; (A -&gt; String) -&gt; ([A] -&gt; ShowS) -&gt; Show A
@@ -26,14 +26,14 @@ show :: A -&gt; String
 $cshow :: A -&gt; String
 showsPrec :: Int -&gt; A -&gt; ShowS
 $cshowsPrec :: Int -&gt; A -&gt; ShowS
-</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679334268"><span id="local-6989586621679334270"><span class="annot"><span class="annottext">A -&gt; A -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679333434"><span id="local-6989586621679333436"><span class="annot"><span class="annottext">A -&gt; A -&gt; Bool
 (A -&gt; A -&gt; Bool) -&gt; (A -&gt; A -&gt; Bool) -&gt; Eq A
 forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
 /= :: A -&gt; A -&gt; Bool
 $c/= :: A -&gt; A -&gt; Bool
 == :: A -&gt; A -&gt; Bool
 $c== :: A -&gt; A -&gt; Bool
-</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679334252"><span id="local-6989586621679334254"><span id="local-6989586621679334256"><span id="local-6989586621679334258"><span id="local-6989586621679334260"><span id="local-6989586621679334262"><span id="local-6989586621679334264"><span class="annot"><span class="annottext">Eq A
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679333418"><span id="local-6989586621679333420"><span id="local-6989586621679333422"><span id="local-6989586621679333424"><span id="local-6989586621679333426"><span id="local-6989586621679333428"><span id="local-6989586621679333430"><span class="annot"><span class="annottext">Eq A
 Eq A
 -&gt; (A -&gt; A -&gt; Ordering)
 -&gt; (A -&gt; A -&gt; Bool)
@@ -81,7 +81,7 @@ $cp1Ord :: Eq A
 </span><span id="line-24"></span><span class="hs-comment">--</span><span>
 </span><span id="line-25"></span><span class="hs-comment">-- 'SmbA'' represents invertions of generators.</span><span>
 </span><span id="line-26"></span><span class="hs-keyword">data</span><span> </span><span id="SmbR"><span class="annot"><a href="GRType.html#SmbR"><span class="hs-identifier hs-var">SmbR</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="SmbA"><span class="annot"><a href="GRType.html#SmbA"><span class="hs-identifier hs-var">SmbA</span></a></span></span><span> </span><span class="annot"><a href="GRType.html#A"><span class="hs-identifier hs-type">A</span></a></span><span> </span><span class="hs-glyph">|</span><span> </span><span id="SmbA%27"><span class="annot"><a href="GRType.html#SmbA%27"><span class="hs-identifier hs-var">SmbA'</span></a></span></span><span> </span><span class="annot"><a href="GRType.html#A"><span class="hs-identifier hs-type">A</span></a></span><span>
-</span><span id="line-27"></span><span>   </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679334243"><span id="local-6989586621679334245"><span id="local-6989586621679334247"><span class="annot"><span class="annottext">Int -&gt; SmbR -&gt; ShowS
+</span><span id="line-27"></span><span>   </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679333409"><span id="local-6989586621679333411"><span id="local-6989586621679333413"><span class="annot"><span class="annottext">Int -&gt; SmbR -&gt; ShowS
 [SmbR] -&gt; ShowS
 SmbR -&gt; String
 (Int -&gt; SmbR -&gt; ShowS)
@@ -94,14 +94,14 @@ show :: SmbR -&gt; String
 $cshow :: SmbR -&gt; String
 showsPrec :: Int -&gt; SmbR -&gt; ShowS
 $cshowsPrec :: Int -&gt; SmbR -&gt; ShowS
-</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679334239"><span id="local-6989586621679334241"><span class="annot"><span class="annottext">SmbR -&gt; SmbR -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679333405"><span id="local-6989586621679333407"><span class="annot"><span class="annottext">SmbR -&gt; SmbR -&gt; Bool
 (SmbR -&gt; SmbR -&gt; Bool) -&gt; (SmbR -&gt; SmbR -&gt; Bool) -&gt; Eq SmbR
 forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
 /= :: SmbR -&gt; SmbR -&gt; Bool
 $c/= :: SmbR -&gt; SmbR -&gt; Bool
 == :: SmbR -&gt; SmbR -&gt; Bool
 $c== :: SmbR -&gt; SmbR -&gt; Bool
-</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679334224"><span id="local-6989586621679334226"><span id="local-6989586621679334228"><span id="local-6989586621679334230"><span id="local-6989586621679334232"><span id="local-6989586621679334234"><span id="local-6989586621679334236"><span class="annot"><span class="annottext">Eq SmbR
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679333390"><span id="local-6989586621679333392"><span id="local-6989586621679333394"><span id="local-6989586621679333396"><span id="local-6989586621679333398"><span id="local-6989586621679333400"><span id="local-6989586621679333402"><span class="annot"><span class="annottext">Eq SmbR
 Eq SmbR
 -&gt; (SmbR -&gt; SmbR -&gt; Ordering)
 -&gt; (SmbR -&gt; SmbR -&gt; Bool)
@@ -157,7 +157,7 @@ $cp1Ord :: Eq SmbR
 </span><span id="line-42"></span><span class="hs-comment">--</span><span>
 </span><span id="line-43"></span><span class="hs-comment">-- &gt;&gt;&gt; Relator [a,b]</span><span>
 </span><span id="line-44"></span><span class="hs-keyword">data</span><span> </span><span id="GrRelation"><span class="annot"><a href="GRType.html#GrRelation"><span class="hs-identifier hs-var">GrRelation</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="Relation"><span class="annot"><a href="GRType.html#Relation"><span class="hs-identifier hs-var">Relation</span></a></span></span><span> </span><span class="hs-special">(</span><span class="hs-special">[</span><span class="annot"><a href="GRType.html#SmbR"><span class="hs-identifier hs-type">SmbR</span></a></span><span class="hs-special">]</span><span class="hs-special">,</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="GRType.html#SmbR"><span class="hs-identifier hs-type">SmbR</span></a></span><span class="hs-special">]</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">|</span><span> </span><span id="Relator"><span class="annot"><a href="GRType.html#Relator"><span class="hs-identifier hs-var">Relator</span></a></span></span><span> </span><span class="hs-special">[</span><span class="annot"><a href="GRType.html#SmbR"><span class="hs-identifier hs-type">SmbR</span></a></span><span class="hs-special">]</span><span>
-</span><span id="line-45"></span><span>   </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679334216"><span id="local-6989586621679334218"><span id="local-6989586621679334220"><span class="annot"><span class="annottext">Int -&gt; GrRelation -&gt; ShowS
+</span><span id="line-45"></span><span>   </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679333382"><span id="local-6989586621679333384"><span id="local-6989586621679333386"><span class="annot"><span class="annottext">Int -&gt; GrRelation -&gt; ShowS
 [GrRelation] -&gt; ShowS
 GrRelation -&gt; String
 (Int -&gt; GrRelation -&gt; ShowS)
@@ -172,7 +172,7 @@ show :: GrRelation -&gt; String
 $cshow :: GrRelation -&gt; String
 showsPrec :: Int -&gt; GrRelation -&gt; ShowS
 $cshowsPrec :: Int -&gt; GrRelation -&gt; ShowS
-</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679334212"><span id="local-6989586621679334214"><span class="annot"><span class="annottext">GrRelation -&gt; GrRelation -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679333378"><span id="local-6989586621679333380"><span class="annot"><span class="annottext">GrRelation -&gt; GrRelation -&gt; Bool
 (GrRelation -&gt; GrRelation -&gt; Bool)
 -&gt; (GrRelation -&gt; GrRelation -&gt; Bool) -&gt; Eq GrRelation
 forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
@@ -180,7 +180,7 @@ forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
 $c/= :: GrRelation -&gt; GrRelation -&gt; Bool
 == :: GrRelation -&gt; GrRelation -&gt; Bool
 $c== :: GrRelation -&gt; GrRelation -&gt; Bool
-</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679334197"><span id="local-6989586621679334199"><span id="local-6989586621679334201"><span id="local-6989586621679334203"><span id="local-6989586621679334205"><span id="local-6989586621679334207"><span id="local-6989586621679334209"><span class="annot"><span class="annottext">Eq GrRelation
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679333363"><span id="local-6989586621679333365"><span id="local-6989586621679333367"><span id="local-6989586621679333369"><span id="local-6989586621679333371"><span id="local-6989586621679333373"><span id="local-6989586621679333375"><span class="annot"><span class="annottext">Eq GrRelation
 Eq GrRelation
 -&gt; (GrRelation -&gt; GrRelation -&gt; Ordering)
 -&gt; (GrRelation -&gt; GrRelation -&gt; Bool)
@@ -224,14 +224,14 @@ $cp1Ord :: Eq GrRelation
 </span><span id="line-48"></span><span class="hs-comment">-- </span><span>
 </span><span id="line-49"></span><span class="hs-comment">-- It consists of set of generators 'A' and set of relations 'GrRelation'.</span><span>
 </span><span id="line-50"></span><span class="hs-keyword">newtype</span><span> </span><span id="GR"><span class="annot"><a href="GRType.html#GR"><span class="hs-identifier hs-var">GR</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>  </span><span id="GR"><span class="annot"><a href="GRType.html#GR"><span class="hs-identifier hs-var">GR</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Set</span></span><span> </span><span class="annot"><a href="GRType.html#A"><span class="hs-identifier hs-type">A</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Set</span></span><span> </span><span class="annot"><a href="GRType.html#GrRelation"><span class="hs-identifier hs-type">GrRelation</span></a></span><span class="hs-special">)</span><span>
-</span><span id="line-51"></span><span>   </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679334192"><span id="local-6989586621679334194"><span class="annot"><span class="annottext">GR -&gt; GR -&gt; Bool
+</span><span id="line-51"></span><span>   </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679333358"><span id="local-6989586621679333360"><span class="annot"><span class="annottext">GR -&gt; GR -&gt; Bool
 (GR -&gt; GR -&gt; Bool) -&gt; (GR -&gt; GR -&gt; Bool) -&gt; Eq GR
 forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
 /= :: GR -&gt; GR -&gt; Bool
 $c/= :: GR -&gt; GR -&gt; Bool
 == :: GR -&gt; GR -&gt; Bool
 $c== :: GR -&gt; GR -&gt; Bool
-</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679334177"><span id="local-6989586621679334179"><span id="local-6989586621679334181"><span id="local-6989586621679334183"><span id="local-6989586621679334185"><span id="local-6989586621679334187"><span id="local-6989586621679334189"><span class="annot"><span class="annottext">Eq GR
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679333343"><span id="local-6989586621679333345"><span id="local-6989586621679333347"><span id="local-6989586621679333349"><span id="local-6989586621679333351"><span id="local-6989586621679333353"><span id="local-6989586621679333355"><span class="annot"><span class="annottext">Eq GR
 Eq GR
 -&gt; (GR -&gt; GR -&gt; Ordering)
 -&gt; (GR -&gt; GR -&gt; Bool)
@@ -270,17 +270,17 @@ compare :: GR -&gt; GR -&gt; Ordering
 $ccompare :: GR -&gt; GR -&gt; Ordering
 $cp1Ord :: Eq GR
 </span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Ord</span></span></span></span></span></span></span></span></span><span class="hs-special">)</span><span>
-</span><span id="line-52"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679334172"><span id="local-6989586621679334175"><span class="annot"><span class="hs-identifier hs-type">Show</span></span><span> </span><span class="annot"><a href="GRType.html#GR"><span class="hs-identifier hs-type">GR</span></a></span></span></span><span> </span><span class="hs-keyword">where</span><span>
-</span><span id="line-53"></span><span>   </span><span id="local-6989586621679334171"><span class="annot"><span class="annottext">show :: GR -&gt; String
-</span><span class="hs-identifier hs-var hs-var hs-var hs-var">show</span></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="GRType.html#GR"><span class="hs-identifier hs-type">GR</span></a></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679334169"><span class="annot"><span class="annottext">Set A
-</span><a href="#local-6989586621679334169"><span class="hs-identifier hs-var">a</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679334168"><span class="annot"><span class="annottext">Set GrRelation
-</span><a href="#local-6989586621679334168"><span class="hs-identifier hs-var">r</span></a></span></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span id="line-52"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679333338"><span id="local-6989586621679333341"><span class="annot"><span class="hs-identifier hs-type">Show</span></span><span> </span><span class="annot"><a href="GRType.html#GR"><span class="hs-identifier hs-type">GR</span></a></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-53"></span><span>   </span><span id="local-6989586621679333337"><span class="annot"><span class="annottext">show :: GR -&gt; String
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">show</span></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="GRType.html#GR"><span class="hs-identifier hs-type">GR</span></a></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679333335"><span class="annot"><span class="annottext">Set A
+</span><a href="#local-6989586621679333335"><span class="hs-identifier hs-var">a</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679333334"><span class="annot"><span class="annottext">Set GrRelation
+</span><a href="#local-6989586621679333334"><span class="hs-identifier hs-var">r</span></a></span></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;A {&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; ShowS
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">Set A -&gt; String
 forall a. Show a =&gt; a -&gt; String
 </span><span class="hs-identifier hs-var">show</span></span><span> </span><span class="annot"><span class="annottext">Set A
-</span><a href="#local-6989586621679334169"><span class="hs-identifier hs-var">a</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; ShowS
+</span><a href="#local-6989586621679333335"><span class="hs-identifier hs-var">a</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; ShowS
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;}&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; ShowS
@@ -294,7 +294,7 @@ forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">Set GrRelation -&gt; String
 forall a. Show a =&gt; a -&gt; String
 </span><span class="hs-identifier hs-var">show</span></span><span> </span><span class="annot"><span class="annottext">Set GrRelation
-</span><a href="#local-6989586621679334168"><span class="hs-identifier hs-var">r</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; ShowS
+</span><a href="#local-6989586621679333334"><span class="hs-identifier hs-var">r</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; ShowS
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;}&quot;</span></span><span>

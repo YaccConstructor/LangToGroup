@@ -18,8 +18,8 @@
 </span><span id="line-18"></span><span>
 </span><span id="line-19"></span><span class="annot"><a href="TuringMachine.TMs.html#simple"><span class="hs-identifier hs-type">simple</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TuringMachine.html#TuringMachine"><span class="hs-identifier hs-type">TuringMachine</span></a></span><span>
 </span><span id="line-20"></span><span id="simple"><span class="annot"><span class="annottext">simple :: String -&gt; TuringMachine
-</span><a href="TuringMachine.TMs.html#simple"><span class="hs-identifier hs-var hs-var">simple</span></a></span></span><span> </span><span id="local-6989586621679343148"><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679343148"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(TuringMachine -&gt; TuringMachine -&gt; TuringMachine)
+</span><a href="TuringMachine.TMs.html#simple"><span class="hs-identifier hs-var hs-var">simple</span></a></span></span><span> </span><span id="local-6989586621679342135"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679342135"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(TuringMachine -&gt; TuringMachine -&gt; TuringMachine)
 -&gt; [TuringMachine] -&gt; TuringMachine
 forall (t :: * -&gt; *) a. Foldable t =&gt; (a -&gt; a -&gt; a) -&gt; t a -&gt; a
 </span><span class="hs-identifier hs-var">foldr1</span></span><span> </span><span class="annot"><span class="annottext">TuringMachine -&gt; TuringMachine -&gt; TuringMachine
@@ -37,15 +37,15 @@ forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
 </span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">(Char -&gt; TuringMachine) -&gt; String -&gt; [TuringMachine]
 forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
 </span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679343148"><span class="hs-identifier hs-var">s</span></a></span><span>
+</span><a href="#local-6989586621679342135"><span class="hs-identifier hs-var">s</span></a></span><span>
 </span><span id="line-21"></span><span>
 </span><span id="line-22"></span><span class="annot"><a href="TuringMachine.TMs.html#star"><span class="hs-identifier hs-type">star</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TuringMachine.html#TuringMachine"><span class="hs-identifier hs-type">TuringMachine</span></a></span><span>
 </span><span id="line-23"></span><span id="star"><span class="annot"><span class="annottext">star :: String -&gt; TuringMachine
-</span><a href="TuringMachine.TMs.html#star"><span class="hs-identifier hs-var hs-var">star</span></a></span></span><span> </span><span id="local-6989586621679343141"><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679343141"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">TuringMachine -&gt; TuringMachine
+</span><a href="TuringMachine.TMs.html#star"><span class="hs-identifier hs-var hs-var">star</span></a></span></span><span> </span><span id="local-6989586621679342128"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679342128"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">TuringMachine -&gt; TuringMachine
 </span><a href="TuringMachine.Constructors.html#loop"><span class="hs-identifier hs-var">loop</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String -&gt; TuringMachine
 </span><a href="TuringMachine.TMs.html#simple"><span class="hs-identifier hs-var">simple</span></a></span><span> </span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679343141"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">TuringMachine -&gt; TuringMachine -&gt; TuringMachine
+</span><a href="#local-6989586621679342128"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">TuringMachine -&gt; TuringMachine -&gt; TuringMachine
 </span><a href="TuringMachine.Constructors.html#%7C%7C%3E"><span class="hs-operator hs-var">||&gt;</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; TuringMachine
 forall s. ShowedSymbolClass s =&gt; [s] -&gt; TuringMachine
 </span><a href="TuringMachine.Constructors.html#check"><span class="hs-identifier hs-var">check</span></a></span><span> </span><span class="annot"><span class="annottext">String
@@ -53,20 +53,20 @@ forall s. ShowedSymbolClass s =&gt; [s] -&gt; TuringMachine
 </span><span id="line-24"></span><span>
 </span><span id="line-25"></span><span class="annot"><a href="TuringMachine.TMs.html#plus"><span class="hs-identifier hs-type">plus</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TuringMachine.html#TuringMachine"><span class="hs-identifier hs-type">TuringMachine</span></a></span><span>
 </span><span id="line-26"></span><span id="plus"><span class="annot"><span class="annottext">plus :: String -&gt; TuringMachine
-</span><a href="TuringMachine.TMs.html#plus"><span class="hs-identifier hs-var hs-var">plus</span></a></span></span><span> </span><span id="local-6989586621679343136"><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679343136"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; TuringMachine
+</span><a href="TuringMachine.TMs.html#plus"><span class="hs-identifier hs-var hs-var">plus</span></a></span></span><span> </span><span id="local-6989586621679342123"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679342123"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; TuringMachine
 </span><a href="TuringMachine.TMs.html#simple"><span class="hs-identifier hs-var">simple</span></a></span><span> </span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679343136"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">TuringMachine -&gt; TuringMachine -&gt; TuringMachine
+</span><a href="#local-6989586621679342123"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">TuringMachine -&gt; TuringMachine -&gt; TuringMachine
 </span><a href="TuringMachine.Constructors.html#%2B%2B%3E"><span class="hs-operator hs-var">++&gt;</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; TuringMachine
 </span><a href="TuringMachine.TMs.html#star"><span class="hs-identifier hs-var">star</span></a></span><span> </span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679343136"><span class="hs-identifier hs-var">s</span></a></span><span>
+</span><a href="#local-6989586621679342123"><span class="hs-identifier hs-var">s</span></a></span><span>
 </span><span id="line-27"></span><span>
 </span><span id="line-28"></span><span class="annot"><a href="TuringMachine.TMs.html#opt"><span class="hs-identifier hs-type">opt</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TuringMachine.html#TuringMachine"><span class="hs-identifier hs-type">TuringMachine</span></a></span><span>
 </span><span id="line-29"></span><span id="opt"><span class="annot"><span class="annottext">opt :: String -&gt; TuringMachine
-</span><a href="TuringMachine.TMs.html#opt"><span class="hs-identifier hs-var hs-var">opt</span></a></span></span><span> </span><span id="local-6989586621679343134"><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679343134"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; TuringMachine
+</span><a href="TuringMachine.TMs.html#opt"><span class="hs-identifier hs-var hs-var">opt</span></a></span></span><span> </span><span id="local-6989586621679342121"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679342121"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; TuringMachine
 </span><a href="TuringMachine.TMs.html#simple"><span class="hs-identifier hs-var">simple</span></a></span><span> </span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679343134"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">TuringMachine -&gt; TuringMachine -&gt; TuringMachine
+</span><a href="#local-6989586621679342121"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">TuringMachine -&gt; TuringMachine -&gt; TuringMachine
 </span><a href="TuringMachine.Constructors.html#%7C%7C%3E"><span class="hs-operator hs-var">||&gt;</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; TuringMachine
 forall s. ShowedSymbolClass s =&gt; [s] -&gt; TuringMachine
 </span><a href="TuringMachine.Constructors.html#check"><span class="hs-identifier hs-var">check</span></a></span><span> </span><span class="annot"><span class="annottext">String
@@ -397,8 +397,8 @@ forall s. ShowedSymbolClass s =&gt; Move -&gt; [s] -&gt; TuringMachine
 </span><span id="line-102"></span><span>
 </span><span id="line-103"></span><span class="annot"><a href="TuringMachine.TMs.html#badEvenPalindrome"><span class="hs-identifier hs-type">badEvenPalindrome</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TuringMachine.html#TuringMachine"><span class="hs-identifier hs-type">TuringMachine</span></a></span><span>
 </span><span id="line-104"></span><span id="badEvenPalindrome"><span class="annot"><span class="annottext">badEvenPalindrome :: String -&gt; TuringMachine
-</span><a href="TuringMachine.TMs.html#badEvenPalindrome"><span class="hs-identifier hs-var hs-var">badEvenPalindrome</span></a></span></span><span> </span><span id="local-6989586621679343120"><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679343120"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><a href="TuringMachine.TMs.html#badEvenPalindrome"><span class="hs-identifier hs-var hs-var">badEvenPalindrome</span></a></span></span><span> </span><span id="local-6989586621679342107"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679342107"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
 </span><span id="line-105"></span><span>    </span><span class="annot"><span class="annottext">String -&gt; TuringMachine
 forall s. ShowedSymbolClass s =&gt; [s] -&gt; TuringMachine
 </span><a href="TuringMachine.Constructors.html#check"><span class="hs-identifier hs-var">check</span></a></span><span> </span><span class="annot"><span class="annottext">String
@@ -416,7 +416,7 @@ forall s.
 ShowedSymbolClass s =&gt;
 [s] -&gt; ShowedSymbol -&gt; Move -&gt; TuringMachine
 </span><a href="TuringMachine.Constructors.html#rewriteAndMove"><span class="hs-identifier hs-var">rewriteAndMove</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">Char
-</span><a href="#local-6989586621679343119"><span class="hs-identifier hs-var">c</span></a></span><span class="hs-special">]</span><span> </span><span class="annot"><span class="annottext">ShowedSymbol
+</span><a href="#local-6989586621679342106"><span class="hs-identifier hs-var">c</span></a></span><span class="hs-special">]</span><span> </span><span class="annot"><span class="annottext">ShowedSymbol
 </span><span class="hs-string">&quot;.&quot;</span></span><span> </span><span class="annot"><span class="annottext">Move
 </span><a href="TuringMachine.Move.html#toRight"><span class="hs-identifier hs-var">toRight</span></a></span><span> </span><span class="annot"><span class="annottext">TuringMachine -&gt; TuringMachine -&gt; TuringMachine
 </span><a href="TuringMachine.Constructors.html#%2B%2B%3E"><span class="hs-operator hs-var">++&gt;</span></a></span><span>
@@ -424,7 +424,7 @@ ShowedSymbolClass s =&gt;
 forall s. ShowedSymbolClass s =&gt; Move -&gt; [s] -&gt; TuringMachine
 </span><a href="TuringMachine.Constructors.html#moveInf"><span class="hs-identifier hs-var">moveInf</span></a></span><span> </span><span class="annot"><span class="annottext">Move
 </span><a href="TuringMachine.Move.html#toRight"><span class="hs-identifier hs-var">toRight</span></a></span><span> </span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679343120"><span class="hs-identifier hs-var">a</span></a></span><span> </span><span class="annot"><span class="annottext">TuringMachine -&gt; TuringMachine -&gt; TuringMachine
+</span><a href="#local-6989586621679342107"><span class="hs-identifier hs-var">a</span></a></span><span> </span><span class="annot"><span class="annottext">TuringMachine -&gt; TuringMachine -&gt; TuringMachine
 </span><a href="TuringMachine.Constructors.html#%7C%7C%3E"><span class="hs-operator hs-var">||&gt;</span></a></span><span> </span><span class="annot"><span class="annottext">Move -&gt; String -&gt; TuringMachine
 forall s. ShowedSymbolClass s =&gt; Move -&gt; [s] -&gt; TuringMachine
 </span><a href="TuringMachine.Constructors.html#move"><span class="hs-identifier hs-var">move</span></a></span><span> </span><span class="annot"><span class="annottext">Move
@@ -436,7 +436,7 @@ forall s.
 ShowedSymbolClass s =&gt;
 [s] -&gt; ShowedSymbol -&gt; TuringMachine
 </span><a href="TuringMachine.Constructors.html#rewrite"><span class="hs-identifier hs-var">rewrite</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">Char
-</span><a href="#local-6989586621679343119"><span class="hs-identifier hs-var">c</span></a></span><span class="hs-special">]</span><span> </span><span class="annot"><span class="annottext">ShowedSymbol
+</span><a href="#local-6989586621679342106"><span class="hs-identifier hs-var">c</span></a></span><span class="hs-special">]</span><span> </span><span class="annot"><span class="annottext">ShowedSymbol
 </span><span class="hs-string">&quot;.&quot;</span></span><span> </span><span class="annot"><span class="annottext">TuringMachine -&gt; TuringMachine -&gt; TuringMachine
 </span><a href="TuringMachine.Constructors.html#%7C%7C%3E"><span class="hs-operator hs-var">||&gt;</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; TuringMachine
 forall s. ShowedSymbolClass s =&gt; [s] -&gt; TuringMachine
@@ -444,7 +444,7 @@ forall s. ShowedSymbolClass s =&gt; [s] -&gt; TuringMachine
 </span><span class="hs-char">'.'</span></span><span> </span><span class="annot"><span class="annottext">Char -&gt; String -&gt; String
 forall a. a -&gt; [a] -&gt; [a]
 </span><span class="hs-glyph hs-var">:</span></span><span> </span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679343120"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">TuringMachine -&gt; TuringMachine -&gt; TuringMachine
+</span><a href="#local-6989586621679342107"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">TuringMachine -&gt; TuringMachine -&gt; TuringMachine
 </span><a href="TuringMachine.Constructors.html#%2B%2B%3E"><span class="hs-operator hs-var">++&gt;</span></a></span><span>
 </span><span id="line-111"></span><span>            </span><span class="annot"><span class="annottext">Move -&gt; String -&gt; TuringMachine
 forall s. ShowedSymbolClass s =&gt; Move -&gt; [s] -&gt; TuringMachine
@@ -456,22 +456,22 @@ forall s. ShowedSymbolClass s =&gt; Move -&gt; [s] -&gt; TuringMachine
 forall s. ShowedSymbolClass s =&gt; Move -&gt; [s] -&gt; TuringMachine
 </span><a href="TuringMachine.Constructors.html#moveInf"><span class="hs-identifier hs-var">moveInf</span></a></span><span> </span><span class="annot"><span class="annottext">Move
 </span><a href="TuringMachine.Move.html#toLeft"><span class="hs-identifier hs-var">toLeft</span></a></span><span> </span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679343120"><span class="hs-identifier hs-var">a</span></a></span><span> </span><span class="annot"><span class="annottext">TuringMachine -&gt; TuringMachine -&gt; TuringMachine
+</span><a href="#local-6989586621679342107"><span class="hs-identifier hs-var">a</span></a></span><span> </span><span class="annot"><span class="annottext">TuringMachine -&gt; TuringMachine -&gt; TuringMachine
 </span><a href="TuringMachine.Constructors.html#%7C%7C%3E"><span class="hs-operator hs-var">||&gt;</span></a></span><span> </span><span class="annot"><span class="annottext">Move -&gt; String -&gt; TuringMachine
 forall s. ShowedSymbolClass s =&gt; Move -&gt; [s] -&gt; TuringMachine
 </span><a href="TuringMachine.Constructors.html#move"><span class="hs-identifier hs-var">move</span></a></span><span> </span><span class="annot"><span class="annottext">Move
 </span><a href="TuringMachine.Move.html#toRight"><span class="hs-identifier hs-var">toRight</span></a></span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;.&quot;</span></span><span class="hs-special">)</span><span>
-</span><span id="line-113"></span><span>          </span><span class="hs-glyph">|</span><span> </span><span id="local-6989586621679343119"><span class="annot"><span class="annottext">Char
-</span><a href="#local-6989586621679343119"><span class="hs-identifier hs-var">c</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679343120"><span class="hs-identifier hs-var">a</span></a></span><span>
+</span><span id="line-113"></span><span>          </span><span class="hs-glyph">|</span><span> </span><span id="local-6989586621679342106"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679342106"><span class="hs-identifier hs-var">c</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679342107"><span class="hs-identifier hs-var">a</span></a></span><span>
 </span><span id="line-114"></span><span>          </span><span class="hs-special">]</span><span>
 </span><span id="line-115"></span><span>      </span><span class="hs-special">)</span><span>
 </span><span id="line-116"></span><span>
 </span><span id="line-117"></span><span class="annot"><a href="TuringMachine.TMs.html#evenPalindrome"><span class="hs-identifier hs-type">evenPalindrome</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TuringMachine.html#TuringMachine"><span class="hs-identifier hs-type">TuringMachine</span></a></span><span>
 </span><span id="line-118"></span><span id="evenPalindrome"><span class="annot"><span class="annottext">evenPalindrome :: String -&gt; TuringMachine
-</span><a href="TuringMachine.TMs.html#evenPalindrome"><span class="hs-identifier hs-var hs-var">evenPalindrome</span></a></span></span><span> </span><span id="local-6989586621679343117"><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679343117"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><a href="TuringMachine.TMs.html#evenPalindrome"><span class="hs-identifier hs-var hs-var">evenPalindrome</span></a></span></span><span> </span><span id="local-6989586621679342104"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679342104"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
 </span><span id="line-119"></span><span>    </span><span class="annot"><span class="annottext">String -&gt; TuringMachine
 forall s. ShowedSymbolClass s =&gt; [s] -&gt; TuringMachine
 </span><a href="TuringMachine.Constructors.html#check"><span class="hs-identifier hs-var">check</span></a></span><span> </span><span class="annot"><span class="annottext">String
@@ -489,7 +489,7 @@ forall s.
 ShowedSymbolClass s =&gt;
 [s] -&gt; ShowedSymbol -&gt; Move -&gt; TuringMachine
 </span><a href="TuringMachine.Constructors.html#rewriteAndMove"><span class="hs-identifier hs-var">rewriteAndMove</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">Char
-</span><a href="#local-6989586621679343116"><span class="hs-identifier hs-var">c</span></a></span><span class="hs-special">]</span><span> </span><span class="annot"><span class="annottext">ShowedSymbol
+</span><a href="#local-6989586621679342103"><span class="hs-identifier hs-var">c</span></a></span><span class="hs-special">]</span><span> </span><span class="annot"><span class="annottext">ShowedSymbol
 </span><span class="hs-string">&quot;.&quot;</span></span><span> </span><span class="annot"><span class="annottext">Move
 </span><a href="TuringMachine.Move.html#toRight"><span class="hs-identifier hs-var">toRight</span></a></span><span> </span><span class="annot"><span class="annottext">TuringMachine -&gt; TuringMachine -&gt; TuringMachine
 </span><a href="TuringMachine.Constructors.html#%2B%2B%3E"><span class="hs-operator hs-var">++&gt;</span></a></span><span>
@@ -497,7 +497,7 @@ ShowedSymbolClass s =&gt;
 forall s. ShowedSymbolClass s =&gt; Move -&gt; [s] -&gt; TuringMachine
 </span><a href="TuringMachine.Constructors.html#moveInf"><span class="hs-identifier hs-var">moveInf</span></a></span><span> </span><span class="annot"><span class="annottext">Move
 </span><a href="TuringMachine.Move.html#toRight"><span class="hs-identifier hs-var">toRight</span></a></span><span> </span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679343117"><span class="hs-identifier hs-var">a</span></a></span><span> </span><span class="annot"><span class="annottext">TuringMachine -&gt; TuringMachine -&gt; TuringMachine
+</span><a href="#local-6989586621679342104"><span class="hs-identifier hs-var">a</span></a></span><span> </span><span class="annot"><span class="annottext">TuringMachine -&gt; TuringMachine -&gt; TuringMachine
 </span><a href="TuringMachine.Constructors.html#%7C%7C%3E"><span class="hs-operator hs-var">||&gt;</span></a></span><span> </span><span class="annot"><span class="annottext">Move -&gt; String -&gt; TuringMachine
 forall s. ShowedSymbolClass s =&gt; Move -&gt; [s] -&gt; TuringMachine
 </span><a href="TuringMachine.Constructors.html#move"><span class="hs-identifier hs-var">move</span></a></span><span> </span><span class="annot"><span class="annottext">Move
@@ -509,7 +509,7 @@ forall s.
 ShowedSymbolClass s =&gt;
 [s] -&gt; ShowedSymbol -&gt; TuringMachine
 </span><a href="TuringMachine.Constructors.html#rewrite"><span class="hs-identifier hs-var">rewrite</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">Char
-</span><a href="#local-6989586621679343116"><span class="hs-identifier hs-var">c</span></a></span><span class="hs-special">]</span><span> </span><span class="annot"><span class="annottext">ShowedSymbol
+</span><a href="#local-6989586621679342103"><span class="hs-identifier hs-var">c</span></a></span><span class="hs-special">]</span><span> </span><span class="annot"><span class="annottext">ShowedSymbol
 </span><span class="hs-string">&quot;.&quot;</span></span><span> </span><span class="annot"><span class="annottext">TuringMachine -&gt; TuringMachine -&gt; TuringMachine
 </span><a href="TuringMachine.Constructors.html#%7C%7C%3E"><span class="hs-operator hs-var">||&gt;</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; TuringMachine
 forall s. ShowedSymbolClass s =&gt; [s] -&gt; TuringMachine
@@ -517,10 +517,10 @@ forall s. ShowedSymbolClass s =&gt; [s] -&gt; TuringMachine
 </span><span class="hs-char">'.'</span></span><span> </span><span class="annot"><span class="annottext">Char -&gt; String -&gt; String
 forall a. a -&gt; [a] -&gt; [a]
 </span><span class="hs-glyph hs-var">:</span></span><span> </span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679343117"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span>
-</span><span id="line-125"></span><span>          </span><span class="hs-glyph">|</span><span> </span><span id="local-6989586621679343116"><span class="annot"><span class="annottext">Char
-</span><a href="#local-6989586621679343116"><span class="hs-identifier hs-var">c</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679343117"><span class="hs-identifier hs-var">a</span></a></span><span>
+</span><a href="#local-6989586621679342104"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><span id="line-125"></span><span>          </span><span class="hs-glyph">|</span><span> </span><span id="local-6989586621679342103"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679342103"><span class="hs-identifier hs-var">c</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679342104"><span class="hs-identifier hs-var">a</span></a></span><span>
 </span><span id="line-126"></span><span>          </span><span class="hs-special">]</span><span> </span><span class="annot"><span class="annottext">TuringMachine -&gt; TuringMachine -&gt; TuringMachine
 </span><a href="TuringMachine.Constructors.html#%2B%2B%3E"><span class="hs-operator hs-var">++&gt;</span></a></span><span>
 </span><span id="line-127"></span><span>        </span><span class="annot"><span class="annottext">Move -&gt; String -&gt; TuringMachine
@@ -533,7 +533,7 @@ forall s. ShowedSymbolClass s =&gt; Move -&gt; [s] -&gt; TuringMachine
 forall s. ShowedSymbolClass s =&gt; Move -&gt; [s] -&gt; TuringMachine
 </span><a href="TuringMachine.Constructors.html#moveInf"><span class="hs-identifier hs-var">moveInf</span></a></span><span> </span><span class="annot"><span class="annottext">Move
 </span><a href="TuringMachine.Move.html#toLeft"><span class="hs-identifier hs-var">toLeft</span></a></span><span> </span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679343117"><span class="hs-identifier hs-var">a</span></a></span><span> </span><span class="annot"><span class="annottext">TuringMachine -&gt; TuringMachine -&gt; TuringMachine
+</span><a href="#local-6989586621679342104"><span class="hs-identifier hs-var">a</span></a></span><span> </span><span class="annot"><span class="annottext">TuringMachine -&gt; TuringMachine -&gt; TuringMachine
 </span><a href="TuringMachine.Constructors.html#%7C%7C%3E"><span class="hs-operator hs-var">||&gt;</span></a></span><span> </span><span class="annot"><span class="annottext">Move -&gt; String -&gt; TuringMachine
 forall s. ShowedSymbolClass s =&gt; Move -&gt; [s] -&gt; TuringMachine
 </span><a href="TuringMachine.Constructors.html#move"><span class="hs-identifier hs-var">move</span></a></span><span> </span><span class="annot"><span class="annottext">Move

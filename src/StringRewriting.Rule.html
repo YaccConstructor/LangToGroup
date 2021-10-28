@@ -20,14 +20,14 @@
 </span><a href="StringRewriting.Rule.html#_left"><span class="hs-identifier hs-var hs-var">_left</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="StringRewriting.Generator.html#GWord"><span class="hs-identifier hs-type">GWord</span></a></span><span>
 </span><span id="line-20"></span><span>  </span><span class="hs-special">,</span><span> </span><span id="_right"><span class="annot"><span class="annottext">Rule -&gt; GWord
 </span><a href="StringRewriting.Rule.html#_right"><span class="hs-identifier hs-var hs-var">_right</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="StringRewriting.Generator.html#GWord"><span class="hs-identifier hs-type">GWord</span></a></span><span>
-</span><span id="line-21"></span><span>  </span><span class="hs-special">}</span><span> </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679332614"><span id="local-6989586621679332616"><span class="annot"><span class="annottext">Rule -&gt; Rule -&gt; Bool
+</span><span id="line-21"></span><span>  </span><span class="hs-special">}</span><span> </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679331780"><span id="local-6989586621679331782"><span class="annot"><span class="annottext">Rule -&gt; Rule -&gt; Bool
 (Rule -&gt; Rule -&gt; Bool) -&gt; (Rule -&gt; Rule -&gt; Bool) -&gt; Eq Rule
 forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
 /= :: Rule -&gt; Rule -&gt; Bool
 $c/= :: Rule -&gt; Rule -&gt; Bool
 == :: Rule -&gt; Rule -&gt; Bool
 $c== :: Rule -&gt; Rule -&gt; Bool
-</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679332598"><span id="local-6989586621679332600"><span id="local-6989586621679332602"><span id="local-6989586621679332604"><span id="local-6989586621679332606"><span id="local-6989586621679332608"><span id="local-6989586621679332610"><span class="annot"><span class="annottext">Eq Rule
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679331764"><span id="local-6989586621679331766"><span id="local-6989586621679331768"><span id="local-6989586621679331770"><span id="local-6989586621679331772"><span id="local-6989586621679331774"><span id="local-6989586621679331776"><span class="annot"><span class="annottext">Eq Rule
 Eq Rule
 -&gt; (Rule -&gt; Rule -&gt; Ordering)
 -&gt; (Rule -&gt; Rule -&gt; Bool)
@@ -76,11 +76,11 @@ $cp1Ord :: Eq Rule
 </span><span id="line-27"></span><span>
 </span><span id="line-28"></span><span class="annot"><a href="StringRewriting.Rule.html#toPair"><span class="hs-identifier hs-type">toPair</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="StringRewriting.Rule.html#Rule"><span class="hs-identifier hs-type">Rule</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="StringRewriting.Generator.html#GWord"><span class="hs-identifier hs-type">GWord</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="StringRewriting.Generator.html#GWord"><span class="hs-identifier hs-type">GWord</span></a></span><span class="hs-special">)</span><span>
 </span><span id="line-29"></span><span id="toPair"><span class="annot"><span class="annottext">toPair :: Rule -&gt; (GWord, GWord)
-</span><a href="StringRewriting.Rule.html#toPair"><span class="hs-identifier hs-var hs-var">toPair</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="StringRewriting.Rule.html#R"><span class="hs-identifier hs-type">R</span></a></span><span> </span><span id="local-6989586621679332596"><span class="annot"><span class="annottext">GWord
-</span><a href="#local-6989586621679332596"><span class="hs-identifier hs-var">l</span></a></span></span><span> </span><span id="local-6989586621679332595"><span class="annot"><span class="annottext">GWord
-</span><a href="#local-6989586621679332595"><span class="hs-identifier hs-var">r</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">GWord
-</span><a href="#local-6989586621679332596"><span class="hs-identifier hs-var">l</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">GWord
-</span><a href="#local-6989586621679332595"><span class="hs-identifier hs-var">r</span></a></span><span class="hs-special">)</span><span>
+</span><a href="StringRewriting.Rule.html#toPair"><span class="hs-identifier hs-var hs-var">toPair</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="StringRewriting.Rule.html#R"><span class="hs-identifier hs-type">R</span></a></span><span> </span><span id="local-6989586621679331762"><span class="annot"><span class="annottext">GWord
+</span><a href="#local-6989586621679331762"><span class="hs-identifier hs-var">l</span></a></span></span><span> </span><span id="local-6989586621679331761"><span class="annot"><span class="annottext">GWord
+</span><a href="#local-6989586621679331761"><span class="hs-identifier hs-var">r</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">GWord
+</span><a href="#local-6989586621679331762"><span class="hs-identifier hs-var">l</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">GWord
+</span><a href="#local-6989586621679331761"><span class="hs-identifier hs-var">r</span></a></span><span class="hs-special">)</span><span>
 </span><span id="line-30"></span><span>
 </span><span id="line-31"></span><span class="hs-keyword">type</span><span> </span><span id="Rules"><span class="annot"><a href="StringRewriting.Rule.html#Rules"><span class="hs-identifier hs-var">Rules</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Set</span></span><span> </span><span class="annot"><a href="StringRewriting.Rule.html#Rule"><span class="hs-identifier hs-type">Rule</span></a></span><span>
 </span><span id="line-32"></span></pre></body></html>

@@ -10,14 +10,14 @@
 </span><span id="line-10"></span><span>
 </span><span id="line-11"></span><span class="hs-keyword">newtype</span><span> </span><span id="State"><span class="annot"><a href="TuringMachine.State.html#State"><span class="hs-identifier hs-var">State</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="Q"><span class="annot"><a href="TuringMachine.State.html#Q"><span class="hs-identifier hs-var">Q</span></a></span></span><span> </span><span class="hs-special">{</span><span> </span><span id="numState"><span class="annot"><span class="annottext">State -&gt; Int
 </span><a href="TuringMachine.State.html#numState"><span class="hs-identifier hs-var hs-var">numState</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-special">}</span><span>
-</span><span id="line-12"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679337548"><span id="local-6989586621679337550"><span class="annot"><span class="annottext">State -&gt; State -&gt; Bool
+</span><span id="line-12"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679336705"><span id="local-6989586621679336707"><span class="annot"><span class="annottext">State -&gt; State -&gt; Bool
 (State -&gt; State -&gt; Bool) -&gt; (State -&gt; State -&gt; Bool) -&gt; Eq State
 forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
 /= :: State -&gt; State -&gt; Bool
 $c/= :: State -&gt; State -&gt; Bool
 == :: State -&gt; State -&gt; Bool
 $c== :: State -&gt; State -&gt; Bool
-</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679337532"><span id="local-6989586621679337534"><span id="local-6989586621679337536"><span id="local-6989586621679337538"><span id="local-6989586621679337540"><span id="local-6989586621679337542"><span id="local-6989586621679337544"><span class="annot"><span class="annottext">Eq State
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679336689"><span id="local-6989586621679336691"><span id="local-6989586621679336693"><span id="local-6989586621679336695"><span id="local-6989586621679336697"><span id="local-6989586621679336699"><span id="local-6989586621679336701"><span class="annot"><span class="annottext">Eq State
 Eq State
 -&gt; (State -&gt; State -&gt; Ordering)
 -&gt; (State -&gt; State -&gt; Bool)
@@ -55,7 +55,7 @@ $c&lt; :: State -&gt; State -&gt; Bool
 compare :: State -&gt; State -&gt; Ordering
 $ccompare :: State -&gt; State -&gt; Ordering
 $cp1Ord :: Eq State
-</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Ord</span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679337517"><span id="local-6989586621679337519"><span id="local-6989586621679337521"><span id="local-6989586621679337523"><span id="local-6989586621679337525"><span id="local-6989586621679337527"><span id="local-6989586621679337529"><span class="annot"><span class="annottext">Integer -&gt; State
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Ord</span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679336674"><span id="local-6989586621679336676"><span id="local-6989586621679336678"><span id="local-6989586621679336680"><span id="local-6989586621679336682"><span id="local-6989586621679336684"><span id="local-6989586621679336686"><span class="annot"><span class="annottext">Integer -&gt; State
 State -&gt; State
 State -&gt; State -&gt; State
 (State -&gt; State -&gt; State)
@@ -89,7 +89,7 @@ $c* :: State -&gt; State -&gt; State
 $c- :: State -&gt; State -&gt; State
 + :: State -&gt; State -&gt; State
 $c+ :: State -&gt; State -&gt; State
-</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Num</span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679337500"><span id="local-6989586621679337502"><span id="local-6989586621679337504"><span id="local-6989586621679337506"><span id="local-6989586621679337508"><span id="local-6989586621679337510"><span id="local-6989586621679337512"><span id="local-6989586621679337514"><span class="annot"><span class="annottext">Int -&gt; State
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Num</span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679336657"><span id="local-6989586621679336659"><span id="local-6989586621679336661"><span id="local-6989586621679336663"><span id="local-6989586621679336665"><span id="local-6989586621679336667"><span id="local-6989586621679336669"><span id="local-6989586621679336671"><span class="annot"><span class="annottext">Int -&gt; State
 State -&gt; Int
 State -&gt; [State]
 State -&gt; State
@@ -133,11 +133,11 @@ $csucc :: State -&gt; State
 </span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Enum</span></span></span></span></span></span></span></span></span></span><span class="hs-special">)</span><span>
 </span><span id="line-13"></span><span>
 </span><span id="line-14"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bounded</span></span><span> </span><span class="annot"><a href="TuringMachine.State.html#State"><span class="hs-identifier hs-type">State</span></a></span><span> </span><span class="hs-keyword">where</span><span>
-</span><span id="line-15"></span><span>    </span><span id="local-6989586621679337495"><span class="annot"><span class="annottext">minBound :: State
+</span><span id="line-15"></span><span>    </span><span id="local-6989586621679336652"><span class="annot"><span class="annottext">minBound :: State
 </span><span class="hs-identifier hs-var hs-var hs-var hs-var">minBound</span></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Int -&gt; State
 </span><a href="TuringMachine.State.html#Q"><span class="hs-identifier hs-var">Q</span></a></span><span> </span><span class="annot"><span class="annottext">Int
 </span><span class="hs-number">0</span></span><span>
-</span><span id="line-16"></span><span>    </span><span id="local-6989586621679337493"><span class="annot"><span class="annottext">maxBound :: State
+</span><span id="line-16"></span><span>    </span><span id="local-6989586621679336650"><span class="annot"><span class="annottext">maxBound :: State
 </span><span class="hs-identifier hs-var hs-var hs-var hs-var">maxBound</span></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Int -&gt; State
 </span><a href="TuringMachine.State.html#Q"><span class="hs-identifier hs-var">Q</span></a></span><span> </span><span class="annot"><span class="annottext">Int
 forall a. Bounded a =&gt; a

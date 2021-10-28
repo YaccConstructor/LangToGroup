@@ -32,15 +32,15 @@ forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
 </span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">Generator -&gt; Int
 </span><a href="StringRewriting.Generator.html#numGenerator"><span class="hs-identifier hs-var hs-var">SR.numGenerator</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span>
 </span><span id="line-22"></span><span>
-</span><span id="line-23"></span><span id="local-6989586621679333183"><span class="annot"><a href="SP2SR.html#sp2sr"><span class="hs-identifier hs-type">sp2sr</span></a></span><span> </span><span class="hs-glyph">::</span><span>
-</span><span id="line-24"></span><span>    </span><span class="annot"><span class="hs-identifier hs-type">MonadFail</span></span><span> </span><span class="annot"><a href="#local-6989586621679333183"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span>
+</span><span id="line-23"></span><span id="local-6989586621679332349"><span class="annot"><a href="SP2SR.html#sp2sr"><span class="hs-identifier hs-type">sp2sr</span></a></span><span> </span><span class="hs-glyph">::</span><span>
+</span><span id="line-24"></span><span>    </span><span class="annot"><span class="hs-identifier hs-type">MonadFail</span></span><span> </span><span class="annot"><a href="#local-6989586621679332349"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span>
 </span><span id="line-25"></span><span>    </span><span class="annot"><a href="StringRewriting.KnuthBendix.html#Order"><span class="hs-identifier hs-type">Order</span></a></span><span> </span><span class="annot"><a href="SemigroupPresentation.Generator.html#Generator"><span class="hs-identifier hs-type">SP.Generator</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span>
 </span><span id="line-26"></span><span>    </span><span class="annot"><a href="SemigroupPresentation.html#SemigroupPresentation"><span class="hs-identifier hs-type">SemigroupPresentation</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span>
-</span><span id="line-27"></span><span>    </span><span class="annot"><a href="#local-6989586621679333183"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="annot"><a href="StringRewriting.html#StringRewriting"><span class="hs-identifier hs-type">StringRewriting</span></a></span></span><span>
+</span><span id="line-27"></span><span>    </span><span class="annot"><a href="#local-6989586621679332349"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="annot"><a href="StringRewriting.html#StringRewriting"><span class="hs-identifier hs-type">StringRewriting</span></a></span></span><span>
 </span><span id="line-28"></span><span id="sp2sr"><span class="annot"><span class="annottext">sp2sr :: Order Generator -&gt; SemigroupPresentation -&gt; m StringRewriting
-</span><a href="SP2SR.html#sp2sr"><span class="hs-identifier hs-var hs-var">sp2sr</span></a></span></span><span> </span><span id="local-6989586621679333168"><span class="annot"><span class="annottext">Order Generator
-</span><a href="#local-6989586621679333168"><span class="hs-identifier hs-var">go</span></a></span></span><span> </span><span id="local-6989586621679333167"><span class="annot"><span class="annottext">SemigroupPresentation
-</span><a href="#local-6989586621679333167"><span class="hs-identifier hs-var">sp</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">StringRewriting -&gt; m StringRewriting
+</span><a href="SP2SR.html#sp2sr"><span class="hs-identifier hs-var hs-var">sp2sr</span></a></span></span><span> </span><span id="local-6989586621679332334"><span class="annot"><span class="annottext">Order Generator
+</span><a href="#local-6989586621679332334"><span class="hs-identifier hs-var">go</span></a></span></span><span> </span><span id="local-6989586621679332333"><span class="annot"><span class="annottext">SemigroupPresentation
+</span><a href="#local-6989586621679332333"><span class="hs-identifier hs-var">sp</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">StringRewriting -&gt; m StringRewriting
 forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
 </span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">(StringRewriting -&gt; m StringRewriting)
 -&gt; StringRewriting -&gt; m StringRewriting
@@ -51,7 +51,7 @@ forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><a href="StringRewriting.KnuthBendix.html#knuthBendixBy"><span class="hs-identifier hs-var">knuthBendixBy</span></a></span><span>
 </span><span id="line-30"></span><span>        </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Order Generator -&gt; Order Generator
 </span><a href="SP2SR.html#genOrder"><span class="hs-identifier hs-var">genOrder</span></a></span><span> </span><span class="annot"><span class="annottext">Order Generator
-</span><a href="#local-6989586621679333168"><span class="hs-identifier hs-var">go</span></a></span><span class="hs-special">)</span><span>
+</span><a href="#local-6989586621679332334"><span class="hs-identifier hs-var">go</span></a></span><span class="hs-special">)</span><span>
 </span><span id="line-31"></span><span>        </span><span class="hs-special">(</span><span class="hs-special">(</span><span class="annot"><span class="annottext">(Pair [Generator] -&gt; Pair GWord) -&gt; Relations -&gt; Set (Pair GWord)
 forall c1 c2 v1 v2. Gunctor c1 c2 v1 v2 =&gt; (v1 -&gt; v2) -&gt; c1 -&gt; c2
 </span><a href="Containers.html#gmap"><span class="hs-identifier hs-var">gmap</span></a></span><span class="annot"><span class="annottext">((Pair [Generator] -&gt; Pair GWord) -&gt; Relations -&gt; Set (Pair GWord))
@@ -74,7 +74,7 @@ forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
 </span><a href="SP2SR.html#gen"><span class="hs-identifier hs-var">gen</span></a></span><span> </span><span class="annot"><span class="annottext">(Relations -&gt; Set (Pair GWord)) -&gt; Relations -&gt; Set (Pair GWord)
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">SemigroupPresentation
-</span><a href="#local-6989586621679333167"><span class="hs-identifier hs-var">sp</span></a></span><span class="annot"><span class="annottext">SemigroupPresentation
+</span><a href="#local-6989586621679332333"><span class="hs-identifier hs-var">sp</span></a></span><span class="annot"><span class="annottext">SemigroupPresentation
 -&gt; Getting Relations SemigroupPresentation Relations -&gt; Relations
 forall s a. s -&gt; Getting a s a -&gt; a
 </span><span class="hs-operator hs-var">^.</span></span><span class="annot"><span class="annottext">Getting Relations SemigroupPresentation Relations
@@ -87,7 +87,7 @@ forall c1 c2 v1 v2. Gunctor c1 c2 v1 v2 =&gt; (v1 -&gt; v2) -&gt; c1 -&gt; c2
 -&gt; GeneratorsDescr -&gt; GeneratorsDescr
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">SemigroupPresentation
-</span><a href="#local-6989586621679333167"><span class="hs-identifier hs-var">sp</span></a></span><span class="annot"><span class="annottext">SemigroupPresentation
+</span><a href="#local-6989586621679332333"><span class="hs-identifier hs-var">sp</span></a></span><span class="annot"><span class="annottext">SemigroupPresentation
 -&gt; Getting GeneratorsDescr SemigroupPresentation GeneratorsDescr
 -&gt; GeneratorsDescr
 forall s a. s -&gt; Getting a s a -&gt; a
@@ -95,7 +95,7 @@ forall s a. s -&gt; Getting a s a -&gt; a
 Lens' SemigroupPresentation GeneratorsDescr
 </span><a href="SemigroupPresentation.html#generatorsDescr"><span class="hs-identifier hs-var">generatorsDescr</span></a></span><span class="hs-special">)</span><span>
 </span><span id="line-33"></span><span>
-</span><span id="line-34"></span><span id="local-6989586621679333164"><span class="annot"><a href="SP2SR.html#sp2sr%27"><span class="hs-identifier hs-type">sp2sr'</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">MonadFail</span></span><span> </span><span class="annot"><a href="#local-6989586621679333164"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><a href="SemigroupPresentation.html#SemigroupPresentation"><span class="hs-identifier hs-type">SemigroupPresentation</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679333164"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="annot"><a href="StringRewriting.html#StringRewriting"><span class="hs-identifier hs-type">StringRewriting</span></a></span></span><span>
+</span><span id="line-34"></span><span id="local-6989586621679332330"><span class="annot"><a href="SP2SR.html#sp2sr%27"><span class="hs-identifier hs-type">sp2sr'</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">MonadFail</span></span><span> </span><span class="annot"><a href="#local-6989586621679332330"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><a href="SemigroupPresentation.html#SemigroupPresentation"><span class="hs-identifier hs-type">SemigroupPresentation</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679332330"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="annot"><a href="StringRewriting.html#StringRewriting"><span class="hs-identifier hs-type">StringRewriting</span></a></span></span><span>
 </span><span id="line-35"></span><span id="sp2sr%27"><span class="annot"><span class="annottext">sp2sr' :: SemigroupPresentation -&gt; m StringRewriting
 </span><a href="SP2SR.html#sp2sr%27"><span class="hs-identifier hs-var hs-var">sp2sr'</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Order Generator -&gt; SemigroupPresentation -&gt; m StringRewriting
 forall (m :: * -&gt; *).

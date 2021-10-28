@@ -9,23 +9,23 @@
 </span><span id="line-9"></span><span>
 </span><span id="line-10"></span><span class="annot"><a href="TuringMachine.Optimization.Safe.html#loop"><span class="hs-identifier hs-type">loop</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TuringMachine.State.html#State"><span class="hs-identifier hs-type">State</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TuringMachine.Symbol.html#Symbol"><span class="hs-identifier hs-type">Symbol</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TuringMachine.Quadruple.html#Quadruple"><span class="hs-identifier hs-type">TM.Quadruple</span></a></span><span>
 </span><span id="line-11"></span><span id="loop"><span class="annot"><span class="annottext">loop :: State -&gt; Symbol -&gt; Quadruple
-</span><a href="TuringMachine.Optimization.Safe.html#loop"><span class="hs-identifier hs-var hs-var">loop</span></a></span></span><span> </span><span id="local-6989586621679338302"><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679338302"><span class="hs-identifier hs-var">q</span></a></span></span><span> </span><span id="local-6989586621679338301"><span class="annot"><span class="annottext">Symbol
-</span><a href="#local-6989586621679338301"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><span class="hs-special">(</span><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679338302"><span class="hs-identifier hs-var">q</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Symbol
-</span><a href="#local-6989586621679338301"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Symbol -&gt; MoveOr Symbol
+</span><a href="TuringMachine.Optimization.Safe.html#loop"><span class="hs-identifier hs-var hs-var">loop</span></a></span></span><span> </span><span id="local-6989586621679337459"><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679337459"><span class="hs-identifier hs-var">q</span></a></span></span><span> </span><span id="local-6989586621679337458"><span class="annot"><span class="annottext">Symbol
+</span><a href="#local-6989586621679337458"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><span class="hs-special">(</span><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679337459"><span class="hs-identifier hs-var">q</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Symbol
+</span><a href="#local-6989586621679337458"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Symbol -&gt; MoveOr Symbol
 forall s. s -&gt; MoveOr s
 </span><a href="TuringMachine.SymbolOrMove.html#S"><span class="hs-identifier hs-var">S</span></a></span><span> </span><span class="annot"><span class="annottext">Symbol
-</span><a href="#local-6989586621679338301"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679338302"><span class="hs-identifier hs-var">q</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><a href="#local-6989586621679337458"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679337459"><span class="hs-identifier hs-var">q</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span>
 </span><span id="line-12"></span><span>
 </span><span id="line-13"></span><span class="annot"><a href="TuringMachine.Optimization.Safe.html#addQs"><span class="hs-identifier hs-type">addQs</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TuringMachine.html#TuringMachine"><span class="hs-identifier hs-type">TuringMachine</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TuringMachine.Quadruple.html#Quadruples"><span class="hs-identifier hs-type">Quadruples</span></a></span><span>
 </span><span id="line-14"></span><span id="addQs"><span class="annot"><span class="annottext">addQs :: TuringMachine -&gt; Quadruples
-</span><a href="TuringMachine.Optimization.Safe.html#addQs"><span class="hs-identifier hs-var hs-var">addQs</span></a></span></span><span> </span><span id="local-6989586621679338298"><span class="annot"><span class="annottext">TuringMachine
-</span><a href="#local-6989586621679338298"><span class="hs-identifier hs-var">tm</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
-</span><span id="line-15"></span><span>    </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679338297"><span class="annot"><span class="annottext">allQs :: Set State
-</span><a href="#local-6989586621679338297"><span class="hs-identifier hs-var hs-var">allQs</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">TuringMachine
-</span><a href="#local-6989586621679338298"><span class="hs-identifier hs-var">tm</span></a></span><span class="annot"><span class="annottext">TuringMachine
+</span><a href="TuringMachine.Optimization.Safe.html#addQs"><span class="hs-identifier hs-var hs-var">addQs</span></a></span></span><span> </span><span id="local-6989586621679337455"><span class="annot"><span class="annottext">TuringMachine
+</span><a href="#local-6989586621679337455"><span class="hs-identifier hs-var">tm</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-15"></span><span>    </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679337454"><span class="annot"><span class="annottext">allQs :: Set State
+</span><a href="#local-6989586621679337454"><span class="hs-identifier hs-var hs-var">allQs</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">TuringMachine
+</span><a href="#local-6989586621679337455"><span class="hs-identifier hs-var">tm</span></a></span><span class="annot"><span class="annottext">TuringMachine
 -&gt; Getting (Set State) TuringMachine (Set State) -&gt; Set State
 forall s a. s -&gt; Getting a s a -&gt; a
 </span><span class="hs-operator hs-var">^.</span></span><span class="annot"><span class="annottext">Getting (Set State) TuringMachine (Set State)
@@ -34,36 +34,36 @@ TMGetter (Set State)
 forall c v. Deletable c v =&gt; c -&gt; v -&gt; c
 </span><a href="Containers.html#%3C%5C"><span class="hs-operator hs-var">&lt;\</span></a></span><span> </span><span class="annot"><span class="annottext">State
 </span><a href="TuringMachine.State.html#finalState"><span class="hs-identifier hs-var">finalState</span></a></span><span>
-</span><span id="line-16"></span><span>        </span><span id="local-6989586621679338292"><span class="annot"><span class="annottext">allSs :: Set Symbol
-</span><a href="#local-6989586621679338292"><span class="hs-identifier hs-var hs-var">allSs</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">TuringMachine
-</span><a href="#local-6989586621679338298"><span class="hs-identifier hs-var">tm</span></a></span><span class="annot"><span class="annottext">TuringMachine
+</span><span id="line-16"></span><span>        </span><span id="local-6989586621679337449"><span class="annot"><span class="annottext">allSs :: Set Symbol
+</span><a href="#local-6989586621679337449"><span class="hs-identifier hs-var hs-var">allSs</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">TuringMachine
+</span><a href="#local-6989586621679337455"><span class="hs-identifier hs-var">tm</span></a></span><span class="annot"><span class="annottext">TuringMachine
 -&gt; Getting (Set Symbol) TuringMachine (Set Symbol) -&gt; Set Symbol
 forall s a. s -&gt; Getting a s a -&gt; a
 </span><span class="hs-operator hs-var">^.</span></span><span class="annot"><span class="annottext">Getting (Set Symbol) TuringMachine (Set Symbol)
 TMGetter (Set Symbol)
 </span><a href="TuringMachine.html#allSymbols"><span class="hs-identifier hs-var">allSymbols</span></a></span><span>
-</span><span id="line-17"></span><span>        </span><span id="local-6989586621679338290"><span class="annot"><span class="annottext">qsFstParts :: Set (State, Symbol)
-</span><a href="#local-6989586621679338290"><span class="hs-identifier hs-var hs-var">qsFstParts</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Quadruples -&gt; Set (State, Symbol)
+</span><span id="line-17"></span><span>        </span><span id="local-6989586621679337447"><span class="annot"><span class="annottext">qsFstParts :: Set (State, Symbol)
+</span><a href="#local-6989586621679337447"><span class="hs-identifier hs-var hs-var">qsFstParts</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Quadruples -&gt; Set (State, Symbol)
 forall c k. (Keyable c k, Ord k) =&gt; c -&gt; Set k
 </span><a href="Containers.html#keysSet"><span class="hs-identifier hs-var">keysSet</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">TuringMachine
-</span><a href="#local-6989586621679338298"><span class="hs-identifier hs-var">tm</span></a></span><span class="annot"><span class="annottext">TuringMachine
+</span><a href="#local-6989586621679337455"><span class="hs-identifier hs-var">tm</span></a></span><span class="annot"><span class="annottext">TuringMachine
 -&gt; Getting Quadruples TuringMachine Quadruples -&gt; Quadruples
 forall s a. s -&gt; Getting a s a -&gt; a
 </span><span class="hs-operator hs-var">^.</span></span><span class="annot"><span class="annottext">Getting Quadruples TuringMachine Quadruples
 Lens' TuringMachine Quadruples
 </span><a href="TuringMachine.html#quadruples"><span class="hs-identifier hs-var">quadruples</span></a></span><span class="hs-special">)</span><span>
-</span><span id="line-18"></span><span>        </span><span id="local-6989586621679338287"><span class="annot"><span class="annottext">allFstParts :: Set (State, Symbol)
-</span><a href="#local-6989586621679338287"><span class="hs-identifier hs-var hs-var">allFstParts</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Set State -&gt; Set Symbol -&gt; Set (State, Symbol)
+</span><span id="line-18"></span><span>        </span><span id="local-6989586621679337444"><span class="annot"><span class="annottext">allFstParts :: Set (State, Symbol)
+</span><a href="#local-6989586621679337444"><span class="hs-identifier hs-var hs-var">allFstParts</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Set State -&gt; Set Symbol -&gt; Set (State, Symbol)
 forall a b. Set a -&gt; Set b -&gt; Set (a, b)
 </span><span class="hs-identifier hs-var">cartesianProduct</span></span><span> </span><span class="annot"><span class="annottext">Set State
-</span><a href="#local-6989586621679338297"><span class="hs-identifier hs-var">allQs</span></a></span><span> </span><span class="annot"><span class="annottext">Set Symbol
-</span><a href="#local-6989586621679338292"><span class="hs-identifier hs-var">allSs</span></a></span><span>
-</span><span id="line-19"></span><span>        </span><span id="local-6989586621679338286"><span class="annot"><span class="annottext">notQsFstParts :: Set (State, Symbol)
-</span><a href="#local-6989586621679338286"><span class="hs-identifier hs-var hs-var">notQsFstParts</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Set (State, Symbol)
-</span><a href="#local-6989586621679338287"><span class="hs-identifier hs-var">allFstParts</span></a></span><span> </span><span class="annot"><span class="annottext">Set (State, Symbol) -&gt; Set (State, Symbol) -&gt; Set (State, Symbol)
+</span><a href="#local-6989586621679337454"><span class="hs-identifier hs-var">allQs</span></a></span><span> </span><span class="annot"><span class="annottext">Set Symbol
+</span><a href="#local-6989586621679337449"><span class="hs-identifier hs-var">allSs</span></a></span><span>
+</span><span id="line-19"></span><span>        </span><span id="local-6989586621679337443"><span class="annot"><span class="annottext">notQsFstParts :: Set (State, Symbol)
+</span><a href="#local-6989586621679337443"><span class="hs-identifier hs-var hs-var">notQsFstParts</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Set (State, Symbol)
+</span><a href="#local-6989586621679337444"><span class="hs-identifier hs-var">allFstParts</span></a></span><span> </span><span class="annot"><span class="annottext">Set (State, Symbol) -&gt; Set (State, Symbol) -&gt; Set (State, Symbol)
 forall c. Operable c =&gt; c -&gt; c -&gt; c
 </span><a href="Containers.html#%5C%5C"><span class="hs-operator hs-var">\\</span></a></span><span> </span><span class="annot"><span class="annottext">Set (State, Symbol)
-</span><a href="#local-6989586621679338290"><span class="hs-identifier hs-var">qsFstParts</span></a></span><span>
+</span><a href="#local-6989586621679337447"><span class="hs-identifier hs-var">qsFstParts</span></a></span><span>
 </span><span id="line-20"></span><span>    </span><span class="hs-keyword">in</span><span>  </span><span class="annot"><span class="annottext">[Quadruple] -&gt; Quadruples
 forall c v. FastUnsafeListable c v =&gt; [v] -&gt; c
 </span><a href="Containers.html#fromDistinctAscList"><span class="hs-identifier hs-var">fromDistinctAscList</span></a></span><span> </span><span class="annot"><span class="annottext">([Quadruple] -&gt; Quadruples) -&gt; [Quadruple] -&gt; Quadruples
@@ -81,13 +81,13 @@ forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span id="line-22"></span><span>                </span><span class="annot"><span class="annottext">Set (State, Symbol) -&gt; [(State, Symbol)]
 forall c v. Listable c v =&gt; c -&gt; [v]
 </span><a href="Containers.html#toList"><span class="hs-identifier hs-var">toList</span></a></span><span> </span><span class="annot"><span class="annottext">Set (State, Symbol)
-</span><a href="#local-6989586621679338286"><span class="hs-identifier hs-var">notQsFstParts</span></a></span><span>
+</span><a href="#local-6989586621679337443"><span class="hs-identifier hs-var">notQsFstParts</span></a></span><span>
 </span><span id="line-23"></span><span>
 </span><span id="line-24"></span><span class="annot"><a href="TuringMachine.Optimization.Safe.html#secure"><span class="hs-identifier hs-type">secure</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TuringMachine.html#TuringMachine"><span class="hs-identifier hs-type">TuringMachine</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="TuringMachine.html#TuringMachine"><span class="hs-identifier hs-type">TuringMachine</span></a></span><span>
 </span><span id="line-25"></span><span id="secure"><span class="annot"><span class="annottext">secure :: TuringMachine -&gt; TuringMachine
 </span><a href="TuringMachine.Optimization.Safe.html#secure"><span class="hs-identifier hs-var hs-var">secure</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
-</span><span id="line-26"></span><span>    </span><span id="local-6989586621679338281"><span class="annot"><span class="annottext">Quadruples
-</span><a href="#local-6989586621679338281"><span class="hs-identifier hs-var">aqs</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">TuringMachine -&gt; Quadruples
+</span><span id="line-26"></span><span>    </span><span id="local-6989586621679337438"><span class="annot"><span class="annottext">Quadruples
+</span><a href="#local-6989586621679337438"><span class="hs-identifier hs-var">aqs</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">TuringMachine -&gt; Quadruples
 </span><a href="TuringMachine.Optimization.Safe.html#addQs"><span class="hs-identifier hs-var">addQs</span></a></span><span>
 </span><span id="line-27"></span><span>    </span><span class="annot"><span class="annottext">(Quadruples -&gt; Identity Quadruples)
 -&gt; TuringMachine -&gt; Identity TuringMachine
@@ -99,5 +99,5 @@ forall s t a b. ASetter s t a b -&gt; (a -&gt; b) -&gt; s -&gt; t
 </span><span class="hs-operator hs-var">%~</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Quadruples -&gt; Quadruples -&gt; Quadruples
 forall c. Operable c =&gt; c -&gt; c -&gt; c
 </span><a href="Containers.html#%5C%2F"><span class="hs-operator hs-var">\/</span></a></span><span> </span><span class="annot"><span class="annottext">Quadruples
-</span><a href="#local-6989586621679338281"><span class="hs-identifier hs-var">aqs</span></a></span><span class="hs-special">)</span><span>
+</span><a href="#local-6989586621679337438"><span class="hs-identifier hs-var">aqs</span></a></span><span class="hs-special">)</span><span>
 </span><span id="line-28"></span></pre></body></html>

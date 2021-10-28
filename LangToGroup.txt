@@ -1168,12 +1168,12 @@ strGenerators :: GPGetter (Set String)
 instance GHC.Show.Show GroupPresentation.GroupPresentation
 
 module GP2GAP
-gapFormat :: GroupPresentation -> Maybe GAPformat
+gapFormat :: MonadFail m => GroupPresentation -> m GAPformat
 
 module ParsingHelpers
 type Parser = Parsec Void Text
 makeEofParser :: Parser a -> Parser a
-parseFromFile :: Parser a -> String -> String -> IO (Either (ParseErrorBundle Text Void) a)
+parseFromFile :: Parser a -> FilePath -> FilePath -> IO a
 
 
 -- | This module represents functionality for reading grammar definitions
@@ -1183,7 +1183,7 @@ parseFromFile :: Parser a -> String -> String -> IO (Either (ParseErrorBundle Te
 --   group will be executed.
 module GrammarReader
 parser :: Parser Grammar
-parseFromFile :: Parser a -> String -> String -> IO (Either (ParseErrorBundle Text Void) a)
+parseFromFile :: Parser a -> FilePath -> FilePath -> IO a
 
 -- | Method for classifying type of input grammar.
 checkGrammarType :: Grammar -> GrammarType
@@ -1252,6 +1252,13 @@ simple :: String -> Gen
 from :: String -> StrGetter -> Gen
 group :: StrGetter -> Gen
 gens :: MonadFail m => Gens -> SemigroupPresentation -> m GeneratorsDescr
+
+
+-- | Module <tt>SP2GP</tt> include functions <a>groupBeta</a> and
+--   <tt>groupBeta_1</tt> for converting semigroup presentation to group
+--   presentation.
+module SP2GP
+groupBeta :: MonadFail m => SemigroupPresentation -> m GroupPresentation
 
 module SemigroupPresentation.Solver
 type Depth = Maybe Int
@@ -1877,7 +1884,7 @@ module TmsParser
 parser :: Parser Tms
 
 -- | Parse Tms from file.
-parseTms :: String -> String -> IO (Either String Tms)
+parseTms :: FilePath -> FilePath -> IO Tms
 
 -- | Tms. Example:
 --   
@@ -2234,9 +2241,12 @@ showListInfo :: ShowInfo a => [a] -> String
 instance GHC.Classes.Ord ShowInfo.Title
 instance GHC.Classes.Eq ShowInfo.Title
 instance ShowInfo.ShowInfo GHC.Types.Char
+instance ShowInfo.ShowInfo GrammarType.Grammar
 instance ShowInfo.ShowInfo TuringMachine.TuringMachine
+instance ShowInfo.ShowInfo TMType.TM
 instance ShowInfo.ShowInfo SemigroupPresentation.SemigroupPresentation
 instance ShowInfo.ShowInfo GroupPresentation.GroupPresentation
+instance ShowInfo.ShowInfo GRType.GR
 instance ShowInfo.ShowInfo a => ShowInfo.ShowInfo (ShowInfo.WithTitle a)
 instance ShowInfo.ShowInfo a => ShowInfo.ShowInfo [a]
 instance (ShowInfo.ShowInfo a, ShowInfo.ShowInfo b) => ShowInfo.ShowInfo (a, b)
@@ -2253,20 +2263,8 @@ instance Containers.Insertable ShowInfo.Title GHC.Types.Char
 module TM2SP
 convertInput :: MonadFail m => TuringMachine -> (String, Int) -> m String
 semigroupGamma :: MonadFail m => TuringMachine -> m SemigroupPresentation
-newtype SemigroupPresentation_1
-SP1 :: SemigroupPresentation -> SemigroupPresentation_1
-[unSP1] :: SemigroupPresentation_1 -> SemigroupPresentation
-semigroupGamma_1 :: MonadFail m => TuringMachine -> m SemigroupPresentation_1
-semigroupGamma_2 :: MonadFail m => TuringMachine -> m SemigroupPresentation_1
-instance ShowInfo.ShowInfo TM2SP.SemigroupPresentation_1
-
-
--- | Module <tt>SP2GP</tt> include functions <a>groupBeta</a> and
---   <a>groupBeta_1</a> for converting semigroup presentation to group
---   presentation.
-module SP2GP
-groupBeta :: MonadFail m => SemigroupPresentation -> m GroupPresentation
-groupBeta_1 :: MonadFail m => SemigroupPresentation_1 -> m GroupPresentation
+semigroupGamma_1 :: MonadFail m => TuringMachine -> m SemigroupPresentation
+semigroupGamma_2 :: MonadFail m => TuringMachine -> m SemigroupPresentation
 
 module DebuggingTMTypes
 newtype DebuggingState
@@ -2335,25 +2333,6 @@ getShiftsDecrements :: Int -> String -> [(String, String)]
 module Boolean2TM
 boolean2tm :: MonadFail m => Grammar -> m TuringMachine
 boolean2tm' :: Grammar -> DebuggingTuringMachine
-
-
--- | This module represents interactive mode of working with program.
---   
---   The user can run the project on a specified file with a grammar.
-module Main
-data Options
-InputFlagString :: Options
-OutputFlagString :: Options
-
--- | List of options, which might be used for executing algorithm.
-argd :: [Arg Options]
-main :: IO ()
-grammar2Group :: String -> String -> IO ()
-tm2TMS :: TM -> IO ()
-mainTms :: String -> String -> IO ()
-instance GHC.Show.Show Main.Options
-instance GHC.Classes.Eq Main.Options
-instance GHC.Classes.Ord Main.Options
 
 
 -- | Module <a>Tape</a> include type of Turing machine's tape and useful
