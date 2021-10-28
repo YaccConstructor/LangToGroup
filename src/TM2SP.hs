@@ -5,7 +5,6 @@
 module TM2SP (
     convertInput,
     semigroupGamma,
-    SemigroupPresentation_1 (SP1, unSP1),
     semigroupGamma_1,
     semigroupGamma_2,
   ) where
@@ -79,19 +78,12 @@ semigroupGamma =
             "h q_0 h" === "q"
         ] & for' ("s_{B}" `in'` strNumSymbols)]
 
-newtype SemigroupPresentation_1 = SP1 { unSP1 :: SP.SemigroupPresentation }
-
-instance ShowInfo (SemigroupPresentation_1) where
-    showTitle = const $ Title "Semigroup Presentation"
-    showInfo (SP1 sp) = showInfo sp
-    showListTitle = const $ Title "List of Semigroup Presentations"
-
-semigroupGamma_1 :: MonadFail m => TuringMachine -> m SemigroupPresentation_1
+semigroupGamma_1 :: MonadFail m => TuringMachine -> m SP.SemigroupPresentation
 semigroupGamma_1 =
-    (fmap.fmap) SP1 $ tm2sp [
-            "q_{}" `from` strNumStates,
-            simple "h",
-            "s_{}" `from` strNumSymbols
+    tm2sp [
+            simple "q h",
+            "s_{}" `from` strNumSymbols,
+            "q_{}" `from` strNumStates
         ] [[
             [
             "q_i s_j" === "q_l s_k"
@@ -131,16 +123,17 @@ semigroupGamma_1 =
                 (strQuadruples.takeOnly(withMove(toLeft)&.fromSymbol(blankSymbol)))
               ),
             "q_0 s_B" === "q_0",
-            "s_B q_0 h" === "q_0 h"
+            "s_B q_0 h" === "q_0 h",
+            "h q_0 h" === "q"
         ] & for' ("s_{B}" `in'` strNumSymbols)]
 
-semigroupGamma_2 :: MonadFail m => TuringMachine -> m SemigroupPresentation_1
+semigroupGamma_2 :: MonadFail m => TuringMachine -> m SP.SemigroupPresentation
 semigroupGamma_2 =
-    (fmap.fmap) SP1 $ tm2sp [
+    tm2sp [
+            simple "q h",
+            "s_{}" `from` strNumSymbols,
             "q_{}" `from` strNumStates,
-            "qR_{}" `from` strNumStates,
-            simple "h",
-            "s_{}" `from` strNumSymbols
+            "qR_{}" `from` strNumStates
         ] [[
             [
             "q_i s_j" === "q_l s_k"
@@ -149,34 +142,16 @@ semigroupGamma_2 =
                 (strQuadruples.withoutLoops.takeOnly(withoutMove))
               ),
             [
-            "q_i h" === "q_l s_k h"
-              ] & for' (
-                "q_{i} s_0 s_{k} q_{l}" `in'`
-                (strQuadruples.withoutLoops.takeOnly(withoutMove&.fromSymbol(blankSymbol)))
-              ),
-            [
             "q_i s_j" === "s_j q_l"
               ] & for' (
                 "q_{i} s_{j} R q_{l}" `in'`
                 (strQuadruples.takeOnly(withMove toRight))
               ),
             [
-            "q_i h" === "s_0 q_l h"
-              ] & for' (
-                "q_{i} s_0 R q_{l}" `in'`
-                (strQuadruples.takeOnly(withMove(toRight)&.fromSymbol(blankSymbol)))
-              ),
-            [
             "s_j qR_i" === "qR_l s_j"
               ] & for' (
                 "qR_{i} s_{j} L qR_{l}" `in'`
                 (strQuadruples.takeOnly(withMove toLeft))
-              ),
-            [
-            "h qR_i" === "h qR_l s_0"
-              ] & for' (
-                "qR_{i} s_0 L qR_{l}" `in'`
-                (strQuadruples.takeOnly(withMove(toLeft)&.fromSymbol(blankSymbol)))
               ),
             [
             "q_A s_B" === "s_B qR_A"
@@ -192,5 +167,6 @@ semigroupGamma_2 =
                 (strQuadruples.withoutLoops.takeOnly(fromSymbol(blankSymbol)).takeFromPart.copy(0))
               ),
             "q_0 s_B" === "q_0",
-            "s_B q_0 h" === "q_0 h"
+            "s_B q_0 h" === "q_0 h",
+            "h q_0 h" === "q"
         ] & for' ("s_{B}" `in'` strNumSymbols)]

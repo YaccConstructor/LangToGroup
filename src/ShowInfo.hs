@@ -14,6 +14,9 @@ module ShowInfo (
 import TuringMachine
 import SemigroupPresentation as SP
 import GroupPresentation as GP
+import GrammarType
+import GRType
+import TMType
 
 import Control.Lens (imap)
 import Data.List (intercalate)
@@ -84,6 +87,15 @@ instance ShowInfo Char where
     showListTitle = const "String"
     showListInfo = id
 
+instance ShowInfo Grammar where
+    showTitle = const "Grammar"
+    showInfo (Grammar (ns, ts, rs, _)) = concatMap (++ "\n") [
+        "nonterminals: " ++ show (size ns),
+        "terminals: " ++ show (size ts),
+        "relations: " ++ show (size rs)
+      ]
+    showListTitle = const "List of Grammars"
+
 instance ShowInfo TuringMachine where
     showTitle = const "Turing Machine"
     showInfo tm = concatMap (++ "\n") [
@@ -92,6 +104,19 @@ instance ShowInfo TuringMachine where
             " (" ++ intercalate ", " (toList (tm^.strSymbols)) ++ ")",
         "quadruples: " ++ show (tm^.quadruples.to(size))
       ]
+    showListTitle = const "List of Turing Machines"
+
+instance ShowInfo TM where
+    showTitle = const "Turing Machine"
+    showInfo (TM (InputAlphabet ia, tas, MultiTapeStates mts, Commands cs, _, _)) =
+        let stas = [ size ta | TapeAlphabet ta <- tas ]
+            smts = [ size mt | mt <- mts ]
+        in  concatMap (++ "\n") [
+                "input alphabet: " ++ show (size ia),
+                "tape alphabet: " ++ show (product stas) ++ " " ++ show stas,
+                "states: " ++ show (product smts) ++ " " ++ show smts,
+                "commands: " ++ show (size cs)
+              ]
     showListTitle = const "List of Turing Machines"
 
 instance ShowInfo SemigroupPresentation where
@@ -107,6 +132,14 @@ instance ShowInfo GroupPresentation where
     showInfo gp = concatMap (++ "\n") [
         "generators: " ++ show (gp^.GP.allGenerators.to(size)),
         "relations: " ++ show (gp^.GP.relations.to(size))
+      ]
+    showListTitle = const "List of Group Presentations"
+
+instance ShowInfo GR where
+    showTitle = const "Group Presentation"
+    showInfo (GR (a, r)) = concatMap (++ "\n") [
+        "generators: " ++ show (size a),
+        "relations: " ++ show (size r)
       ]
     showListTitle = const "List of Group Presentations"
 
