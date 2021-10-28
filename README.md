@@ -99,27 +99,41 @@ stack run -- LangToGroup-cli <options>
     ```
     If you want to build presentation of grammar via first approach and save produced group presentation to file
 
-### Examples of grammar
+### Examples of input grammar
+
+Here are some format restrictions which grammars should satisfy to be handled by group presentation builder properly:
+*  Empty word specified via `Eps`;
+*  Conjunction and negation logical signs for defining boolean and conjunctive grammars should be written as `&` and `!` respectively;
+*  All nonterminals must have one capital letter and zero or more small letters in their names;
+*  All terminals must have one or more small letters in their names;
+*  First string must contain start nonterminal, set of nonterminals, set of terminals, separated by `;` sign;
+*  In subsequent lines grammar rules should be specified;
+*  All signs, used for defining grammar as `;`, `->`, `&`, `!`, should be written exactly after previous signs and grammar symbols without commas, and there is a space after last sign;
+* Here are examples of input grammars, satisfying restrictions above:
 
 **Boolean grammar**
 
-    S; S Sa; c v b
+    S; S Sa; c v b 
     S-> c&! v&! Sa&! Eps
     Sa->! b
-    S-> a& b&! v&! Sa&! Eps
+    S-> a& b&! v&! Sa&! Eps 
+
 **Conjunctive grammar**
 
     S; S Abc D Cr; c b d e
     S-> D c& d Abc
     Abc-> b
     D-> Cr
-    Cr-> e
+    Cr-> e 
 **Context-free grammar**
 
     S; S A D1; c2 b e
     S-> c2 D1 A
     A-> b
     D1-> e
+* Also there are files with experiment grammars in folder `\examples\grammar\experiments` with correct input.
+
+> **NOTE**: second approach for building group presentation accepts only grammar in normal form due to the specifics of the algorithm described in the article on the construction of a Turing machine by a boolean grammar!
 
 ## Experiments
 Here are the tables with some examples of building group presentations by different grammars, where:
