@@ -7,16 +7,16 @@ tags:
   - Turing machines
   - group presentation construction
 authors:
-  - name: Semyon Grigorev
-    affiliation: "1, 2"
   - name: Maksym Shamrai
     affiliation: 3
+  - name: Sergey Kuzivanov
+    affiliation: 1
   - name: Ekaterina Vinnik
     affiliation: 1
   - name: Marin Gleb
     affiliation: 4
-  - name: Sergey Kuzivanov
-    affiliation: 1
+  - name: Semyon Grigorev
+    affiliation: "1, 2"
 affiliations:
  - name: Saint Petersburg State University
    index: 1
@@ -26,8 +26,9 @@ affiliations:
    index: 3
  - name: National Research University Higher School of Economics
    index: 4
-date: ?? September 2021
+date: ?? November 2021
 bibliography: paper.bib
+
 
 # Summary
 
@@ -38,14 +39,25 @@ Sometimes it happens that researchers lack the traditional methods of the field 
 
 Inspired by this, we wondered what if we treat formal language as a group presentation? This will allow us to use various group theoretical methods for formal languages. Moreover, it allows experimenting with computational group theory algorithms [@GAP4]. But construction by hand like that takes a lot of time and paper. So it requires an efficient tool for automatic group presentation construction from formal language.
 
+
 # Statement of need
+
+
+Modern research methods should not be limited to the traditional framework but should use all possible means to achieve a breakthrough result. The LangToGroup provides new opportunities for researchers in research related to computational models. Accordingly, the tool adds ways to analyze a problem, and sometimes understanding is a key that can lead to some insights about the task.
+
+Mainly LangToGroup package has been developed for research in disciplines such as official languages, computational theory, and group theory, but this may be of interest to researchers in many other fields. The tool connects "computation" with group theory. That allows us to think mathematically about computational processes and use the concepts of group theory to analyze and solve problems.
+
+
+# Solution description
+
 
 LangToGroup is a Haskell console application for group presentation construction. Haskell was chosen due to its rich and convenient type system,
 which we apply to represent algorithmic types such as formal grammar,
-Turing machine, S-machine, or group presentation. Furthermore, it is worth noting that data types were intentionally described in the same way as in the definitions of the corresponding concepts. This was done to maintain the maximum similarity to the article [@Sapir]. 
+Turing machine, S-machine, semigroup presentation, or group presentation. Furthermore, it is worth noting that data types were intentionally described in the same way as in the definitions of the corresponding concepts. This was done to maintain the maximum similarity to the articles [@Sapir, @rotman1995word]. 
 
-The package provides the capability to obtain a presentation of a group from a Turing machine in two ways described in [@Sapir] and [@rotman1995word]. The algorithms to construct a Turing machine from context-free languages and Boolean languages have developed as well. Moreover, LangToGroup supports several types of input and output and each step of the construction can be printed in a document of LaTeX format for convenient usage. Therefore, LangToGroup presents a full pipeline of group presentation construction from formal languages and also can be used for construction from Turing machines.
+The package provides the capability to obtain a presentation of a group from a Turing machine in two ways described in [@Sapir] and [@rotman1995word]. All of them are building a presentation of a group for a Turing Machine with preservation of its language. The first one does it through Symmetric Turing Machine and S-machine sequential constructions. The second one is via building a semigroup presentation. Moreover, two modifications of the second approach which output smaller presentations were developed as well. The time algorithms take depends on input grammar, but usually, it is no more than a few minutes.
 
-Mainly LangToGroup package has been developed for research in disciplines such as official languages, computational theory, and group theory, but this may be of interest to researchers in many other fields. The tool connects "computation" with group theory. That allows us to think mathematically about computational processes and use the concepts of group theory to analyze and solve problems.
+From the beginning, the tool has been developing for the study of formal languages because of what algorithms for constructing a Turing machine from context-free and Boolean languages have additionally developed. Moreover, LangToGroup supports several types of input and output and each step of the construction can be printed in a document of LaTeX format for convenient usage. Therefore, LangToGroup presents a full pipeline of group presentation construction from formal languages and also can be used for construction from Turing machines. 
+
 
 # References
