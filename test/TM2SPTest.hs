@@ -179,14 +179,14 @@ test = TestLabel "Correctness of constructing semigroup from machine" $
                             TestLabel "New Semigroup Presentation Version 1" $
                                 TestCase $ assert $
                                     asAns ans $ do
-                                        SP1 sp <- semigroupGamma_1 tm
+                                        sp <- semigroupGamma_1 tm
                                         input <- convertInput tm (word, 0)
                                         let output = "h q_0 h"
                                         solve output sp (Just 4242) input,
                             TestLabel "New Semigroup Presentation Version 2" $
                                 TestCase $ assert $
                                     asAns ans $ do
-                                        SP1 sp <- semigroupGamma_2 tm
+                                        sp <- semigroupGamma_2 tm
                                         input <- convertInput tm (word, 0)
                                         let output = "h q_0 h"
                                         solve output sp (Just 4242) input

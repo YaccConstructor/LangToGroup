@@ -1,0 +1,29 @@
+name: Pages
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - '.github/**'
+      - 'src/**'
+      - 'stack.yaml'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set dist variable
+        run: echo "DIST_PATH=$(echo `stack path --dist-dir`/doc/html/LangToGroup)" >> $GITHUB_ENV
+
+      - name: Run haddock
+        run: stack haddock
+
+      - name: Publish to Github Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ${{ env.DIST_PATH }}
+
