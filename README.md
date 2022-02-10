@@ -1,6 +1,7 @@
 # LangToGroup
 
 [![Build Status](https://travis-ci.org/YaccConstructor/LangToGroup.svg?branch=master)](https://travis-ci.org/YaccConstructor/LangToGroup)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6013474.svg)](https://doi.org/10.5281/zenodo.6013474)
 
 This project provides an opportunity to build a grammar group representation in two ways, which is displayed in the following picture:  
 <p align="center">
